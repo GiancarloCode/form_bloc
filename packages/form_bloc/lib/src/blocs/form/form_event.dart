@@ -11,3 +11,9 @@ class UpdateFormBloc extends FormBlocEvent {
 
   UpdateFormBloc(this.isValid) : super(<dynamic>[isValid]);
 }
+
+class LoadFormBloc extends FormBlocEvent {}
+
+class ReloadFormBloc extends FormBlocEvent {}
+
+class ClearFormBloc extends FormBlocEvent {}
