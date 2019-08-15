@@ -11,8 +11,8 @@ dependencies:
     path: ../
   form_bloc: ^0.2.0
   flutter_bloc: ^0.20.1
+  collection: ^1.14.11
   shared_preferences: ^0.5.3+4
-  
 
 dev_dependencies:
   flutter_test:
