@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_bloc_example/bloc_delegate.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/complex_login_form.dart';
 import 'package:flutter_form_bloc_example/forms/simple_async_prefilled_form.dart';
@@ -10,20 +8,19 @@ import 'package:flutter_form_bloc_example/styles/themes.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 
 void main() {
-  BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Themes.formTheme,
       routes: {
-        '/': (context) => Home(),
+        '/': (context) => HomeScreen(),
         '/success': (context) => SuccessScreen(),
       },
     ),
   );
 }
 
-class Home extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
