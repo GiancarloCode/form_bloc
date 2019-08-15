@@ -1,4 +1,4 @@
-package com.example.flutterformvalidation;
+package com.example.flutter_form_bloc_example;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

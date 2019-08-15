@@ -7,20 +7,20 @@ class SuccessScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
+      body: Container(
+        alignment: Alignment.center,
         padding: EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 60,
+              Icons.tag_faces,
+              size: 150,
             ),
             SizedBox(height: 10),
             Text(
-              'Form Submitted Successfully!',
-              style: TextStyle(fontSize: 40),
+              'Welcome',
+              style: Theme.of(context).textTheme.title.copyWith(fontSize: 45),
               textAlign: TextAlign.center,
             ),
           ],

@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:form_bloc/form_bloc.dart';
-import 'package:form_bloc/form_bloc.dart' as form_bloc show FormBloc;
 import 'package:flutter/widgets.dart';
 
 export 'package:flutter/services.dart'
     show TextInputType, TextInputAction, TextCapitalization;
+
+export 'package:flutter_form_bloc/src/flutter_typeahead.dart'
+    show SuggestionsBoxDecoration;
+
+const double _kMenuItemHeight = 48.0;
+const EdgeInsets _kMenuItemPadding = EdgeInsets.symmetric(horizontal: 16.0);
 
 enum SuffixButton { obscureText, clearText }
 
@@ -17,10 +23,8 @@ typedef TextFieldBlocErrorBuilder<Error> = String Function(
   Error error,
 );
 
-class TextFieldBlocBuilder<
-    FormBloc extends form_bloc.FormBloc<dynamic, dynamic>,
-    Error> extends StatefulWidget {
-  /// Creates a Material Design text field with a form bloc
+class TextFieldBlocBuilder<Error> extends StatefulWidget {
+  /// Creates a Material Design text field with a TextFieldBloc
   ///
   ///
   ///
@@ -71,7 +75,8 @@ class TextFieldBlocBuilder<
     @required this.errorBuilder,
     this.formBloc,
     this.suffixButton,
-    this.showErrorWithoutInteraction,
+    this.padding = const EdgeInsets.all(8),
+    this.removeSuggestionOnLongPress = false,
     Key key,
     this.controller,
     this.focusNode,
@@ -81,6 +86,7 @@ class TextFieldBlocBuilder<
     this.textCapitalization = TextCapitalization.none,
     this.style,
     this.strutStyle,
+    this.obscureText,
     this.textAlign = TextAlign.start,
     this.textAlignVertical,
     this.textDirection,
@@ -93,6 +99,7 @@ class TextFieldBlocBuilder<
     this.expands = false,
     this.maxLength,
     this.maxLengthEnforced = true,
+    this.onChanged,
     this.onEditingComplete,
     this.onSubmitted,
     this.inputFormatters,
@@ -108,8 +115,20 @@ class TextFieldBlocBuilder<
     this.buildCounter,
     this.scrollController,
     this.scrollPhysics,
+    this.suggestionsBoxDecoration,
+    this.suggestionTextStyle,
+    this.debounceSuggestionDuration = const Duration(milliseconds: 300),
+    this.getImmediateSuggestions = false,
+    this.suggestionsAnimationDuration = const Duration(milliseconds: 700),
+    this.nextFocusNode,
   })  : assert(textFieldBloc != null),
         assert(errorBuilder != null),
+        assert(errorBuilder != null),
+        assert(padding != null),
+        assert(suggestionsAnimationDuration != null),
+        assert(removeSuggestionOnLongPress != null),
+        assert(debounceSuggestionDuration != null),
+        assert(getImmediateSuggestions != null),
         assert(textAlign != null),
         assert(readOnly != null),
         assert(autofocus != null),
@@ -138,17 +157,46 @@ class TextFieldBlocBuilder<
   final TextFieldBloc<Error> textFieldBloc;
 
   /// This widget will be enable only when the [FormBloc] state is
-  /// [FormBlocNotSubmitted]
-  ///
-  /// If omitted, this widget will automatically perform a lookup using
-  /// [BlocProvider] and the current [BuildContext].
+  /// [FormBlocLoaded] or [FormBlocFailure]
   final FormBloc formBloc;
 
   final TextFieldBlocErrorBuilder<Error> errorBuilder;
 
   final SuffixButton suffixButton;
 
-  final bool showErrorWithoutInteraction;
+  final EdgeInsetsGeometry padding;
+
+  final bool removeSuggestionOnLongPress;
+
+  final SuggestionsBoxDecoration suggestionsBoxDecoration;
+
+  /// When the field is submitted, this will call
+  /// [nextFocusNode.requestFocus()]
+  final FocusNode nextFocusNode;
+
+  /// Defaults to 700 milliseconds.
+  final Duration suggestionsAnimationDuration;
+
+  /// If set to true, suggestions will be fetched immediately when the field is
+  /// added to the view.
+  ///
+  /// But the suggestions box will only be shown when the field receives focus.
+  /// To make the field receive focus immediately, you can set the `autofocus`
+  /// property in the [textFieldConfiguration] to true
+  ///
+  /// Defaults to false
+  final bool getImmediateSuggestions;
+
+  final TextStyle suggestionTextStyle;
+
+  /// The duration to wait after the user stops typing before calling
+  /// [suggestionsCallback]
+  ///
+  /// This is useful, because, if not set, a request for suggestions will be
+  /// sent for every character that the user types.
+  ///
+  /// This duration is set by default to 300 milliseconds
+  final Duration debounceSuggestionDuration;
 
   /// --------------------------------------------------------------------------
   ///                          [TextField] properties
@@ -207,6 +255,9 @@ class TextFieldBlocBuilder<
   /// Specify null to remove the decoration entirely (including the
   /// extra padding introduced by the decoration to save space for the labels).
   final InputDecoration decoration;
+
+  /// {@macro flutter.widgets.editableText.obscureText}
+  final bool obscureText;
 
   /// {@macro flutter.widgets.editableText.keyboardType}
   final TextInputType keyboardType;
@@ -325,6 +376,16 @@ class TextFieldBlocBuilder<
   /// [maxLength] is exceeded.
   final bool maxLengthEnforced;
 
+  /// {@macro flutter.widgets.editableText.onChanged}
+  ///
+  /// See also:
+  ///
+  ///  * [inputFormatters], which are called before [onChanged]
+  ///    runs and can validate and change ("format") the input value.
+  ///  * [onEditingComplete], [onSubmitted], [onSelectionChanged]:
+  ///    which are more specialized input change notifications.
+  final ValueChanged<String> onChanged;
+
   /// {@macro flutter.widgets.editableText.onEditingComplete}
   final VoidCallback onEditingComplete;
 
@@ -424,94 +485,52 @@ class TextFieldBlocBuilder<
   final ScrollController scrollController;
 
   @override
-  _TextFieldBlocBuilderState<FormBloc, Error> createState() =>
+  _TextFieldBlocBuilderState<Error> createState() =>
       _TextFieldBlocBuilderState();
 }
 
-class _TextFieldBlocBuilderState<
-    FormBloc extends form_bloc.FormBloc<dynamic, dynamic>,
-    Error> extends State<TextFieldBlocBuilder<FormBloc, Error>> {
-  TextEditingController controller;
-  bool obscureText;
-  FormBloc formBloc;
+class _TextFieldBlocBuilderState<Error>
+    extends State<TextFieldBlocBuilder<Error>> {
+  TextEditingController _controller;
+  bool _obscureText;
 
   @override
   void initState() {
     super.initState();
-    formBloc == widget.formBloc;
-    if (widget.formBloc == null) {
-      formBloc = BlocProvider.of<FormBloc>(context);
-    }
-
-    controller =
+    _controller =
         TextEditingController(text: widget.textFieldBloc.currentState.value);
-    obscureText = widget.suffixButton != null &&
+    _obscureText = widget.suffixButton != null &&
         widget.suffixButton == SuffixButton.obscureText;
   }
 
   @override
   void dispose() {
-    controller.dispose();
-
+    _controller.dispose();
     super.dispose();
+  }
+
+  void _onSubmitted(String value) {
+    if (widget.nextFocusNode != null) {
+      widget.nextFocusNode.requestFocus();
+    }
+    if (widget.onSubmitted != null) {
+      widget.onSubmitted(value);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FormBloc, FormBlocState>(
-      bloc: widget.formBloc,
-      condition: (previousState, currentState) =>
-          previousState.runtimeType != currentState.runtimeType,
-      builder: (context, formState) {
-        return BlocBuilder<TextFieldBloc<Error>, TextFieldBlocState<Error>>(
-          bloc: widget.textFieldBloc,
-          builder: (context, fieldState) {
-            if (controller.text != fieldState.value) {
-              controller.text = fieldState.value;
-            }
-            return TextField(
-              controller: controller,
-              focusNode: widget.focusNode,
-              decoration: buildDecoration(fieldState),
-              keyboardType: widget.keyboardType,
-              textInputAction: widget.textInputAction,
-              textCapitalization: widget.textCapitalization,
-              style: widget.style,
-              strutStyle: widget.strutStyle,
-              textAlign: widget.textAlign,
-              textDirection: widget.textDirection,
-              readOnly: widget.readOnly,
-              showCursor: widget.showCursor,
-              autofocus: widget.autofocus,
-              obscureText: obscureText,
-              autocorrect: widget.autocorrect,
-              maxLines: widget.maxLines,
-              minLines: widget.minLines,
-              expands: widget.expands,
-              maxLength: widget.maxLength,
-              maxLengthEnforced: widget.maxLengthEnforced,
-              onChanged: widget.textFieldBloc.updateValue,
-              onEditingComplete: widget.onEditingComplete,
-              onSubmitted: widget.onSubmitted,
-              inputFormatters: widget.inputFormatters,
-              enabled: isEnable(formState),
-              cursorWidth: widget.cursorWidth,
-              cursorRadius: widget.cursorRadius,
-              cursorColor: widget.cursorColor,
-              keyboardAppearance: widget.keyboardAppearance,
-              scrollPadding: widget.scrollPadding,
-              dragStartBehavior: widget.dragStartBehavior,
-              enableInteractiveSelection: widget.enableInteractiveSelection,
-              onTap: widget.onTap,
-              buildCounter: widget.buildCounter,
-              scrollController: widget.scrollController,
-              scrollPhysics: widget.scrollPhysics,
-              textAlignVertical: widget.textAlignVertical,
-            );
-          },
-        );
-      },
-    );
+    if (widget.formBloc != null) {
+      return BlocBuilder<FormBloc, FormBlocState>(
+        bloc: widget.formBloc,
+        builder: (context, formState) {
+          return _buildChild((widget.enabled ?? true) &&
+              (formState is FormBlocLoaded || formState is FormBlocFailure));
+        },
+      );
+    } else {
+      return _buildChild(true);
+    }
   }
 
   InputDecoration buildDecoration(TextFieldBlocState<Error> state) {
@@ -519,18 +538,20 @@ class _TextFieldBlocBuilderState<
     if (widget.suffixButton != null) {
       switch (widget.suffixButton) {
         case SuffixButton.obscureText:
-          decoration = decoration.copyWith(
-            suffixIcon: InkWell(
-                borderRadius: BorderRadius.circular(25),
-                child: obscureText
-                    ? Icon(Icons.visibility)
-                    : Icon(Icons.visibility_off),
-                onTap: () {
-                  setState(() {
-                    obscureText = !obscureText;
-                  });
-                }),
-          );
+          if (widget.obscureText == null) {
+            decoration = decoration.copyWith(
+              suffixIcon: InkWell(
+                  borderRadius: BorderRadius.circular(25),
+                  child: _obscureText
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off),
+                  onTap: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  }),
+            );
+          }
           break;
         case SuffixButton.clearText:
           decoration = decoration.copyWith(
@@ -545,21 +566,118 @@ class _TextFieldBlocBuilderState<
           break;
       }
     }
-
-    if (decoration.errorText == null) {
-      if (widget.errorBuilder != null && !state.isInitial) {
-        decoration = decoration.copyWith(
-            errorText: widget.errorBuilder(context, state.error));
-      }
+    if (decoration.errorText == null &&
+        widget.errorBuilder != null &&
+        !state.isInitial) {
+      decoration = decoration.copyWith(
+        errorText: widget.errorBuilder(context, state.error),
+      );
     }
-
-    if (decoration?.errorMaxLines == null) {
-      decoration = decoration.copyWith(errorMaxLines: 10);
-    }
-
     return decoration;
   }
 
-  bool isEnable(FormBlocState state) =>
-      (widget.enabled ?? true) && state is FormBlocNotSubmitted;
+  Widget _buildChild(bool isEnable) {
+    return BlocBuilder<TextFieldBloc<Error>, TextFieldBlocState<Error>>(
+      bloc: widget.textFieldBloc,
+      builder: (context, fieldState) {
+        if (_controller.text != fieldState.value) {
+          _controller.text = fieldState.value;
+        }
+        return Padding(
+          padding: widget.padding,
+          child: TypeAheadField<String>(
+            textFieldConfiguration: TextFieldConfiguration<String>(
+              controller: _controller,
+              decoration: buildDecoration(fieldState),
+              keyboardType: widget.keyboardType,
+              textInputAction: widget.textInputAction != null
+                  ? widget.textInputAction
+                  : widget.nextFocusNode != null ? TextInputAction.next : null,
+              textCapitalization: widget.textCapitalization,
+              style: isEnable
+                  ? widget.style
+                  : widget.style != null
+                      ? widget.style
+                          .copyWith(color: Theme.of(context).disabledColor)
+                      : Theme.of(context)
+                          .textTheme
+                          .subhead
+                          .copyWith(color: Theme.of(context).disabledColor),
+              textAlign: widget.textAlign,
+              textDirection: widget.textDirection,
+              autofocus: widget.autofocus,
+              obscureText: _obscureText,
+              autocorrect: widget.autocorrect,
+              maxLines: widget.maxLines,
+              maxLength: widget.maxLength,
+              maxLengthEnforced: widget.maxLengthEnforced,
+              onChanged: (value) {
+                widget.textFieldBloc.updateValue(value);
+                if (widget.onChanged != null) {
+                  widget.onChanged(value);
+                }
+              },
+              onEditingComplete: widget.onEditingComplete,
+              onSubmitted: _onSubmitted,
+              inputFormatters: widget.inputFormatters,
+              enabled: isEnable,
+              cursorWidth: widget.cursorWidth,
+              cursorRadius: widget.cursorRadius,
+              cursorColor: widget.cursorColor,
+              keyboardAppearance: widget.keyboardAppearance,
+              scrollPadding: widget.scrollPadding,
+              focusNode: widget.focusNode,
+            ),
+            hideOnLoading: true,
+            hideOnEmpty: true,
+            hideOnError: true,
+            getImmediateSuggestions: widget.getImmediateSuggestions,
+            debounceDuration: widget.debounceSuggestionDuration,
+            suggestionsCallback: (pattern) async {
+              if (fieldState.suggestions != null) {
+                return await fieldState.suggestions(pattern);
+              }
+
+              return null;
+            },
+            itemBuilder: (context, suggestion) {
+              return Container(
+                height: _kMenuItemHeight,
+                alignment: AlignmentDirectional.centerStart,
+                padding: _kMenuItemPadding,
+                child: Text(
+                  suggestion,
+                  style: widget.suggestionTextStyle ??
+                      Theme.of(context).textTheme.subhead.copyWith(
+                          color: ThemeData.estimateBrightnessForColor(
+                                      Theme.of(context).canvasColor) ==
+                                  Brightness.dark
+                              ? Colors.white
+                              : Colors.grey[800]),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              );
+            },
+            onSuggestionSelected: (value) {
+              widget.textFieldBloc.updateValue(value);
+              _onSubmitted(value);
+            },
+            animationDuration: widget.suggestionsAnimationDuration,
+            removeSuggestionOnLongPress: widget.removeSuggestionOnLongPress,
+            suggestionsBoxDecoration: widget.suggestionsBoxDecoration ??
+                SuggestionsBoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: Theme.of(context).canvasColor,
+                ),
+            onSuggestionRemoved: (suggestion) {
+              if (widget.removeSuggestionOnLongPress) {
+                widget.textFieldBloc.dispatch(RemoveSuggestion(suggestion));
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
 }
