@@ -8,8 +8,8 @@ class LoginFormBloc extends FormBloc<String, String> {
     validators: [Validators.notEmpty],
   );
 
-  @override
-  List<FieldBloc> get fieldBlocs => [emailField, passwordField];
+  // @override
+  // List<FieldBloc> get fieldBlocs => [emailField, passwordField];
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
@@ -17,4 +17,7 @@ class LoginFormBloc extends FormBloc<String, String> {
     await Future<void>.delayed(Duration(seconds: 2));
     yield currentState.toSuccess();
   }
+
+  @override
+  List<FieldBloc> get fieldBlocs => null;
 }

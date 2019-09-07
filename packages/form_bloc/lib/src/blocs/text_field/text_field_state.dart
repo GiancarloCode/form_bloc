@@ -47,10 +47,11 @@ class TextFieldBlocState<Error> extends FieldBlocState<String> {
   @override
   String toString() {
     String _toString = '';
-    if (_toStringName != null)
+    if (_toStringName != null) {
       _toString += '${_toStringName}';
-    else
+    } else {
       _toString += '${runtimeType}';
+    }
     _toString += ' {';
     if (isInitial) _toString += ' isInitial: $isInitial,';
     if (hasError) _toString += ' error: $error,';

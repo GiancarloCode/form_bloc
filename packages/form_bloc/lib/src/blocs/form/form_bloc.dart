@@ -14,6 +14,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   FormBloc({bool isLoading = false})
       : assert(isLoading != null),
         _isLoading = isLoading {
+    assert(fieldBlocs != null);
     _areAllFieldsValidSubscription = Observable.combineLatest<bool, bool>(
       _fieldsStates.map(
         (stateStream) =>
@@ -32,7 +33,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   ///
   /// You don't need to call [FieldBloc.dispose] for each [FieldBloc]
   /// because [FormBloc.dispose] will call it.
-  List<FieldBloc> get fieldBlocs;
+  List<FieldBloc<Object, Object, FieldBlocState>> get fieldBlocs;
 
   Iterable<Stream<FieldBlocState>> get _fieldsStates =>
       fieldBlocs.map((fieldBloc) => fieldBloc.state);
@@ -41,12 +42,12 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       fieldBlocs.map((fieldBloc) => fieldBloc.currentState).toList();
 
   bool _areFieldStatesValid(List<FieldBlocState> fieldStates) =>
-      fieldStates.every(_isFieldStateValid);
+      fieldStates.isEmpty ? true : fieldStates.every(_isFieldStateValid);
 
   bool _isFieldStateValid(FieldBlocState state) => state.isValid;
 
   void _updateFormState(bool areAllFieldsValid) =>
-      dispatch(UpdateFormBloc(areAllFieldsValid));
+      dispatch(UpdateFormBlocStateIsValid(areAllFieldsValid));
 
   @override
   void dispose() {
@@ -55,6 +56,37 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     fieldBlocs?.forEach((fieldBloc) => fieldBloc?.dispose());
 
     super.dispose();
+  }
+
+  @override
+  FormBlocState<SuccessResponse, FailureResponse> get initialState {
+    if (_isLoading) {
+      return FormBlocLoading();
+    } else {
+      return FormBlocLoaded(_areFieldStatesValid(_fieldsCurrentState));
+    }
+  }
+
+  @override
+  Stream<FormBlocState<SuccessResponse, FailureResponse>> mapEventToState(
+    FormBlocEvent event,
+  ) async* {
+    if (event is SubmitFormBloc) {
+      yield* _onSubmitFormBloc();
+    } else if (event is UpdateFormBlocState<SuccessResponse, FailureResponse>) {
+      yield event.state;
+    } else if (event is ClearFormBloc) {
+      fieldBlocs.forEach((fieldBloc) => fieldBloc.clear());
+    } else if (event is ReloadFormBloc) {
+      yield currentState.toLoading();
+      yield* onReload();
+    } else if (event is LoadFormBloc) {
+      yield* onLoading();
+    } else if (event is CancelSubmissionFormBloc) {
+      yield* onCancelSubmission();
+    } else if (event is UpdateFormBlocStateIsValid) {
+      yield currentState.withIsValid(event.isValid);
+    }
   }
 
   /// This method is called when the form is valid
@@ -74,12 +106,25 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// is instantiated and [isLoading] is `true`
   Stream<FormBlocState<SuccessResponse, FailureResponse>> onLoading() => null;
 
-  @override
-  FormBlocState<SuccessResponse, FailureResponse> get initialState {
-    if (_isLoading) {
-      return FormBlocLoading();
+  /// This method is called at when the [FormBlocState]
+  /// is  [FormBlocSubmitting] and [CancelSubmissionFormBloc] is dispatched
+  Stream<FormBlocState<SuccessResponse, FailureResponse>>
+      onCancelSubmission() => null;
+
+  Stream<FormBlocState<SuccessResponse, FailureResponse>>
+      _onSubmitFormBloc() async* {
+    if (currentState.isValid && currentState.canSubmit) {
+      yield currentState.toSubmitting(0.0);
+      yield* onSubmitting();
     } else {
-      return FormBlocLoaded(_areFieldStatesValid(_fieldsCurrentState));
+      // If an fieldBloc state has isInitial true,if will set to false.
+      fieldBlocs.forEach(
+          (fieldBloc) => fieldBloc.updateValue(fieldBloc.currentState.value));
+
+      final stateSnapshot = currentState;
+      yield FormBlocSubmissionFailed(currentState.isValid);
+      // yield the previous state
+      yield stateSnapshot;
     }
   }
 
@@ -89,55 +134,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   void reload() => dispatch(ReloadFormBloc());
 
-  @override
-  Stream<FormBlocState<SuccessResponse, FailureResponse>> mapEventToState(
-    FormBlocEvent event,
-  ) async* {
-    if (event is SubmitFormBloc) {
-      if (currentState is FormBlocLoaded || currentState is FormBlocFailure) {
-        if (currentState.isValid) {
-          yield currentState.toSubmitting();
-          yield* onSubmitting();
-        } else {
-          // If an fieldBloc state has isInitial true,if will set to false.
-          fieldBlocs.forEach((fieldBloc) =>
-              fieldBloc.updateValue(fieldBloc.currentState.value));
-        }
-      }
-    } else if (event is UpdateFormBloc) {
-      // Do this for no expose more methods in [FormBlocState]
-      final stateSnapshot = currentState;
-      if (stateSnapshot is FormBlocLoading<SuccessResponse, FailureResponse>) {
-        yield FormBlocLoading(isValid: event.isValid);
-      } else if (stateSnapshot
-          is FormBlocLoadFailed<SuccessResponse, FailureResponse>) {
-        yield FormBlocLoadFailed<SuccessResponse, FailureResponse>(
-            isValid: event.isValid,
-            failureResponse: stateSnapshot.failureResponse);
-      } else if (stateSnapshot
-          is FormBlocLoaded<SuccessResponse, FailureResponse>) {
-        yield FormBlocLoaded(event.isValid);
-      } else if (stateSnapshot
-          is FormBlocSubmitting<SuccessResponse, FailureResponse>) {
-        yield FormBlocSubmitting(event.isValid);
-      } else if (stateSnapshot
-          is FormBlocSuccess<SuccessResponse, FailureResponse>) {
-        yield FormBlocSuccess(
-            isValid: event.isValid,
-            successResponse: stateSnapshot.successResponse);
-      } else if (stateSnapshot
-          is FormBlocFailure<SuccessResponse, FailureResponse>) {
-        yield FormBlocFailure(
-            isValid: event.isValid,
-            failureResponse: stateSnapshot.failureResponse);
-      }
-    } else if (event is ClearFormBloc) {
-      fieldBlocs.forEach((fieldBloc) => fieldBloc.clear());
-    } else if (event is ReloadFormBloc) {
-      yield currentState.toLoading();
-      yield* onReload();
-    } else if (event is LoadFormBloc) {
-      yield* onLoading();
-    }
-  }
+  void updateState(FormBlocState<SuccessResponse, FailureResponse> state) =>
+      dispatch(UpdateFormBlocState<SuccessResponse, FailureResponse>(state));
+
+  void cancelSubmission() => dispatch(CancelSubmissionFormBloc());
 }

@@ -45,10 +45,11 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value> {
   @override
   String toString() {
     String _toString = '';
-    if (_toStringName != null)
+    if (_toStringName != null) {
       _toString += '${_toStringName}';
-    else
+    } else {
       _toString += '${runtimeType}';
+    }
     _toString += ' {';
     if (isInitial) _toString += ' isInitial: $isInitial,';
     _toString += ' value: $value';

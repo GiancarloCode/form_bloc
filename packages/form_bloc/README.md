@@ -16,7 +16,7 @@ Before to use this package you need to know the [core concepts](https://felangel
 
 ```yaml
 dependencies:
-  form_bloc: ^0.2.0
+  form_bloc: ^0.3.0
 ```
 
 ```dart
@@ -75,6 +75,7 @@ You can create:
 * [TextFieldBloc`<Error>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/TextFieldBloc-class.html)
 * [SelectFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/SelectFieldBloc-class.html)
 * [BooleanFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/BooleanFieldBloc-class.html)
+* [FileFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/FileFieldBloc-class.html)
 
 For example the `LoginFormBloc` will have two `TextFieldBloc<String>`, so the `Error` type will be `String`, and the validators must return a error of `String` type.
 
@@ -118,7 +119,7 @@ class LoginFormBloc extends FormBloc<String, String> {
 
 ```
 
-## 4. Implement the method onSubmitting
+## 4. Implement onSubmitting method
 
 [onSubmitting](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html) return a `Stream<FormBlocState<SuccessResponse, FailureResponse>>` and will called when the form is submitting.
 
