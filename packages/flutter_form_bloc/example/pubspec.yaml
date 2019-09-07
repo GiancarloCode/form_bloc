@@ -2,16 +2,21 @@ name: flutter_form_bloc_example
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter: 
     sdk: flutter
   flutter_form_bloc:
     path: ../
-  form_bloc: ^0.2.0
-  flutter_bloc: ^0.20.1
+  form_bloc: ^0.3.0
+  bloc: ^0.15.0
+  flutter_bloc: ^0.21.0
   shared_preferences: ^0.5.3+4
+  liquid_progress_indicator: ^0.3.2
+  rxdart: ^0.22.2
+  image_picker: ^0.6.1+4
+
 
 dev_dependencies:
   flutter_test:

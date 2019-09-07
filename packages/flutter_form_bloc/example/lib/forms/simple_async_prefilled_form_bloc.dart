@@ -9,7 +9,7 @@ class SimpleAsyncPrefilledFormBloc extends FormBloc<String, String> {
   final prefilledTextField = TextFieldBloc<String>();
   final prefilledSelectField = SelectFieldBloc<String>(
     items: ['Option 1', 'Option 2', 'Option 3'],
-    isRequired: false,
+    isRequired: true,
   );
   final prefilledBooleanField = BooleanFieldBloc(
     isRequired: false,

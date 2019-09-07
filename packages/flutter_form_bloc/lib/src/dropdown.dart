@@ -28,21 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import 'dart:async';
 import 'dart:math' as math;
-
-import 'package:flutter/widgets.dart';
-
-import 'package:flutter/src/material/button_theme.dart';
-import 'package:flutter/src/material/colors.dart';
-import 'package:flutter/src/material/constants.dart';
-import 'package:flutter/src/material/debug.dart';
-import 'package:flutter/src/material/icons.dart';
-import 'package:flutter/src/material/ink_well.dart';
-import 'package:flutter/src/material/input_decorator.dart';
-import 'package:flutter/src/material/material.dart';
-import 'package:flutter/src/material/material_localizations.dart';
-import 'package:flutter/src/material/scrollbar.dart';
-import 'package:flutter/src/material/shadows.dart';
-import 'package:flutter/src/material/theme.dart';
+import 'package:flutter/material.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = 48.0;
@@ -582,7 +568,7 @@ class DropdownButtonHideUnderline extends InheritedWidget {
 /// specialized with that same type argument.
 ///
 /// The [onChanged] callback should update a state variable that defines the
-/// dropdown's value. It should also call [State.setState] to rebuild the
+/// dropdown value. It should also call [State.setState] to rebuild the
 /// dropdown with the new value.
 ///
 /// {@tool snippet --template=stateful_widget_scaffold}

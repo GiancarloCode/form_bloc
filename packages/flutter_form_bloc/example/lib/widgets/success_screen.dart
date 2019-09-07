@@ -19,7 +19,7 @@ class SuccessScreen extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Welcome',
+              'Success',
               style: Theme.of(context).textTheme.title.copyWith(fontSize: 45),
               textAlign: TextAlign.center,
             ),

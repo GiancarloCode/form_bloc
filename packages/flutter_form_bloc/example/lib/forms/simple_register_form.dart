@@ -34,13 +34,14 @@ class _SimpleRegisterFormState extends State<SimpleRegisterForm> {
         onSubmitting: (context, state) => LoadingDialog.show(context),
         onSuccess: (context, state) {
           LoadingDialog.hide(context);
-          Navigator.of(context).pushReplacementNamed('/success');
+          Navigator.of(context).pushReplacementNamed('success');
         },
         onFailure: (context, state) {
           LoadingDialog.hide(context);
           Notifications.showSnackBarWithError(context, state.failureResponse);
         },
         child: ListView(
+          physics: ClampingScrollPhysics(),
           children: <Widget>[
             TextFieldBlocBuilder<String>(
               textFieldBloc: _formBloc.emailField,

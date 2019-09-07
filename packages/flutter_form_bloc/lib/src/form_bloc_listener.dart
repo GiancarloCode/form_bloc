@@ -38,6 +38,16 @@ class FormBlocListener<
       SuccessResponse,
       ErrorResponse> onFailure;
 
+  final FormBlocListenerCallback<
+      form_bloc.FormBlocSubmissionCancelled<SuccessResponse, ErrorResponse>,
+      SuccessResponse,
+      ErrorResponse> onSubmissionCancelled;
+
+  final FormBlocListenerCallback<
+      form_bloc.FormBlocSubmissionFailed<SuccessResponse, ErrorResponse>,
+      SuccessResponse,
+      ErrorResponse> onSubmissionFailed;
+
   /// If the [formBloc] parameter is omitted, [FormBlocListener]
   /// will automatically perform a lookup using
   /// [BlocProvider].of<[FormBloc]> and the current [BuildContext].
@@ -54,6 +64,8 @@ class FormBlocListener<
     this.onSubmitting,
     this.onSuccess,
     this.onFailure,
+    this.onSubmissionCancelled,
+    this.onSubmissionFailed,
   }) : super(key: key);
 
   @override
@@ -119,6 +131,14 @@ The context used was: $context""",
                 is form_bloc.FormBlocFailure<SuccessResponse, ErrorResponse> &&
             widget.onFailure != null) {
           widget.onFailure(context, state);
+        } else if (state is form_bloc
+                .FormBlocSubmissionCancelled<SuccessResponse, ErrorResponse> &&
+            widget.onSubmissionCancelled != null) {
+          widget.onSubmissionCancelled(context, state);
+        } else if (state is form_bloc
+                .FormBlocSubmissionFailed<SuccessResponse, ErrorResponse> &&
+            widget.onSubmissionFailed != null) {
+          widget.onSubmissionFailed(context, state);
         }
       },
       child: widget.child,

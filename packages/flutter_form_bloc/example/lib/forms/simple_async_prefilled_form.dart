@@ -5,27 +5,7 @@ import 'package:flutter_form_bloc_example/forms/simple_async_prefilled_form_bloc
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 import 'package:form_bloc/form_bloc.dart';
 
-class SimpleAsyncPrefilledForm extends StatefulWidget {
-  @override
-  _SimpleAsyncPrefilledFormState createState() =>
-      _SimpleAsyncPrefilledFormState();
-}
-
-class _SimpleAsyncPrefilledFormState extends State<SimpleAsyncPrefilledForm> {
-  List<FocusNode> _focusNodes;
-
-  @override
-  void initState() {
-    _focusNodes = [FocusNode()];
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _focusNodes.forEach((focusNode) => focusNode.dispose());
-    super.dispose();
-  }
-
+class SimpleAsyncPrefilledForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SimpleAsyncPrefilledFormBloc>(
@@ -43,6 +23,10 @@ class _SimpleAsyncPrefilledFormState extends State<SimpleAsyncPrefilledForm> {
                 Notifications.showSnackBarWithSuccess(
                     context, state.successResponse);
               },
+              onSubmissionFailed: (context, state) {
+                Notifications.showSnackBarWithError(
+                    context, 'Please fill in all required fields');
+              },
               child: BlocBuilder<SimpleAsyncPrefilledFormBloc, FormBlocState>(
                 builder: (context, state) {
                   if (state is FormBlocLoading) {
@@ -52,6 +36,7 @@ class _SimpleAsyncPrefilledFormState extends State<SimpleAsyncPrefilledForm> {
                   } else if (state is FormBlocLoadFailed) {
                     return Center(
                       child: ListView(
+                        physics: ClampingScrollPhysics(),
                         shrinkWrap: true,
                         children: <Widget>[
                           Icon(Icons.sentiment_dissatisfied, size: 70),
@@ -86,21 +71,16 @@ class _SimpleAsyncPrefilledFormState extends State<SimpleAsyncPrefilledForm> {
                         TextFieldBlocBuilder<String>(
                           textFieldBloc: formBloc.prefilledTextField,
                           errorBuilder: (context, error) => error,
-                          nextFocusNode: _focusNodes[0],
                           decoration: InputDecoration(
                             labelText: 'Prefilled text field',
                             prefixIcon: Icon(Icons.sentiment_very_satisfied),
                           ),
                         ),
-                        DropdownFieldBlocBuilder<String>(
+                        RadioButtonGroupFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.prefilledSelectField,
-                          focusNode: _focusNodes[0],
-                          itemBuilder: (context, item) => item,
-                          millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
-                              320,
+                          itemBuilder: (context, value) => value,
                           decoration: InputDecoration(
                             labelText: 'Prefilled select field',
-                            prefixIcon: Icon(Icons.sentiment_very_satisfied),
                           ),
                         ),
                         CheckboxFieldBlocBuilder(

@@ -50,8 +50,7 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
       return BlocBuilder<FormBloc, FormBlocState>(
         bloc: formBloc,
         builder: (context, formState) {
-          return _buildChild(
-              formState is FormBlocLoaded || formState is FormBlocFailure);
+          return _buildChild(formState.canSubmit);
         },
       );
     } else {

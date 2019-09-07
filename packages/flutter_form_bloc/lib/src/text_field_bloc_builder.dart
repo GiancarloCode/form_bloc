@@ -72,7 +72,7 @@ class TextFieldBlocBuilder<Error> extends StatefulWidget {
   ///    characters" and how it may differ from the intuitive meaning.
   const TextFieldBlocBuilder({
     @required this.textFieldBloc,
-    @required this.errorBuilder,
+    this.errorBuilder,
     this.formBloc,
     this.suffixButton,
     this.padding = const EdgeInsets.all(8),
@@ -122,7 +122,6 @@ class TextFieldBlocBuilder<Error> extends StatefulWidget {
     this.suggestionsAnimationDuration = const Duration(milliseconds: 700),
     this.nextFocusNode,
   })  : assert(textFieldBloc != null),
-        assert(errorBuilder != null),
         assert(errorBuilder != null),
         assert(padding != null),
         assert(suggestionsAnimationDuration != null),
@@ -524,8 +523,7 @@ class _TextFieldBlocBuilderState<Error>
       return BlocBuilder<FormBloc, FormBlocState>(
         bloc: widget.formBloc,
         builder: (context, formState) {
-          return _buildChild((widget.enabled ?? true) &&
-              (formState is FormBlocLoaded || formState is FormBlocFailure));
+          return _buildChild((widget.enabled ?? true) && formState.canSubmit);
         },
       );
     } else {

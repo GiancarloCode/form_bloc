@@ -1,19 +1,19 @@
 name: flutter_form_bloc
 description: Flutter widgets that make it easy to create forms with form_bloc.
-version: 0.1.0
+version: 0.2.0
 author: GiancarloCode <GiancarloCode@gmail.com>
 homepage: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc
 repository: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc
 issue_tracker: https://github.com/GiancarloCode/form_bloc/issues
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.2.2 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  form_bloc: ^0.2.0
-  flutter_bloc: ^0.20.1
+  form_bloc: ^0.3.0
+  flutter_bloc: ^0.21.0
   rxdart: ^0.22.1+1
   keyboard_visibility: ^0.5.1 
   collection: ^1.14.11
@@ -21,3 +21,4 @@ dependencies:
 dev_dependencies:
   flutter_test: 
     sdk: flutter
+  pedantic: ^1.7.0  

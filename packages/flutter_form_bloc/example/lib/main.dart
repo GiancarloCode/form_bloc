@@ -1,6 +1,9 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc_example/bloc_delegate.dart';
 import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/complex_login_form.dart';
+import 'package:flutter_form_bloc_example/forms/progress_form.dart';
 import 'package:flutter_form_bloc_example/forms/simple_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/simple_login_form.dart';
 import 'package:flutter_form_bloc_example/forms/simple_register_form.dart';
@@ -8,16 +11,27 @@ import 'package:flutter_form_bloc_example/styles/themes.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 
 void main() {
-  runApp(
-    MaterialApp(
+  BlocSupervisor.delegate = MyBlocDelegate();
+
+  runApp(App());
+}
+
+class App extends StatelessWidget {
+  const App({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Themes.formTheme,
+      initialRoute: 'home',
       routes: {
-        '/': (context) => HomeScreen(),
-        '/success': (context) => SuccessScreen(),
+        'home': (context) => HomeScreen(),
+        'success': (context) => SuccessScreen(),
+        'success': (context) => SuccessScreen(),
       },
-    ),
-  );
+    );
+  }
 }
 
 class HomeScreen extends StatelessWidget {
@@ -78,6 +92,11 @@ class Form {
   Form(this.title, this.description, this.widget);
 
   static List<Form> forms = [
+    Form(
+      'Form with progress',
+      'Used for forms with file fields like images.',
+      ProgressForm(),
+    ),
     Form(
       'Simple login',
       'Stateless, validators, text fields, and success response.',

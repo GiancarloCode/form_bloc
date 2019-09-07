@@ -8,6 +8,7 @@ class Notifications {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         key: key,
+        backgroundColor: Colors.red[300],
         content: Text('${message ?? 'Sorry, an error has ocurred.'}'),
       ),
     );

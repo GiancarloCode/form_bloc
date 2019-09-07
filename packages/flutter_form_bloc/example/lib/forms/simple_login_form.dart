@@ -19,7 +19,7 @@ class SimpleLoginForm extends StatelessWidget {
               onSubmitting: (context, state) => LoadingDialog.show(context),
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
-                Navigator.of(context).pushReplacementNamed('/success');
+                Navigator.of(context).pushReplacementNamed('success');
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
@@ -27,6 +27,7 @@ class SimpleLoginForm extends StatelessWidget {
                     context, state.failureResponse);
               },
               child: ListView(
+                physics: ClampingScrollPhysics(),
                 children: <Widget>[
                   TextFieldBlocBuilder<String>(
                     textFieldBloc: formBloc.emailField,

@@ -38,7 +38,7 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
               onSubmitting: (context, state) => LoadingDialog.show(context),
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
-                Navigator.of(context).pushReplacementNamed('/success');
+                Navigator.of(context).pushReplacementNamed('success');
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
@@ -46,6 +46,7 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
                     context, state.failureResponse);
               },
               child: ListView(
+                physics: ClampingScrollPhysics(),
                 children: <Widget>[
                   TextFieldBlocBuilder<String>(
                     textFieldBloc: formBloc.emailField,
@@ -78,8 +79,9 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
                     focusNode: _focusNodes[1],
                     millisecondsForShowDropdownItemsWhenKeyboardIsOpen: 320,
                     decoration: InputDecoration(
-                        labelText: 'Response',
-                        prefixIcon: Icon(Icons.tag_faces)),
+                      labelText: 'Response',
+                      prefixIcon: Icon(Icons.tag_faces),
+                    ),
                     itemBuilder: (context, item) {
                       String text = '';
                       switch (item) {

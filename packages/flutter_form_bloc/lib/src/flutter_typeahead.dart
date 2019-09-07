@@ -194,7 +194,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// however, override most of them.
 ///
 /// #### Customizing the loader, the error and the "no items found" message
-/// You can use the [loadingBuilder], [requiredError] and [noItemsFoundBuilder] to
+/// You can use the [loadingBuilder], [errorBuilder] and [noItemsFoundBuilder] to
 /// customize their corresponding widgets. For example, to show a custom error
 /// widget:
 /// ```dart
@@ -380,7 +380,7 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Called when [suggestionsCallback] returns an empty array.
   ///
   /// It is expected to return a widget to display when no suggestions are
-  /// avaiable.
+  /// available.
   /// For example:
   /// ```dart
   /// (BuildContext context) {
@@ -535,26 +535,26 @@ class TypeAheadField<T> extends StatefulWidget {
       @required this.itemBuilder,
       @required this.onSuggestionSelected,
       @required this.onSuggestionRemoved,
-      this.textFieldConfiguration: const TextFieldConfiguration(),
-      this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
-      this.debounceDuration: const Duration(milliseconds: 300),
+      this.textFieldConfiguration = const TextFieldConfiguration(),
+      this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
+      this.debounceDuration = const Duration(milliseconds: 300),
       this.suggestionsBoxController,
       this.loadingBuilder,
       this.noItemsFoundBuilder,
       this.errorBuilder,
       this.transitionBuilder,
-      this.animationStart: 0.25,
-      this.animationDuration: const Duration(milliseconds: 500),
-      this.getImmediateSuggestions: false,
-      this.suggestionsBoxVerticalOffset: 5.0,
-      this.direction: AxisDirection.down,
-      this.hideOnLoading: false,
-      this.hideOnEmpty: false,
-      this.hideOnError: false,
-      this.hideSuggestionsOnKeyboardHide: true,
-      this.keepSuggestionsOnLoading: true,
-      this.keepSuggestionsOnSuggestionSelected: false,
-      this.autoFlipDirection: false,
+      this.animationStart = 0.25,
+      this.animationDuration = const Duration(milliseconds: 500),
+      this.getImmediateSuggestions = false,
+      this.suggestionsBoxVerticalOffset = 5.0,
+      this.direction = AxisDirection.down,
+      this.hideOnLoading = false,
+      this.hideOnEmpty = false,
+      this.hideOnError = false,
+      this.hideSuggestionsOnKeyboardHide = true,
+      this.keepSuggestionsOnLoading = true,
+      this.keepSuggestionsOnSuggestionSelected = false,
+      this.autoFlipDirection = false,
       this.removeSuggestionOnLongPress})
       : assert(suggestionsCallback != null),
         assert(itemBuilder != null),
@@ -610,12 +610,17 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   @override
   void dispose() {
+    // TODO: check this
+    // if (this._suggestionsBox._isOpened) {
+    //   this._suggestionsBox._overlayEntry?.remove();
+    // }
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
     _keyboardVisibility.removeListener(_keyboardVisibilityId);
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
+
     //TODO: create A Pull Request, dispose the controller create here
     _textEditingController?.dispose();
     //TODO: Create Pull Request, when dispose the widget and the suggestions in showed need to close
@@ -706,6 +711,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   void _hideSuggestions() {
     _hideSuggestionsController.add(null);
+    // TODO: check: removed this for animate hide suggestions
+    // this._suggestionsBox.close();
   }
 
   void _initOverlayEntry() {
@@ -851,7 +858,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     @required this.suggestionsBox,
     @required this.hideSuggestions,
     this.controller,
-    this.getImmediateSuggestions: false,
+    this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.onSuggestionRemoved,
     this.suggestionsCallback,
@@ -972,11 +979,11 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
       if (this.mounted) {
         // if it wasn't removed in the meantime
-        //TODO: create Pull Request not animate when the suggestions are the previous seggestions
+        //TODO: create Pull Request not animate when the suggestions are the previous suggestions
 
         if (error != null ||
             suggestions == null ||
-            suggestions.length == 0 ||
+            suggestions.isEmpty ||
             ListEquality<dynamic>().equals(_suggestions, suggestions)) {
           setState(() {
             this._animationController.forward(from: 1.0);
@@ -1022,8 +1029,9 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
   @override
   Widget build(BuildContext context) {
-    if (this._suggestions == null && this._isLoading == false)
+    if (this._suggestions == null && this._isLoading == false) {
       return Container();
+    }
 
     Widget child;
     if (this._isLoading) {
@@ -1038,7 +1046,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       } else {
         child = createErrorWidget();
       }
-    } else if (this._suggestions.length == 0) {
+    } else if (this._suggestions.isEmpty) {
       if (widget.hideOnEmpty) {
         child = Container(height: 0);
       } else {
@@ -1048,7 +1056,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       child = createSuggestionsWidget();
     }
 
-    dynamic animationChild = widget.transitionBuilder != null
+    var animationChild = widget.transitionBuilder != null
         ? widget.transitionBuilder(context, child, this._animationController)
         : SizeTransition(
             axisAlignment: -1.0,
@@ -1241,12 +1249,12 @@ class SuggestionsBoxDecoration {
 
   /// Creates a SuggestionsBoxDecoration
   const SuggestionsBoxDecoration(
-      {this.elevation: 4.0,
+      {this.elevation = 4.0,
       this.color,
       this.shape,
-      this.hasScrollbar: true,
+      this.hasScrollbar = true,
       this.borderRadius,
-      this.shadowColor: const Color(0xFF000000),
+      this.shadowColor = const Color(0xFF000000),
       this.constraints})
       : assert(shadowColor != null),
         assert(elevation != null);
@@ -1301,7 +1309,7 @@ class TextFieldConfiguration<T> {
   /// Defaults to null
   final TextDirection textDirection;
 
-  /// If false the textfield is "disabled": it ignores taps and its
+  /// If false the text field is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
   ///
   /// Same as [TextField.enabled](https://docs.flutter.io/flutter/material/TextField/enabled.html)
@@ -1323,7 +1331,7 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.inputFormatters](https://docs.flutter.io/flutter/material/TextField/inputFormatters.html)
   final List<TextInputFormatter> inputFormatters;
 
-  /// Whether to enable autocorrection.
+  /// Whether to enable auto correction.
   ///
   /// Same as [TextField.autocorrect](https://docs.flutter.io/flutter/material/TextField/autocorrect.html)
   final bool autocorrect;
@@ -1386,7 +1394,7 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.onEditingComplete](https://docs.flutter.io/flutter/material/TextField/onEditingComplete.html)
   final VoidCallback onEditingComplete;
 
-  /// Configures padding to edges surrounding a Scrollable when the Textfield scrolls into view.
+  /// Configures padding to edges surrounding a Scrollable when the Text field scrolls into view.
   ///
   /// Same as [TextField.scrollPadding](https://docs.flutter.io/flutter/material/TextField/scrollPadding.html)
   final EdgeInsets scrollPadding;
@@ -1403,31 +1411,31 @@ class TextFieldConfiguration<T> {
 
   /// Creates a TextFieldConfiguration
   const TextFieldConfiguration(
-      {this.decoration: const InputDecoration(),
+      {this.decoration = const InputDecoration(),
       this.style,
       this.controller,
       this.onChanged,
       this.onSubmitted,
-      this.obscureText: false,
-      this.maxLengthEnforced: true,
+      this.obscureText = false,
+      this.maxLengthEnforced = true,
       this.maxLength,
-      this.maxLines: 1,
-      this.autocorrect: true,
+      this.maxLines = 1,
+      this.autocorrect = true,
       this.inputFormatters,
-      this.autofocus: false,
-      this.keyboardType: TextInputType.text,
-      this.enabled: true,
-      this.textAlign: TextAlign.start,
+      this.autofocus = false,
+      this.keyboardType = TextInputType.text,
+      this.enabled = true,
+      this.textAlign = TextAlign.start,
       this.focusNode,
       this.cursorColor,
       this.cursorRadius,
       this.textInputAction,
-      this.textCapitalization: TextCapitalization.none,
-      this.cursorWidth: 2.0,
+      this.textCapitalization = TextCapitalization.none,
+      this.cursorWidth = 2.0,
       this.keyboardAppearance,
       this.onEditingComplete,
       this.textDirection,
-      this.scrollPadding: const EdgeInsets.all(20.0)});
+      this.scrollPadding = const EdgeInsets.all(20.0)});
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties

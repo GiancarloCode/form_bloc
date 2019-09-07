@@ -6,7 +6,7 @@ A Flutter package with flutter widgets that helps to create forms with [form_blo
 
 ---
 
-To see complex examples check the [example project](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example).
+To see complex examples check the [example project](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example/lib/forms).
 
 ___
 
@@ -27,12 +27,19 @@ Before to use this package you need to know the [core concepts of bloc package](
                 <a>
                     <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_2.gif" width="230"/>                   
                 </a>
-            </td>  
+            </td>        
+        </tr>
+        <tr>
             <td> 
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_3.gif" width="230"/>                   
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_3.gif" width="230"/>
                 </a>
-            </td>           
+            </td>    
+            <td>   
+                <a>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_4.gif" width="230"/>                   
+                </a>
+            </td>         
         </tr>
     </table>
 </div>
@@ -40,12 +47,13 @@ Before to use this package you need to know the [core concepts of bloc package](
 # Widgets
 * [TextFieldBlocBuilder`<Error>`](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/TextFieldBlocBuilder-class.html)
 * [DropdownFieldBlocBuilder`<Value>`](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/DropdownFieldBlocBuilder-class.html)
+* [RadioButtonGroupFieldBlocBuilder`<Value>`](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/RadioButtonGroupFieldBlocBuilder-class.html)
 * [CheckboxFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/CheckboxFieldBlocBuilder-class.html)
 * [FormBlocListener](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/FormBlocListener-class.html)
 
 
 ## Note
-FormBloc, TextFieldBloc, SelectFieldBloc, and BooleanFieldBloc are [blocs](https://pub.dev/documentation/bloc/latest/bloc/Bloc-class.html), so you can use `BlocBuilder` or `BlocListener` of [flutter_bloc](https://pub.dev/packages/flutter_bloc) for make any widget you want  compatible with any `FieldBloc`.
+`FormBloc`, `TextFieldBloc`, `SelectFieldBloc`, `FileFieldBloc` and `BooleanFieldBloc` are [blocs](https://pub.dev/documentation/bloc/latest/bloc/Bloc-class.html), so you can use `BlocBuilder` or `BlocListener` of [flutter_bloc](https://pub.dev/packages/flutter_bloc) for make any widget you want compatible with any `FieldBloc` or `FormBloc`.
 
 If you want me to add other widgets please let me know, or make a pull request.
 
@@ -55,9 +63,9 @@ If you want me to add other widgets please let me know, or make a pull request.
 
 ```yaml
 dependencies:
-  form_bloc: ^0.2.0
-  flutter_form_bloc: ^0.1.0
-  flutter_bloc: ^0.20.1
+  form_bloc: ^0.3.0
+  flutter_form_bloc: ^0.2.0
+  flutter_bloc: ^0.21.0
 ```
 
 ```dart
@@ -106,7 +114,7 @@ class SimpleLoginForm extends StatelessWidget {
               onSubmitting: (context, state) => LoadingDialog.show(context),
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
-                Navigator.of(context).pushReplacementNamed('/success');
+                Navigator.of(context).pushReplacementNamed('success');
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
@@ -227,7 +235,7 @@ class SimpleLoginFormBloc extends FormBloc<String, String> {
 
 ```
 
-## 4. Implement the method onSubmitting
+## 4. Implement onSubmitting method
 
 [onSubmitting](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html) return a `Stream<FormBlocState<SuccessResponse, FailureResponse>>` and will called when the form is submitting.
 
@@ -240,7 +248,7 @@ You can yield a new state using:
 * [currentState.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html)
 * [currentState.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoading.html)
 
-For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and  yield `currentState.toSuccess()`.
+For example `onSubmitting` of `SimpleLoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and  yield `currentState.toSuccess()`.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
@@ -305,7 +313,7 @@ In this example:
               onSubmitting: (context, state) => LoadingDialog.show(context),
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
-                Navigator.of(context).pushReplacementNamed('/success');
+                Navigator.of(context).pushReplacementNamed('success');
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
