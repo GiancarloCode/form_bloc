@@ -1,3 +1,7 @@
+# 0.2.1
+
+* Updated to form_bloc: ^0.3.1.
+
 # 0.2.0
 
 * Dependency and Documentation Updates.

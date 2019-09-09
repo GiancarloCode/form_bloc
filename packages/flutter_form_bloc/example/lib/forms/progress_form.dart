@@ -67,10 +67,15 @@ class ProgressForm extends StatelessWidget {
                                   'Can\'t close, please wait until form is submitted, or cancel the submission.');
                               return false;
                             },
-                            child: RaisedButton(
-                              onPressed: formBloc.cancelSubmission,
-                              child: Center(child: Text('CANCEL')),
-                            ),
+                            child: state.isCanceling
+                                ? RaisedButton(
+                                    onPressed: () => null,
+                                    child: Center(child: Text('CANCELLING')),
+                                  )
+                                : RaisedButton(
+                                    onPressed: formBloc.cancelSubmission,
+                                    child: Center(child: Text('CANCEL')),
+                                  ),
                           );
                         } else {
                           return RaisedButton(
