@@ -83,7 +83,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     } else if (event is LoadFormBloc) {
       yield* onLoading();
     } else if (event is CancelSubmissionFormBloc) {
-      yield* onCancelSubmission();
+      yield* _onCancelSubmissionFormBloc();
     } else if (event is UpdateFormBlocStateIsValid) {
       yield currentState.withIsValid(event.isValid);
     }
@@ -125,6 +125,20 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       yield FormBlocSubmissionFailed(currentState.isValid);
       // yield the previous state
       yield stateSnapshot;
+    }
+  }
+
+  Stream<FormBlocState<SuccessResponse, FailureResponse>>
+      _onCancelSubmissionFormBloc() async* {
+    final stateSnapshot = currentState;
+    if (stateSnapshot is FormBlocSubmitting<SuccessResponse, FailureResponse> &&
+        !stateSnapshot.isCanceling) {
+      yield FormBlocSubmitting(
+        isCanceling: true,
+        isValid: stateSnapshot.isValid,
+        submissionProgress: stateSnapshot.submissionProgress,
+      );
+      yield* onCancelSubmission();
     }
   }
 

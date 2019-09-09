@@ -33,7 +33,15 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   /// {@macro submitting_progress}
   FormBlocState<SuccessResponse, FailureResponse> toSubmitting(
           double progress) =>
-      FormBlocSubmitting(isValid: isValid, submissionProgress: progress);
+      FormBlocSubmitting(
+        isValid: isValid,
+        submissionProgress: progress,
+        isCanceling: runtimeType ==
+                _typeOf<FormBlocSubmitting<SuccessResponse, FailureResponse>>()
+            ? (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
+                .isCanceling
+            : false,
+      );
 
   FormBlocState<SuccessResponse, FailureResponse> toSuccess(
           [SuccessResponse successResponse]) =>
@@ -65,6 +73,9 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       return FormBlocSubmitting(
         isValid: isValid,
         submissionProgress: submissionProgress,
+        isCanceling:
+            (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
+                .isCanceling,
       );
     } else if (runtimeType ==
         _typeOf<FormBlocSuccess<SuccessResponse, FailureResponse>>()) {
@@ -146,15 +157,20 @@ class FormBlocLoaded<SuccessResponse, FailureResponse>
 class FormBlocSubmitting<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse>
     with EquatableMixin {
+  final bool isCanceling;
+
   /// {@template submitting_progress}
   /// [submissionProgress] must be greater than or equal to 0 and less than or equal to 1.
   ///
-  /// * If [submissionProgress] is less than 0, it will become 0.
-  /// * If [submissionProgress] is greater than 1, it will become 1
+  /// * If [submissionProgress] is less than 0, it will become 0.0
+  /// * If [submissionProgress] is greater than 1, it will become 1.0
   /// {@endtemplate}
-  FormBlocSubmitting(
-      {@required bool isValid, @required double submissionProgress})
-      : assert(submissionProgress != null),
+  FormBlocSubmitting({
+    @required bool isValid,
+    @required double submissionProgress,
+    @required this.isCanceling,
+  })  : assert(submissionProgress != null),
+        assert(isCanceling != null),
         super(
             isValid: isValid,
             submissionProgress: submissionProgress < 0
@@ -162,8 +178,18 @@ class FormBlocSubmitting<SuccessResponse, FailureResponse>
                 : submissionProgress > 1 ? 1.0 : submissionProgress);
 
   @override
-  String toString() =>
-      '$runtimeType { isValid: $isValid, progress: $submissionProgress }';
+  List get props => super.props..addAll(<dynamic>[isCanceling]);
+
+  @override
+  String toString() {
+    String _toString =
+        '$runtimeType { isValid: $isValid, progress: $submissionProgress';
+    if (isCanceling) {
+      _toString += ', isCancelling: $isCanceling';
+    }
+    _toString += ' }';
+    return _toString;
+  }
 }
 
 class FormBlocSuccess<SuccessResponse, FailureResponse>

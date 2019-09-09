@@ -1,3 +1,7 @@
+# 0.3.1
+
+* Add `isCanceling` property to `FormBlocSubmitting`.
+
 # 0.3.0
 
 * Dependency and Documentation Updates.

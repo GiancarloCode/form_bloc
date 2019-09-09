@@ -16,7 +16,7 @@ Before to use this package you need to know the [core concepts](https://felangel
 
 ```yaml
 dependencies:
-  form_bloc: ^0.3.0
+  form_bloc: ^0.3.1
 ```
 
 ```dart
