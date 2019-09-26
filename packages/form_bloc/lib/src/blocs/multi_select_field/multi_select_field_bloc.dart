@@ -6,6 +6,29 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
     MultiSelectFieldBlocState<Value>> {
   final List<Value> _items;
 
+  /// ### Properties:
+  ///
+  /// * [initialValue] : The initial value of the field,
+  /// by default is a empty list `[]`.
+  /// * [isRequired] : If is `true`,
+  /// [Validators.requiredMultiSelectFieldBloc] is added to [validators],
+  /// by default is `true`.
+  /// * [validators] : List of [Validator]s.
+  /// Each time the `value` will change,
+  /// if the [FormBloc] that use this [MultiSelectFieldBloc] has set
+  /// in the `super` constructor `autoValidate = true`,
+  /// the `value` is passed to each `validator`,
+  /// and if any `validator` returns a `String error`,
+  /// it will be added to [MultiSelectFieldBlocState.error].
+  /// Else if `autoValidate = false`, the value will be checked only
+  /// when you call [validate] which is called automatically when call [FormBloc.submit].
+  /// * [suggestions] : This need be a [Suggestions] and will be
+  /// added to [MultiSelectFieldBlocState.suggestions].
+  /// It is used to suggest values, usually from an API,
+  /// and any of those suggestions can be used to update
+  /// the value using [updateValue].
+  /// * [toStringName] : This will be added to [MultiSelectFieldBlocState.toStringName].
+  /// * [items] : The list of items that can be selected to update the value.
   MultiSelectFieldBloc({
     List<Value> initialValue = const [],
     bool isRequired = true,

@@ -5,9 +5,7 @@ part of '../field/field_bloc.dart';
 /// ​​of texts thanks to the methods
 /// [valueToInt] and [valueToDouble].
 class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
-  ///
   /// ### Properties:
-  ///
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty `String` ('').
@@ -15,11 +13,11 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   /// [Validators.requiredTextFieldBloc] is added to [validators],
   /// by default is `true`.
   /// * [validators] : List of [Validator]s.
-  /// Each time the [TextFieldBlocState.value] will change,
+  /// Each time the `value` will change,
   /// if the [FormBloc] that use this [TextFieldBloc] has set
   /// in the `super` constructor `autoValidate = true`,
   /// the `value` is passed to each `validator`,
-  ///  and if any `validator` returns a `String error`,
+  /// and if any `validator` returns a `String error`,
   /// it will be added to [TextFieldBlocState.error].
   /// Else if `autoValidate = false`, the value will be checked only
   /// when you call [validate] which is called automatically when call [FormBloc.submit].
@@ -28,7 +26,7 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
-  /// * [toStringName]: This will be added to [TextFieldBlocState.toStringName].
+  /// * [toStringName] : This will be added to [TextFieldBlocState.toStringName].
   TextFieldBloc({
     String initialValue = '',
     bool isRequired = true,

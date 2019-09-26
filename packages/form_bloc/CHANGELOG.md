@@ -1,3 +1,6 @@
+# 0.4.1
+* Documentation Updates.
+
 # 0.4.0
 * Documentation Updates.
 * Added Tests.

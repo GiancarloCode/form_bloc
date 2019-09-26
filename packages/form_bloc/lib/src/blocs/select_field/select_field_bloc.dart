@@ -6,6 +6,29 @@ class SelectFieldBloc<Value>
     extends FieldBlocBase<Value, Value, SelectFieldBlocState<Value>> {
   final List<Value> _items;
 
+  /// ### Properties:
+  ///
+  /// * [initialValue] : The initial value of the field,
+  /// by default is `null`.
+  /// * [isRequired] : If is `true`,
+  /// [Validators.requiredSelectFieldBloc] is added to [validators],
+  /// by default is `true`.
+  /// * [validators] : List of [Validator]s.
+  /// Each time the `value` will change,
+  /// if the [FormBloc] that use this [SelectFieldBloc] has set
+  /// in the `super` constructor `autoValidate = true`,
+  /// the `value` is passed to each `validator`,
+  /// and if any `validator` returns a `String error`,
+  /// it will be added to [SelectFieldBlocState.error].
+  /// Else if `autoValidate = false`, the value will be checked only
+  /// when you call [validate] which is called automatically when call [FormBloc.submit].
+  /// * [suggestions] : This need be a [Suggestions] and will be
+  /// added to [SelectFieldBlocState.suggestions].
+  /// It is used to suggest values, usually from an API,
+  /// and any of those suggestions can be used to update
+  /// the value using [updateValue].
+  /// * [toStringName] : This will be added to [SelectFieldBlocState.toStringName].
+  /// * [items] : The list of items that can be selected to update the value.
   SelectFieldBloc({
     Value initialValue,
     bool isRequired = true,
