@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'form_state.dart';
 
 abstract class FormBlocEvent extends Equatable {

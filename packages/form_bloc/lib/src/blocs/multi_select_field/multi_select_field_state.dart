@@ -4,11 +4,12 @@ import 'package:quiver/core.dart';
 import '../form/form_state.dart';
 import '../field/field_bloc.dart';
 
-class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
+class MultiSelectFieldBlocState<Value>
+    extends FieldBlocState<List<Value>, Value> {
   final List<Value> items;
 
-  SelectFieldBlocState({
-    @required Value value,
+  MultiSelectFieldBlocState({
+    @required List<Value> value,
     @required String error,
     @required bool isInitial,
     @required bool isRequired,
@@ -30,8 +31,8 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
         );
 
   @override
-  SelectFieldBlocState<Value> copyWith({
-    Optional<Value> value,
+  MultiSelectFieldBlocState<Value> copyWith({
+    Optional<List<Value>> value,
     Optional<String> error,
     bool isInitial,
     Optional<Suggestions<Value>> suggestions,
@@ -39,7 +40,7 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
     FormBlocState formBlocState,
     Optional<List<Value>> items,
   }) {
-    return SelectFieldBlocState(
+    return MultiSelectFieldBlocState(
       value: value == null ? this.value : value.orNull,
       error: error == null ? this.error : error.orNull,
       isInitial: isInitial ?? this.isInitial,

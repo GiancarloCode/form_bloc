@@ -1,47 +1,49 @@
 import 'package:meta/meta.dart';
-import 'package:form_bloc/form_bloc.dart';
+import 'package:quiver/core.dart';
 
-class BooleanFieldBlocState extends FieldBlocState<bool> {
-  final String _toStringName;
-  final bool isRequired;
+import '../form/form_state.dart';
+import '../field/field_bloc.dart';
 
-  @override
-  bool get isValid => !isRequired ? true : value;
-
+class BooleanFieldBlocState extends FieldBlocState<bool, bool> {
   BooleanFieldBlocState({
     @required bool value,
+    @required String error,
     @required bool isInitial,
+    @required bool isRequired,
+    @required Suggestions<bool> suggestions,
+    @required bool isValidated,
+    FormBlocState formBlocState,
     @required String toStringName,
-    @required this.isRequired,
-  })  : _toStringName = toStringName,
-        super(
+    List additionalProps = const <dynamic>[],
+  }) : super(
           value: value,
+          error: error,
           isInitial: isInitial,
-          additionalProps: <dynamic>[isRequired],
+          isRequired: isRequired,
+          suggestions: suggestions,
+          isValidated: isValidated,
+          formBlocState: formBlocState,
+          toStringName: toStringName,
         );
 
-  BooleanFieldBlocState copyWith({bool value, bool isInitial}) {
-    return BooleanFieldBlocState(
-      value: value ?? this.value,
-      isInitial: isInitial ?? this.isInitial,
-      toStringName: _toStringName,
-      isRequired: isRequired,
-    );
-  }
-
   @override
-  String toString() {
-    String _toString = '';
-    if (_toStringName != null) {
-      _toString += '${_toStringName}';
-    } else {
-      _toString += '${runtimeType}';
-    }
-    _toString += ' {';
-    if (isInitial) _toString += ' isInitial: $isInitial,';
-    _toString += ' value: $value';
-    _toString += ' }';
-
-    return _toString;
+  BooleanFieldBlocState copyWith({
+    Optional<bool> value,
+    Optional<String> error,
+    bool isInitial,
+    Optional<Suggestions<bool>> suggestions,
+    bool isValidated,
+    FormBlocState formBlocState,
+  }) {
+    return BooleanFieldBlocState(
+      value: value == null ? this.value : value.orNull ?? this.value,
+      error: error == null ? this.error : error.orNull,
+      isInitial: isInitial ?? this.isInitial,
+      isRequired: isRequired,
+      suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
+      isValidated: isValidated ?? this.isValidated,
+      formBlocState: formBlocState ?? this.formBlocState,
+      toStringName: toStringName,
+    );
   }
 }

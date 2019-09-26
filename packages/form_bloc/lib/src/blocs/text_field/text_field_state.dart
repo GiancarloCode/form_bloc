@@ -1,63 +1,59 @@
 import 'package:meta/meta.dart';
-import 'package:form_bloc/form_bloc.dart';
+import 'package:quiver/core.dart';
 
-class TextFieldBlocState<Error> extends FieldBlocState<String> {
-  final String value;
-  final Error error;
-  final Suggestions suggestions;
-  final String _toStringName;
+import '../form/form_state.dart';
+import '../field/field_bloc.dart';
 
-  bool get hasError => error != null;
-
-  bool get isValid => !hasError;
-
+class TextFieldBlocState extends FieldBlocState<String, String> {
   TextFieldBlocState({
-    @required this.value,
-    @required String toStringName,
+    @required String value,
+    @required String error,
     @required bool isInitial,
-    @required this.error,
-    @required this.suggestions,
-  })  : _toStringName = toStringName,
-        super(
-            value: value,
-            isInitial: isInitial,
-            additionalProps: <dynamic>[suggestions, error]);
+    @required bool isRequired,
+    @required Suggestions<String> suggestions,
+    @required bool isValidated,
+    FormBlocState formBlocState,
+    @required String toStringName,
+    List additionalProps = const <dynamic>[],
+  }) : super(
+          value: value,
+          error: error,
+          isInitial: isInitial,
+          isRequired: isRequired,
+          suggestions: suggestions,
+          isValidated: isValidated,
+          formBlocState: formBlocState,
+          toStringName: toStringName,
+        );
 
-  TextFieldBlocState<Error> copyWith(
-      {String value, bool isInitial, Suggestions suggestions}) {
-    return TextFieldBlocState(
-      error: error,
-      value: value ?? this.value,
-      isInitial: isInitial ?? this.isInitial,
-      toStringName: _toStringName,
-      suggestions: suggestions ?? this.suggestions,
-    );
-  }
+  /// Parse the [value] to [int].
+  /// if the value is an [int] returns an [int],
+  /// else returns `null`.
+  int get valueToInt => int.tryParse(value);
 
-  TextFieldBlocState<Error> withError(Error error) {
-    return TextFieldBlocState(
-      error: error,
-      value: value,
-      isInitial: isInitial,
-      toStringName: _toStringName,
-      suggestions: suggestions,
-    );
-  }
+  /// Parse the [value] to [double].
+  /// if the value is a [double] returns a [double],
+  /// else returns `null`.
+  double get valueToDouble => double.tryParse(value);
 
   @override
-  String toString() {
-    String _toString = '';
-    if (_toStringName != null) {
-      _toString += '${_toStringName}';
-    } else {
-      _toString += '${runtimeType}';
-    }
-    _toString += ' {';
-    if (isInitial) _toString += ' isInitial: $isInitial,';
-    if (hasError) _toString += ' error: $error,';
-    _toString += ' value: $value';
-    _toString += ' }';
-
-    return _toString;
+  TextFieldBlocState copyWith({
+    Optional<String> value,
+    Optional<String> error,
+    bool isInitial,
+    Optional<Suggestions<String>> suggestions,
+    bool isValidated,
+    FormBlocState formBlocState,
+  }) {
+    return TextFieldBlocState(
+      value: value == null ? this.value : value.orNull,
+      error: error == null ? this.error : error.orNull,
+      isInitial: isInitial ?? this.isInitial,
+      isRequired: isRequired,
+      suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
+      isValidated: isValidated ?? this.isValidated,
+      formBlocState: formBlocState ?? this.formBlocState,
+      toStringName: toStringName,
+    );
   }
 }

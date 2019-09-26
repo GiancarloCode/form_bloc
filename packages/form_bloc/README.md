@@ -1,11 +1,11 @@
 # form_bloc
 [![Pub](https://img.shields.io/pub/v/form_bloc.svg)](https://pub.dev/packages/form_bloc)
 
-A dart package that helps to create forms with BLoC pattern using [bloc package](https://github.com/felangel/bloc/tree/master/packages/bloc) without writing a lot of boilerplate code.
+Easy Form State Management using BLoC pattern. Separate the Form State and Business Logic from the User Interface. Validation, Progress, Failures, Successes, and more.
 
 ---
 
-To see complex examples check [flutter_form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/).
+To see complex examples, check out [flutter_form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/).
 
 ___
 Before to use this package you need to know the [core concepts](https://felangel.github.io/bloc/#/coreconcepts) of bloc package.
@@ -16,34 +16,40 @@ Before to use this package you need to know the [core concepts](https://felangel
 
 ```yaml
 dependencies:
-  form_bloc: ^0.3.1
+  form_bloc: ^0.4.0
 ```
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
 
   @override
   List<FieldBloc> get fieldBlocs => [emailField, passwordField];
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    // Login logic...
-    await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess();
+    try {
+      _userRepository.login(
+        email: emailField.value,
+        password: passwordField.value,
+      );
+      yield currentState.toSuccess();
+    } catch (e) {
+      yield currentState.toFailure();
+    }
   }
 }
 
 ```
 
-# Basic usage
+# Basic use
 
 ## 1. Import it
 ```dart
@@ -72,29 +78,43 @@ You need to create field blocs, and these need to be final.
 
 You can create:
 
-* [TextFieldBloc`<Error>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/TextFieldBloc-class.html)
-* [SelectFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/SelectFieldBloc-class.html)
-* [BooleanFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/BooleanFieldBloc-class.html)
-* [FileFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/FileFieldBloc-class.html)
+* [InputFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/InputFieldBloc-class.html).
+* [TextFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/TextFieldBloc-class.html).
+* [BooleanFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/BooleanFieldBloc-class.html).
+* [SelectFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/SelectFieldBloc-class.html).
+* [MultiSelectFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/MultiSelectFieldBloc-class.html).
 
-For example the `LoginFormBloc` will have two `TextFieldBloc<String>`, so the `Error` type will be `String`, and the validators must return a error of `String` type.
+For example the `LoginFormBloc` will have two `TextFieldBloc`.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
-
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
 }
 
 ```
 
-## 3. Implement the get method fieldBlocs
+
+## 3. Add Services/Repositories
+In this example we need a `UserRepository` for make the login.
+
+```dart
+import 'package:form_bloc/form_bloc.dart';
+
+class LoginFormBloc extends FormBloc<String, String> {
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
+}
+
+```
+
+## 4. Implement the get method fieldBlocs
 You need to override the get method [fieldBlocs](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/fieldBlocs.html) and return a list with all `FieldBlocs`.
 
 
@@ -105,57 +125,67 @@ For example the `LoginFormBloc` need to return a List with `emailField` and `pas
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
 
   @override
   List<FieldBloc> get fieldBlocs => [emailField, passwordField];
-
 }
 
 ```
 
-## 4. Implement onSubmitting method
+## 5. Implement onSubmitting method
 
-[onSubmitting](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html) return a `Stream<FormBlocState<SuccessResponse, FailureResponse>>` and will called when the form is submitting.
+[onSubmitting](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html) returns a `Stream<FormBlocState<SuccessResponse, FailureResponse>>`.
+
+This method is called when you call `loginFormBloc.submit()` and `FormBlocState.isValid` is `true`, so each field bloc has a valid value.
+
+You can get the current `value` of each field bloc calling `emailField.value` or `passwordField.value`.
 
 You must call all your business logic of this form here, and `yield` the corresponding state.
 
 You can yield a new state using:  
 
 
-* [currentState.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html)
-* [currentState.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html)
-* [currentState.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoading.html)
+* [currentState.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html).
+* [currentState.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toSuccess.html).
+* [currentState.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoaded.html).
 
-For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and  yield `currentState.toSuccess()`.
+See other states [here](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState-class.html#instance-methods).
+
+For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and yield `currentState.toSuccess()` if the `_userRepository.login` method not throw any exception, and yield `currentState.toFailure()` if throw a exception.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
 
   @override
   List<FieldBloc> get fieldBlocs => [emailField, passwordField];
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    // Login logic...
-    await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess();
+    try {
+      _userRepository.login(
+        email: emailField.value,
+        password: passwordField.value,
+      );
+      yield currentState.toSuccess();
+    } catch (e) {
+      yield currentState.toFailure();
+    }
   }
 }
-
 ```
 
 # Credits
@@ -164,3 +194,4 @@ This package uses the following packages:
 * [bloc](https://pub.dev/packages/bloc)
 * [rxdart](https://pub.dev/packages/rxdart)
 * [equatable](https://pub.dev/packages/equatable)
+* [quiver](https://pub.dev/packages/quiver)

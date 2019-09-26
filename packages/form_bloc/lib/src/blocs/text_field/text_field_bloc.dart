@@ -1,106 +1,77 @@
-import 'package:form_bloc/form_bloc.dart';
-import 'package:form_bloc/src/blocs/text_field/text_field_event.dart';
-import 'package:form_bloc/src/blocs/text_field/text_field_state.dart';
-import 'package:rxdart/subjects.dart';
+part of '../field/field_bloc.dart';
 
-export 'package:form_bloc/src/blocs/text_field/text_field_event.dart';
-export 'package:form_bloc/src/blocs/text_field/text_field_state.dart';
-
-/// return `null` if not have error
-typedef Validator<Error, Value> = Error Function(Value value);
-
-typedef Suggestions = Future<List<String>> Function(String value);
-
-class TextFieldBloc<Error>
-    extends FieldBloc<String, TextFieldEvent, TextFieldBlocState<Error>> {
-  final String _toStringName;
-  final List<Validator<Error, String>> _validators;
-  final String _initialValue;
-  Suggestions _suggestions;
-  final PublishSubject<String> _onSuggestRemovedController = PublishSubject();
-
+/// A `FieldBloc` used for `String` type, but generally
+/// it is also used to obtain `int` and `double` values
+/// ​​of texts thanks to the methods
+/// [valueToInt] and [valueToDouble].
+class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
+  ///
+  /// ### Properties:
+  ///
+  ///
+  /// * [initialValue] : The initial value of the field,
+  /// by default is a empty `String` ('').
+  /// * [isRequired] : If is `true`,
+  /// [Validators.requiredTextFieldBloc] is added to [validators],
+  /// by default is `true`.
+  /// * [validators] : List of [Validator]s.
+  /// Each time the [TextFieldBlocState.value] will change,
+  /// if the [FormBloc] that use this [TextFieldBloc] has set
+  /// in the `super` constructor `autoValidate = true`,
+  /// the `value` is passed to each `validator`,
+  ///  and if any `validator` returns a `String error`,
+  /// it will be added to [TextFieldBlocState.error].
+  /// Else if `autoValidate = false`, the value will be checked only
+  /// when you call [validate] which is called automatically when call [FormBloc.submit].
+  /// * [suggestions] : This need be a [Suggestions] and will be
+  /// added to [TextFieldBlocState.suggestions].
+  /// It is used to suggest values, usually from an API,
+  /// and any of those suggestions can be used to update
+  /// the value using [updateValue].
+  /// * [toStringName]: This will be added to [TextFieldBlocState.toStringName].
   TextFieldBloc({
+    String initialValue = '',
+    bool isRequired = true,
+    List<Validator<String>> validators,
+    Suggestions<String> suggestions,
     String toStringName,
-    List<Validator<Error, String>> validators,
-    String initialValue,
-    Suggestions suggestions,
-  })  : _toStringName = toStringName,
-        _validators = validators ?? [],
-        _initialValue = initialValue ?? '',
-        _suggestions = suggestions;
+  })  : assert(initialValue != null),
+        assert(isRequired != null),
+        super(
+          initialValue,
+          isRequired,
+          Validators.requiredTextFieldBloc,
+          validators,
+          suggestions,
+          toStringName,
+        );
 
   @override
-  TextFieldBlocState<Error> get initialState => TextFieldBlocState<Error>(
-        toStringName: _toStringName,
-        error: _getError(_initialValue),
-        isInitial: _initialValue.isEmpty,
+  TextFieldBlocState get initialState => TextFieldBlocState(
         value: _initialValue,
+        error: _getInitialStateError(),
+        isInitial: true,
+        isRequired: _isRequired,
         suggestions: _suggestions,
+        isValidated: _isValidated,
+        toStringName: _toStringName,
       );
 
-  Error _getError(String value) {
-    Error error;
-    for (var validator in _validators) {
-      error = validator(value);
-      if (error != null) return error;
-    }
+  /// Return the parsed `value` to `int` of the current state.
+  ///
+  /// if the `value` is an `int` returns the parsed `value`,
+  /// else returns `null`.
+  int get valueToInt => currentState.valueToInt;
 
-    return error;
-  }
+  /// Return the parsed `value` to `double` of the current state.
+  ///
+  /// if the `value` is a `double` returns the parsed `value`,
+  /// else returns `null`.
+  double get valueToDouble => currentState.valueToDouble;
 
-  Stream<String> get onSuggestRemoved => _onSuggestRemovedController.stream;
-
+  /// Set the `value` to `''` of the current state.
+  ///
+  /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void clear() => dispatch(UpdateTextFieldBlocInitialValue(''));
-
-  /// Revalidate the field
-  void revalidate() => dispatch(RevalidateTextField());
-
-  @override
-  void updateValue(String value) => dispatch(UpdateTextFieldBlocValue(value));
-
-  @override
-  void updateInitialValue(String value) =>
-      dispatch(UpdateTextFieldBlocInitialValue(value));
-
-  void addValidators(List<Validator<Error, String>> validators) =>
-      dispatch(AddValidators<Error>(validators));
-
-  void updateSuggestions(Suggestions suggestions) =>
-      dispatch(UpdateSuggestions(suggestions));
-
-  @override
-  void dispose() {
-    _onSuggestRemovedController.close();
-    super.dispose();
-  }
-
-  @override
-  Stream<TextFieldBlocState<Error>> mapEventToState(
-      TextFieldEvent event) async* {
-    if (event is UpdateTextFieldBlocValue) {
-      yield currentState
-          .copyWith(value: event.value, isInitial: false)
-          .withError(_getError(event.value));
-    } else if (event is AddValidators<Error>) {
-      if (event.validators != null) _validators.addAll(event.validators);
-    } else if (event is UpdateSuggestions) {
-      if (event.suggestions != null) {
-        _suggestions = event.suggestions;
-        yield currentState.copyWith(suggestions: event.suggestions);
-      }
-    } else if (event is UpdateTextFieldBlocInitialValue) {
-      if (event.value != null) {
-        yield currentState
-            .copyWith(isInitial: true, value: event.value)
-            .withError(_getError(event.value));
-      }
-    } else if (event is RemoveSuggestion) {
-      if (event.suggestion != null) {
-        _onSuggestRemovedController.add(event.suggestion);
-      }
-    } else if (event is RevalidateTextField) {
-      yield currentState.withError(_getError(currentState.value));
-    }
-  }
+  void clear() => dispatch(UpdateFieldBlocValue(''));
 }
