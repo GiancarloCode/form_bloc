@@ -19,6 +19,7 @@ class Notifications {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         key: key,
+        backgroundColor: Colors.green[300],
         content: Text('${message ?? 'Success.'}'),
       ),
     );

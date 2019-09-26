@@ -90,11 +90,9 @@ class _ComplexAsyncPrefilledFormState extends State<ComplexAsyncPrefilledForm> {
                     return ListView(
                       physics: ClampingScrollPhysics(),
                       children: <Widget>[
-                        TextFieldBlocBuilder<String>(
+                        TextFieldBlocBuilder(
                           textFieldBloc: formBloc.prefilledTextField,
-                          formBloc: formBloc,
                           nextFocusNode: _focusNodes[0],
-                          errorBuilder: (context, error) => error,
                           decoration: InputDecoration(
                             labelText: 'Prefilled text field',
                             prefixIcon: Icon(Icons.sentiment_very_satisfied),
@@ -102,7 +100,6 @@ class _ComplexAsyncPrefilledFormState extends State<ComplexAsyncPrefilledForm> {
                         ),
                         DropdownFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.prefilledSelectField,
-                          formBloc: formBloc,
                           focusNode: _focusNodes[0],
                           millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
                               320,
@@ -114,7 +111,6 @@ class _ComplexAsyncPrefilledFormState extends State<ComplexAsyncPrefilledForm> {
                         ),
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.prefilledBooleanField,
-                          formBloc: formBloc,
                           body: Text('Prefilled boolean field.'),
                         ),
                         Padding(

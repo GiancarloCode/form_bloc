@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -6,7 +8,6 @@ import 'package:flutter_form_bloc_example/widgets/liquid_linear_progress_indicat
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:image_picker_modern/image_picker_modern.dart';
 
 class ProgressForm extends StatelessWidget {
   @override
@@ -46,15 +47,14 @@ class ProgressForm extends StatelessWidget {
                     formBloc: formBloc,
                     fileFieldBloc: formBloc.imageField,
                   ),
-                  TextFieldBlocBuilder<String>(
+                  TextFieldBlocBuilder(
                     padding: EdgeInsets.fromLTRB(8, 24, 8, 12),
                     textFieldBloc: formBloc.nameField,
-                    formBloc: formBloc,
-                    errorBuilder: (context, error) => error,
                     decoration: InputDecoration(
                       labelText: 'Name',
                       prefixIcon: Icon(Icons.account_circle),
                     ),
+                    enableOnlyWhenFormBlocCanSubmit: true,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -70,7 +70,7 @@ class ProgressForm extends StatelessWidget {
                             child: state.isCanceling
                                 ? RaisedButton(
                                     onPressed: () => null,
-                                    child: Center(child: Text('CANCELLING')),
+                                    child: Center(child: Text('CANCELING')),
                                   )
                                 : RaisedButton(
                                     onPressed: formBloc.cancelSubmission,
@@ -98,7 +98,7 @@ class ProgressForm extends StatelessWidget {
 
 class ImageFieldBlocBuilder extends StatelessWidget {
   final FormBloc formBloc;
-  final FileFieldBloc fileFieldBloc;
+  final InputFieldBloc<File> fileFieldBloc;
   const ImageFieldBlocBuilder({
     Key key,
     @required this.formBloc,
@@ -112,7 +112,7 @@ class ImageFieldBlocBuilder extends StatelessWidget {
     return BlocBuilder<FormBloc, FormBlocState>(
       bloc: formBloc,
       builder: (context, formState) {
-        return BlocBuilder<FileFieldBloc, FileFieldBlocState>(
+        return BlocBuilder<InputFieldBloc<File>, InputFieldBlocState<File>>(
           bloc: fileFieldBloc,
           builder: (context, fieldState) {
             return Column(
@@ -175,7 +175,7 @@ class ImageFieldBlocBuilder extends StatelessWidget {
                 ),
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
-                  height: !fieldState.isInitial && !fieldState.isValid ? 30 : 0,
+                  height: fieldState.canShowError ? 30 : 0,
                   child: SingleChildScrollView(
                     physics: ClampingScrollPhysics(),
                     child: Column(

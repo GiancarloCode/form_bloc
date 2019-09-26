@@ -4,62 +4,69 @@ import 'package:flutter/material.dart'
     hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/dropdown.dart';
-import 'package:flutter_form_bloc/src/utils.dart';
+import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
+/// A material design dropdown.
 class DropdownFieldBlocBuilder<Value> extends StatefulWidget {
   DropdownFieldBlocBuilder({
     Key key,
     @required this.selectFieldBloc,
     @required this.itemBuilder,
-    this.formBloc,
-    this.padding = const EdgeInsets.all(8),
+    this.enableOnlyWhenFormBlocCanSubmit = false,
+    this.isEnabled = true,
+    this.padding,
     this.decoration = const InputDecoration(),
-    this.requiredError,
+    this.errorBuilder,
     this.showEmptyItem = true,
     this.millisecondsForShowDropdownItemsWhenKeyboardIsOpen = 600,
     this.nextFocusNode,
     this.focusNode,
-  })  : assert(padding != null),
+  })  : assert(selectFieldBloc != null),
+        assert(enableOnlyWhenFormBlocCanSubmit != null),
+        assert(isEnabled != null),
         assert(decoration != null),
-        assert(selectFieldBloc != null),
         assert(showEmptyItem != null),
         assert(millisecondsForShowDropdownItemsWhenKeyboardIsOpen != null),
         super(key: key);
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final SelectFieldBloc<Value> selectFieldBloc;
 
-  final ItemBuilder<Value> itemBuilder;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
+  final FieldBlocErrorBuilder errorBuilder;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
+  final FieldBlocStringItemBuilder<Value> itemBuilder;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
+  final bool enableOnlyWhenFormBlocCanSubmit;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
+  final bool isEnabled;
+
+  /// If `true` an empty item is showed at the top of the dropdown items,
+  /// and can be used for deselect.
   final bool showEmptyItem;
 
-  /// Default 600
+  /// The milliseconds for show the dropdown items when the keyboard is open
+  /// and closes. By default is 600 milliseconds.
   final int millisecondsForShowDropdownItemsWhenKeyboardIsOpen;
 
-  /// Error when [selectFieldBloc] is required
-  /// and the value is null
-  final String requiredError;
-
-  /// This widget will be enable only when the [FormBloc] state is
-  /// [FormBlocLoaded] or [FormBlocFailure]
-  final FormBloc formBloc;
-
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry padding;
 
-  /// When select an item, this will call
-  /// [nextFocusNode.requestFocus()]
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
   final FocusNode nextFocusNode;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
   final FocusNode focusNode;
 
-  /// The decoration to show around the text field.
-  ///
-  /// By default, draws a horizontal line under the text field but can be
-  /// configured to show an icon, label, hint text, and error text.
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
 
   _DropdownFieldBlocBuilderState<Value> createState() =>
@@ -120,16 +127,93 @@ class _DropdownFieldBlocBuilderState<Value>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.formBloc != null) {
-      return BlocBuilder<FormBloc, FormBlocState>(
-        bloc: widget.formBloc,
-        builder: (context, formState) {
-          return _buildChild(formState.canSubmit);
+    return Focus(
+      focusNode: _effectiveFocusNode,
+      child: BlocBuilder<SelectFieldBloc<Value>, SelectFieldBlocState<Value>>(
+        bloc: widget.selectFieldBloc,
+        builder: (context, fieldState) {
+          final isEnabled = fieldBlocIsEnabled(
+            isEnabled: widget.isEnabled,
+            enableOnlyWhenFormBlocCanSubmit:
+                widget.enableOnlyWhenFormBlocCanSubmit,
+            fieldBlocState: fieldState,
+          );
+
+          final decoration = _buildDecoration(context, fieldState, isEnabled);
+          String text = fieldState.value != null
+              ? widget.itemBuilder(context, fieldState.value)
+              : '';
+          return DefaultFieldBlocBuilderPadding(
+            padding: widget.padding,
+            child: Stack(
+              children: <Widget>[
+                DropdownButtonHideUnderline(
+                  child: Container(
+                    height: _dropdownHeight,
+                    child: DropdownButton<Value>(
+                      callOnPressed: _onPressedController.stream,
+                      value: fieldState.value,
+                      disabledHint: fieldState.value != null
+                          ? widget.itemBuilder(context, fieldState.value)
+                          : widget.decoration.hintText != null
+                              ? widget.decoration.hintText
+                              : null,
+                      onChanged: fieldBlocBuilderOnChange<Value>(
+                        isEnabled: isEnabled,
+                        nextFocusNode: widget.nextFocusNode,
+                        onChanged: (value) {
+                          widget.selectFieldBloc.updateValue(value);
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        },
+                      ),
+                      items: fieldState.items.isEmpty
+                          ? null
+                          : _buildItems(fieldState.items),
+                    ),
+                  ),
+                ),
+                InputDecorator(
+                  decoration: decoration,
+                  isEmpty:
+                      fieldState.value == null && decoration.hintText == null,
+                  child: Builder(
+                    builder: (context) {
+                      final height = InputDecorator.containerOf(context)
+                          ?.constraints
+                          ?.maxHeight;
+
+                      if (height == null ||
+                          height != _dropdownHeight ||
+                          height == 0) {
+                        _dropdownHeightController.add(height);
+                      }
+
+                      return Text(
+                        text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        style: Style.getDefaultTextStyle(
+                          context: context,
+                          isEnabled: isEnabled,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                InkWell(
+                  onTap: isEnabled ? _onDropdownPressed : null,
+                  onLongPress: isEnabled ? _onDropdownPressed : null,
+                  customBorder: decoration.border ??
+                      Theme.of(context).inputDecorationTheme.border,
+                  child: Container(height: _dropdownHeight),
+                ),
+              ],
+            ),
+          );
         },
-      );
-    } else {
-      return _buildChild(true);
-    }
+      ),
+    );
   }
 
   FocusNode get _effectiveFocusNode => widget.focusNode ?? _focusNode;
@@ -144,11 +228,12 @@ class _DropdownFieldBlocBuilderState<Value>
     Iterable<Value> items,
   ) {
     final style = Theme.of(context).textTheme.subhead.copyWith(
-        color: ThemeData.estimateBrightnessForColor(
-                    Theme.of(context).canvasColor) ==
-                Brightness.dark
-            ? Colors.white
-            : Colors.grey[800]);
+          color: ThemeData.estimateBrightnessForColor(
+                      Theme.of(context).canvasColor) ==
+                  Brightness.dark
+              ? Colors.white
+              : Colors.grey[800],
+        );
 
     List<DropdownMenuItem<Value>> menuItems;
 
@@ -191,13 +276,8 @@ class _DropdownFieldBlocBuilderState<Value>
   }
 
   InputDecoration _buildDecoration(
-      SelectFieldBlocState<Value> state, bool enabled) {
+      BuildContext context, SelectFieldBlocState<Value> state, bool isEnabled) {
     InputDecoration decoration = widget.decoration;
-
-    if (!state.isValid && !state.isInitial) {
-      decoration = decoration.copyWith(
-          errorText: widget.requiredError ?? 'Please select an option.');
-    }
 
     if (decoration.contentPadding == null) {
       decoration = decoration.copyWith(
@@ -214,96 +294,14 @@ class _DropdownFieldBlocBuilderState<Value>
     }
 
     decoration = decoration.copyWith(
-      enabled: enabled,
+      enabled: isEnabled,
+      errorText: Style.getErrorText(
+        context: context,
+        errorBuilder: widget.errorBuilder,
+        fieldBlocState: state,
+      ),
     );
 
     return decoration;
-  }
-
-  Widget _buildChild(bool isEnable) {
-    return Focus(
-      focusNode: _effectiveFocusNode,
-      child: BlocBuilder<SelectFieldBloc<Value>, SelectFieldBlocState<Value>>(
-        bloc: widget.selectFieldBloc,
-        builder: (context, fieldState) {
-          final decoration = _buildDecoration(fieldState, isEnable);
-          String text = fieldState.value != null
-              ? widget.itemBuilder(context, fieldState.value)
-              : '';
-          return Padding(
-            padding: widget.padding,
-            child: Stack(
-              children: <Widget>[
-                DropdownButtonHideUnderline(
-                  child: Container(
-                    height: _dropdownHeight,
-                    child: DropdownButton<Value>(
-                        callOnPressed: _onPressedController.stream,
-                        value: fieldState.value,
-                        disabledHint: fieldState.value != null
-                            ? widget.itemBuilder(context, fieldState.value)
-                            : widget.decoration.hintText != null
-                                ? widget.decoration.hintText
-                                : null,
-                        onChanged: isEnable
-                            ? (value) {
-                                widget.selectFieldBloc.updateValue(value);
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
-                                if (widget.nextFocusNode != null) {
-                                  widget.nextFocusNode.requestFocus();
-                                }
-                              }
-                            : null,
-                        items: fieldState.items.isEmpty
-                            ? null
-                            : _buildItems(fieldState.items)),
-                  ),
-                ),
-                InputDecorator(
-                  decoration: decoration,
-                  isEmpty:
-                      fieldState.value == null && decoration.hintText == null,
-                  child: Builder(
-                    builder: (context) {
-                      //  remove when `maxLines` > 1
-                      if (/* _dropdownHeight == 0 */ true) {
-                        final height = InputDecorator.containerOf(context)
-                            ?.constraints
-                            ?.maxHeight;
-
-                        if (height == null ||
-                            height != _dropdownHeight ||
-                            height == 0) {
-                          _dropdownHeightController.add(height);
-                        }
-                      }
-
-                      return Text(
-                        text,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: isEnable
-                            ? Theme.of(context).textTheme.subhead
-                            : Theme.of(context).textTheme.subhead.copyWith(
-                                color: Theme.of(context).disabledColor),
-                      );
-                    },
-                  ),
-                ),
-                InkWell(
-                  onTap: isEnable ? _onDropdownPressed : null,
-                  onLongPress: isEnable ? _onDropdownPressed : null,
-                  customBorder: decoration.border ??
-                      Theme.of(context).inputDecorationTheme.border,
-                  child: Container(height: _dropdownHeight),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
   }
 }

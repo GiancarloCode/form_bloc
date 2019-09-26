@@ -48,11 +48,9 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
               child: ListView(
                 physics: ClampingScrollPhysics(),
                 children: <Widget>[
-                  TextFieldBlocBuilder<String>(
+                  TextFieldBlocBuilder(
                     textFieldBloc: formBloc.emailField,
-                    formBloc: formBloc,
                     nextFocusNode: _focusNodes[0],
-                    errorBuilder: (context, error) => error,
                     keyboardType: TextInputType.emailAddress,
                     getImmediateSuggestions: true,
                     removeSuggestionOnLongPress: true,
@@ -61,12 +59,10 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
                       prefixIcon: Icon(Icons.email),
                     ),
                   ),
-                  TextFieldBlocBuilder<String>(
+                  TextFieldBlocBuilder(
                     textFieldBloc: formBloc.passwordField,
-                    formBloc: formBloc,
                     focusNode: _focusNodes[0],
                     nextFocusNode: _focusNodes[1],
-                    errorBuilder: (context, error) => error,
                     suffixButton: SuffixButton.obscureText,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -75,7 +71,6 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
                   ),
                   DropdownFieldBlocBuilder<LoginResponse>(
                     selectFieldBloc: formBloc.responseField,
-                    formBloc: formBloc,
                     focusNode: _focusNodes[1],
                     millisecondsForShowDropdownItemsWhenKeyboardIsOpen: 320,
                     decoration: InputDecoration(

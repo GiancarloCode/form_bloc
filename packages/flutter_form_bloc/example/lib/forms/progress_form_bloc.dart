@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProgressFormBloc extends FormBloc<String, String> {
-  final imageField = FileFieldBloc();
-  final nameField = TextFieldBloc<String>(initialValue: '🔥 GiancarloCode 🔥');
+  final imageField = InputFieldBloc<File>();
+  final nameField = TextFieldBloc(initialValue: '🔥 GiancarloCode 🔥');
 
   List<FakeUpload> _fakeUploads = List();
   List<StreamSubscription<double>> _fakeUploadProgressSubscriptions = List();
@@ -22,8 +23,8 @@ class ProgressFormBloc extends FormBloc<String, String> {
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    // for get the image
-    // final File image = imageField.currentState.value;
+    // Get the field value:
+    print(imageField.value);
 
     final int _currentUploadIndex = _fakeUploads.length;
     _fakeUploads.add(FakeUpload());

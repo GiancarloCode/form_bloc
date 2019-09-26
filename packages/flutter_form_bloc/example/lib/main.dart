@@ -1,8 +1,8 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_bloc_example/bloc_delegate.dart';
 import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/complex_login_form.dart';
+import 'package:flutter_form_bloc_example/forms/form_fields_example_form.dart';
+import 'package:flutter_form_bloc_example/forms/not_auto_validation_form.dart';
 import 'package:flutter_form_bloc_example/forms/progress_form.dart';
 import 'package:flutter_form_bloc_example/forms/simple_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/simple_login_form.dart';
@@ -11,8 +11,6 @@ import 'package:flutter_form_bloc_example/styles/themes.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 
 void main() {
-  BlocSupervisor.delegate = MyBlocDelegate();
-
   runApp(App());
 }
 
@@ -27,7 +25,6 @@ class App extends StatelessWidget {
       initialRoute: 'home',
       routes: {
         'home': (context) => HomeScreen(),
-        'success': (context) => SuccessScreen(),
         'success': (context) => SuccessScreen(),
       },
     );
@@ -111,6 +108,16 @@ class Form {
       'Simple register',
       'Focus nodes, complex validators, text fields, check box field, and success response.',
       SimpleRegisterForm(),
+    ),
+    Form(
+      'Form Fields Example',
+      'TextField, Dropdown, Checkbox, RadioButtonGroup, CheckboxGroup',
+      FormFieldsExampleForm(),
+    ),
+    Form(
+      'Not Auto Validation Example',
+      'Form without auto validation.',
+      NotAutoValidationForm(),
     ),
     Form(
       'Simple Async prefilled form',

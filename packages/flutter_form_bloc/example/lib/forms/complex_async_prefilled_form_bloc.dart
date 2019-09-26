@@ -1,9 +1,7 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
-  final prefilledTextField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+  final prefilledTextField = TextFieldBloc();
   final prefilledSelectField = SelectFieldBloc<String>();
   final prefilledBooleanField = BooleanFieldBloc();
 
@@ -25,6 +23,11 @@ class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
+    // Get the fields values:
+    print(prefilledTextField.value);
+    print(prefilledSelectField.value);
+    print(prefilledBooleanField.value);
+
     await Future<void>.delayed(Duration(seconds: 2));
     yield currentState.toSuccess();
   }

@@ -1,8 +1,10 @@
 import 'package:form_bloc/form_bloc.dart';
 
-class SimpleLoginFormBloc extends FormBloc<String, String> {
+class NotAutoValidationFormBloc extends FormBloc<String, String> {
   final emailField = TextFieldBloc(validators: [Validators.email]);
   final passwordField = TextFieldBloc();
+
+  NotAutoValidationFormBloc() : super(autoValidate: false);
 
   @override
   List<FieldBloc> get fieldBlocs => [

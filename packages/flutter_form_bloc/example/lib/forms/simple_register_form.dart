@@ -43,10 +43,8 @@ class _SimpleRegisterFormState extends State<SimpleRegisterForm> {
         child: ListView(
           physics: ClampingScrollPhysics(),
           children: <Widget>[
-            TextFieldBlocBuilder<String>(
+            TextFieldBlocBuilder(
               textFieldBloc: _formBloc.emailField,
-              formBloc: _formBloc,
-              errorBuilder: (context, error) => error,
               autofocus: true,
               nextFocusNode: _focusNodes[0],
               keyboardType: TextInputType.emailAddress,
@@ -55,10 +53,8 @@ class _SimpleRegisterFormState extends State<SimpleRegisterForm> {
                 prefixIcon: Icon(Icons.email),
               ),
             ),
-            TextFieldBlocBuilder<String>(
+            TextFieldBlocBuilder(
               textFieldBloc: _formBloc.passwordField,
-              formBloc: _formBloc,
-              errorBuilder: (context, error) => error,
               focusNode: _focusNodes[0],
               nextFocusNode: _focusNodes[1],
               suffixButton: SuffixButton.obscureText,
@@ -67,10 +63,8 @@ class _SimpleRegisterFormState extends State<SimpleRegisterForm> {
                 prefixIcon: Icon(Icons.lock),
               ),
             ),
-            TextFieldBlocBuilder<String>(
+            TextFieldBlocBuilder(
               textFieldBloc: _formBloc.confirmPasswordField,
-              formBloc: _formBloc,
-              errorBuilder: (context, error) => error,
               focusNode: _focusNodes[1],
               suffixButton: SuffixButton.obscureText,
               decoration: InputDecoration(
@@ -80,7 +74,6 @@ class _SimpleRegisterFormState extends State<SimpleRegisterForm> {
             ),
             CheckboxFieldBlocBuilder(
               booleanFieldBloc: _formBloc.termAndConditionsField,
-              formBloc: _formBloc,
               body: Text('I Agree to the terms & conditions.'),
             ),
             Container(

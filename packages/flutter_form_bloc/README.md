@@ -2,15 +2,17 @@
 
 [![Pub](https://img.shields.io/pub/v/flutter_form_bloc.svg)](https://pub.dev/packages/flutter_form_bloc)
 
-A Flutter package with flutter widgets that helps to create forms with [form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/form_bloc) package.
+Create Beautiful Forms in Flutter. The easiest way to Prefill, Validate, Update Form Fields, and Show Progress, Failures, Successes or Navigate by Reacting to the Form State.
+
+Separate the Form State and Business Logic from the User Interface using [form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/form_bloc).
 
 ---
 
-To see complex examples check the [example project](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example/lib/forms).
+To see complex examples, check out the [example project](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example/lib/forms).
 
 ___
 
-Before to use this package you need to know the [core concepts of bloc package](https://felangel.github.io/bloc/#/coreconcepts)  and the [basics of flutter_bloc](https://github.com/felangel/bloc/tree/master/packages/flutter_bloc)
+Before to use this package you need to know the [core concepts of bloc package](https://felangel.github.io/bloc/#/coreconcepts) and the [basics of flutter_bloc](https://github.com/felangel/bloc/tree/master/packages/flutter_bloc)
 
 ---
 
@@ -20,40 +22,51 @@ Before to use this package you need to know the [core concepts of bloc package](
         <tr>
             <td> 
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_1.gif" width="230"/>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_1.gif" width="230"/>
                 </a>
             </td>    
             <td>   
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_2.gif" width="230"/>                   
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_2.gif" width="230"/>                   
+                </a>
+            </td>
+             <td>   
+                <a>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_3.gif" width="230"/>                   
                 </a>
             </td>        
         </tr>
         <tr>
             <td> 
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_3.gif" width="230"/>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_4.gif" width="230"/>
                 </a>
             </td>    
             <td>   
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_example_4.gif" width="230"/>                   
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_5.gif" width="230"/>                   
                 </a>
-            </td>         
+            </td>
+            <td>   
+                <a>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_6.gif" width="230"/>                   
+                </a>
+            </td>            
         </tr>
     </table>
 </div>
 
 # Widgets
-* [TextFieldBlocBuilder`<Error>`](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/TextFieldBlocBuilder-class.html)
-* [DropdownFieldBlocBuilder`<Value>`](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/DropdownFieldBlocBuilder-class.html)
-* [RadioButtonGroupFieldBlocBuilder`<Value>`](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/RadioButtonGroupFieldBlocBuilder-class.html)
-* [CheckboxFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/CheckboxFieldBlocBuilder-class.html)
-* [FormBlocListener](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/FormBlocListener-class.html)
+* [TextFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/TextFieldBlocBuilder-class.html): A material design text field that can show suggestions.
+* [DropdownFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/DropdownFieldBlocBuilder-class.html): A material design dropdown.
+* [RadioButtonGroupFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/RadioButtonGroupFieldBlocBuilder-class.html): A material design radio buttons.
+* [CheckboxFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/CheckboxFieldBlocBuilder-class.html): A material design checkbox.
+* [CheckboxGroupFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/CheckboxGroupFieldBlocBuilder-class.html): A material design checkboxes.
+* [FormBlocListener](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/FormBlocListener-class.html): BlocListener that reacts to the state changes of the FormBloc.
 
 
 ## Note
-`FormBloc`, `TextFieldBloc`, `SelectFieldBloc`, `FileFieldBloc` and `BooleanFieldBloc` are [blocs](https://pub.dev/documentation/bloc/latest/bloc/Bloc-class.html), so you can use `BlocBuilder` or `BlocListener` of [flutter_bloc](https://pub.dev/packages/flutter_bloc) for make any widget you want compatible with any `FieldBloc` or `FormBloc`.
+[FormBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc-class.html), [InputFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/InputFieldBloc-class.html), [TextFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/TextFieldBloc-class.html), [BooleanFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/BooleanFieldBloc-class.html), [SelectFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/SelectFieldBloc-class.html), [MultiSelectFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/MultiSelectFieldBloc-class.html) are [blocs](https://pub.dev/documentation/bloc/latest/bloc/Bloc-class.html), so you can use [BlocBuilder](https://pub.dev/documentation/flutter_bloc/latest/flutter_bloc/BlocBuilder-class.html) or [BlocListener](https://pub.dev/documentation/flutter_bloc/latest/flutter_bloc/BlocListener-class.html) of [flutter_bloc](https://pub.dev/packages/flutter_bloc) for make any widget you want compatible with any `FieldBloc` or `FormBloc`.
 
 If you want me to add other widgets please let me know, or make a pull request.
 
@@ -63,30 +76,36 @@ If you want me to add other widgets please let me know, or make a pull request.
 
 ```yaml
 dependencies:
-  form_bloc: ^0.3.0
-  flutter_form_bloc: ^0.2.0
+  form_bloc: ^0.4.0
+  flutter_form_bloc: ^0.3.0
   flutter_bloc: ^0.21.0
 ```
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
-class SimpleLoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+class LoginFormBloc extends FormBloc<String, String> {
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
 
   @override
   List<FieldBloc> get fieldBlocs => [emailField, passwordField];
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    // Login logic...
-    await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess();
+    try {
+      _userRepository.login(
+        email: emailField.value,
+        password: passwordField.value,
+      );
+      yield currentState.toSuccess();
+    } catch (e) {
+      yield currentState.toFailure();
+    }
   }
 }
 ```
@@ -99,18 +118,19 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc_example/forms/simple_login_form_bloc.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 
-class SimpleLoginForm extends StatelessWidget {
+class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SimpleLoginFormBloc>(
-      builder: (context) => SimpleLoginFormBloc(),
+    return BlocProvider<LoginFormBloc>(
+      builder: (context) =>
+          LoginFormBloc(RepositoryProvider.of<UserRepository>(context)),
       child: Builder(
         builder: (context) {
-          final formBloc = BlocProvider.of<SimpleLoginFormBloc>(context);
+          final formBloc = BlocProvider.of<LoginFormBloc>(context);
 
           return Scaffold(
             appBar: AppBar(title: Text('Simple login')),
-            body: FormBlocListener<SimpleLoginFormBloc, String, String>(
+            body: FormBlocListener<LoginFormBloc, String, String>(
               onSubmitting: (context, state) => LoadingDialog.show(context),
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
@@ -123,20 +143,16 @@ class SimpleLoginForm extends StatelessWidget {
               },
               child: ListView(
                 children: <Widget>[
-                  TextFieldBlocBuilder<String>(
+                  TextFieldBlocBuilder(
                     textFieldBloc: formBloc.emailField,
-                    formBloc: formBloc,
-                    errorBuilder: (context, error) => error,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email),
                     ),
                   ),
-                  TextFieldBlocBuilder<String>(
+                  TextFieldBlocBuilder(
                     textFieldBloc: formBloc.passwordField,
-                    formBloc: formBloc,
-                    errorBuilder: (context, error) => error,
                     suffixButton: SuffixButton.obscureText,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -176,12 +192,12 @@ import 'package:form_bloc/form_bloc.dart';
 
 **`FailureResponse`** The type of the failure response.
 
-For example, the `SuccessResponse` type and `FailureResponse` type of `SimpleLoginFormBloc` will be `String`.
+For example, the `SuccessResponse` type and `FailureResponse` type of `LoginFormBloc` will be `String`.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
-class SimpleLoginFormBloc extends FormBloc<String, String> {}
+class LoginFormBloc extends FormBloc<String, String> {}
 
 ```
 
@@ -190,44 +206,58 @@ You need to create field blocs, and these need to be final.
 
 You can create:
 
-* [TextFieldBloc`<Error>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/TextFieldBloc-class.html)
-* [SelectFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/SelectFieldBloc-class.html)
-* [BooleanFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/BooleanFieldBloc-class.html)
+* [InputFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/InputFieldBloc-class.html).
+* [TextFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/TextFieldBloc-class.html).
+* [BooleanFieldBloc](https://pub.dev/documentation/form_bloc/latest/form_bloc/BooleanFieldBloc-class.html).
+* [SelectFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/SelectFieldBloc-class.html).
+* [MultiSelectFieldBloc`<Value>`](https://pub.dev/documentation/form_bloc/latest/form_bloc/MultiSelectFieldBloc-class.html).
 
-For example the `SimpleLoginFormBloc` will have two `TextFieldBloc<String>`, so the `Error` type will be `String`, and the validators must return a error of `String` type.
+For example the `LoginFormBloc` will have two `TextFieldBloc`.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
-class SimpleLoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
-
+class LoginFormBloc extends FormBloc<String, String> {
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
 }
 
 ```
 
-## 3. Implement the get method fieldBlocs
+## 3. Add Services/Repositories
+In this example we need a `UserRepository` for make the login.
+
+```dart
+import 'package:form_bloc/form_bloc.dart';
+
+class LoginFormBloc extends FormBloc<String, String> {
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
+}
+
+```
+
+## 4. Implement the get method fieldBlocs
 You need to override the get method [fieldBlocs](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/fieldBlocs.html) and return a list with all `FieldBlocs`.
 
 
-For example the `SimpleLoginFormBloc` must return a List with `emailField` and `passwordField`.
+For example the `LoginFormBloc` need to return a List with `emailField` and `passwordField`.
 
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
-class SimpleLoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+class LoginFormBloc extends FormBloc<String, String> {
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
 
   @override
   List<FieldBloc> get fieldBlocs => [emailField, passwordField];
@@ -235,57 +265,72 @@ class SimpleLoginFormBloc extends FormBloc<String, String> {
 
 ```
 
-## 4. Implement onSubmitting method
+## 5. Implement onSubmitting method
 
-[onSubmitting](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html) return a `Stream<FormBlocState<SuccessResponse, FailureResponse>>` and will called when the form is submitting.
+[onSubmitting](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html) returns a `Stream<FormBlocState<SuccessResponse, FailureResponse>>`.
+
+This method is called when you call `loginFormBloc.submit()` and `FormBlocState.isValid` is `true`, so each field bloc has a valid value.
+
+You can get the current `value` of each field bloc calling `emailField.value` or `passwordField.value`.
 
 You must call all your business logic of this form here, and `yield` the corresponding state.
 
 You can yield a new state using:  
 
 
-* [currentState.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html)
-* [currentState.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html)
-* [currentState.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoading.html)
+* [currentState.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html).
+* [currentState.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toSuccess.html).
+* [currentState.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoaded.html).
 
-For example `onSubmitting` of `SimpleLoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and  yield `currentState.toSuccess()`.
+See other states [here](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState-class.html#instance-methods).
+
+For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and yield `currentState.toSuccess()` if the `_userRepository.login` method not throw any exception, and yield ``currentState.toFailure()` if throw a exception.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
-class SimpleLoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+class LoginFormBloc extends FormBloc<String, String> {
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
+
+  final UserRepository _userRepository;
+
+  LoginFormBloc(this._userRepository);
 
   @override
   List<FieldBloc> get fieldBlocs => [emailField, passwordField];
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    // Login logic...
-    await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess();
+    try {
+      _userRepository.login(
+        email: emailField.value,
+        password: passwordField.value,
+      );
+      yield currentState.toSuccess();
+    } catch (e) {
+      yield currentState.toFailure();
+    }
   }
 }
-
 ```
 
-## 5. Create a Form Widget
+## 6. Create a Form Widget
 You need to create a widget with access to the `FormBloc`.
+
 In this case I will use `BlocProvider` for do it.
+
+
 ```dart
-class SimpleLoginForm extends StatelessWidget {
+class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SimpleLoginFormBloc>(
-      builder: (context) => SimpleLoginFormBloc(),
+    return BlocProvider<LoginFormBloc>(
+      builder: (context) =>
+          LoginFormBloc(RepositoryProvider.of<UserRepository>(context)),
       child: Builder(
         builder: (context) {
-          final formBloc = BlocProvider.of<SimpleLoginFormBloc>(context);
+          final formBloc = BlocProvider.of<LoginFormBloc>(context);
 
           return Scaffold();
         },
@@ -309,7 +354,7 @@ In this example:
 ...
           return Scaffold(
             appBar: AppBar(title: Text('Simple login')),
-            body: FormBlocListener<SimpleLoginFormBloc, String, String>(
+            body: FormBlocListener<LoginFormBloc, String, String>(
               onSubmitting: (context, state) => LoadingDialog.show(context),
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
@@ -330,26 +375,22 @@ In this example:
 
 ## 6. Connect the Field Blocs with Field Blocs Builder
 
-In this example I will use `TextFieldBlocBuilder<String>` for connect with `emailField` and `passwordField` of `SimpleLoginFormBloc`.
+In this example I will use `TextFieldBlocBuilder` for connect with `emailField` and `passwordField` of `LoginFormBloc`.
 
 ```dart
 ...
               child: ListView(
                 children: <Widget>[
-                  TextFieldBlocBuilder<String>(
+                  TextFieldBlocBuilder(
                     textFieldBloc: formBloc.emailField,
-                    formBloc: formBloc,
-                    errorBuilder: (context, error) => error,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email),
                     ),
                   ),
-                  TextFieldBlocBuilder<String>(
+                  TextFieldBlocBuilder(
                     textFieldBloc: formBloc.passwordField,
-                    formBloc: formBloc,
-                    errorBuilder: (context, error) => error,
                     suffixButton: SuffixButton.obscureText,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -363,7 +404,7 @@ In this example I will use `TextFieldBlocBuilder<String>` for connect with `emai
 ```
 ## 7. Add a widget for submit the FormBloc
 
-In this example I will add a `RaisedButton` and pass `submit` method of `FormBloc` to submit the form
+In this example I will add a `RaisedButton` and pass `submit` method of `FormBloc` to submit the form.
 
 ```dart
 ...

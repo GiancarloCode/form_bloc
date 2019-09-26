@@ -1,107 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/utils/utils.dart';
 
 import 'package:form_bloc/form_bloc.dart';
 
+/// A material design checkbox.
 class CheckboxFieldBlocBuilder extends StatelessWidget {
   const CheckboxFieldBlocBuilder({
+    Key key,
     @required this.booleanFieldBloc,
     @required this.body,
-    Key key,
-    this.formBloc,
-    this.requiredError,
+    this.enableOnlyWhenFormBlocCanSubmit = false,
+    this.isEnabled = true,
+    this.errorBuilder,
     this.checkColor,
     this.activeColor,
     this.padding,
     this.nextFocusNode,
   })  : assert(booleanFieldBloc != null),
+        assert(enableOnlyWhenFormBlocCanSubmit != null),
+        assert(isEnabled != null),
         assert(body != null),
         super(key: key);
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final BooleanFieldBloc booleanFieldBloc;
 
-  /// This widget will be enable only when the [FormBloc] state is
-  /// [FormBlocLoaded] or [FormBlocFailure]
-  final FormBloc formBloc;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
+  final FieldBlocErrorBuilder errorBuilder;
 
-  /// Error when [booleanFieldBloc] is required
-  /// and the value is false
-  final String requiredError;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
+  final bool enableOnlyWhenFormBlocCanSubmit;
 
-  final Widget body;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
+  final bool isEnabled;
 
-  /// The color to use for the check icon when this checkbox is checked
-  final Color checkColor;
-
-  /// The color to use when this checkbox is checked.
-  ///
-  /// Defaults to [ThemeData.toggleableActiveColor].
-  final Color activeColor;
-
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry padding;
 
-  /// When change the value of checkbox, this will call
-  /// [nextFocusNode.requestFocus()]
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
   final FocusNode nextFocusNode;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxBody}
+  final Widget body;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxColor}
+  final Color checkColor;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxActiveColor}
+  final Color activeColor;
 
   @override
   Widget build(BuildContext context) {
-    if (formBloc != null) {
-      return BlocBuilder<FormBloc, FormBlocState>(
-        bloc: formBloc,
-        builder: (context, formState) {
-          return _buildChild(formState.canSubmit);
-        },
-      );
-    } else {
-      return _buildChild(true);
-    }
-  }
-
-  Widget _buildChild(bool isEnable) {
     return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
       bloc: booleanFieldBloc,
       builder: (context, state) {
-        return Padding(
-          padding: padding ?? EdgeInsets.all(8),
+        final isEnabled = fieldBlocIsEnabled(
+          isEnabled: this.isEnabled,
+          enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+          fieldBlocState: state,
+        );
+
+        return DefaultFieldBlocBuilderPadding(
+          padding: padding,
           child: InputDecorator(
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              focusedErrorBorder: InputBorder.none,
+            decoration: Style.inputDecorationWithoutBorder.copyWith(
               prefixIcon: Checkbox(
-                checkColor: checkColor ??
-                    (ThemeData.estimateBrightnessForColor(
-                                Theme.of(context).toggleableActiveColor) ==
-                            Brightness.dark
-                        ? Colors.white
-                        : Colors.grey[800]),
+                checkColor: Style.getIconColor(
+                  customColor: checkColor,
+                  defaultColor: Theme.of(context).toggleableActiveColor,
+                ),
                 activeColor: activeColor,
                 value: state.value,
-                onChanged: isEnable
-                    ? (value) {
-                        booleanFieldBloc.updateValue(value);
-                        if (nextFocusNode != null) {
-                          nextFocusNode.requestFocus();
-                        }
-                      }
-                    : null,
+                onChanged: fieldBlocBuilderOnChange<bool>(
+                  isEnabled: isEnabled,
+                  nextFocusNode: nextFocusNode,
+                  onChanged: booleanFieldBloc.updateValue,
+                ),
               ),
-              errorText: !state.isInitial && !state.isValid
-                  ? requiredError ?? 'This field is required.'
-                  : null,
-              contentPadding: EdgeInsets.fromLTRB(15, 14, 14, 12),
+              errorText: Style.getErrorText(
+                context: context,
+                errorBuilder: errorBuilder,
+                fieldBlocState: state,
+              ),
             ),
-            child: DefaultTextStyle(
-              style: isEnable
-                  ? Theme.of(context).textTheme.subhead
-                  : Theme.of(context)
-                      .textTheme
-                      .subhead
-                      .copyWith(color: Theme.of(context).disabledColor),
+            child: DefaultFieldBlocBuilderTextStyle(
+              isEnabled: isEnabled,
               child: body,
             ),
           ),

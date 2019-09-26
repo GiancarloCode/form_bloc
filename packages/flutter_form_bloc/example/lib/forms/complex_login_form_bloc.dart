@@ -11,12 +11,8 @@ enum LoginResponse {
 class ComplexLoginFormBloc extends FormBloc<String, String> {
   static const String _usedEmailsKey = 'usedEmails';
 
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.notEmpty],
-  );
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final passwordField = TextFieldBloc();
   final responseField = SelectFieldBloc<LoginResponse>(
     items: LoginResponse.values,
   );
@@ -27,7 +23,7 @@ class ComplexLoginFormBloc extends FormBloc<String, String> {
 
   ComplexLoginFormBloc() {
     emailField.updateSuggestions(suggestUsedEmails);
-    emailField.onSuggestRemoved.listen(_deleteEmail);
+    emailField.selectedSuggestion.listen(_deleteEmail);
   }
 
   Future<List<String>> suggestUsedEmails(String value) async {
@@ -38,6 +34,12 @@ class ComplexLoginFormBloc extends FormBloc<String, String> {
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
     // Login logic...
+
+    // Get the fields values:
+    print(emailField.value);
+    print(passwordField.value);
+    print(responseField.value);
+
     await Future<void>.delayed(Duration(seconds: 2));
 
     switch (responseField.currentState.value) {

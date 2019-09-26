@@ -6,14 +6,13 @@ class SimpleAsyncPrefilledFormBloc extends FormBloc<String, String> {
   static const String _prefilledSelectFieldKey = 'prefilledSelectField';
   static const String _prefilledBooleanFieldKey = 'prefilledBooleanField';
 
-  final prefilledTextField = TextFieldBloc<String>();
+  final prefilledTextField = TextFieldBloc();
+
   final prefilledSelectField = SelectFieldBloc<String>(
     items: ['Option 1', 'Option 2', 'Option 3'],
-    isRequired: true,
   );
-  final prefilledBooleanField = BooleanFieldBloc(
-    isRequired: false,
-  );
+
+  final prefilledBooleanField = BooleanFieldBloc(isRequired: false);
 
   SimpleAsyncPrefilledFormBloc() {
     prefillFields();
@@ -35,21 +34,20 @@ class SimpleAsyncPrefilledFormBloc extends FormBloc<String, String> {
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
+    // Get the fields values:
+    print(prefilledTextField.value);
+    print(prefilledSelectField.value);
+    print(prefilledBooleanField.value);
+
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(
-        _prefilledTextFieldKey, prefilledTextField.currentState.value);
-    prefs.setString(
-        _prefilledSelectFieldKey, prefilledSelectField.currentState.value);
-    prefs.setBool(
-        _prefilledBooleanFieldKey, prefilledBooleanField.currentState.value);
+    prefs.setString(_prefilledTextFieldKey, prefilledTextField.value);
+    prefs.setString(_prefilledSelectFieldKey, prefilledSelectField.value);
+    prefs.setBool(_prefilledBooleanFieldKey, prefilledBooleanField.value);
 
     yield currentState.toSuccess('Values saved in shared preferences.');
 
-    // yield `currentState.toLoaded()` because
-    // `onSubmitting()` is called when the form is valid
-    // and `SubmitFormBloc` was dispatched
-    // and  ( `currentState` is `FormBlocLoaded`
-    // or `currentState` is `FormBlocFailure` )
+    /// yield `currentState.toLoaded()` because
+    /// you can't submit if the state is `FormBlocSuccess`.
     yield currentState.toLoaded();
   }
 }

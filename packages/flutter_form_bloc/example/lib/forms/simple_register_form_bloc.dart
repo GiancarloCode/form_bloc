@@ -1,14 +1,12 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class SimpleRegisterFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc<String>(
-    validators: [Validators.validEmail],
-  );
-  final passwordField = TextFieldBloc<String>(
-    validators: [Validators.passwordMin6Chars],
-  );
-  final confirmPasswordField =
-      TextFieldBloc<String>(toStringName: 'confirmPassword');
+  final emailField = TextFieldBloc(validators: [Validators.email]);
+
+  final passwordField =
+      TextFieldBloc(validators: [Validators.passwordMin6Chars]);
+
+  final confirmPasswordField = TextFieldBloc();
 
   final termAndConditionsField = BooleanFieldBloc();
 
@@ -17,20 +15,20 @@ class SimpleRegisterFormBloc extends FormBloc<String, String> {
       [emailField, passwordField, confirmPasswordField, termAndConditionsField];
 
   SimpleRegisterFormBloc() {
-    confirmPasswordField.addValidators([confirmPasswordValidator]);
-    passwordField.state.listen((_) => confirmPasswordField.revalidate());
-  }
-
-  String confirmPasswordValidator(String confirmPassword) {
-    if (confirmPassword != passwordField.currentState.value) {
-      return 'Must be equal to password.';
-    }
-    return null;
+    confirmPasswordField
+        .addValidators([Validators.confirmPassword(passwordField)]);
   }
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
     // Register logic...
+
+    // Get the fields values:
+    print(emailField.value);
+    print(passwordField.value);
+    print(confirmPasswordField.value);
+    print(termAndConditionsField.value);
+
     await Future<void>.delayed(Duration(seconds: 2));
     yield currentState.toSuccess();
   }
