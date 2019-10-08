@@ -1,7 +1,8 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class FieldBlocAsyncValidationFormBloc extends FormBloc<String, String> {
-  final usernameField = TextFieldBloc();
+  final usernameField =
+      TextFieldBloc(asyncValidatorDebounceTime: Duration(milliseconds: 600));
 
   final emailField = TextFieldBloc(
     validators: [Validators.email],
@@ -20,8 +21,8 @@ class FieldBlocAsyncValidationFormBloc extends FormBloc<String, String> {
     // Form logic...
 
     // Get the fields values:
-    print(emailField.value);
     print(usernameField.value);
+    print(emailField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
     yield currentState
