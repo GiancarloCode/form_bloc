@@ -92,7 +92,7 @@ If you want me to add other widgets please let me know, or make a pull request.
 ```yaml
 dependencies:
   form_bloc: ^0.5.0
-  flutter_form_bloc: ^0.4.0
+  flutter_form_bloc: ^0.4.0+1
   flutter_bloc: ^0.21.0
 ```
 
