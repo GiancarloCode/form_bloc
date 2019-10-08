@@ -16,7 +16,7 @@ class ManuallySetFieldBlocErrorForm extends StatelessWidget {
               BlocProvider.of<ManuallySetFieldBlocErrorFormBloc>(context);
 
           return Scaffold(
-            appBar: AppBar(title: Text('FieldBloc async validation')),
+            appBar: AppBar(title: Text('Manually set field error')),
             body: FormBlocListener<ManuallySetFieldBlocErrorFormBloc, String,
                 String>(
               onSubmitting: (context, state) => LoadingDialog.show(context),

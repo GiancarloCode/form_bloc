@@ -131,7 +131,7 @@ class Form {
       NotAutoValidationForm(),
     ),
     Form(
-      'Manually set fieldBloc error',
+      'Manually set field error',
       'Add error to the FieldBloc based on backend response.',
       ManuallySetFieldBlocErrorForm(),
     ),
