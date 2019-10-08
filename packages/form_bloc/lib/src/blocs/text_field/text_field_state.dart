@@ -12,6 +12,7 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
     @required bool isRequired,
     @required Suggestions<String> suggestions,
     @required bool isValidated,
+    @required bool isValidating,
     FormBlocState formBlocState,
     @required String toStringName,
     List additionalProps = const <dynamic>[],
@@ -22,6 +23,7 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
           isRequired: isRequired,
           suggestions: suggestions,
           isValidated: isValidated,
+          isValidating: isValidating,
           formBlocState: formBlocState,
           toStringName: toStringName,
         );
@@ -43,6 +45,7 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
     bool isInitial,
     Optional<Suggestions<String>> suggestions,
     bool isValidated,
+    bool isValidating,
     FormBlocState formBlocState,
   }) {
     return TextFieldBlocState(
@@ -52,8 +55,21 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
       isRequired: isRequired,
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
+      isValidating: isValidating ?? this.isValidating,
       formBlocState: formBlocState ?? this.formBlocState,
       toStringName: toStringName,
     );
   }
+
+  @override
+  List<Object> get props => [
+        value,
+        error,
+        isInitial,
+        isRequired,
+        suggestions,
+        isValidated,
+        isValidating,
+        formBlocState,
+      ];
 }

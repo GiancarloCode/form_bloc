@@ -15,6 +15,7 @@ class MultiSelectFieldBlocState<Value>
     @required bool isRequired,
     @required Suggestions<Value> suggestions,
     @required bool isValidated,
+    @required bool isValidating,
     FormBlocState formBlocState,
     @required String toStringName,
     @required this.items,
@@ -25,9 +26,9 @@ class MultiSelectFieldBlocState<Value>
           isRequired: isRequired,
           suggestions: suggestions,
           isValidated: isValidated,
+          isValidating: isValidating,
           formBlocState: formBlocState,
           toStringName: toStringName,
-          additionalProps: <dynamic>[items],
         );
 
   @override
@@ -37,6 +38,7 @@ class MultiSelectFieldBlocState<Value>
     bool isInitial,
     Optional<Suggestions<Value>> suggestions,
     bool isValidated,
+    bool isValidating,
     FormBlocState formBlocState,
     Optional<List<Value>> items,
   }) {
@@ -47,6 +49,7 @@ class MultiSelectFieldBlocState<Value>
       isRequired: isRequired,
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
+      isValidating: isValidating ?? this.isValidating,
       formBlocState: formBlocState ?? this.formBlocState,
       toStringName: toStringName,
       items: items == null ? this.items : items.orNull,
@@ -66,6 +69,7 @@ class MultiSelectFieldBlocState<Value>
     _toString += ' error: "${error}",';
     _toString += ' isInitial: $isInitial,';
     _toString += ' isValidated: ${isValidated},';
+    _toString += ' isValidating: ${isValidating},';
     _toString += ' isRequired: ${isRequired},';
     _toString += ' formBlocState: ${formBlocState},';
     _toString += ' items: $items,';
@@ -73,4 +77,17 @@ class MultiSelectFieldBlocState<Value>
 
     return _toString;
   }
+
+  @override
+  List<Object> get props => [
+        value,
+        error,
+        isInitial,
+        isRequired,
+        suggestions,
+        isValidated,
+        isValidating,
+        formBlocState,
+        items,
+      ];
 }

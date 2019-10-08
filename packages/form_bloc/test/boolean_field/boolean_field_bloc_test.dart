@@ -25,6 +25,7 @@ void main() {
           isRequired: true,
           suggestions: suggestions,
           isValidated: true,
+          isValidating: false,
           toStringName: toStringName,
         );
         final state2 = state1.copyWith(
@@ -63,6 +64,7 @@ void main() {
           isRequired: true,
           suggestions: null,
           isValidated: true,
+          isValidating: false,
           toStringName: null,
         );
 
@@ -87,6 +89,7 @@ void main() {
           isRequired: false,
           suggestions: null,
           isValidated: true,
+          isValidating: false,
           toStringName: null,
         );
 
@@ -113,6 +116,7 @@ void main() {
         isRequired: true,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
       );
 
@@ -142,6 +146,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
       );
 
@@ -171,6 +176,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
       );
       final state2 = state1.copyWith(

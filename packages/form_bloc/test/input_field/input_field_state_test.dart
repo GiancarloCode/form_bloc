@@ -14,6 +14,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: false,
+        isValidating: false,
         formBlocState: FormBlocLoaded<dynamic, dynamic>(true),
         toStringName: null,
       );
@@ -45,6 +46,7 @@ void main() {
           isRequired: false,
           suggestions: suggestions,
           isValidated: true,
+          isValidating: false,
           formBlocState: FormBlocLoading<dynamic, dynamic>(),
           toStringName: null,
         ),

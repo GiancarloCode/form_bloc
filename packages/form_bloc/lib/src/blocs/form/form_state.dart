@@ -13,7 +13,7 @@ import 'package:form_bloc/src/blocs/field/field_bloc.dart';
 /// * [FormBlocSubmissionCancelled]
 /// * [FormBlocSubmissionFailed]
 abstract class FormBlocState<SuccessResponse, FailureResponse>
-    with EquatableMixin {
+    extends Equatable {
   /// Indicates if each [FieldBloc] in [FormBloc.fieldBlocs] is valid.
   final bool isValid;
 
@@ -167,8 +167,6 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
     }
   }
 
-  List get props => <dynamic>[isValid, submissionProgress];
-
   @override
   String toString() => '$runtimeType { isValid: $isValid }';
 
@@ -193,6 +191,9 @@ class FormBlocLoading<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
   FormBlocLoading({bool isValid = false})
       : super(isValid: isValid, submissionProgress: 0.0);
+
+  @override
+  List<Object> get props => [isValid, submissionProgress];
 }
 
 /// {@template form_bloc.form_state.FormBlocLoadFailed}
@@ -217,7 +218,7 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
   }) : super(isValid: isValid, submissionProgress: 0.0);
 
   @override
-  List get props => super.props..addAll(<dynamic>[failureResponse]);
+  List<Object> get props => [isValid, submissionProgress, failureResponse];
 
   @override
   String toString() {
@@ -240,6 +241,9 @@ class FormBlocLoaded<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
   FormBlocLoaded(bool isValid)
       : super(isValid: isValid, submissionProgress: 0.0);
+
+  @override
+  List<Object> get props => [isValid, submissionProgress];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmitting}
@@ -273,7 +277,7 @@ class FormBlocSubmitting<SuccessResponse, FailureResponse>
                 : submissionProgress > 1 ? 1.0 : submissionProgress);
 
   @override
-  List get props => super.props..addAll(<dynamic>[isCanceling]);
+  List<Object> get props => [isValid, submissionProgress, isCanceling];
 
   @override
   String toString() {
@@ -309,7 +313,7 @@ class FormBlocSuccess<SuccessResponse, FailureResponse>
   }) : super(isValid: isValid, submissionProgress: 1.0);
 
   @override
-  List get props => super.props..addAll(<dynamic>[successResponse]);
+  List<Object> get props => [isValid, submissionProgress, successResponse];
 
   @override
   String toString() {
@@ -344,7 +348,7 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
   }) : super(isValid: isValid, submissionProgress: 0);
 
   @override
-  List get props => super.props..addAll(<dynamic>[failureResponse]);
+  List<Object> get props => [isValid, submissionProgress, failureResponse];
 
   @override
   String toString() {
@@ -369,6 +373,9 @@ class FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
   FormBlocSubmissionCancelled(bool isValid)
       : super(isValid: isValid, submissionProgress: 0);
+
+  @override
+  List<Object> get props => [isValid, submissionProgress];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmissionFailed}
@@ -379,4 +386,7 @@ class FormBlocSubmissionFailed<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
   FormBlocSubmissionFailed(bool isValid)
       : super(isValid: isValid, submissionProgress: 0);
+
+  @override
+  List<Object> get props => [isValid, submissionProgress];
 }

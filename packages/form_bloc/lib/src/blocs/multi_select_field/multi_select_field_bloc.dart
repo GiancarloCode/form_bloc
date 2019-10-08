@@ -22,6 +22,13 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
   /// it will be added to [MultiSelectFieldBlocState.error].
   /// Else if `autoValidate = false`, the value will be checked only
   /// when you call [validate] which is called automatically when call [FormBloc.submit].
+  /// * [asyncValidators] : List of [AsyncValidator]s.
+  /// it is the same as [validators] but asynchronous.
+  /// Very useful for server validation.
+  /// * [asyncValidatorDebounceTime] : The debounce time when any `asyncValidator`
+  /// must be called, by default is 500 milliseconds.
+  /// Very useful for reduce the number of invocations of each `asyncValidator.
+  /// For example, used for prevent limit in API calls.
   /// * [suggestions] : This need be a [Suggestions] and will be
   /// added to [MultiSelectFieldBlocState.suggestions].
   /// It is used to suggest values, usually from an API,
@@ -33,18 +40,23 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
     List<Value> initialValue = const [],
     bool isRequired = true,
     List<Validator<List<Value>>> validators,
+    List<AsyncValidator<List<Value>>> asyncValidators,
+    Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value> suggestions,
     String toStringName,
     List<Value> items = const [],
   })  : assert(isRequired != null),
         assert(initialValue != null),
         assert(items != null),
+        assert(asyncValidatorDebounceTime != null),
         _items = items,
         super(
           initialValue,
           isRequired,
           Validators.requiredMultiSelectFieldBloc,
           validators,
+          asyncValidators,
+          asyncValidatorDebounceTime,
           suggestions,
           toStringName,
         );
@@ -53,11 +65,12 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
   MultiSelectFieldBlocState<Value> get initialState =>
       MultiSelectFieldBlocState(
         value: _initialValue,
-        error: _getInitialStateError(),
+        error: _getInitialStateError,
         isInitial: true,
         isRequired: _isRequired,
         suggestions: _suggestions,
-        isValidated: _isValidated,
+        isValidated: _isValidated(_getInitialStateIsValidating),
+        isValidating: _getInitialStateIsValidating,
         toStringName: _toStringName,
         items: FieldBlocBase._itemsWithoutDuplicates(_items),
       );

@@ -34,6 +34,10 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
   /// of the [FieldBloc].
   final bool isValidated;
 
+  /// Indicate if [value] is is being verified with any async validator
+  /// of the [FieldBloc].
+  final bool isValidating;
+
   /// The current state of the [FormBloc] that contains this `FieldBloc`.
   final FormBlocState formBlocState;
 
@@ -44,23 +48,14 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
     @required this.isRequired,
     @required this.suggestions,
     @required this.isValidated,
+    @required this.isValidating,
     @required FormBlocState formBlocState,
     @required this.toStringName,
-    List additionalProps = const <dynamic>[],
   })  : assert(isInitial != null),
         assert(isRequired != null),
         assert(isValidated != null),
         this.formBlocState =
-            formBlocState ?? FormBlocLoaded<dynamic, dynamic>(true),
-        super(<dynamic>[
-          value,
-          error,
-          isInitial,
-          isRequired,
-          suggestions,
-          isValidated,
-          formBlocState,
-        ]..addAll(additionalProps));
+            formBlocState ?? FormBlocLoaded<dynamic, dynamic>(true);
 
   /// Indicates if this state not has error.
   /// Which means that the error is not `null`.
@@ -79,6 +74,13 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
   /// after be instantiate by the [FieldBloc] and has an error.
   bool get canShowError => !isInitial && hasError;
 
+  /// Indicates if this state is validating and is not initial.
+  ///
+  /// Used for not show the is validating when [isInitial] is `false`.
+  /// Which mean that [value] was updated
+  /// after be instantiate by the [FieldBloc] and is validating.
+  bool get canShowIsValidating => !isInitial && isValidating;
+
   /// Returns a copy of the current state by changing
   /// the values that are passed as parameters.
   FieldBlocState<Value, Suggestion> copyWith({
@@ -87,6 +89,7 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
     bool isInitial,
     Optional<Suggestions<Suggestion>> suggestions,
     bool isValidated,
+    bool isValidating,
     FormBlocState formBlocState,
   });
 
@@ -103,6 +106,7 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
     _toString += ' error: "${error}",';
     _toString += ' isInitial: $isInitial,';
     _toString += ' isValidated: ${isValidated},';
+    _toString += ' isValidating: ${isValidating},';
     _toString += ' isRequired: ${isRequired},';
     _toString += ' formBlocState: ${formBlocState}';
     _toString += ' }';

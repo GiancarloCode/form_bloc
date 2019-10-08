@@ -25,6 +25,7 @@ void main() {
           isRequired: true,
           suggestions: suggestions,
           isValidated: true,
+          isValidating: false,
           toStringName: toStringName,
           items: [],
         );
@@ -64,6 +65,7 @@ void main() {
           isRequired: true,
           suggestions: null,
           isValidated: true,
+          isValidating: false,
           toStringName: null,
           items: [],
         );
@@ -89,6 +91,7 @@ void main() {
           isRequired: false,
           suggestions: null,
           isValidated: true,
+          isValidating: false,
           toStringName: null,
           items: [],
         );
@@ -116,6 +119,7 @@ void main() {
         isRequired: true,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [],
       );
@@ -147,6 +151,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [true, false],
       );
@@ -174,6 +179,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [],
       );
@@ -211,6 +217,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [true],
       );
@@ -253,6 +260,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [true, false],
       );
@@ -295,6 +303,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [],
       );
@@ -337,6 +346,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [],
       );
@@ -380,6 +390,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [],
       );
@@ -427,6 +438,7 @@ void main() {
         isRequired: false,
         suggestions: null,
         isValidated: true,
+        isValidating: false,
         toStringName: null,
         items: [],
       );

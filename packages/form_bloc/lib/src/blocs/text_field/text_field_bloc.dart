@@ -21,6 +21,13 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   /// it will be added to [TextFieldBlocState.error].
   /// Else if `autoValidate = false`, the value will be checked only
   /// when you call [validate] which is called automatically when call [FormBloc.submit].
+  /// * [asyncValidators] : List of [AsyncValidator]s.
+  /// it is the same as [validators] but asynchronous.
+  /// Very useful for server validation.
+  /// * [asyncValidatorDebounceTime] : The debounce time when any `asyncValidator`
+  /// must be called, by default is 500 milliseconds.
+  /// Very useful for reduce the number of invocations of each `asyncValidator.
+  /// For example, used for prevent limit in API calls.
   /// * [suggestions] : This need be a [Suggestions] and will be
   /// added to [TextFieldBlocState.suggestions].
   /// It is used to suggest values, usually from an API,
@@ -31,15 +38,20 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
     String initialValue = '',
     bool isRequired = true,
     List<Validator<String>> validators,
+    List<AsyncValidator<String>> asyncValidators,
+    Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<String> suggestions,
     String toStringName,
   })  : assert(initialValue != null),
         assert(isRequired != null),
+        assert(asyncValidatorDebounceTime != null),
         super(
           initialValue,
           isRequired,
           Validators.requiredTextFieldBloc,
           validators,
+          asyncValidators,
+          asyncValidatorDebounceTime,
           suggestions,
           toStringName,
         );
@@ -47,11 +59,12 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   @override
   TextFieldBlocState get initialState => TextFieldBlocState(
         value: _initialValue,
-        error: _getInitialStateError(),
+        error: _getInitialStateError,
         isInitial: true,
         isRequired: _isRequired,
         suggestions: _suggestions,
-        isValidated: _isValidated,
+        isValidated: _isValidated(_getInitialStateIsValidating),
+        isValidating: _getInitialStateIsValidating,
         toStringName: _toStringName,
       );
 

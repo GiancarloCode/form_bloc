@@ -1,7 +1,7 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class SimpleFormBloc extends FormBloc<String, String> {
-  final dateFieldBloc = InputFieldBloc<DateTime>();
+  final dateFieldBloc = InputFieldBloc<TextFieldBloc>();
 
   final textField = TextFieldBloc();
 

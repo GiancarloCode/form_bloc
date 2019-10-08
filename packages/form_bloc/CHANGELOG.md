@@ -1,3 +1,13 @@
+# 0.5.0
+* Dependency and Documentation Updates.
+* Added `isValidating` property to `FieldBlocState`.
+* Added `asyncValidators` property to `FieldBloc`.
+* Added `asyncValidatorDebounceTime` property to `FieldBloc`.
+* Added `addAsyncValidators` method to `FieldBloc`.
+* Added `updateAsyncValidators` method to `FieldBloc`.
+* Added `addError` method to `FieldBloc`.
+* Added `subscribeToFieldBlocs` method to `FieldBloc`.
+
 # 0.4.1
 * Documentation Updates.
 

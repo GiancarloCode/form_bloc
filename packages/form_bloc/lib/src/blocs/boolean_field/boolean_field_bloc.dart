@@ -19,6 +19,13 @@ class BooleanFieldBloc
   /// it will be added to [BooleanFieldBlocState.error].
   /// Else if `autoValidate = false`, the value will be checked only
   /// when you call [validate] which is called automatically when call [FormBloc.submit].
+  /// * [asyncValidators] : List of [AsyncValidator]s.
+  /// it is the same as [validators] but asynchronous.
+  /// Very useful for server validation.
+  /// * [asyncValidatorDebounceTime] : The debounce time when any `asyncValidator`
+  /// must be called, by default is 500 milliseconds.
+  /// Very useful for reduce the number of invocations of each `asyncValidator.
+  /// For example, used for prevent limit in API calls.
   /// * [suggestions] : This need be a [Suggestions] and will be
   /// added to [BooleanFieldBlocState.suggestions].
   /// It is used to suggest values, usually from an API,
@@ -29,15 +36,20 @@ class BooleanFieldBloc
     bool initialValue = false,
     bool isRequired = true,
     List<Validator<bool>> validators,
+    List<AsyncValidator<bool>> asyncValidators,
+    Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<bool> suggestions,
     String toStringName,
   })  : assert(initialValue != null),
         assert(isRequired != null),
+        assert(asyncValidatorDebounceTime != null),
         super(
           initialValue,
           isRequired,
           Validators.requiredBooleanFieldBloc,
           validators,
+          asyncValidators,
+          asyncValidatorDebounceTime,
           suggestions,
           toStringName,
         );
@@ -45,11 +57,12 @@ class BooleanFieldBloc
   @override
   BooleanFieldBlocState get initialState => BooleanFieldBlocState(
         value: _initialValue,
-        error: _getInitialStateError(),
+        error: _getInitialStateError,
         isInitial: true,
         isRequired: _isRequired,
         suggestions: _suggestions,
-        isValidated: _isValidated,
+        isValidated: _isValidated(_getInitialStateIsValidating),
+        isValidating: _getInitialStateIsValidating,
         toStringName: _toStringName,
       );
 

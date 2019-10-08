@@ -20,17 +20,17 @@ class FormBlocDelegate extends BlocDelegate {
   final BlocDelegate _oldBlocDelegate;
 
   /// If is `true` every `transition` of any
-  /// [FieldBlocBase] will be notified
+  /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
   static bool notifyOnFieldBlocTransition = false;
 
   /// If is `true` every `event` of any
-  /// [FieldBlocBase] will be notified
+  /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
   static bool notifyOnFieldBlocEvent = false;
 
   /// If is `true` every `error` of any
-  /// [FieldBlocBase] will be notified
+  /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
   static bool notifyOnFieldBlocError = true;
 
@@ -101,7 +101,7 @@ class FormBlocDelegate extends BlocDelegate {
 
   /// Override the current [BlocSupervisor.delegate]
   /// with a [FormBlocDelegate] for hide `events` and `transitions`
-  /// of any [FieldBlocBase] or [FormBloc].
+  /// of any [FieldBloc] or [FormBloc].
   ///
   /// But it retains the behavior of the current [BlocSupervisor.delegate].
   ///

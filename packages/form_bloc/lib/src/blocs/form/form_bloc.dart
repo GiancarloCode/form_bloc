@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:rxdart/rxdart.dart';
 import '../field/field_bloc.dart';
 
@@ -89,9 +90,14 @@ export 'form_state.dart';
 abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     FormBlocEvent, FormBlocState<SuccessResponse, FailureResponse>> {
   StreamSubscription<bool> _areAllFieldsValidSubscription;
-  StreamSubscription<void> _revalidateFieldBlocsSubscription;
 
   StreamSubscription<FormBlocState> _formBlocStateSubscription;
+
+  /// Subscription when call [submit]
+  StreamSubscription<bool> _onSubmittingSubscription;
+
+  /// Flag for prevent submit when is Validating before call [onSubmitting]
+  bool _canSubmit = true;
 
   bool _isLoading;
   FormBloc({bool isLoading = false, bool autoValidate = true})
@@ -101,14 +107,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     assert(fieldBlocs != null);
     assert(fieldBlocs.isNotEmpty);
 
-    if (autoValidate) {
-      _revalidateFieldBlocsSubscription =
-          Observable.combineLatest<FieldBlocState, void>(
-        _fieldsStates,
-        (_) => null,
-      ).listen((_) => _fieldBlocs.forEach(
-              (fieldBloc) => fieldBloc.dispatch(ValidateFieldBloc(false))));
-    } else {
+    if (!autoValidate) {
       _fieldBlocs.forEach(
         (fieldBloc) => fieldBloc.dispatch(DisableFieldBlocAutoValidate()),
       );
@@ -117,12 +116,26 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     _areAllFieldsValidSubscription =
         Observable.combineLatest<FieldBlocState, bool>(
       _fieldsStates,
-      (fieldStates) => fieldStates.every((fieldState) => fieldState.isValid),
-    ).distinct().listen((isValid) => _updateFormState(isValid));
+      (fieldStates) => fieldStates.every(
+        (fieldState) {
+          // if any value change, then can submit again
+          _canSubmit = true;
+          return _isFieldStateValid(fieldState);
+        },
+      ),
+    ).distinct().listen(_updateFormState);
 
-    _formBlocStateSubscription = state.listen((state) => _fieldBlocs.forEach(
-        (fieldBloc) =>
-            fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(state))));
+    _formBlocStateSubscription = state.listen(
+      (state) => _fieldBlocs.forEach(
+        (fieldBloc) {
+          if (state is FormBlocSubmitting ||
+              state is FormBlocSubmissionFailed) {
+            _canSubmit = true;
+          }
+          fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(state));
+        },
+      ),
+    );
 
     if (isLoading) {
       dispatch(LoadFormBloc());
@@ -149,7 +162,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   bool _areFieldStatesValid(List<FieldBlocState> fieldStates) =>
       fieldStates.every(_isFieldStateValid);
 
-  bool _isFieldStateValid(FieldBlocState state) => state.isValid;
+  bool _isFieldStateValid(FieldBlocState state) =>
+      state.isValid && !state.isValidating && state.isValidated;
 
   void _updateFormState(bool areAllFieldsValid) =>
       dispatch(UpdateFormBlocStateIsValid(areAllFieldsValid));
@@ -158,9 +172,9 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   void dispose() {
     _areAllFieldsValidSubscription?.cancel();
 
-    _revalidateFieldBlocsSubscription?.cancel();
-
     _formBlocStateSubscription?.cancel();
+
+    _onSubmittingSubscription?.cancel();
 
     _fieldBlocs?.forEach((fieldBloc) => fieldBloc?.dispose());
 
@@ -195,6 +209,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       yield* _onCancelSubmissionFormBloc();
     } else if (event is UpdateFormBlocStateIsValid) {
       yield currentState.withIsValid(event.isValid);
+    } else if (event is OnSubmittingFormBloc) {
+      yield* onSubmitting();
     }
   }
 
@@ -219,31 +235,55 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// The previous state is [FormBlocSubmitting] and
   /// [FormBlocSubmitting.isCanceling] is `true`.
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      onCancelSubmission() => null;
+      onCancelSubmission() async* {}
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
       _onSubmitFormBloc() async* {
-    if (currentState.canSubmit) {
-      _fieldBlocs
-          .forEach((fieldBloc) => fieldBloc.dispatch(ValidateFieldBloc(true)));
-      await Observable.combineLatest<FieldBlocState, bool>(
-        _fieldsStates,
-        (states) => states.every((state) => state.isValidated),
-      ).firstWhere((isValidated) => isValidated);
-
-      if (_areFieldStatesValid(_fieldsCurrentState)) {
-        final newState = currentState.withIsValid(true);
-        yield newState;
-        yield newState.toSubmitting(0.0);
-        yield* onSubmitting();
-      } else {
-        final stateSnapshot = currentState;
-        yield FormBlocSubmissionFailed(false);
-        yield stateSnapshot;
-      }
+    if (currentState.canSubmit && _canSubmit) {
+      _canSubmit = false;
+      unawaited(_onSubmittingSubscription?.cancel());
 
       _fieldBlocs.forEach(
-          (fieldBloc) => fieldBloc.dispatch(ResetFieldBlocStateIsValidated()));
+        (fieldBloc) {
+          if (!_isFieldStateValid(fieldBloc.currentState)) {
+            fieldBloc.dispatch(ValidateFieldBloc(true));
+          }
+        },
+      );
+
+      _onSubmittingSubscription =
+          Observable.combineLatest<FieldBlocState, bool>(
+        _fieldsStates,
+        (states) => states.every((state) => state.isValidated),
+      ).listen(
+        (areValidated) async {
+          if (areValidated) {
+            unawaited(_onSubmittingSubscription?.cancel());
+
+            if (_areFieldStatesValid(_fieldsCurrentState)) {
+              final newState = currentState.withIsValid(true);
+
+              updateState(newState);
+              updateState(newState.toSubmitting(0.0));
+              final isStateUpdated = (await state.firstWhere(
+                    (state) => state == newState.toSubmitting(0.0),
+                    orElse: () => null,
+                  )) !=
+                  null;
+              if (isStateUpdated) {
+                onSubmitting().listen(updateState);
+              }
+            } else {
+              final stateSnapshot = currentState;
+              updateState(FormBlocSubmissionFailed(false));
+              updateState(stateSnapshot);
+            }
+
+            // _fieldBlocs.forEach((fieldBloc) =>
+            //     fieldBloc.dispatch(ResetFieldBlocStateIsValidated()));
+          }
+        },
+      );
     }
   }
 
