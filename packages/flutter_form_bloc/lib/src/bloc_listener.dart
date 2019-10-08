@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 /// Signature for the listener function which takes the [BuildContext] along with the bloc state
 /// and is responsible for executing in response to state changes.
@@ -16,8 +15,8 @@ typedef BlocWidgetListener<S> = void Function(BuildContext context, S state);
 typedef BlocListenerCondition<S> = bool Function(
     S penultimate, S previous, S current);
 
-class BlocListener<B extends Bloc<dynamic, S>, S> extends BlocListenerBase<B, S>
-    with SingleChildCloneableWidget {
+class BlocListener<B extends Bloc<dynamic, S>, S>
+    extends BlocListenerBase<B, S> {
   /// The [Widget] which will be rendered as a descendant of the [BlocListener].
   final Widget child;
 
@@ -85,20 +84,6 @@ class BlocListener<B extends Bloc<dynamic, S>, S> extends BlocListenerBase<B, S>
           bloc: bloc,
           condition: condition,
         );
-
-  /// Clones the current [BlocListener] with a new child [Widget].
-  /// All other values, including `key`, `bloc` and `listener` are preserved.
-  /// preserved.
-  @override
-  BlocListener<B, S> cloneWithChild(Widget child) {
-    return BlocListener<B, S>(
-      key: key,
-      bloc: bloc,
-      listener: listener,
-      condition: condition,
-      child: child,
-    );
-  }
 
   @override
   Widget build(BuildContext context) => child;

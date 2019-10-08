@@ -60,6 +60,13 @@ Before to use this package you need to know the [core concepts of bloc package](
                 </a>
             </td>                     
         </tr>
+        <tr>
+            <td> 
+                <a>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_8.gif" width="230"/>
+                </a>
+            </td>                     
+        </tr>
     </table>
 </div>
 
@@ -92,7 +99,7 @@ If you want me to add other widgets please let me know, or make a pull request.
 ```yaml
 dependencies:
   form_bloc: ^0.5.0
-  flutter_form_bloc: ^0.4.0+1
+  flutter_form_bloc: ^0.4.1
   flutter_bloc: ^0.21.0
 ```
 

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' hide BlocListener;
+import 'package:flutter_form_bloc/src/bloc_listener.dart';
 import 'package:form_bloc/form_bloc.dart' as form_bloc;
 
 typedef FormBlocListenerCallback<
@@ -120,8 +121,18 @@ The context used was: $context""",
     return BlocListener<FormBloc,
         form_bloc.FormBlocState<SuccessResponse, ErrorResponse>>(
       bloc: _formBloc,
-      condition: (previousState, currentState) =>
-          previousState.runtimeType != currentState.runtimeType,
+      condition: (penultimateState, previousState, currentState) {
+        if (previousState.runtimeType != currentState.runtimeType) {
+          if (penultimateState is form_bloc.FormBlocFailure &&
+              previousState is form_bloc.FormBlocSubmissionFailed &&
+              currentState is form_bloc.FormBlocFailure) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+        return false;
+      },
       listener: (context, state) {
         if (state
                 is form_bloc.FormBlocLoading<SuccessResponse, ErrorResponse> &&
