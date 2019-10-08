@@ -1,7 +1,11 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc_example/bloc_delegate.dart';
 import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/complex_login_form.dart';
+import 'package:flutter_form_bloc_example/forms/field_bloc_async_validation_form.dart';
 import 'package:flutter_form_bloc_example/forms/form_fields_example_form.dart';
+import 'package:flutter_form_bloc_example/forms/manually_set_field_bloc_error_form.dart';
 import 'package:flutter_form_bloc_example/forms/not_auto_validation_form.dart';
 import 'package:flutter_form_bloc_example/forms/progress_form.dart';
 import 'package:flutter_form_bloc_example/forms/simple_async_prefilled_form.dart';
@@ -11,6 +15,8 @@ import 'package:flutter_form_bloc_example/styles/themes.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 
 void main() {
+  BlocSupervisor.delegate = MyBlocDelegate();
+
   runApp(App());
 }
 
@@ -95,6 +101,11 @@ class Form {
       ProgressForm(),
     ),
     Form(
+      'Form fields with async validators',
+      'Username and Email Availability with an Asynchronous Validator while typing.',
+      FieldBlocAsyncValidationForm(),
+    ),
+    Form(
       'Simple login',
       'Stateless, validators, text fields, and success response.',
       SimpleLoginForm(),
@@ -118,6 +129,11 @@ class Form {
       'Not Auto Validation Example',
       'Form without auto validation.',
       NotAutoValidationForm(),
+    ),
+    Form(
+      'Manually set fieldBloc error',
+      'Add error to the FieldBloc based on backend response.',
+      ManuallySetFieldBlocErrorForm(),
     ),
     Form(
       'Simple Async prefilled form',

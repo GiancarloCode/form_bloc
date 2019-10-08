@@ -38,5 +38,12 @@ To see the code, check out the [forms folder](https://github.com/GiancarloCode/f
                 </a>
             </td>            
         </tr>
+        <tr>
+            <td> 
+                <a>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_7.gif" width="230"/>
+                </a>
+            </td>                     
+        </tr>
     </table>
 </div>

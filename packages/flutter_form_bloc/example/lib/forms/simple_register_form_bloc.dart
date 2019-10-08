@@ -15,6 +15,7 @@ class SimpleRegisterFormBloc extends FormBloc<String, String> {
       [emailField, passwordField, confirmPasswordField, termAndConditionsField];
 
   SimpleRegisterFormBloc() {
+    confirmPasswordField.subscribeToFieldBlocs([passwordField]);
     confirmPasswordField
         .addValidators([Validators.confirmPassword(passwordField)]);
   }

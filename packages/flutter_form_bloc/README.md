@@ -2,7 +2,7 @@
 
 [![Pub](https://img.shields.io/pub/v/flutter_form_bloc.svg)](https://pub.dev/packages/flutter_form_bloc)
 
-Create Beautiful Forms in Flutter. The easiest way to Prefill, Validate, Update Form Fields, and Show Progress, Failures, Successes or Navigate by Reacting to the Form State.
+Create Beautiful Forms in Flutter. The easiest way to Prefill, Async Validation, Update Form Fields, and Show Progress, Failures, Successes or Navigate by Reacting to the Form State. 
 
 Separate the Form State and Business Logic from the User Interface using [form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/form_bloc).
 
@@ -53,6 +53,13 @@ Before to use this package you need to know the [core concepts of bloc package](
                 </a>
             </td>            
         </tr>
+        <tr>
+            <td> 
+                <a>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_7.gif" width="230"/>
+                </a>
+            </td>                     
+        </tr>
     </table>
 </div>
 
@@ -70,14 +77,22 @@ Before to use this package you need to know the [core concepts of bloc package](
 
 If you want me to add other widgets please let me know, or make a pull request.
 
+# Examples
+* FieldBlocs with async validation: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/field_bloc_async_validation_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/field_bloc_async_validation_form.dart).
+* Manually set FieldBloc error: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/manually_set_field_bloc_error_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/manually_set_field_bloc_error_form.dart).
+* FormBloc with submission progress: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/progress_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/progress_form_bloc.dart).
+* FormBloc without auto validation: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/not_auto_validation_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/not_auto_validation_form.dart).
+* Complex async prefilled FormBloc: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/complex_async_prefilled_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/complex_async_prefilled_form.dart).
+* [And more examples](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example/lib/forms).
 
 
-# Example
+
+## Basic Example
 
 ```yaml
 dependencies:
-  form_bloc: ^0.4.1
-  flutter_form_bloc: ^0.3.1
+  form_bloc: ^0.5.0
+  flutter_form_bloc: ^0.4.0
   flutter_bloc: ^0.21.0
 ```
 

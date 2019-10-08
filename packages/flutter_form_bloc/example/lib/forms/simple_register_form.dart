@@ -21,6 +21,7 @@ class _SimpleRegisterFormState extends State<SimpleRegisterForm> {
 
   @override
   void dispose() {
+    _formBloc.dispose();
     _focusNodes.forEach((focusNode) => focusNode.dispose());
     super.dispose();
   }

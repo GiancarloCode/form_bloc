@@ -21,6 +21,6 @@ class MyBlocDelegate extends BlocDelegate {
 
   void _printWrapped(String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
-    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+    pattern.allMatches(text).forEach((match) => print('\n${match.group(0)}\n'));
   }
 }

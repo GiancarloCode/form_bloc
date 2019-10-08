@@ -17,7 +17,11 @@ export 'package:flutter_form_bloc/src/flutter_typeahead.dart'
 const double _kMenuItemHeight = 48.0;
 const EdgeInsets _kMenuItemPadding = EdgeInsets.symmetric(horizontal: 16.0);
 
-enum SuffixButton { obscureText, clearText }
+enum SuffixButton {
+  obscureText,
+  clearText,
+  circularIndicatorWhenIsAsyncValidating,
+}
 
 /// A material design text field that can show suggestions.
 class TextFieldBlocBuilder extends StatefulWidget {
@@ -693,6 +697,21 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
             ),
           );
           break;
+        case SuffixButton.circularIndicatorWhenIsAsyncValidating:
+          decoration = decoration.copyWith(
+            suffixIcon: AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: state.canShowIsValidating ? 1.0 : 0.0,
+              child: Container(
+                padding: EdgeInsets.all(12),
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3.0,
+                ),
+              ),
+            ),
+          );
       }
     }
 

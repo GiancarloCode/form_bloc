@@ -45,6 +45,7 @@ class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
 
       // Update items
       prefilledSelectField.updateItems(['Option 1', 'Option 2', 'Option 3']);
+
       // Update value
       prefilledSelectField.updateInitialValue('Option 2');
 
