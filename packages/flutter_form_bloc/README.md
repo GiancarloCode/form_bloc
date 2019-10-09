@@ -58,14 +58,17 @@ Before to use this package you need to know the [core concepts of bloc package](
                 <a>
                     <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_7.gif" width="230"/>
                 </a>
-            </td>                     
-        </tr>
-        <tr>
+            </td>
             <td> 
                 <a>
                     <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_8.gif" width="230"/>
                 </a>
-            </td>                     
+            </td>
+            <td> 
+                <a>
+                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_9.gif" width="230"/>
+                </a>
+            </td>                      
         </tr>
     </table>
 </div>
