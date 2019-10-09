@@ -379,15 +379,13 @@ void main() {
       fieldBloc.updateInitialValue(null);
     });
     test('select method SelectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
-        isRequired: false,
-      );
+      final fieldBloc = MultiSelectFieldBloc<bool>();
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
-        error: null,
+        error: ValidatorsError.requiredMultiSelectFieldBloc,
         isInitial: true,
-        isRequired: false,
+        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -395,6 +393,7 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
+        error: Optional.absent(),
         value: Optional.of([true]),
         isInitial: false,
       );
@@ -402,9 +401,11 @@ void main() {
         value: Optional.of([true, false]),
       );
       final state4 = state3.copyWith(
+        error: Optional.of(ValidatorsError.requiredMultiSelectFieldBloc),
         value: Optional.of([]),
       );
       final state5 = state4.copyWith(
+        error: Optional.absent(),
         value: Optional.of([false]),
       );
 
@@ -428,14 +429,13 @@ void main() {
     });
 
     test('deselect method DeselectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
-          isRequired: false, initialValue: [true, false]);
+      final fieldBloc = MultiSelectFieldBloc<bool>(initialValue: [true, false]);
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [true, false],
         error: null,
         isInitial: true,
-        isRequired: false,
+        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -447,9 +447,11 @@ void main() {
         isInitial: false,
       );
       final state3 = state2.copyWith(
+        error: Optional.of(ValidatorsError.requiredMultiSelectFieldBloc),
         value: Optional.of([]),
       );
       final state4 = state3.copyWith(
+        error: Optional.absent(),
         value: Optional.of([true, false]),
       );
       final state5 = state4.copyWith(

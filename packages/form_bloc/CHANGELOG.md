@@ -1,3 +1,6 @@
+# 0.5.1
+* Fixed a bug in `MultiSelectFieldBloc`.
+
 # 0.5.0
 * Dependency and Documentation Updates.
 * Added `isValidating` property to `FieldBlocState`.

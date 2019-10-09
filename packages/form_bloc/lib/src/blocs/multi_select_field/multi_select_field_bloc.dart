@@ -164,27 +164,42 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
       if (currentState.formBlocState is! FormBlocSubmitting) {
-        List<Value> value = currentState.value ?? [];
+        List<Value> newValue = currentState.value ?? [];
+        newValue = FieldBlocBase._itemsWithoutDuplicates(
+          List<Value>.from(newValue)..add(event.valueToSelect),
+        );
+
+        final error = _getError(newValue);
+
+        final isValidating =
+            _getAsyncValidatorsError(value: newValue, error: error);
+
         yield currentState.copyWith(
-          value: Optional.fromNullable(
-            FieldBlocBase._itemsWithoutDuplicates(
-              List<Value>.from(value)..add(event.valueToSelect),
-            ),
-          ),
+          value: Optional.fromNullable(newValue),
+          error: Optional.fromNullable(error),
           isInitial: false,
+          isValidated: _isValidated(isValidating),
+          isValidating: isValidating,
         );
       }
     } else if (event is DeselectMultiSelectFieldBlocValue<Value>) {
       if (currentState.formBlocState is! FormBlocSubmitting) {
-        List<Value> value = currentState.value;
-        if (value != null && value.isNotEmpty) {
+        List<Value> newValue = currentState.value;
+
+        if (newValue != null && newValue.isNotEmpty) {
+          newValue = List<Value>.from(newValue)..remove(event.valueToDeselect);
+
+          final error = _getError(newValue);
+
+          final isValidating =
+              _getAsyncValidatorsError(value: newValue, error: error);
+
           yield currentState.copyWith(
-            value: Optional.fromNullable(
-              FieldBlocBase._itemsWithoutDuplicates(
-                List<Value>.from(value)..remove(event.valueToDeselect),
-              ),
-            ),
+            value: Optional.fromNullable(newValue),
+            error: Optional.fromNullable(error),
             isInitial: false,
+            isValidated: _isValidated(isValidating),
+            isValidating: isValidating,
           );
         }
       }
