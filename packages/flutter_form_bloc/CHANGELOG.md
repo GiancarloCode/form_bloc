@@ -1,3 +1,7 @@
+# 0.4.3
+* Updated to form_bloc: ^0.5.2.
+* Documentation Updates.
+
 # 0.4.2
 * Updated to form_bloc: ^0.5.1.
 

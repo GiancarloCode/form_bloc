@@ -47,9 +47,11 @@ class SimpleAsyncPrefilledFormBloc extends FormBloc<String, String> {
     yield currentState.toSuccess('Values saved in shared preferences.');
 
     // yield `currentState.toLoaded()` because
-    // you can't submit if the state is `FormBlocSuccess`.
+    // you can't submit if the current state is `FormBlocSuccess`.
     // In most cases you don't need to do this,
-    // because you only want to submit only once.
+    // because you only want to submit only once,
+    // but in this case you want the user to submit more than once.
+    // See: https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html
     yield currentState.toLoaded();
   }
 }
