@@ -1,3 +1,9 @@
+# 0.5.2
+* Documentation Updates.
+* Fixed a bug in `isValid` property of `fieldBlocState`.
+* Prevented to update `FieldBloc.value` if is the same value and is validated.
+* Improved `requiredTextFieldBloc` validator.
+
 # 0.5.1
 * Fixed a bug in `MultiSelectFieldBloc`.
 

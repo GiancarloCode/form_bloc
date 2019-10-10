@@ -163,12 +163,11 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
         );
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
-      if (currentState.formBlocState is! FormBlocSubmitting) {
-        List<Value> newValue = currentState.value ?? [];
-        newValue = FieldBlocBase._itemsWithoutDuplicates(
-          List<Value>.from(newValue)..add(event.valueToSelect),
-        );
-
+      List<Value> newValue = currentState.value ?? [];
+      newValue = FieldBlocBase._itemsWithoutDuplicates(
+        List<Value>.from(newValue)..add(event.valueToSelect),
+      );
+      if (_canUpdateValue(value: newValue, isInitialValue: false)) {
         final error = _getError(newValue);
 
         final isValidating =
@@ -183,25 +182,21 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
         );
       }
     } else if (event is DeselectMultiSelectFieldBlocValue<Value>) {
-      if (currentState.formBlocState is! FormBlocSubmitting) {
-        List<Value> newValue = currentState.value;
+      List<Value> newValue = currentState.value;
+      newValue = List<Value>.from(newValue)..remove(event.valueToDeselect);
+      if (_canUpdateValue(value: newValue, isInitialValue: false)) {
+        final error = _getError(newValue);
 
-        if (newValue != null && newValue.isNotEmpty) {
-          newValue = List<Value>.from(newValue)..remove(event.valueToDeselect);
+        final isValidating =
+            _getAsyncValidatorsError(value: newValue, error: error);
 
-          final error = _getError(newValue);
-
-          final isValidating =
-              _getAsyncValidatorsError(value: newValue, error: error);
-
-          yield currentState.copyWith(
-            value: Optional.fromNullable(newValue),
-            error: Optional.fromNullable(error),
-            isInitial: false,
-            isValidated: _isValidated(isValidating),
-            isValidating: isValidating,
-          );
-        }
+        yield currentState.copyWith(
+          value: Optional.fromNullable(newValue),
+          error: Optional.fromNullable(error),
+          isInitial: false,
+          isValidated: _isValidated(isValidating),
+          isValidating: isValidating,
+        );
       }
     }
   }

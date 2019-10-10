@@ -298,9 +298,26 @@ abstract class FieldBlocBase<Value, Suggestion,
       _asyncValidators != null &&
       _asyncValidators.isNotEmpty;
 
+  bool _canUpdateValue({@required Value value, @required bool isInitialValue}) {
+    final stateSnapshot = currentState;
+    if (stateSnapshot.formBlocState is! FormBlocSubmitting) {
+      if (stateSnapshot.value == value && stateSnapshot.isValidated) {
+        if (isInitialValue) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
   Stream<State> _onUpdateFieldBlocValue(
       UpdateFieldBlocValue<Value> event) async* {
-    if (currentState.formBlocState is! FormBlocSubmitting) {
+    if (_canUpdateValue(value: event.value, isInitialValue: false)) {
       final error = _getError(event.value);
 
       final isValidating =
@@ -318,7 +335,7 @@ abstract class FieldBlocBase<Value, Suggestion,
 
   Stream<State> _onUpdateFieldBlocInitialValue(
       UpdateFieldBlocInitialValue<Value> event) async* {
-    if (currentState.formBlocState is! FormBlocSubmitting) {
+    if (_canUpdateValue(value: event.value, isInitialValue: true)) {
       final error = _getError(event.value);
 
       final isValidating =

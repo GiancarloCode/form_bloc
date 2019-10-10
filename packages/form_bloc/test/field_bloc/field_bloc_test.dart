@@ -360,7 +360,7 @@ void main() {
       fieldBloc.updateValue(2);
     });
     test(
-        'updateValue method and UpdateFieldBlocValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting.',
+        'updateValue method and UpdateFieldBlocValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
         () {
       final fieldBloc = InputFieldBloc<int>(
         isRequired: false,
@@ -423,6 +423,12 @@ void main() {
       final state15 = state14.copyWith(
         value: Optional.of(8),
       );
+      final state16 = state15.copyWith(
+        isValidated: false,
+      );
+      final state17 = state16.copyWith(
+        isValidated: true,
+      );
 
       final List<InputFieldBlocState<int>> expectedStates = [
         state1,
@@ -440,6 +446,8 @@ void main() {
         state13,
         state14,
         state15,
+        state16,
+        state17,
       ];
 
       expect(
@@ -454,9 +462,13 @@ void main() {
         ),
       );
       fieldBloc.updateValue(2);
+      fieldBloc.updateValue(2);
+      fieldBloc.updateValue(2);
       fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
         FormBlocLoaded<dynamic, dynamic>(true),
       ));
+      fieldBloc.updateValue(3);
+      fieldBloc.updateValue(3);
       fieldBloc.updateValue(3);
       fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmitting<dynamic, dynamic>(
@@ -481,6 +493,9 @@ void main() {
       fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmissionFailed<dynamic, dynamic>(true),
       ));
+      fieldBloc.updateValue(8);
+      fieldBloc.updateValue(8);
+      fieldBloc.dispatch(ResetFieldBlocStateIsValidated());
       fieldBloc.updateValue(8);
     });
 
@@ -537,7 +552,7 @@ void main() {
     });
 
     test(
-        'updateInitialValue method and UpdateFieldBlocInitialValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting.',
+        'updateInitialValue method and UpdateFieldBlocInitialValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
         () {
       final fieldBloc = InputFieldBloc<int>(
         isRequired: false,
@@ -599,6 +614,12 @@ void main() {
       final state15 = state14.copyWith(
         value: Optional.of(8),
       );
+      final state16 = state15.copyWith(
+        isValidated: false,
+      );
+      final state17 = state16.copyWith(
+        isValidated: true,
+      );
 
       final List<InputFieldBlocState<int>> expectedStates = [
         state1,
@@ -616,6 +637,8 @@ void main() {
         state13,
         state14,
         state15,
+        state16,
+        state17,
       ];
 
       expect(
@@ -630,9 +653,13 @@ void main() {
         ),
       );
       fieldBloc.updateInitialValue(2);
+      fieldBloc.updateInitialValue(2);
+      fieldBloc.updateInitialValue(2);
       fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
         FormBlocLoaded<dynamic, dynamic>(true),
       ));
+      fieldBloc.updateInitialValue(3);
+      fieldBloc.updateInitialValue(3);
       fieldBloc.updateInitialValue(3);
       fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmitting<dynamic, dynamic>(
@@ -657,6 +684,9 @@ void main() {
       fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmissionFailed<dynamic, dynamic>(true),
       ));
+      fieldBloc.updateInitialValue(8);
+      fieldBloc.updateInitialValue(8);
+      fieldBloc.dispatch(ResetFieldBlocStateIsValidated());
       fieldBloc.updateInitialValue(8);
     });
 

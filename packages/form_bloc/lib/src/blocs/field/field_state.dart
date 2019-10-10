@@ -57,9 +57,11 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
         this.formBlocState =
             formBlocState ?? FormBlocLoaded<dynamic, dynamic>(true);
 
-  /// Indicates if this state not has error.
-  /// Which means that the error is not `null`.
-  bool get isValid => !hasError;
+  /// Indicates if this state
+  /// not has error (which means that the error is not `null`)
+  /// and not is validating
+  /// and is validated
+  bool get isValid => !hasError && !isValidating && isValidated;
 
   /// Indicates if [error] is not `null`.
   bool get hasError => error != null;

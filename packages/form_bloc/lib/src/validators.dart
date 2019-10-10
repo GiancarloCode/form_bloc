@@ -52,7 +52,7 @@ class Validators {
   ///
   /// Returns [ValidatorsError.requiredTextFieldBloc].
   static String requiredTextFieldBloc(String string) {
-    if (string != null && string.isNotEmpty) {
+    if (string != null && string.trim().isNotEmpty) {
       return null;
     }
     return ValidatorsError.requiredTextFieldBloc;

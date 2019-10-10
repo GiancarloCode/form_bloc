@@ -408,6 +408,9 @@ void main() {
         error: Optional.absent(),
         value: Optional.of([false]),
       );
+      final state6 = state5.copyWith(
+        value: Optional.of([false, null]),
+      );
 
       final expectedStates = [
         state1,
@@ -415,6 +418,7 @@ void main() {
         state3,
         state4,
         state5,
+        state6,
       ];
 
       expect(
@@ -426,6 +430,7 @@ void main() {
       fieldBloc.select(false);
       fieldBloc.updateValue(null);
       fieldBloc.select(false);
+      fieldBloc.select(null);
     });
 
     test('deselect method DeselectMultiSelectFieldBlocValue event.', () {
@@ -452,9 +457,12 @@ void main() {
       );
       final state4 = state3.copyWith(
         error: Optional.absent(),
-        value: Optional.of([true, false]),
+        value: Optional.of([true, false, null]),
       );
       final state5 = state4.copyWith(
+        value: Optional.of([true, false]),
+      );
+      final state6 = state5.copyWith(
         value: Optional.of([true]),
       );
 
@@ -464,6 +472,7 @@ void main() {
         state3,
         state4,
         state5,
+        state6,
       ];
 
       expect(
@@ -475,7 +484,8 @@ void main() {
       fieldBloc.deselect(true);
       fieldBloc.deselect(false);
       fieldBloc.deselect(false);
-      fieldBloc.updateValue([true, false]);
+      fieldBloc.updateValue([true, false, null]);
+      fieldBloc.deselect(null);
       fieldBloc.deselect(null);
       fieldBloc.deselect(false);
     });

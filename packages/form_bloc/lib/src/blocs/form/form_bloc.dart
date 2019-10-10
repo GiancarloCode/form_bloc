@@ -89,62 +89,45 @@ export 'form_state.dart';
 /// ```
 abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     FormBlocEvent, FormBlocState<SuccessResponse, FailureResponse>> {
+  /// See: [_setupAreAllFieldsValidSubscription].
   StreamSubscription<bool> _areAllFieldsValidSubscription;
 
+  /// See [_setupFormBlocStateSubscription()].
   StreamSubscription<FormBlocState> _formBlocStateSubscription;
 
-  /// Subscription when call [submit]
+  /// Subscription to the state of the submission
+  /// for know if the current state is [FormBlocSubmitting].
+  ///
+  /// See: [_onSubmitFormBloc].
   StreamSubscription<bool> _onSubmittingSubscription;
 
-  /// Flag for prevent submit when is Validating before call [onSubmitting]
+  /// Flag for prevent submit when is Validating before call [onSubmitting].
+  ///
+  /// See: [_onSubmitFormBloc] and [_setupFormBlocStateSubscription].
   bool _canSubmit = true;
 
-  bool _isLoading;
+  /// Indicates if the initial state must be [FormBlocLoading].
+  bool _isInitialStateLoading;
+
   FormBloc({bool isLoading = false, bool autoValidate = true})
       : assert(isLoading != null),
         assert(autoValidate != null),
-        _isLoading = isLoading {
+        _isInitialStateLoading = isLoading {
     assert(fieldBlocs != null);
     assert(fieldBlocs.isNotEmpty);
 
-    if (!autoValidate) {
-      _fieldBlocs.forEach(
-        (fieldBloc) => fieldBloc.dispatch(DisableFieldBlocAutoValidate()),
-      );
-    }
+    _setupAutoValidation(autoValidate);
 
-    _areAllFieldsValidSubscription =
-        Observable.combineLatest<FieldBlocState, bool>(
-      _fieldsStates,
-      (fieldStates) => fieldStates.every(
-        (fieldState) {
-          // if any value change, then can submit again
-          _canSubmit = true;
-          return _isFieldStateValid(fieldState);
-        },
-      ),
-    ).distinct().listen(_updateFormState);
+    _setupAreAllFieldsValidSubscription();
 
-    _formBlocStateSubscription = state.listen(
-      (state) => _fieldBlocs.forEach(
-        (fieldBloc) {
-          if (state is FormBlocSubmitting ||
-              state is FormBlocSubmissionFailed) {
-            _canSubmit = true;
-          }
-          fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(state));
-        },
-      ),
-    );
+    _setupFormBlocStateSubscription();
 
-    if (isLoading) {
-      dispatch(LoadFormBloc());
-    }
+    _callOnLoadingIfNeeded(isLoading);
   }
 
   /// You need to pass a list of [FieldBloc]S for update the [FormBlocState]
   /// when any [FieldBloc] changes its state.
-
+  ///
   /// You don't need to call `dispose` method for each [FieldBloc]
   /// because [FormBloc.dispose] will call it.
   List<FieldBloc> get fieldBlocs;
@@ -162,8 +145,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   bool _areFieldStatesValid(List<FieldBlocState> fieldStates) =>
       fieldStates.every(_isFieldStateValid);
 
-  bool _isFieldStateValid(FieldBlocState state) =>
-      state.isValid && !state.isValidating && state.isValidated;
+  bool _isFieldStateValid(FieldBlocState state) => state.isValid;
 
   void _updateFormState(bool areAllFieldsValid) =>
       dispatch(UpdateFormBlocStateIsValid(areAllFieldsValid));
@@ -183,10 +165,63 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   @override
   FormBlocState<SuccessResponse, FailureResponse> get initialState {
-    if (_isLoading) {
+    if (_isInitialStateLoading) {
       return FormBlocLoading();
     } else {
       return FormBlocLoaded(_areFieldStatesValid(_fieldsCurrentState));
+    }
+  }
+
+  /// if [autoValidate] is `false` disable the
+  /// auto validation in each `fieldBloc` in [FieldBlocs].
+  void _setupAutoValidation(bool autoValidate) {
+    if (!autoValidate) {
+      _fieldBlocs.forEach(
+        (fieldBloc) => fieldBloc.dispatch(DisableFieldBlocAutoValidate()),
+      );
+    }
+  }
+
+  /// Init the subscription to the state of each
+  /// `fieldBloc` in [FieldBlocs] to update [FormBlocState.isValid]
+  /// when any `fieldBloc` changes it state.
+  void _setupAreAllFieldsValidSubscription() {
+    _areAllFieldsValidSubscription =
+        Observable.combineLatest<FieldBlocState, bool>(
+      _fieldsStates,
+      (fieldStates) => fieldStates.every(
+        (fieldState) {
+          // if any value change, then can submit again
+          _canSubmit = true;
+          return _isFieldStateValid(fieldState);
+        },
+      ),
+    ).distinct().listen(_updateFormState);
+  }
+
+  /// Init the subscription to the state of this [FormBloc]
+  /// to update [FieldBlocState.formBlocState] of each
+  /// `fieldBloc` in [FieldBlocs] when the [FormBloc] changes it state.
+  void _setupFormBlocStateSubscription() {
+    _formBlocStateSubscription = state.listen(
+      (state) => _fieldBlocs.forEach(
+        (fieldBloc) {
+          if (state is FormBlocSubmitting ||
+              state is FormBlocSubmissionFailed) {
+            _canSubmit = true;
+          }
+          fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(state));
+        },
+      ),
+    );
+  }
+
+  /// If [isLoading] is `true`, [OnLoading]
+  /// will be called, so the user can update
+  /// the [FormBloc] while the state is [FormBlocLoading].
+  void _callOnLoadingIfNeeded(bool isLoading) {
+    if (isLoading) {
+      dispatch(LoadFormBloc());
     }
   }
 
@@ -278,9 +313,6 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
               updateState(FormBlocSubmissionFailed(false));
               updateState(stateSnapshot);
             }
-
-            // _fieldBlocs.forEach((fieldBloc) =>
-            //     fieldBloc.dispatch(ResetFieldBlocStateIsValidated()));
           }
         },
       );
