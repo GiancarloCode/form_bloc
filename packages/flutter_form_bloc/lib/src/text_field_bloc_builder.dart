@@ -117,9 +117,17 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.suggestionsBoxDecoration,
     this.suggestionTextStyle,
     this.debounceSuggestionDuration = const Duration(milliseconds: 300),
-    this.getImmediateSuggestions = false,
+    this.getImmediateSuggestions = true,
     this.suggestionsAnimationDuration = const Duration(milliseconds: 700),
     this.nextFocusNode,
+    this.hideOnLoadingSuggestions = false,
+    this.hideOnEmptySuggestions = false,
+    this.hideOnSuggestionsError = false,
+    this.loadingSuggestionsBuilder,
+    this.suggestionsNotFoundBuilder,
+    this.suggestionsErrorBuilder,
+    this.keepSuggestionsOnLoading = false,
+    this.showSuggestionsWhenIsEmpty = true,
   })  : assert(textFieldBloc != null),
         assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
@@ -129,6 +137,12 @@ class TextFieldBlocBuilder extends StatefulWidget {
         assert(getImmediateSuggestions != null),
         assert(textAlign != null),
         assert(autofocus != null),
+        assert(autocorrect != null),
+        assert(hideOnEmptySuggestions != null),
+        assert(hideOnSuggestionsError != null),
+        assert(hideOnLoadingSuggestions != null),
+        assert(keepSuggestionsOnLoading != null),
+        assert(showSuggestionsWhenIsEmpty != null),
         assert(autocorrect != null),
         assert(maxLengthEnforced != null),
         assert(scrollPadding != null),
@@ -199,7 +213,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// To make the field receive focus immediately, you can set the `autofocus`
   /// property in the [textFieldConfiguration] to true
   ///
-  /// Defaults to false
+  /// Defaults to true
   final bool getImmediateSuggestions;
 
   /// The style to use for the suggestion text.
@@ -215,6 +229,78 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// This duration is set by default to 300 milliseconds.
   final Duration debounceSuggestionDuration;
+
+  /// If set to true, no loading box will be shown while suggestions are
+  /// being fetched. [loadingSuggestionsBuilder] will also be ignored.
+  ///
+  /// Defaults to false.
+  final bool hideOnLoadingSuggestions;
+
+  /// If set to true, nothing will be shown if there are no results.
+  /// [suggestionsNotFoundBuilder] will also be ignored.
+  ///
+  /// Defaults to false
+  final bool hideOnEmptySuggestions;
+
+  /// If set to true, nothing will be shown if there is an error.
+  /// [suggestionsErrorBuilder] will also be ignored.
+  ///
+  /// Defaults to false.
+  final bool hideOnSuggestionsError;
+
+  /// Called when waiting for [TextFieldBlocState.suggestions] to return.
+  ///
+  /// It is expected to return a widget to display while waiting.
+  /// For example:
+  /// ```dart
+  /// (BuildContext context) {
+  ///   return Text('Loading...');
+  /// }
+  /// ```
+  ///
+  /// If not specified, a [CircularProgressIndicator](https://docs.flutter.io/flutter/material/CircularProgressIndicator-class.html) is shown
+  final WidgetBuilder loadingSuggestionsBuilder;
+
+  /// Called when [TextFieldBlocState.suggestions] returns an empty array.
+  ///
+  /// It is expected to return a widget to display when no suggestions are
+  /// available.
+  /// For example:
+  /// ```dart
+  /// (BuildContext context) {
+  ///   return Text('No Items Found!');
+  /// }
+  /// ```
+  ///
+  /// If not specified, a simple text is shown
+  final WidgetBuilder suggestionsNotFoundBuilder;
+
+  /// Called when [TextFieldBlocState.suggestions] throws an exception.
+  ///
+  /// It is called with the error object, and expected to return a widget to
+  /// display when an exception is thrown
+  /// For example:
+  /// ```dart
+  /// (BuildContext context, error) {
+  ///   return Text('$error');
+  /// }
+  /// ```
+  ///
+  /// If not specified, the error is shown in [ThemeData.errorColor](https://docs.flutter.io/flutter/material/ThemeData/errorColor.html)
+  final ErrorBuilder suggestionsErrorBuilder;
+
+  /// If set to false, the suggestions box will show a circular
+  /// progress indicator when retrieving suggestions.
+  ///
+  /// Defaults to true.
+  final bool keepSuggestionsOnLoading;
+
+  /// If set to false, the suggestion no will be showed
+  /// when the text is empty
+  /// and [TextFieldBlocState.suggestions] not will be called
+  ///
+  /// Defaults to true.
+  final bool showSuggestionsWhenIsEmpty;
 
   /// --------------------------------------------------------------------------
   ///                          [TextField] properties
@@ -612,18 +698,51 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               scrollPadding: widget.scrollPadding,
               focusNode: _effectiveFocusNode,
             ),
-            hideOnLoading: true,
-            hideOnEmpty: true,
-            hideOnError: true,
+            hideOnLoading: widget.hideOnLoadingSuggestions,
+            hideOnEmpty: widget.hideOnEmptySuggestions,
+            hideOnError: widget.hideOnSuggestionsError,
+            errorBuilder: widget.suggestionsErrorBuilder,
+            loadingBuilder: widget.loadingSuggestionsBuilder ??
+                (context) {
+                  return Container(
+                    height: _kMenuItemHeight,
+                    alignment: AlignmentDirectional.center,
+                    child: Container(
+                      height: 36,
+                      width: 36,
+                      padding: EdgeInsets.all(4.0),
+                      child: CircularProgressIndicator(strokeWidth: 3),
+                    ),
+                  );
+                },
+            noItemsFoundBuilder: widget.suggestionsNotFoundBuilder ??
+                (context) {
+                  return Container(
+                    height: _kMenuItemHeight,
+                    alignment: AlignmentDirectional.center,
+                    padding: _kMenuItemPadding,
+                    child: Text(
+                      'No Items Found!',
+                      style: widget.suggestionTextStyle ??
+                          Theme.of(context).textTheme.subhead.copyWith(
+                                color: ThemeData.estimateBrightnessForColor(
+                                            Theme.of(context).canvasColor) ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.grey[800],
+                              ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                },
+            keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
+            keepSuggestionsOnSuggestionSelected: false,
+            hideSuggestionsOnKeyboardHide: true,
+            showSuggestionsWhenIsEmpty: widget.showSuggestionsWhenIsEmpty,
             getImmediateSuggestions: widget.getImmediateSuggestions,
             debounceDuration: widget.debounceSuggestionDuration,
-            suggestionsCallback: (pattern) async {
-              if (state.suggestions != null) {
-                return await state.suggestions(pattern);
-              }
-
-              return null;
-            },
+            suggestionsCallback: state.suggestions,
             itemBuilder: (context, suggestion) {
               return Container(
                 height: _kMenuItemHeight,

@@ -8,8 +8,7 @@ import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:flutter/scheduler.dart';
-
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 /// A material design dropdown.
 class DropdownFieldBlocBuilder<Value> extends StatefulWidget {

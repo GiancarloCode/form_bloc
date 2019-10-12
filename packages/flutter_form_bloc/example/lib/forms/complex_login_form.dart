@@ -52,8 +52,9 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
                     textFieldBloc: formBloc.emailField,
                     nextFocusNode: _focusNodes[0],
                     keyboardType: TextInputType.emailAddress,
-                    getImmediateSuggestions: true,
+                    hideOnLoadingSuggestions: true,
                     removeSuggestionOnLongPress: true,
+                    hideOnEmptySuggestions: true,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email),

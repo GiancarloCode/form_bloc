@@ -1,3 +1,16 @@
+# 0.4.4
+* Dependencies Updates.
+* Fixed bug in suggestions of `TextFieldBlocBuilder`.
+* Added the next properties to `TextFieldBlocBuilder`.
+  * hideOnLoadingSuggestions = false,
+  * hideOnEmptySuggestions = false,
+  * hideOnSuggestionsError = false,
+  * loadingSuggestionsBuilder,
+  * suggestionsNotFoundBuilder,
+  * suggestionsErrorBuilder,
+  * keepSuggestionsOnLoading = false,
+  * showSuggestionsWhenIsEmpty = true,
+
 # 0.4.3
 * Updated to form_bloc: ^0.5.2.
 * Documentation Updates.
@@ -34,7 +47,7 @@
 
 # 0.2.0
 
-* Dependency and Documentation Updates.
+* Dependencies and Documentation Updates.
 * Add `RadioButtonGroupFieldBlocBuilder` ([#1](https://github.com/GiancarloCode/form_bloc/issues/1)).
 * Add Form with progress example.
 

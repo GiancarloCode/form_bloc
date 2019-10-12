@@ -194,7 +194,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// however, override most of them.
 ///
 /// #### Customizing the loader, the error and the "no items found" message
-/// You can use the [loadingBuilder], [errorBuilder] and [noItemsFoundBuilder] to
+/// You can use the [loadingSuggestionsBuilder], [suggestionsErrorBuilder] and [suggestionsNotFoundBuilder] to
 /// customize their corresponding widgets. For example, to show a custom error
 /// widget:
 /// ```dart
@@ -260,7 +260,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:collection/collection.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -326,6 +326,8 @@ class TypeAheadField<T> extends StatefulWidget {
   final SuggestionSelectionCallback<T> onSuggestionSelected;
 
   final SuggestionRemovedCallback<T> onSuggestionRemoved;
+
+  final bool showSuggestionsWhenIsEmpty;
 
   final bool removeSuggestionOnLongPress;
 
@@ -529,35 +531,35 @@ class TypeAheadField<T> extends StatefulWidget {
   final bool autoFlipDirection;
 
   /// Creates a [TypeAheadField]
-  TypeAheadField(
-      {Key key,
-      @required this.suggestionsCallback,
-      @required this.itemBuilder,
-      @required this.onSuggestionSelected,
-      @required this.onSuggestionRemoved,
-      this.textFieldConfiguration = const TextFieldConfiguration(),
-      this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
-      this.debounceDuration = const Duration(milliseconds: 300),
-      this.suggestionsBoxController,
-      this.loadingBuilder,
-      this.noItemsFoundBuilder,
-      this.errorBuilder,
-      this.transitionBuilder,
-      this.animationStart = 0.25,
-      this.animationDuration = const Duration(milliseconds: 500),
-      this.getImmediateSuggestions = false,
-      this.suggestionsBoxVerticalOffset = 5.0,
-      this.direction = AxisDirection.down,
-      this.hideOnLoading = false,
-      this.hideOnEmpty = false,
-      this.hideOnError = false,
-      this.hideSuggestionsOnKeyboardHide = true,
-      this.keepSuggestionsOnLoading = true,
-      this.keepSuggestionsOnSuggestionSelected = false,
-      this.autoFlipDirection = false,
-      this.removeSuggestionOnLongPress})
-      : assert(suggestionsCallback != null),
-        assert(itemBuilder != null),
+  TypeAheadField({
+    Key key,
+    @required this.suggestionsCallback,
+    @required this.itemBuilder,
+    @required this.onSuggestionSelected,
+    @required this.onSuggestionRemoved,
+    this.textFieldConfiguration = const TextFieldConfiguration(),
+    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
+    this.debounceDuration = const Duration(milliseconds: 300),
+    this.suggestionsBoxController,
+    this.loadingBuilder,
+    this.noItemsFoundBuilder,
+    this.errorBuilder,
+    this.transitionBuilder,
+    this.animationStart = 0.25,
+    this.animationDuration = const Duration(milliseconds: 500),
+    this.getImmediateSuggestions = false,
+    this.suggestionsBoxVerticalOffset = 5.0,
+    this.direction = AxisDirection.down,
+    this.hideOnLoading = false,
+    this.hideOnEmpty = false,
+    this.hideOnError = false,
+    this.hideSuggestionsOnKeyboardHide = true,
+    this.keepSuggestionsOnLoading = true,
+    this.keepSuggestionsOnSuggestionSelected = false,
+    this.autoFlipDirection = false,
+    this.removeSuggestionOnLongPress,
+    this.showSuggestionsWhenIsEmpty = false,
+  })  : assert(itemBuilder != null),
         assert(removeSuggestionOnLongPress != null),
         assert(onSuggestionSelected != null),
         assert(animationStart != null &&
@@ -568,6 +570,7 @@ class TypeAheadField<T> extends StatefulWidget {
         assert(textFieldConfiguration != null),
         assert(suggestionsBoxDecoration != null),
         assert(suggestionsBoxVerticalOffset != null),
+        assert(showSuggestionsWhenIsEmpty != null),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
         super(key: key);
@@ -719,6 +722,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBox._overlayEntry = OverlayEntry(builder: (context) {
       final suggestionsList = _SuggestionsList<T>(
         suggestionsBox: _suggestionsBox,
+        showSuggestionsWhenIsEmpty: widget.showSuggestionsWhenIsEmpty,
         hideSuggestions: _hideSuggestionsController.stream,
         removeSuggestionOnLongPress: widget.removeSuggestionOnLongPress,
         decoration: widget.suggestionsBoxDecoration,
@@ -852,6 +856,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool hideOnEmpty;
   final bool hideOnError;
   final bool keepSuggestionsOnLoading;
+  final bool showSuggestionsWhenIsEmpty;
   final Stream<void> hideSuggestions;
 
   _SuggestionsList({
@@ -876,6 +881,7 @@ class _SuggestionsList<T> extends StatefulWidget {
     this.hideOnEmpty,
     this.hideOnError,
     this.keepSuggestionsOnLoading,
+    this.showSuggestionsWhenIsEmpty,
     @required this.removeSuggestionOnLongPress,
   });
 
@@ -955,60 +961,97 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
   Future<void> _getSuggestions() async {
     if (mounted) {
-      setState(() {
-        this._animationController.forward(from: 1.0);
+      print(widget.suggestionsCallback);
+      if (widget.suggestionsCallback == null) return;
+      if (!widget.showSuggestionsWhenIsEmpty &&
+          widget.controller.text.trim().isEmpty) {
+        setState(() {
+          this._animationController.reverse(from: widget.animationStart);
+          this._suggestions = null;
+        });
+      } else {
+        setState(() {
+          this._animationController.forward(
+              from: widget.keepSuggestionsOnLoading || _isLoading ? 1.0 : 0.0);
 
-        this._isLoading = true;
-        this._error = null;
-      });
+          this._isLoading = true;
+          this._error = null;
+        });
 
-      List<T> suggestions = [];
-      Object error;
+        List<T> suggestions = [];
+        Object error;
 
-      final Object callbackIdentity = Object();
-      this._activeCallbackIdentity = callbackIdentity;
+        final Object callbackIdentity = Object();
+        this._activeCallbackIdentity = callbackIdentity;
 
-      try {
-        suggestions = await widget.suggestionsCallback(widget.controller.text);
-      } catch (e) {
-        error = e;
-      }
+        try {
+          final suggestionsStopwatch = Stopwatch()..start();
+          suggestions =
+              await widget.suggestionsCallback(widget.controller.text);
+          suggestionsStopwatch.stop();
 
-      // If another callback has been issued, omit this one
-      if (this._activeCallbackIdentity != callbackIdentity) return;
+          final remainingElapsedTime = widget.animationDuration.inMilliseconds -
+              suggestionsStopwatch.elapsedMilliseconds;
 
-      if (this.mounted) {
-        // if it wasn't removed in the meantime
-        //TODO: create Pull Request not animate when the suggestions are the previous suggestions
-
-        if (error != null ||
-            suggestions == null ||
-            suggestions.isEmpty ||
-            ListEquality<dynamic>().equals(_suggestions, suggestions)) {
-          setState(() {
-            this._animationController.forward(from: 1.0);
-          });
-        } else if (_suggestions == null) {
-          setState(() {
-            this._animationController.forward(from: 0.0);
-          });
-        } else {
-          setState(() {
-            this
-                ._animationController
-                .reverse(from: widget.animationStart)
-                .then<dynamic>((_) {
-              if (this.mounted) {
-                setState(() {
-                  this._animationController.forward(from: 0.0);
-                });
-              }
-            });
-          });
+          if (remainingElapsedTime > 0 && !widget.hideOnLoading) {
+            // use this for show the animation for open and close
+            await Future.delayed(Duration(milliseconds: remainingElapsedTime));
+          }
+        } catch (e) {
+          error = e;
         }
-        this._error = error;
-        this._isLoading = false;
-        this._suggestions = suggestions;
+
+        // If another callback has been issued, omit this one
+        if (this._activeCallbackIdentity != callbackIdentity) return;
+
+        if (this.mounted) {
+          // if it wasn't removed in the meantime
+          //TODO: create Pull Request not animate when the suggestions are the previous suggestions
+
+          void updateSuggestions(Object error, List<T> suggestions) {
+            this._error = error;
+            this._isLoading = false;
+            this._suggestions = suggestions;
+          }
+
+          if (error != null ||
+              suggestions == null ||
+              suggestions.isEmpty ||
+              ListEquality<dynamic>().equals(_suggestions, suggestions)) {
+            setState(() {
+              this._animationController.forward(from: 1.0);
+              updateSuggestions(error, suggestions);
+            });
+          } else if (_suggestions == null) {
+            setState(() {
+              this
+                  ._animationController
+                  .reverse(from: widget.animationStart)
+                  .then<dynamic>((_) {
+                if (this.mounted) {
+                  setState(() {
+                    this._animationController.forward(from: 0.0);
+                    updateSuggestions(error, suggestions);
+                  });
+                }
+              });
+            });
+          } else {
+            setState(() {
+              this
+                  ._animationController
+                  .reverse(from: widget.animationStart)
+                  .then<dynamic>((_) {
+                if (this.mounted) {
+                  setState(() {
+                    this._animationController.forward(from: 0.0);
+                    updateSuggestions(error, suggestions);
+                  });
+                }
+              });
+            });
+          }
+        }
       }
     }
   }
@@ -1035,7 +1078,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
     Widget child;
     if (this._isLoading) {
-      if (widget.hideOnLoading) {
+      if (widget.hideOnLoading && !widget.keepSuggestionsOnLoading) {
         child = Container(height: 0);
       } else {
         child = createLoadingWidget();
@@ -1098,13 +1141,10 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
   Widget createLoadingWidget() {
     Widget child;
-
-    if (widget.keepSuggestionsOnLoading && this._suggestions != null) {
-      if (this._suggestions.isEmpty) {
-        child = createNoItemsFoundWidget();
-      } else {
-        child = createSuggestionsWidget();
-      }
+    if (widget.keepSuggestionsOnLoading &&
+        this._suggestions != null &&
+        this._suggestions.isNotEmpty) {
+      child = createSuggestionsWidget();
     } else {
       child = widget.loadingBuilder != null
           ? widget.loadingBuilder(context)
@@ -1147,20 +1187,22 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   }
 
   Widget createSuggestionsWidget() {
+    final suggestions = List<T>.from(_suggestions);
+
     Widget buildItem(
         BuildContext context, int index, Animation<double> animation) {
-      final suggestion = _suggestions[index];
+      final suggestion = suggestions[index];
 
       BorderRadius borderRadius;
       if (widget.decoration.borderRadius == null) {
-        if (_suggestions.length == 1) {
+        if (suggestions.length == 1) {
           borderRadius = widget.decoration.borderRadius;
         } else if (index == 0) {
           borderRadius = BorderRadius.only(
             topLeft: widget.decoration.borderRadius.topLeft,
             topRight: widget.decoration.borderRadius.topRight,
           );
-        } else if (index == _suggestions.length - 1) {
+        } else if (index == suggestions.length - 1) {
           borderRadius = BorderRadius.only(
             bottomLeft: widget.decoration.borderRadius.bottomLeft,
             bottomRight: widget.decoration.borderRadius.bottomRight,
@@ -1183,7 +1225,8 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
                     child: widget.itemBuilder(context, suggestion),
                   );
                 });
-                _suggestions.removeAt(index);
+                _suggestions = suggestions..removeAt(index);
+
                 widget.onSuggestionRemoved(suggestion);
               },
         onTap: () {
@@ -1193,10 +1236,13 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     }
 
     Widget child = AnimatedList(
+      key: Key('__suggestionsList${suggestions.length}__'),
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
-      initialItemCount: _suggestions.length,
+
+      initialItemCount: suggestions.length,
+
       reverse: widget.suggestionsBox.direction == AxisDirection.down
           ? false
           : true, // reverses the list to start at the bottom
