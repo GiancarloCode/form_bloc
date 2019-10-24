@@ -29,7 +29,7 @@ class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
     print(prefilledBooleanField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess();
+    yield state.toSuccess();
   }
 
   Stream<FormBlocState<String, String>> _prefillFields(
@@ -52,9 +52,9 @@ class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
       // Update value
       prefilledBooleanField.updateInitialValue(true);
 
-      yield currentState.toLoaded();
+      yield state.toLoaded();
     } catch (e) {
-      yield currentState.toLoadFailed(e.message);
+      yield state.toLoadFailed(e.message);
     }
   }
 }

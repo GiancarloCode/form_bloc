@@ -39,7 +39,7 @@ class FormFieldsExampleForm extends StatelessWidget {
                     ),
                     errorBuilder: (context, error) {
                       switch (error) {
-                        case ValidatorsError.requiredTextFieldBloc:
+                        case FieldBlocValidatorsErrors.requiredTextFieldBloc:
                           return 'You must write amazing text.';
                           break;
                         default:
@@ -48,12 +48,10 @@ class FormFieldsExampleForm extends StatelessWidget {
                     },
                   ),
                   DropdownFieldBlocBuilder<String>(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 100, vertical: 250),
                     selectFieldBloc: formBloc.selectField1,
                     decoration: InputDecoration(
                       labelText: 'DropdownFieldBlocBuilder',
-                      // prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                      prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
                     ),
                     itemBuilder: (context, value) => value,
                   ),

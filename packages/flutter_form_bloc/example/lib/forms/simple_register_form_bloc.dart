@@ -1,14 +1,16 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class SimpleRegisterFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final emailField = TextFieldBloc(validators: [FieldBlocValidators.email]);
 
   final passwordField =
-      TextFieldBloc(validators: [Validators.passwordMin6Chars]);
+      TextFieldBloc(validators: [FieldBlocValidators.passwordMin6Chars]);
 
   final confirmPasswordField = TextFieldBloc();
 
-  final termAndConditionsField = BooleanFieldBloc();
+  final termAndConditionsField = BooleanFieldBloc(
+    validators: [FieldBlocValidators.requiredBooleanFieldBloc],
+  );
 
   @override
   List<FieldBloc> get fieldBlocs =>
@@ -17,7 +19,7 @@ class SimpleRegisterFormBloc extends FormBloc<String, String> {
   SimpleRegisterFormBloc() {
     confirmPasswordField.subscribeToFieldBlocs([passwordField]);
     confirmPasswordField
-        .addValidators([Validators.confirmPassword(passwordField)]);
+        .addValidators([FieldBlocValidators.confirmPassword(passwordField)]);
   }
 
   @override
@@ -31,6 +33,6 @@ class SimpleRegisterFormBloc extends FormBloc<String, String> {
     print(termAndConditionsField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess();
+    yield state.toSuccess();
   }
 }

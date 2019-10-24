@@ -18,7 +18,7 @@ class CounterBloc extends Bloc<CounterEvent, int> {
   Stream<int> mapEventToState(CounterEvent event) async* {
     switch (event) {
       case CounterEvent.increment:
-        yield currentState + 1;
+        yield state + 1;
         break;
     }
   }
@@ -76,7 +76,7 @@ class _MyAppState extends State<MyApp> {
                 key: Key('bloc_listener_increment_button'),
                 child: Text('Increment Bloc'),
                 onPressed: () {
-                  _counterBloc.dispatch(CounterEvent.increment);
+                  _counterBloc.add(CounterEvent.increment);
                 },
               ),
             ],
@@ -137,7 +137,7 @@ void main() {
 
     testWidgets('calls listener on single state change',
         (WidgetTester tester) async {
-      int latestState;
+      int latestCurrentState;
       int listenerCallCount = 0;
       final counterBloc = CounterBloc();
       final expectedStates = [0, 1];
@@ -146,22 +146,21 @@ void main() {
           bloc: counterBloc,
           listener: (BuildContext context, int state) {
             listenerCallCount++;
-            latestState = state;
+            latestCurrentState = state;
           },
           child: Container(),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(listenerCallCount, 1);
-        expect(latestState, 1);
+        expect(latestCurrentState, 1);
       });
     });
 
     testWidgets('calls listener on multiple state change',
         (WidgetTester tester) async {
-      int latestState;
+      int latestCurrentState;
       int listenerCallCount = 0;
       final counterBloc = CounterBloc();
       final expectedStates = [0, 1, 2];
@@ -170,17 +169,16 @@ void main() {
           bloc: counterBloc,
           listener: (BuildContext context, int state) {
             listenerCallCount++;
-            latestState = state;
+            latestCurrentState = state;
           },
           child: Container(),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(listenerCallCount, 2);
-        expect(latestState, 2);
+        expect(latestCurrentState, 2);
       });
     });
 
@@ -188,7 +186,7 @@ void main() {
         'updates when the bloc is changed at runtime to a different bloc and unsubscribes from old bloc',
         (WidgetTester tester) async {
       int listenerCallCount = 0;
-      int latestState;
+      int latestCurrentState;
       final Finder incrementFinder =
           find.byKey(Key('bloc_listener_increment_button'));
       final Finder resetBlocFinder =
@@ -196,33 +194,33 @@ void main() {
       await tester.pumpWidget(MyApp(
         onListenerCalled: (BuildContext context, int state) {
           listenerCallCount++;
-          latestState = state;
+          latestCurrentState = state;
         },
       ));
 
       await tester.tap(incrementFinder);
       await tester.pumpAndSettle();
       expect(listenerCallCount, 1);
-      expect(latestState, 1);
+      expect(latestCurrentState, 1);
 
       await tester.tap(incrementFinder);
       await tester.pumpAndSettle();
       expect(listenerCallCount, 2);
-      expect(latestState, 2);
+      expect(latestCurrentState, 2);
 
       await tester.tap(resetBlocFinder);
       await tester.pumpAndSettle();
       await tester.tap(incrementFinder);
       await tester.pumpAndSettle();
       expect(listenerCallCount, 3);
-      expect(latestState, 1);
+      expect(latestCurrentState, 1);
     });
 
     testWidgets(
         'does not update when the bloc is changed at runtime to same bloc and stays subscribed to current bloc',
         (WidgetTester tester) async {
       int listenerCallCount = 0;
-      int latestState;
+      int latestCurrentState;
       final Finder incrementFinder =
           find.byKey(Key('bloc_listener_increment_button'));
       final Finder noopBlocFinder =
@@ -230,26 +228,26 @@ void main() {
       await tester.pumpWidget(MyApp(
         onListenerCalled: (BuildContext context, int state) {
           listenerCallCount++;
-          latestState = state;
+          latestCurrentState = state;
         },
       ));
 
       await tester.tap(incrementFinder);
       await tester.pumpAndSettle();
       expect(listenerCallCount, 1);
-      expect(latestState, 1);
+      expect(latestCurrentState, 1);
 
       await tester.tap(incrementFinder);
       await tester.pumpAndSettle();
       expect(listenerCallCount, 2);
-      expect(latestState, 2);
+      expect(latestCurrentState, 2);
 
       await tester.tap(noopBlocFinder);
       await tester.pumpAndSettle();
       await tester.tap(incrementFinder);
       await tester.pumpAndSettle();
       expect(listenerCallCount, 3);
-      expect(latestState, 3);
+      expect(latestCurrentState, 3);
     });
 
     testWidgets(
@@ -276,10 +274,9 @@ void main() {
           child: Container(),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(conditionCallCount, 2);
         expect(latestPenultimateState, 0);
         expect(latestPreviousState, 1);
@@ -312,10 +309,9 @@ void main() {
           ),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(conditionCallCount, 2);
         expect(latestPenultimateState, 0);
         expect(latestPreviousState, 1);
@@ -349,12 +345,11 @@ void main() {
           ),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
 
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(conditionCallCount, 3);
         expect(latestPenultimateState, 1);
         expect(latestPreviousState, 2);
@@ -378,9 +373,8 @@ void main() {
           child: Container(),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(listenerCallCount, 0);
       });
     });
@@ -401,9 +395,8 @@ void main() {
           child: Container(),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(listenerCallCount, 1);
       });
     });
@@ -424,12 +417,11 @@ void main() {
           child: Container(),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(listenerCallCount, 0);
       });
     });
@@ -450,12 +442,11 @@ void main() {
           child: Container(),
         ),
       );
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      counterBloc.dispatch(CounterEvent.increment);
-      await expectLater(counterBloc.state, emitsInOrder(expectedStates))
-          .then((_) {
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      counterBloc.add(CounterEvent.increment);
+      await expectLater(counterBloc, emitsInOrder(expectedStates)).then((_) {
         expect(listenerCallCount, 4);
       });
     });

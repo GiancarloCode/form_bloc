@@ -12,7 +12,7 @@ class SimpleAsyncPrefilledFormBloc extends FormBloc<String, String> {
     items: ['Option 1', 'Option 2', 'Option 3'],
   );
 
-  final prefilledBooleanField = BooleanFieldBloc(isRequired: false);
+  final prefilledBooleanField = BooleanFieldBloc();
 
   SimpleAsyncPrefilledFormBloc() {
     prefillFields();
@@ -44,14 +44,14 @@ class SimpleAsyncPrefilledFormBloc extends FormBloc<String, String> {
     prefs.setString(_prefilledSelectFieldKey, prefilledSelectField.value);
     prefs.setBool(_prefilledBooleanFieldKey, prefilledBooleanField.value);
 
-    yield currentState.toSuccess('Values saved in shared preferences.');
+    yield state.toSuccess('Values saved in shared preferences.');
 
-    // yield `currentState.toLoaded()` because
+    // yield `state.toLoaded()` because
     // you can't submit if the current state is `FormBlocSuccess`.
     // In most cases you don't need to do this,
     // because you only want to submit only once,
     // but in this case you want the user to submit more than once.
     // See: https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html
-    yield currentState.toLoaded();
+    yield state.toLoaded();
   }
 }

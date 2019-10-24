@@ -588,7 +588,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     super.initState();
     _controllerListener = _textControllerListener;
     _controller =
-        TextEditingController(text: widget.textFieldBloc.currentState.value);
+        TextEditingController(text: widget.textFieldBloc.state.value);
 
     _controller.addListener(_controllerListener);
 
@@ -609,7 +609,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   /// Disable editing when the state of the FormBloc is [FormBlocSubmitting].
   void _textControllerListener() {
-    if (widget.textFieldBloc.currentState.formBlocState is FormBlocSubmitting) {
+    if (widget.textFieldBloc.state.formBlocState is FormBlocSubmitting) {
       if (_controller.text != widget.textFieldBloc.value) {
         _fixControllerTextValue(widget.textFieldBloc.value);
       }

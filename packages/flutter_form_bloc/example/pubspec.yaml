@@ -7,11 +7,11 @@ environment:
 dependencies:
   flutter: 
     sdk: flutter
+  form_bloc: ^0.6.0
   flutter_form_bloc:
     path: ../
-  form_bloc: ^0.5.2
-  bloc: ^0.15.0
-  flutter_bloc: ^0.21.0
+  bloc: ^1.0.0
+  flutter_bloc: ^1.0.0
   shared_preferences: ^0.5.3+4
   liquid_progress_indicator: ^0.3.2
   rxdart: ^0.22.2

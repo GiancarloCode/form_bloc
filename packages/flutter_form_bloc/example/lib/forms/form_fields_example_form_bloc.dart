@@ -1,7 +1,9 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class FormFieldsExampleFormBloc extends FormBloc<String, String> {
-  final textField = TextFieldBloc();
+  final textField = TextFieldBloc(
+    validators: [FieldBlocValidators.requiredTextFieldBloc],
+  );
 
   final booleanField = BooleanFieldBloc();
 
@@ -38,14 +40,14 @@ class FormFieldsExampleFormBloc extends FormBloc<String, String> {
     print(multiSelectField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess('Success');
+    yield state.toSuccess('Success');
 
-    // yield `currentState.toLoaded()` because
+    // yield `state.toLoaded()` because
     // you can't submit if the current state is `FormBlocSuccess`.
     // In most cases you don't need to do this,
     // because you only want to submit only once,
     // but in this case you want the user to submit more than once.
     // See: https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html
-    yield currentState.toLoaded();
+    yield state.toLoaded();
   }
 }

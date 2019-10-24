@@ -101,16 +101,16 @@ If you want me to add other widgets please let me know, or make a pull request.
 
 ```yaml
 dependencies:
-  form_bloc: ^0.5.2
-  flutter_form_bloc: ^0.4.4
-  flutter_bloc: ^0.21.0
+  form_bloc: ^0.6.0
+  flutter_form_bloc: ^0.5.0
+  flutter_bloc: ^1.0.0
 ```
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final emailField = TextFieldBloc(validators: [FieldBlocValidators.email]);
   final passwordField = TextFieldBloc();
 
   final UserRepository _userRepository;
@@ -127,9 +127,9 @@ class LoginFormBloc extends FormBloc<String, String> {
         email: emailField.value,
         password: passwordField.value,
       );
-      yield currentState.toSuccess();
+      yield state.toSuccess();
     } catch (e) {
-      yield currentState.toFailure();
+      yield state.toFailure();
     }
   }
 }
@@ -243,7 +243,7 @@ For example the `LoginFormBloc` will have two `TextFieldBloc`.
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final emailField = TextFieldBloc(validators: [FieldBlocValidators.email]);
   final passwordField = TextFieldBloc();
 }
 
@@ -256,7 +256,7 @@ In this example we need a `UserRepository` for make the login.
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final emailField = TextFieldBloc(validators: [FieldBlocValidators.email]);
   final passwordField = TextFieldBloc();
 
   final UserRepository _userRepository;
@@ -277,7 +277,7 @@ For example the `LoginFormBloc` need to return a List with `emailField` and `pas
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final emailField = TextFieldBloc(validators: [FieldBlocValidators.email]);
   final passwordField = TextFieldBloc();
 
   final UserRepository _userRepository;
@@ -303,19 +303,19 @@ You must call all your business logic of this form here, and `yield` the corresp
 You can yield a new state using:  
 
 
-* [currentState.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html).
-* [currentState.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toSuccess.html).
-* [currentState.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoaded.html).
+* [state.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html).
+* [state.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toSuccess.html).
+* [state.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoaded.html).
 
 See other states [here](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState-class.html#instance-methods).
 
-For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and yield `currentState.toSuccess()` if the `_userRepository.login` method not throw any exception, and yield ``currentState.toFailure()` if throw a exception.
+For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and yield `state.toSuccess()` if the `_userRepository.login` method not throw any exception, and yield ``state.toFailure()` if throw a exception.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
+  final emailField = TextFieldBloc(validators: [FieldBlocValidators.email]);
   final passwordField = TextFieldBloc();
 
   final UserRepository _userRepository;
@@ -332,9 +332,9 @@ class LoginFormBloc extends FormBloc<String, String> {
         email: emailField.value,
         password: passwordField.value,
       );
-      yield currentState.toSuccess();
+      yield state.toSuccess();
     } catch (e) {
-      yield currentState.toFailure();
+      yield state.toFailure();
     }
   }
 }

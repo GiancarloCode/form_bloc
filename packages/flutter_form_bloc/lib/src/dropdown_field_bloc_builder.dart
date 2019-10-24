@@ -260,7 +260,7 @@ class _DropdownFieldBlocBuilderState<Value>
   }
 
   void _onDropdownPressed() async {
-    if (widget.selectFieldBloc.currentState.items.isNotEmpty) {
+    if (widget.selectFieldBloc.state.items.isNotEmpty) {
 //TODO: Trick: https://github.com/flutter/flutter/issues/18672#issuecomment-426522889
       if (_keyboardVisibility.isKeyboardVisible) {
         _effectiveFocusNode.requestFocus();

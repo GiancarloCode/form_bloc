@@ -16,9 +16,9 @@ class ProgressFormBloc extends FormBloc<String, String> {
   @override
   Stream<FormBlocState<String, String>> onCancelSubmission() async* {
     _fakeUploads.last.cancel();
-    yield currentState.toSubmitting(0.0);
+    yield state.toSubmitting(0.0);
     await Future<void>.delayed(Duration(milliseconds: 400));
-    updateState(currentState.toSubmissionCancelled());
+    updateState(state.toSubmissionCancelled());
   }
 
   @override
@@ -32,13 +32,13 @@ class ProgressFormBloc extends FormBloc<String, String> {
       _fakeUploads[_currentUploadIndex].uploadProgress.listen(
         (progress) {
           if (!_fakeUploads[_currentUploadIndex].isCancelled) {
-            updateState(currentState.toSubmitting(progress));
+            updateState(state.toSubmitting(progress));
           }
         },
         onDone: () async {
           if (!_fakeUploads[_currentUploadIndex]._isCancelled) {
             await Future<void>.delayed(Duration(milliseconds: 400));
-            updateState(currentState.toSuccess());
+            updateState(state.toSuccess());
           }
         },
       ),

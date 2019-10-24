@@ -44,7 +44,6 @@ class ProgressForm extends StatelessWidget {
                     },
                   ),
                   ImageFieldBlocBuilder(
-                    formBloc: formBloc,
                     fileFieldBloc: formBloc.imageField,
                   ),
                   TextFieldBlocBuilder(
@@ -97,103 +96,92 @@ class ProgressForm extends StatelessWidget {
 }
 
 class ImageFieldBlocBuilder extends StatelessWidget {
-  final FormBloc formBloc;
   final InputFieldBloc<File> fileFieldBloc;
   const ImageFieldBlocBuilder({
     Key key,
-    @required this.formBloc,
     @required this.fileFieldBloc,
-  })  : assert(formBloc != null),
-        assert(fileFieldBloc != null),
+  })  : assert(fileFieldBloc != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FormBloc, FormBlocState>(
-      bloc: formBloc,
-      builder: (context, formState) {
-        return BlocBuilder<InputFieldBloc<File>, InputFieldBlocState<File>>(
-          bloc: fileFieldBloc,
-          builder: (context, fieldState) {
-            return Column(
+    return BlocBuilder<InputFieldBloc<File>, InputFieldBlocState<File>>(
+      bloc: fileFieldBloc,
+      builder: (context, state) {
+        return Column(
+          children: <Widget>[
+            Stack(
               children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(60),
-                      ),
-                      margin: EdgeInsets.zero,
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 16,
-                      color: fieldState.value != null
-                          ? Colors.grey[700]
-                          : Colors.white,
-                      child: Opacity(
-                        opacity: formState.canSubmit ? 1 : 0.5,
-                        child: fieldState.value != null
-                            ? Image.file(
-                                fieldState.value,
-                                height: 120,
-                                width: 120,
-                                fit: BoxFit.fill,
-                              )
-                            : Container(
-                                height: 120,
-                                width: 120,
-                                child: Icon(
-                                  Icons.add_photo_alternate,
-                                  color: Colors.black87,
-                                  size: 70,
-                                ),
-                              ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          splashColor:
-                              Theme.of(context).accentColor.withAlpha(50),
-                          highlightColor:
-                              Theme.of(context).accentColor.withAlpha(50),
-                          borderRadius: BorderRadius.circular(60),
-                          onTap: formState.canSubmit
-                              ? () async {
-                                  final image = await ImagePicker.pickImage(
-                                    source: ImageSource.gallery,
-                                  );
-                                  if (image != null) {
-                                    fileFieldBloc.updateValue(image);
-                                  }
-                                }
-                              : null,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  height: fieldState.canShowError ? 30 : 0,
-                  child: SingleChildScrollView(
-                    physics: ClampingScrollPhysics(),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 8),
-                        Text(
-                          'Please select an Image',
-                          style: TextStyle(
-                            color: Theme.of(context).errorColor,
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(60),
+                  ),
+                  margin: EdgeInsets.zero,
+                  clipBehavior: Clip.antiAlias,
+                  elevation: 16,
+                  color: state.value != null ? Colors.grey[700] : Colors.white,
+                  child: Opacity(
+                    opacity: state.formBlocState.canSubmit ? 1 : 0.5,
+                    child: state.value != null
+                        ? Image.file(
+                            state.value,
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.fill,
+                          )
+                        : Container(
+                            height: 120,
+                            width: 120,
+                            child: Icon(
+                              Icons.add_photo_alternate,
+                              color: Colors.black87,
+                              size: 70,
+                            ),
                           ),
-                        ),
-                      ],
+                  ),
+                ),
+                Positioned.fill(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashColor: Theme.of(context).accentColor.withAlpha(50),
+                      highlightColor:
+                          Theme.of(context).accentColor.withAlpha(50),
+                      borderRadius: BorderRadius.circular(60),
+                      onTap: state.formBlocState.canSubmit
+                          ? () async {
+                              final image = await ImagePicker.pickImage(
+                                source: ImageSource.gallery,
+                              );
+                              if (image != null) {
+                                fileFieldBloc.updateValue(image);
+                              }
+                            }
+                          : null,
                     ),
                   ),
                 ),
               ],
-            );
-          },
+            ),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              height: state.canShowError ? 30 : 0,
+              child: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 8),
+                    Text(
+                      'Please select an Image',
+                      style: TextStyle(
+                        color: Theme.of(context).errorColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

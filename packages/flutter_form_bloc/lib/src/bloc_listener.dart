@@ -56,14 +56,14 @@ class BlocListener<B extends Bloc<dynamic, S>, S>
   /// The `condition` function will be invoked on each bloc state change.
   /// The `condition` takes the penultimate state, previous state and current state and must return a `bool`
   /// which determines whether or not the `listener` function will be invoked.
-  /// The penultimate state and previous state will be initialized to `currentState` when the [BlocListener] is initialized.
+  /// The penultimate state and previous state will be initialized to `state` when the [BlocListener] is initialized.
   /// `condition` is optional and if it isn't implemented, it will default to return `true`.
   ///
   /// ```dart
   /// BlocListener<BlocA, BlocAState>(
-  ///   condition: (penultimateState, previousState, currentState) {
+  ///   condition: (penultimateState, previousState, state) {
   ///     // return true/false to determine whether or not
-  ///     // to invoke listener with currentState
+  ///     // to invoke listener with state
   ///   },
   ///   listener: (context, state) {
   ///     // do stuff here based on BlocA's state
@@ -105,7 +105,7 @@ abstract class BlocListenerBase<B extends Bloc<dynamic, S>, S>
   /// The `condition` function will be invoked on each bloc state change.
   /// The `condition` takes the penultimate state, previous state and current state and must return a `bool`
   /// which determines whether or not the `listener` function will be invoked.
-  /// The penultimate state and previous state will be initialized to `currentState` when the [BlocListenerBase] is initialized.
+  /// The penultimate state and previous state will be initialized to `state` when the [BlocListenerBase] is initialized.
   /// `condition` is optional and if it isn't implemented, it will default to return `true`.
   final BlocListenerCondition<S> condition;
 
@@ -138,23 +138,22 @@ class _BlocListenerBaseState<B extends Bloc<dynamic, S>, S>
   void initState() {
     super.initState();
     _bloc = widget.bloc ?? BlocProvider.of<B>(context);
-    _previousState = _bloc?.currentState;
-    _penultimateState = _bloc?.currentState;
+    _previousState = _bloc?.state;
+    _penultimateState = _bloc?.state;
     _subscribe();
   }
 
   @override
   void didUpdateWidget(BlocListenerBase<B, S> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final Stream<S> oldState =
-        oldWidget.bloc?.state ?? BlocProvider.of<B>(context).state;
-    final Stream<S> currentState = widget.bloc?.state ?? oldState;
-    if (oldState != currentState) {
+    final Stream<S> oldState = oldWidget.bloc ?? BlocProvider.of<B>(context);
+    final Stream<S> state = widget.bloc ?? oldState;
+    if (oldState != state) {
       if (_subscription != null) {
         _unsubscribe();
         _bloc = widget.bloc ?? BlocProvider.of<B>(context);
-        _previousState = _bloc?.currentState;
-        _penultimateState = _bloc?.currentState;
+        _previousState = _bloc?.state;
+        _penultimateState = _bloc?.state;
       }
       _subscribe();
     }
@@ -171,7 +170,7 @@ class _BlocListenerBaseState<B extends Bloc<dynamic, S>, S>
 
   void _subscribe() {
     if (_bloc?.state != null) {
-      _subscription = _bloc.state.skip(1).listen((S state) {
+      _subscription = _bloc.skip(1).listen((S state) {
         if (widget.condition?.call(_penultimateState, _previousState, state) ??
             true) {
           widget.listener(context, state);

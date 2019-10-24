@@ -1,8 +1,12 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class SimpleLoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
-  final passwordField = TextFieldBloc();
+  final emailField = TextFieldBloc(
+    validators: [FieldBlocValidators.email],
+  );
+  final passwordField = TextFieldBloc(
+    validators: [FieldBlocValidators.requiredTextFieldBloc],
+  );
 
   @override
   List<FieldBloc> get fieldBlocs => [
@@ -19,6 +23,6 @@ class SimpleLoginFormBloc extends FormBloc<String, String> {
     print(passwordField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState.toSuccess();
+    yield state.toSuccess();
   }
 }

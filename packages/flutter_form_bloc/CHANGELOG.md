@@ -1,3 +1,9 @@
+# 0.5.0
+* Updated to `bloc: ^1.0.0`.
+* Updated to `flutter_bloc: ^1.0.0`.
+* Updated to `form_bloc: ^0.6.0`.
+* Documentation Updates.
+
 # 0.4.4
 * Dependencies Updates.
 * Fixed bug in suggestions of `TextFieldBlocBuilder`.
@@ -12,11 +18,11 @@
   * showSuggestionsWhenIsEmpty = true,
 
 # 0.4.3
-* Updated to form_bloc: ^0.5.2.
+* Updated to `form_bloc: ^0.5.2`.
 * Documentation Updates.
 
 # 0.4.2
-* Updated to form_bloc: ^0.5.1.
+* Updated to `form_bloc: ^0.5.1`.
 
 # 0.4.1+1
 * Documentation Updates.
@@ -29,7 +35,7 @@
 
 # 0.4.0
 * Documentation Updates.
-* Updated to form_bloc: ^0.5.0.
+* Updated to `form_bloc: ^0.5.0`.
 * Added more examples.
 
 # 0.3.1
@@ -37,13 +43,13 @@
 
 # 0.3.0
 * Documentation Updates.
-* Updated to form_bloc: ^0.4.1.
+* Updated to `form_bloc: ^0.4.1`.
 * Added `CheckBoxGroupFieldBlocBuilder`.
 * Added more examples.
 
 # 0.2.1
 
-* Updated to form_bloc: ^0.3.1.
+* Updated to `form_bloc: ^0.3.1`.
 
 # 0.2.0
 

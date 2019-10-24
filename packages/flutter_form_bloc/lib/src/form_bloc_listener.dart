@@ -121,11 +121,11 @@ The context used was: $context""",
     return BlocListener<FormBloc,
         form_bloc.FormBlocState<SuccessResponse, ErrorResponse>>(
       bloc: _formBloc,
-      condition: (penultimateState, previousState, currentState) {
-        if (previousState.runtimeType != currentState.runtimeType) {
+      condition: (penultimateState, previousState, state) {
+        if (previousState.runtimeType != state.runtimeType) {
           if (penultimateState is form_bloc.FormBlocFailure &&
               previousState is form_bloc.FormBlocSubmissionFailed &&
-              currentState is form_bloc.FormBlocFailure) {
+              state is form_bloc.FormBlocFailure) {
             return false;
           } else {
             return true;

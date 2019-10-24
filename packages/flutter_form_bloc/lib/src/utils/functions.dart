@@ -4,11 +4,6 @@ import 'package:form_bloc/form_bloc.dart';
 typedef FieldBlocStringItemBuilder<Value> = String Function(
     BuildContext context, Value value);
 
-typedef FieldBlocErrorBuilder = String Function(
-  BuildContext context,
-  String error,
-);
-
 ValueChanged<T> fieldBlocBuilderOnChange<T>({
   @required bool isEnabled,
   @required FocusNode nextFocusNode,
@@ -39,21 +34,21 @@ bool fieldBlocIsEnabled({
 
 String defaultErrorBuilder(BuildContext context, String error) {
   switch (error) {
-    case ValidatorsError.requiredInputFieldBloc:
+    case FieldBlocValidatorsErrors.requiredInputFieldBloc:
       return 'This field is required.';
-    case ValidatorsError.requiredBooleanFieldBloc:
+    case FieldBlocValidatorsErrors.requiredBooleanFieldBloc:
       return 'This field is required.';
-    case ValidatorsError.requiredTextFieldBloc:
+    case FieldBlocValidatorsErrors.requiredTextFieldBloc:
       return 'This field is required.';
-    case ValidatorsError.requiredSelectFieldBloc:
+    case FieldBlocValidatorsErrors.requiredSelectFieldBloc:
       return 'Please select an option.';
-    case ValidatorsError.requiredMultiSelectFieldBloc:
+    case FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc:
       return 'Please select an option.';
-    case ValidatorsError.email:
+    case FieldBlocValidatorsErrors.email:
       return 'The email address is badly formatted.';
-    case ValidatorsError.passwordMin6Chars:
+    case FieldBlocValidatorsErrors.passwordMin6Chars:
       return 'The password must contain at least 6 characters.';
-    case ValidatorsError.confirmPassword:
+    case FieldBlocValidatorsErrors.confirmPassword:
       return 'Must be equal to password.';
     default:
       return error;

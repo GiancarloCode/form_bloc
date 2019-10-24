@@ -11,10 +11,15 @@ enum LoginResponse {
 class ComplexLoginFormBloc extends FormBloc<String, String> {
   static const String _usedEmailsKey = 'usedEmails';
 
-  final emailField = TextFieldBloc(validators: [Validators.email]);
-  final passwordField = TextFieldBloc();
+  final emailField = TextFieldBloc(
+    validators: [FieldBlocValidators.email],
+  );
+  final passwordField = TextFieldBloc(
+    validators: [FieldBlocValidators.requiredTextFieldBloc],
+  );
   final responseField = SelectFieldBloc<LoginResponse>(
     items: LoginResponse.values,
+    validators: [FieldBlocValidators.requiredSelectFieldBloc],
   );
 
   @override
@@ -42,25 +47,25 @@ class ComplexLoginFormBloc extends FormBloc<String, String> {
 
     await Future<void>.delayed(Duration(seconds: 2));
 
-    switch (responseField.currentState.value) {
+    switch (responseField.state.value) {
       case LoginResponse.saveEmailAndFail:
         await _saveEmail();
-        yield currentState.toFailure();
+        yield state.toFailure();
         break;
       case LoginResponse.wrongPassword:
-        yield currentState.toFailure(
+        yield state.toFailure(
           'The password is invalid or the user does not have a password.',
         );
         break;
       case LoginResponse.networkRequestFailed:
-        yield currentState.toFailure(
+        yield state.toFailure(
           'Network error: Please check your internet connection.',
         );
         break;
 
       case LoginResponse.success:
         await _saveEmail();
-        yield currentState.toSuccess();
+        yield state.toSuccess();
         break;
     }
   }
@@ -68,7 +73,7 @@ class ComplexLoginFormBloc extends FormBloc<String, String> {
   Future<void> _saveEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final usedEmails = prefs.getStringList(_usedEmailsKey) ?? [];
-    final email = emailField.currentState.value;
+    final email = emailField.state.value;
     if (!usedEmails.contains(email)) {
       usedEmails.add(email);
       prefs.setStringList(_usedEmailsKey, usedEmails);

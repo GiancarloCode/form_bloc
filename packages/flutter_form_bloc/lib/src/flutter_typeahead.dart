@@ -151,8 +151,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///         RaisedButton(
 ///           child: Text('Submit'),
 ///           onPressed: () {
-///             if (this._formKey.currentState.validate()) {
-///               this._formKey.currentState.save();
+///             if (this._formKey.state.validate()) {
+///               this._formKey.state.save();
 ///               Scaffold.of(context).showSnackBar(SnackBar(
 ///                 content: Text('Your Favorite City is ${this._selectedCity}')
 ///               ));
@@ -961,7 +961,6 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
 
   Future<void> _getSuggestions() async {
     if (mounted) {
-      print(widget.suggestionsCallback);
       if (widget.suggestionsCallback == null) return;
       if (!widget.showSuggestionsWhenIsEmpty &&
           widget.controller.text.trim().isEmpty) {

@@ -1,7 +1,9 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class ManuallySetFieldBlocErrorFormBloc extends FormBloc<String, String> {
-  final usernameField = TextFieldBloc();
+  final usernameField = TextFieldBloc(
+    validators: [FieldBlocValidators.requiredTextFieldBloc],
+  );
 
   @override
   List<FieldBloc> get fieldBlocs => [usernameField];
@@ -18,6 +20,6 @@ class ManuallySetFieldBlocErrorFormBloc extends FormBloc<String, String> {
     // When get the error from the backend:
     usernameField.addError('That username is taken. Try another.');
 
-    yield currentState.toFailure('The error was added to the username field.');
+    yield state.toFailure('The error was added to the username field.');
   }
 }

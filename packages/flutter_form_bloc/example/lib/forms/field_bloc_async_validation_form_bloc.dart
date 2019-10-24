@@ -5,7 +5,7 @@ class FieldBlocAsyncValidationFormBloc extends FormBloc<String, String> {
       TextFieldBloc(asyncValidatorDebounceTime: Duration(milliseconds: 600));
 
   final emailField = TextFieldBloc(
-    validators: [Validators.email],
+    validators: [FieldBlocValidators.email],
     asyncValidators: [FakeApi.emailValidator],
   );
 
@@ -25,7 +25,7 @@ class FieldBlocAsyncValidationFormBloc extends FormBloc<String, String> {
     print(emailField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
-    yield currentState
+    yield state
         .toFailure('Fake error, please continue testing the async validation.');
   }
 }
