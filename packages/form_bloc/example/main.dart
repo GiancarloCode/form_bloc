@@ -35,6 +35,6 @@ class SimpleFormBloc extends FormBloc<String, String> {
     print(selectField.value);
     print(multiSelectField.value);
 
-    yield currentState.toSuccess();
+    yield state.toSuccess();
   }
 }

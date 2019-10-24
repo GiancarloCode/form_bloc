@@ -12,7 +12,6 @@ void main() {
 
         final fieldBloc = BooleanFieldBloc(
           initialValue: false,
-          isRequired: true,
           validators: validators,
           suggestions: suggestions,
           toStringName: toStringName,
@@ -20,9 +19,8 @@ void main() {
 
         final state1 = BooleanFieldBlocState(
           value: false,
-          error: ValidatorsError.requiredBooleanFieldBloc,
+          error: null,
           isInitial: true,
-          isRequired: true,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
@@ -39,54 +37,24 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
         fieldBloc.updateValue(true);
       });
-      test(
-          'when isRequired is true, Validators.requiredBooleanFieldBloc is added to validators.',
-          () {
+
+      test('initial state.', () {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
         List<BooleanFieldBlocState> expectedStates;
 
-        fieldBloc = BooleanFieldBloc(
-          initialValue: false,
-          isRequired: true,
-        );
-
-        initialState = BooleanFieldBlocState(
-          value: false,
-          error: ValidatorsError.requiredBooleanFieldBloc,
-          isInitial: true,
-          isRequired: true,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          toStringName: null,
-        );
-
-        expectedStates = [initialState];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
-
-        fieldBloc.dispose();
-
-        fieldBloc = BooleanFieldBloc(
-          initialValue: false,
-          isRequired: false,
-        );
+        fieldBloc = BooleanFieldBloc();
 
         initialState = BooleanFieldBlocState(
           value: false,
           error: null,
           isInitial: true,
-          isRequired: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -96,104 +64,74 @@ void main() {
         expectedStates = [initialState];
 
         expect(
-          fieldBloc.state,
+          fieldBloc.initialState,
+          initialState,
+        );
+
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
+        );
+
+        fieldBloc.close();
+
+        fieldBloc = BooleanFieldBloc(
+          validators: [(value) => 'error'],
+        );
+
+        initialState = BooleanFieldBlocState(
+          value: false,
+          error: 'error',
+          isInitial: true,
+          suggestions: null,
+          isValidated: true,
+          isValidating: false,
+          toStringName: null,
+        );
+
+        expectedStates = [initialState];
+
+        expect(
+          fieldBloc.initialState,
+          initialState,
+        );
+
+        expect(
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
       });
-    });
 
-    test('initial state.', () {
-      BooleanFieldBloc fieldBloc;
-      BooleanFieldBlocState initialState;
-      List<BooleanFieldBlocState> expectedStates;
+      test('clear method.', () {
+        final fieldBloc = BooleanFieldBloc(
+          initialValue: true,
+        );
 
-      fieldBloc = BooleanFieldBloc();
+        final state1 = BooleanFieldBlocState(
+          value: true,
+          error: null,
+          isInitial: true,
+          suggestions: null,
+          isValidated: true,
+          isValidating: false,
+          toStringName: null,
+        );
+        final state2 = state1.copyWith(
+          value: Optional.of(false),
+          isInitial: false,
+        );
 
-      initialState = BooleanFieldBlocState(
-        value: false,
-        error: ValidatorsError.requiredBooleanFieldBloc,
-        isInitial: true,
-        isRequired: true,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        toStringName: null,
-      );
+        final expectedStates = [
+          state1,
+          state2,
+        ];
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
+        );
 
-      expectedStates = [initialState];
-
-      expect(
-        fieldBloc.initialState,
-        initialState,
-      );
-
-      expect(
-        fieldBloc.state,
-        emitsInOrder(expectedStates),
-      );
-
-      fieldBloc.dispose();
-
-      fieldBloc = BooleanFieldBloc(
-        isRequired: false,
-        validators: [(value) => 'error'],
-      );
-
-      initialState = BooleanFieldBlocState(
-        value: false,
-        error: 'error',
-        isInitial: true,
-        isRequired: false,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        toStringName: null,
-      );
-
-      expectedStates = [initialState];
-
-      expect(
-        fieldBloc.initialState,
-        initialState,
-      );
-
-      expect(
-        fieldBloc.state,
-        emitsInOrder(expectedStates),
-      );
-    });
-
-    test('clear method.', () {
-      final fieldBloc = BooleanFieldBloc(
-        initialValue: true,
-        isRequired: false,
-      );
-
-      final state1 = BooleanFieldBlocState(
-        value: true,
-        error: null,
-        isInitial: true,
-        isRequired: false,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        toStringName: null,
-      );
-      final state2 = state1.copyWith(
-        value: Optional.of(false),
-        isInitial: false,
-      );
-
-      final expectedStates = [
-        state1,
-        state2,
-      ];
-      expect(
-        fieldBloc.state,
-        emitsInOrder(expectedStates),
-      );
-
-      fieldBloc.clear();
+        fieldBloc.clear();
+      });
     });
   });
 }

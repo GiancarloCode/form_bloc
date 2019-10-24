@@ -7,9 +7,6 @@ class BooleanFieldBloc
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is `false`.
-  /// * [isRequired] : If is `true`,
-  /// [Validators.requiredBooleanFieldBloc] is added to [validators],
-  /// by default is `true`.
   /// * [validators] : List of [Validator]s.
   /// Each time the `value` will change,
   /// if the [FormBloc] that use this [BooleanFieldBloc] has set
@@ -34,19 +31,15 @@ class BooleanFieldBloc
   /// * [toStringName] : This will be added to [BooleanFieldBlocState.toStringName].
   BooleanFieldBloc({
     bool initialValue = false,
-    bool isRequired = true,
     List<Validator<bool>> validators,
     List<AsyncValidator<bool>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<bool> suggestions,
     String toStringName,
   })  : assert(initialValue != null),
-        assert(isRequired != null),
         assert(asyncValidatorDebounceTime != null),
         super(
           initialValue,
-          isRequired,
-          Validators.requiredBooleanFieldBloc,
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,
@@ -59,7 +52,6 @@ class BooleanFieldBloc
         value: _initialValue,
         error: _getInitialStateError,
         isInitial: true,
-        isRequired: _isRequired,
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
@@ -70,5 +62,5 @@ class BooleanFieldBloc
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void clear() => dispatch(UpdateFieldBlocValue(false));
+  void clear() => add(UpdateFieldBlocValue(false));
 }

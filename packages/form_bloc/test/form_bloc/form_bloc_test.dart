@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
@@ -22,20 +23,24 @@ class FormBlocWithFieldBlocsEmpty extends FormBloc<String, String> {
 }
 
 class FormBlocWithFieldsRequired extends FormBloc<String, String> {
-  final textField = TextFieldBloc();
-  final booleanField = BooleanFieldBloc();
+  final textField = TextFieldBloc(
+    validators: [FieldBlocValidators.requiredTextFieldBloc],
+  );
+  final booleanField = BooleanFieldBloc(
+    validators: [FieldBlocValidators.requiredBooleanFieldBloc],
+  );
 
   @override
   List<FieldBloc> get fieldBlocs => [textField, booleanField];
 
   @override
   Stream<FormBlocState<String, String>> onReload() async* {
-    yield currentState.toLoadFailed('failed reload');
+    yield state.toLoadFailed('failed reload');
   }
 
   @override
   Stream<FormBlocState<String, String>> onCancelSubmission() async* {
-    yield currentState.toFailure('submission canceled');
+    yield state.toFailure('submission canceled');
   }
 
   @override
@@ -43,8 +48,8 @@ class FormBlocWithFieldsRequired extends FormBloc<String, String> {
 }
 
 class FormBlocWithFieldsNotRequired extends FormBloc<String, String> {
-  final textField = TextFieldBloc(isRequired: false);
-  final booleanField = BooleanFieldBloc(isRequired: false);
+  final textField = TextFieldBloc();
+  final booleanField = BooleanFieldBloc();
 
   @override
   List<FieldBloc> get fieldBlocs => [
@@ -53,22 +58,22 @@ class FormBlocWithFieldsNotRequired extends FormBloc<String, String> {
       ];
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    yield currentState.toLoading();
-    yield currentState.toLoaded();
-    yield currentState.toLoadFailed();
-    yield currentState.toLoadFailed('failed');
-    yield currentState.toSubmitting(0.1);
-    yield currentState.toSubmitting(0.5);
-    yield currentState.toSubmitting(1.0);
-    yield currentState.toSuccess();
-    yield currentState.toSuccess('success');
-    yield currentState.toFailure();
-    yield currentState.toFailure('failure');
+    yield state.toLoading();
+    yield state.toLoaded();
+    yield state.toLoadFailed();
+    yield state.toLoadFailed('failed');
+    yield state.toSubmitting(0.1);
+    yield state.toSubmitting(0.5);
+    yield state.toSubmitting(1.0);
+    yield state.toSuccess();
+    yield state.toSuccess('success');
+    yield state.toFailure();
+    yield state.toFailure('failure');
   }
 }
 
 class FormBlocWithIsLoadingTrue extends FormBloc<String, String> {
-  final textField = TextFieldBloc(isRequired: false);
+  final textField = TextFieldBloc();
 
   FormBlocWithIsLoadingTrue() : super(isLoading: true);
 
@@ -77,31 +82,31 @@ class FormBlocWithIsLoadingTrue extends FormBloc<String, String> {
 
   @override
   Stream<FormBlocState<String, String>> onLoading() async* {
-    yield currentState.toLoadFailed();
-    yield currentState.toLoaded();
+    yield state.toLoadFailed();
+    yield state.toLoaded();
   }
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    yield currentState.toSuccess();
+    yield state.toSuccess();
   }
 }
 
 class FormBlocWithIsLoadingFalse extends FormBloc<String, String> {
-  final textField = TextFieldBloc(isRequired: false);
+  final textField = TextFieldBloc();
 
   @override
   List<FieldBloc> get fieldBlocs => [textField];
 
   @override
   Stream<FormBlocState<String, String>> onLoading() async* {
-    yield currentState.toLoadFailed();
-    yield currentState.toLoaded();
+    yield state.toLoadFailed();
+    yield state.toLoaded();
   }
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    yield currentState.toSuccess();
+    yield state.toSuccess();
   }
 }
 
@@ -181,28 +186,25 @@ void main() {
         value: null,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
         toStringName: null,
       );
-      when(fieldBloc1.state)
-          .thenAnswer((_) => Stream.fromIterable([initialState]));
-      when(fieldBloc2.state)
-          .thenAnswer((_) => Stream.fromIterable([initialState]));
-      when(fieldBloc1.currentState).thenReturn(initialState);
-      when(fieldBloc2.currentState).thenReturn(initialState);
+      whenListen(fieldBloc1, Stream.fromIterable([initialState]));
+      whenListen(fieldBloc2, Stream.fromIterable([initialState]));
+      when(fieldBloc1.state).thenReturn(initialState);
+      when(fieldBloc2.state).thenReturn(initialState);
 
       final formBloc = FormBlocWithMockFieldBlocsAndAutoValidateFalse(
         [fieldBloc1, fieldBloc2],
       );
 
       verify(
-        formBloc.mockFieldBlocs[0].dispatch(DisableFieldBlocAutoValidate()),
+        formBloc.mockFieldBlocs[0].add(DisableFieldBlocAutoValidate()),
       ).called(1);
       verify(
-        formBloc.mockFieldBlocs[1].dispatch(DisableFieldBlocAutoValidate()),
+        formBloc.mockFieldBlocs[1].add(DisableFieldBlocAutoValidate()),
       ).called(1);
     });
 
@@ -215,7 +217,7 @@ void main() {
     //     value: null,
     //     error: null,
     //     isInitial: true,
-    //     isRequired: true,
+    //
     //     suggestions: null,
     //     isValidated: true,
     //     isValidating: false,
@@ -233,8 +235,8 @@ void main() {
     //   ;
     //   when(fieldBloc2.state)
     //       .thenAnswer((_) => Stream.fromIterable([initialState]));
-    //   when(fieldBloc1.currentState).thenReturn(mockFieldBloc1State.value);
-    //   when(fieldBloc2.currentState).thenReturn(initialState);
+    //   when(fieldBloc1.state).thenReturn(mockFieldBloc1State.value);
+    //   when(fieldBloc2.state).thenReturn(initialState);
 
     //   final formBloc = FormBlocWithMockFieldBlocsAndAutoValidateTrue(
     //     fieldBloc1,
@@ -252,10 +254,10 @@ void main() {
     //     emitsInOrder(expectedStatesOfFieldBloc1),
     //   ).then((dynamic _) async {
     //     verify(
-    //       formBloc.fieldBloc1.dispatch(ValidateFieldBloc(false)),
+    //       formBloc.fieldBloc1.add(ValidateFieldBloc(false)),
     //     ).called(2);
     //     verify(
-    //       formBloc.fieldBloc2.dispatch(ValidateFieldBloc(false)),
+    //       formBloc.fieldBloc2.add(ValidateFieldBloc(false)),
     //     ).called(2);
     //   });
     // });
@@ -277,7 +279,7 @@ void main() {
       ];
 
       expect(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -297,7 +299,7 @@ void main() {
       ];
 
       expect(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -313,18 +315,15 @@ void main() {
         value: null,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
         toStringName: null,
       );
-      when(fieldBloc1.state)
-          .thenAnswer((_) => Stream.fromIterable([initialState]));
-      when(fieldBloc2.state)
-          .thenAnswer((_) => Stream.fromIterable([initialState]));
-      when(fieldBloc1.currentState).thenReturn(initialState);
-      when(fieldBloc2.currentState).thenReturn(initialState);
+      whenListen(fieldBloc1, Stream.fromIterable([initialState]));
+      whenListen(fieldBloc2, Stream.fromIterable([initialState]));
+      when(fieldBloc1.state).thenReturn(initialState);
+      when(fieldBloc2.state).thenReturn(initialState);
 
       final formBloc = FormBlocWithMockFieldBlocsAndAutoValidateFalse(
         [fieldBloc1, fieldBloc2],
@@ -338,17 +337,15 @@ void main() {
       ];
 
       expectLater(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       ).then(
         (dynamic _) {
           verify(
-            fieldBloc1
-                .dispatch(UpdateFieldBlocStateFormBlocState(newFormState)),
+            fieldBloc1.add(UpdateFieldBlocStateFormBlocState(newFormState)),
           ).called(1);
           verify(
-            fieldBloc2
-                .dispatch(UpdateFieldBlocStateFormBlocState(newFormState)),
+            fieldBloc2.add(UpdateFieldBlocStateFormBlocState(newFormState)),
           ).called(1);
         },
       );
@@ -369,7 +366,7 @@ void main() {
       ];
 
       expect(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -390,7 +387,7 @@ void main() {
         ];
 
         expect(
-          formBloc.state,
+          formBloc,
           emitsInOrder(expectedStates),
         );
 
@@ -398,7 +395,7 @@ void main() {
       });
 
       test(
-          'onSubmitting can add to state stream all states generated by \'to\' methods of currentState.',
+          'onSubmitting can add to state stream all states generated by \'to\' methods of state.',
           () async {
         final formBloc = FormBlocWithFieldsNotRequired();
 
@@ -442,7 +439,7 @@ void main() {
         ];
 
         expect(
-          formBloc.state,
+          formBloc,
           emitsInOrder(expectedStates),
         );
 
@@ -460,7 +457,6 @@ void main() {
           value: null,
           error: null,
           isInitial: true,
-          isRequired: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -470,7 +466,6 @@ void main() {
           value: null,
           error: null,
           isInitial: true,
-          isRequired: false,
           suggestions: null,
           isValidated: false,
           isValidating: false,
@@ -480,7 +475,6 @@ void main() {
           value: null,
           error: 'error',
           isInitial: true,
-          isRequired: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -490,24 +484,19 @@ void main() {
           value: null,
           error: 'error',
           isInitial: true,
-          isRequired: false,
           suggestions: null,
           isValidated: false,
           isValidating: false,
           toStringName: null,
         );
-        when(fieldBloc1.state)
-            .thenAnswer((_) => Stream.fromIterable([initialState1]));
-        when(fieldBloc2.state)
-            .thenAnswer((_) => Stream.fromIterable([initialState2]));
-        when(fieldBloc3.state)
-            .thenAnswer((_) => Stream.fromIterable([initialState3]));
-        when(fieldBloc4.state)
-            .thenAnswer((_) => Stream.fromIterable([initialState4]));
-        when(fieldBloc1.currentState).thenReturn(initialState1);
-        when(fieldBloc2.currentState).thenReturn(initialState2);
-        when(fieldBloc3.currentState).thenReturn(initialState3);
-        when(fieldBloc4.currentState).thenReturn(initialState4);
+        whenListen(fieldBloc1, Stream.fromIterable([initialState1]));
+        whenListen(fieldBloc2, Stream.fromIterable([initialState2]));
+        whenListen(fieldBloc3, Stream.fromIterable([initialState3]));
+        whenListen(fieldBloc4, Stream.fromIterable([initialState4]));
+        when(fieldBloc1.state).thenReturn(initialState1);
+        when(fieldBloc2.state).thenReturn(initialState2);
+        when(fieldBloc3.state).thenReturn(initialState3);
+        when(fieldBloc4.state).thenReturn(initialState4);
 
         final formBloc = FormBlocWithMockFieldBlocsAndAutoValidateFalse(
           [fieldBloc1, fieldBloc2, fieldBloc3, fieldBloc4],
@@ -517,10 +506,10 @@ void main() {
         // wait for notify field blocs.
         await Future<void>.delayed(Duration(milliseconds: 0));
 
-        verifyNever(fieldBloc1.dispatch(ValidateFieldBloc(true)));
-        verify(fieldBloc2.dispatch(ValidateFieldBloc(true))).called(1);
-        verify(fieldBloc3.dispatch(ValidateFieldBloc(true))).called(1);
-        verify(fieldBloc4.dispatch(ValidateFieldBloc(true))).called(1);
+        verifyNever(fieldBloc1.add(ValidateFieldBloc(true)));
+        verify(fieldBloc2.add(ValidateFieldBloc(true))).called(1);
+        verify(fieldBloc3.add(ValidateFieldBloc(true))).called(1);
+        verify(fieldBloc4.add(ValidateFieldBloc(true))).called(1);
       });
     });
 
@@ -533,7 +522,7 @@ void main() {
       ];
 
       expect(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -547,18 +536,15 @@ void main() {
         value: null,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
         toStringName: null,
       );
-      when(fieldBloc1.state)
-          .thenAnswer((_) => Stream.fromIterable([initialState]));
-      when(fieldBloc2.state)
-          .thenAnswer((_) => Stream.fromIterable([initialState]));
-      when(fieldBloc1.currentState).thenReturn(initialState);
-      when(fieldBloc2.currentState).thenReturn(initialState);
+      whenListen(fieldBloc1, Stream.fromIterable([initialState]));
+      whenListen(fieldBloc2, Stream.fromIterable([initialState]));
+      when(fieldBloc1.state).thenReturn(initialState);
+      when(fieldBloc2.state).thenReturn(initialState);
 
       final formBloc =
           FormBlocWithMockFieldBlocsAndAutoValidateTrue(fieldBloc1, fieldBloc2);
@@ -582,7 +568,7 @@ void main() {
       ];
 
       expect(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -612,7 +598,7 @@ void main() {
       ];
 
       expect(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -620,7 +606,7 @@ void main() {
       formBloc.booleanField.updateValue(true);
       formBloc.textField.updateValue('x');
       formBloc.submit();
-      await formBloc.state.firstWhere((state) => state is FormBlocSubmitting);
+      await formBloc.firstWhere((state) => state is FormBlocSubmitting);
       formBloc.cancelSubmission();
     });
     test('UpdateFormBlocStateIsValid event.', () async {
@@ -636,15 +622,15 @@ void main() {
       ];
 
       expect(
-        formBloc.state,
+        formBloc,
         emitsInOrder(expectedStates),
       );
 
-      formBloc.dispatch(UpdateFormBlocStateIsValid(true));
-      formBloc.dispatch(UpdateFormBlocStateIsValid(false));
+      formBloc.add(UpdateFormBlocStateIsValid(true));
+      formBloc.add(UpdateFormBlocStateIsValid(false));
       formBloc.updateState(FormBlocSuccess<String, String>(isValid: false));
-      formBloc.dispatch(UpdateFormBlocStateIsValid(true));
-      formBloc.dispatch(UpdateFormBlocStateIsValid(false));
+      formBloc.add(UpdateFormBlocStateIsValid(true));
+      formBloc.add(UpdateFormBlocStateIsValid(false));
     });
   });
 }

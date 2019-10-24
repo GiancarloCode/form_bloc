@@ -7,12 +7,14 @@ void main() {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => ['1'];
-        final validators = [(String value) => 'error'];
+        final validators = [
+          FieldBlocValidators.requiredTextFieldBloc,
+          (String value) => 'error'
+        ];
         final toStringName = 'field';
 
         final fieldBloc = TextFieldBloc(
           initialValue: '',
-          isRequired: true,
           validators: validators,
           suggestions: suggestions,
           toStringName: toStringName,
@@ -20,9 +22,8 @@ void main() {
 
         final state1 = TextFieldBlocState(
           value: '',
-          error: ValidatorsError.requiredTextFieldBloc,
+          error: FieldBlocValidatorsErrors.requiredTextFieldBloc,
           isInitial: true,
-          isRequired: true,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
@@ -39,66 +40,11 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
         fieldBloc.updateValue('1');
-      });
-      test(
-          'when isRequired is true, Validators.requiredTextFieldBloc is added to validators.',
-          () {
-        TextFieldBloc fieldBloc;
-        TextFieldBlocState initialState;
-        List<TextFieldBlocState> expectedStates;
-
-        fieldBloc = TextFieldBloc(
-          initialValue: '',
-          isRequired: true,
-        );
-
-        initialState = TextFieldBlocState(
-          value: '',
-          error: ValidatorsError.requiredTextFieldBloc,
-          isInitial: true,
-          isRequired: true,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          toStringName: null,
-        );
-
-        expectedStates = [initialState];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
-
-        fieldBloc.dispose();
-
-        fieldBloc = TextFieldBloc(
-          initialValue: '',
-          isRequired: false,
-        );
-
-        initialState = TextFieldBlocState(
-          value: '',
-          error: null,
-          isInitial: true,
-          isRequired: false,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          toStringName: null,
-        );
-
-        expectedStates = [initialState];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
       });
     });
 
@@ -111,9 +57,8 @@ void main() {
 
       initialState = TextFieldBlocState(
         value: '',
-        error: ValidatorsError.requiredTextFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -128,14 +73,13 @@ void main() {
       );
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispose();
+      fieldBloc.close();
 
       fieldBloc = TextFieldBloc(
-        isRequired: false,
         validators: [(value) => 'error'],
       );
 
@@ -143,7 +87,6 @@ void main() {
         value: '',
         error: 'error',
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -158,7 +101,7 @@ void main() {
       );
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
     });
@@ -166,14 +109,12 @@ void main() {
     test('clear method.', () {
       final fieldBloc = TextFieldBloc(
         initialValue: '1',
-        isRequired: false,
       );
 
       final state1 = TextFieldBlocState(
         value: '1',
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -189,7 +130,7 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 

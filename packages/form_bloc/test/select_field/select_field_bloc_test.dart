@@ -7,12 +7,14 @@ void main() {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
-        final validators = [(bool value) => value ? 'error' : null];
+        final validators = [
+          FieldBlocValidators.requiredSelectFieldBloc,
+          (bool value) => value ? 'error' : null
+        ];
         final toStringName = 'field';
 
         final fieldBloc = SelectFieldBloc<bool>(
           initialValue: null,
-          isRequired: true,
           validators: validators,
           suggestions: suggestions,
           toStringName: toStringName,
@@ -20,9 +22,8 @@ void main() {
 
         final state1 = SelectFieldBlocState<bool>(
           value: null,
-          error: ValidatorsError.requiredSelectFieldBloc,
+          error: FieldBlocValidatorsErrors.requiredSelectFieldBloc,
           isInitial: true,
-          isRequired: true,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
@@ -40,68 +41,11 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
         fieldBloc.updateValue(true);
-      });
-      test(
-          'when isRequired is true, Validators.requiredSelectFieldBloc is added to validators.',
-          () {
-        SelectFieldBloc fieldBloc;
-        SelectFieldBlocState initialState;
-        List<SelectFieldBlocState> expectedStates;
-
-        fieldBloc = SelectFieldBloc<bool>(
-          initialValue: null,
-          isRequired: true,
-        );
-
-        initialState = SelectFieldBlocState<bool>(
-          value: null,
-          error: ValidatorsError.requiredSelectFieldBloc,
-          isInitial: true,
-          isRequired: true,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          toStringName: null,
-          items: [],
-        );
-
-        expectedStates = [initialState];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
-
-        fieldBloc.dispose();
-
-        fieldBloc = SelectFieldBloc<bool>(
-          initialValue: null,
-          isRequired: false,
-        );
-
-        initialState = SelectFieldBlocState<bool>(
-          value: null,
-          error: null,
-          isInitial: true,
-          isRequired: false,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          toStringName: null,
-          items: [],
-        );
-
-        expectedStates = [initialState];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
       });
     });
 
@@ -114,9 +58,8 @@ void main() {
 
       initialState = SelectFieldBlocState<bool>(
         value: null,
-        error: ValidatorsError.requiredSelectFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -132,14 +75,13 @@ void main() {
       );
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispose();
+      fieldBloc.close();
 
       fieldBloc = SelectFieldBloc<bool>(
-        isRequired: false,
         validators: [(value) => 'error'],
         items: [true, false],
       );
@@ -148,7 +90,6 @@ void main() {
         value: null,
         error: 'error',
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -164,19 +105,18 @@ void main() {
       );
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
     });
 
     test('updateItems method and UpdateFieldBlocItems event.', () {
-      final fieldBloc = SelectFieldBloc<bool>(isRequired: false);
+      final fieldBloc = SelectFieldBloc<bool>();
 
       final state1 = SelectFieldBlocState<bool>(
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -196,7 +136,7 @@ void main() {
         state3,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -206,7 +146,6 @@ void main() {
 
     test('addItem method and  AddFieldBlocItem event.', () {
       final fieldBloc = SelectFieldBloc<bool>(
-        isRequired: false,
         items: [true],
       );
 
@@ -214,7 +153,6 @@ void main() {
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -238,7 +176,7 @@ void main() {
         state4,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -249,7 +187,6 @@ void main() {
 
     test('removeItem method and RemoveFieldBlocItem event.', () {
       final fieldBloc = SelectFieldBloc<bool>(
-        isRequired: false,
         items: [true, false],
       );
 
@@ -257,7 +194,6 @@ void main() {
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -282,7 +218,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 

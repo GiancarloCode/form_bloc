@@ -19,9 +19,8 @@ void main() {
         fieldBloc = InputFieldBloc<int>();
         initialState = InputFieldBlocState<int>(
           value: null,
-          error: ValidatorsError.requiredInputFieldBloc,
+          error: null,
           isInitial: true,
-          isRequired: true,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -30,7 +29,7 @@ void main() {
         expectedStates = [initialState];
 
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
@@ -39,13 +38,12 @@ void main() {
           initialState,
         );
 
-        fieldBloc.dispose();
+        fieldBloc.close();
         fieldBloc = InputFieldBloc<int>(initialValue: 1);
         initialState = InputFieldBlocState<int>(
           value: 1,
           error: null,
           isInitial: true,
-          isRequired: true,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -54,67 +52,20 @@ void main() {
         expectedStates = [initialState];
 
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
         expect(
           fieldBloc.initialState,
           initialState,
-        );
-      });
-
-      test(
-          'when _isRequired is true, _isRequiredValidator is added to validators.',
-          () {
-        final fieldBloc = InputFieldBloc<int>();
-
-        final List<InputFieldBlocState> expectedStates = [
-          InputFieldBlocState<int>(
-            value: null,
-            error: ValidatorsError.requiredInputFieldBloc,
-            isInitial: true,
-            isRequired: true,
-            suggestions: null,
-            isValidated: true,
-            isValidating: false,
-            toStringName: null,
-          ),
-        ];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
-      });
-
-      test(
-          'when _isRequired is false, _isRequiredValidator is not added to validators.',
-          () {
-        final fieldBloc = InputFieldBloc<int>(isRequired: false);
-
-        final List<InputFieldBlocState> expectedStates = [
-          InputFieldBlocState<int>(
-            value: null,
-            error: null,
-            isInitial: true,
-            isRequired: false,
-            suggestions: null,
-            isValidated: true,
-            isValidating: false,
-            toStringName: null,
-          ),
-        ];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
         );
       });
 
       test('validators verify the value and add the corresponding error.', () {
         final fieldBloc = InputFieldBloc<int>(
           validators: [
+            (value) => value == null ? 'null' : null,
             (value) => value > 5 ? '> 5' : null,
             (value) => value == 3 ? '== 3' : null,
           ],
@@ -122,9 +73,8 @@ void main() {
 
         final state1 = InputFieldBlocState<int>(
           value: null,
-          error: ValidatorsError.requiredInputFieldBloc,
+          error: 'null',
           isInitial: true,
-          isRequired: true,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -156,7 +106,7 @@ void main() {
           state5,
         ];
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
@@ -169,6 +119,9 @@ void main() {
       test('asyncValidators verify the value and add the corresponding error.',
           () {
         final fieldBloc = InputFieldBloc<int>(
+          validators: [
+            (value) => value == null ? 'null' : null,
+          ],
           asyncValidators: [
             (value) async {
               await Future<void>.delayed(Duration(milliseconds: 10));
@@ -183,9 +136,8 @@ void main() {
 
         final state1 = InputFieldBlocState<int>(
           value: null,
-          error: ValidatorsError.requiredInputFieldBloc,
+          error: 'null',
           isInitial: true,
-          isRequired: true,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -210,7 +162,7 @@ void main() {
           state3,
         ];
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
@@ -225,9 +177,8 @@ void main() {
         final List<InputFieldBlocState> expectedStates = [
           InputFieldBlocState<int>(
             value: null,
-            error: ValidatorsError.requiredInputFieldBloc,
+            error: null,
             isInitial: true,
-            isRequired: true,
             suggestions: suggestions,
             isValidated: true,
             isValidating: false,
@@ -236,12 +187,12 @@ void main() {
         ];
 
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
         expect(
-          await fieldBloc.currentState.suggestions(''),
+          await fieldBloc.state.suggestions(''),
           [1, 2, 3],
         );
       });
@@ -254,9 +205,8 @@ void main() {
         final List<InputFieldBlocState> expectedStates = [
           InputFieldBlocState<int>(
             value: null,
-            error: ValidatorsError.requiredInputFieldBloc,
+            error: null,
             isInitial: true,
-            isRequired: true,
             suggestions: null,
             isValidated: true,
             isValidating: false,
@@ -265,23 +215,22 @@ void main() {
         ];
 
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
         String toString = toStringName + ' {';
         toString += ' value: null,';
-        toString += ' error: "${ValidatorsError.requiredInputFieldBloc}",';
+        toString += ' error: "null",';
         toString += ' isInitial: true,';
         toString += ' isValidated: true,';
         toString += ' isValidating: false,';
-        toString += ' isRequired: true,';
         toString +=
             ' formBlocState: FormBlocLoaded<dynamic, dynamic> { isValid: true }';
         toString += ' }';
 
         expect(
-          fieldBloc.currentState.toString(),
+          fieldBloc.state.toString(),
           toString,
         );
       });
@@ -292,9 +241,8 @@ void main() {
 
       final initialState = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -311,19 +259,20 @@ void main() {
       );
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
     });
 
     test('updateValue method and UpdateFieldBlocValue event.', () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: FieldBlocValidatorsErrors.requiredInputFieldBloc,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -336,7 +285,7 @@ void main() {
       );
       final state3 = state2.copyWith(
         value: Optional.absent(),
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
+        error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
       );
       final state4 = state3.copyWith(
         value: Optional.of(2),
@@ -351,7 +300,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -362,15 +311,12 @@ void main() {
     test(
         'updateValue method and UpdateFieldBlocValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
         () {
-      final fieldBloc = InputFieldBloc<int>(
-        isRequired: false,
-      );
+      final fieldBloc = InputFieldBloc<int>();
 
       final state1 = InputFieldBlocState<int>(
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -451,12 +397,12 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
       fieldBloc.updateValue(1);
-      fieldBloc.dispatch(
+      fieldBloc.add(
         UpdateFieldBlocStateFormBlocState(
           FormBlocLoadFailed<dynamic, dynamic>(isValid: false),
         ),
@@ -464,13 +410,13 @@ void main() {
       fieldBloc.updateValue(2);
       fieldBloc.updateValue(2);
       fieldBloc.updateValue(2);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocLoaded<dynamic, dynamic>(true),
       ));
       fieldBloc.updateValue(3);
       fieldBloc.updateValue(3);
       fieldBloc.updateValue(3);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmitting<dynamic, dynamic>(
           isValid: true,
           isCanceling: false,
@@ -478,36 +424,37 @@ void main() {
         ),
       ));
       fieldBloc.updateValue(4);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSuccess<dynamic, dynamic>(isValid: true),
       ));
       fieldBloc.updateValue(5);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocFailure<dynamic, dynamic>(isValid: true),
       ));
       fieldBloc.updateValue(6);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmissionCancelled<dynamic, dynamic>(true),
       ));
       fieldBloc.updateValue(7);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmissionFailed<dynamic, dynamic>(true),
       ));
       fieldBloc.updateValue(8);
       fieldBloc.updateValue(8);
-      fieldBloc.dispatch(ResetFieldBlocStateIsValidated());
+      fieldBloc.add(ResetFieldBlocStateIsValidated());
       fieldBloc.updateValue(8);
     });
 
     test('updateInitialValue method and UpdateFieldBlocInitialValue event.',
         () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: FieldBlocValidatorsErrors.requiredInputFieldBloc,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -525,7 +472,7 @@ void main() {
       );
       final state4 = state3.copyWith(
         value: Optional.absent(),
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
+        error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
         isInitial: false,
       );
       final state5 = state4.copyWith(
@@ -541,7 +488,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -554,15 +501,12 @@ void main() {
     test(
         'updateInitialValue method and UpdateFieldBlocInitialValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
         () {
-      final fieldBloc = InputFieldBloc<int>(
-        isRequired: false,
-      );
+      final fieldBloc = InputFieldBloc<int>();
 
       final state1 = InputFieldBlocState<int>(
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -642,12 +586,12 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
       fieldBloc.updateInitialValue(1);
-      fieldBloc.dispatch(
+      fieldBloc.add(
         UpdateFieldBlocStateFormBlocState(
           FormBlocLoadFailed<dynamic, dynamic>(isValid: false),
         ),
@@ -655,13 +599,13 @@ void main() {
       fieldBloc.updateInitialValue(2);
       fieldBloc.updateInitialValue(2);
       fieldBloc.updateInitialValue(2);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocLoaded<dynamic, dynamic>(true),
       ));
       fieldBloc.updateInitialValue(3);
       fieldBloc.updateInitialValue(3);
       fieldBloc.updateInitialValue(3);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmitting<dynamic, dynamic>(
           isValid: true,
           isCanceling: false,
@@ -669,35 +613,37 @@ void main() {
         ),
       ));
       fieldBloc.updateInitialValue(4);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSuccess<dynamic, dynamic>(isValid: true),
       ));
       fieldBloc.updateInitialValue(5);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocFailure<dynamic, dynamic>(isValid: true),
       ));
       fieldBloc.updateInitialValue(6);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmissionCancelled<dynamic, dynamic>(true),
       ));
       fieldBloc.updateInitialValue(7);
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(
         FormBlocSubmissionFailed<dynamic, dynamic>(true),
       ));
       fieldBloc.updateInitialValue(8);
       fieldBloc.updateInitialValue(8);
-      fieldBloc.dispatch(ResetFieldBlocStateIsValidated());
+      fieldBloc.add(ResetFieldBlocStateIsValidated());
       fieldBloc.updateInitialValue(8);
     });
 
     test('clear method set value to null.', () {
-      final fieldBloc = InputFieldBloc<int>(initialValue: 1);
+      final fieldBloc = InputFieldBloc<int>(
+        initialValue: 1,
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: 1,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -705,7 +651,7 @@ void main() {
       );
       final state2 = state1.copyWith(
         value: Optional.absent(),
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
+        error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
         isInitial: false,
       );
 
@@ -715,7 +661,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -740,13 +686,15 @@ void main() {
     });
 
     test('addValidators method and AddValidators event.', () async {
-      final fieldBloc = InputFieldBloc<int>(initialValue: 1);
+      final fieldBloc = InputFieldBloc<int>(
+        initialValue: 1,
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: 1,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -757,7 +705,7 @@ void main() {
       );
       final state3 = state2.copyWith(
         value: Optional.absent(),
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
+        error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
         isInitial: false,
       );
 
@@ -768,7 +716,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -777,13 +725,16 @@ void main() {
     });
 
     test('addAsyncValidators method and AddAsyncValidators event.', () async {
-      final fieldBloc = InputFieldBloc<int>(initialValue: 1);
+      final fieldBloc = InputFieldBloc<int>(
+        initialValue: 1,
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
+        asyncValidatorDebounceTime: Duration(milliseconds: 0),
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: 1,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -800,7 +751,7 @@ void main() {
       );
       final state4 = state3.copyWith(
         value: Optional.absent(),
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
+        error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
         isInitial: false,
       );
 
@@ -812,14 +763,14 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
       fieldBloc
           .addAsyncValidators([(value) async => value == 1 ? '1 error' : null]);
       // wait debounce time
-      await Future<void>.delayed(Duration(milliseconds: 510));
+      await Future<void>.delayed(Duration(milliseconds: 10));
       fieldBloc.updateValue(null);
     });
     test(
@@ -831,7 +782,6 @@ void main() {
         value: 1,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -852,11 +802,11 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(DisableFieldBlocAutoValidate());
+      fieldBloc.add(DisableFieldBlocAutoValidate());
 
       fieldBloc.addValidators([(value) => value == 1 ? '1 error' : null]);
       fieldBloc.updateValue(null);
@@ -865,13 +815,15 @@ void main() {
     test(
         'addAsyncValidators method and AddAsyncValidators event, after DisableFieldBlocAutoValidate event was dispatched.',
         () async {
-      final fieldBloc = InputFieldBloc<int>(initialValue: 1);
+      final fieldBloc = InputFieldBloc<int>(
+        initialValue: 1,
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: 1,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -893,11 +845,11 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(DisableFieldBlocAutoValidate());
+      fieldBloc.add(DisableFieldBlocAutoValidate());
 
       fieldBloc
           .addAsyncValidators([(value) async => value == 1 ? '1 error' : null]);
@@ -918,7 +870,6 @@ void main() {
         value: 1,
         error: '1 error',
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -938,7 +889,6 @@ void main() {
       );
       final state5 = state4.copyWith(
         value: Optional.absent(),
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
       );
 
       final List<InputFieldBlocState<int>> expectedStates = [
@@ -950,7 +900,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
       fieldBloc.updateValue(2);
@@ -964,6 +914,7 @@ void main() {
       final fieldBloc = InputFieldBloc<int>(
         initialValue: 1,
         asyncValidatorDebounceTime: Duration(milliseconds: 0),
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
         asyncValidators: [
           (value) async => value == 1 ? '1 error' : null,
         ],
@@ -973,7 +924,6 @@ void main() {
         value: 1,
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: false,
         isValidating: true,
@@ -1007,7 +957,7 @@ void main() {
 
       final state7 = state6.copyWith(
         value: Optional.absent(),
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
+        error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
       );
 
       final List<InputFieldBlocState<int>> expectedStates = [
@@ -1021,7 +971,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -1051,9 +1001,8 @@ void main() {
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: suggestions1,
         isValidated: true,
         isValidating: false,
@@ -1073,7 +1022,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -1086,6 +1035,7 @@ void main() {
         () {
       final fieldBloc = InputFieldBloc<int>(
         validators: [
+          FieldBlocValidators.requiredInputFieldBloc,
           (value) => value > 5 ? '> 5' : null,
           (value) => value == 3 ? '== 3' : null,
         ],
@@ -1096,9 +1046,8 @@ void main() {
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: FieldBlocValidatorsErrors.requiredInputFieldBloc,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1135,11 +1084,11 @@ void main() {
         state7,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(DisableFieldBlocAutoValidate());
+      fieldBloc.add(DisableFieldBlocAutoValidate());
       fieldBloc.updateValue(1);
       fieldBloc.updateValue(3);
       fieldBloc.updateValue(6);
@@ -1151,6 +1100,7 @@ void main() {
         'ValidateFieldBloc event verify the value in validators and asyncValidators.',
         () {
       final fieldBloc = InputFieldBloc<int>(
+        validators: [FieldBlocValidators.requiredInputFieldBloc],
         asyncValidators: [
           (value) async => value == 2 ? 'async == 2' : null,
         ],
@@ -1158,9 +1108,8 @@ void main() {
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: FieldBlocValidatorsErrors.requiredInputFieldBloc,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1171,7 +1120,7 @@ void main() {
         isValidated: false,
       );
       final state3 = state2.copyWith(
-        error: Optional.of(ValidatorsError.requiredInputFieldBloc),
+        error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
         isValidated: true,
       );
       final state4 = state3.copyWith(
@@ -1201,15 +1150,15 @@ void main() {
         state7,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(DisableFieldBlocAutoValidate());
-      fieldBloc.dispatch(ValidateFieldBloc(false));
-      fieldBloc.dispatch(ValidateFieldBloc(true));
+      fieldBloc.add(DisableFieldBlocAutoValidate());
+      fieldBloc.add(ValidateFieldBloc(false));
+      fieldBloc.add(ValidateFieldBloc(true));
       fieldBloc.updateValue(2);
-      fieldBloc.dispatch(ValidateFieldBloc(true));
+      fieldBloc.add(ValidateFieldBloc(true));
     });
 
     test('ResetFieldBlocStateIsValidated event.', () {
@@ -1217,9 +1166,8 @@ void main() {
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1234,11 +1182,11 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(ResetFieldBlocStateIsValidated());
+      fieldBloc.add(ResetFieldBlocStateIsValidated());
     });
     test('UpdateFieldBlocStateFormBlocState event.', () {
       final fieldBloc = InputFieldBloc<int>();
@@ -1247,9 +1195,8 @@ void main() {
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1264,11 +1211,11 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(UpdateFieldBlocStateFormBlocState(newFormBlocState));
+      fieldBloc.add(UpdateFieldBlocStateFormBlocState(newFormBlocState));
     });
 
     test('UpdateFieldBlocStateError event.', () {
@@ -1276,9 +1223,8 @@ void main() {
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1293,13 +1239,12 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(UpdateFieldBlocStateError(error: 'error1', value: 1));
-      fieldBloc
-          .dispatch(UpdateFieldBlocStateError(error: 'error2', value: null));
+      fieldBloc.add(UpdateFieldBlocStateError(error: 'error1', value: 1));
+      fieldBloc.add(UpdateFieldBlocStateError(error: 'error2', value: null));
     });
 
     test('UpdateFieldBlocState event.', () {
@@ -1308,9 +1253,8 @@ void main() {
 
       final state1 = InputFieldBlocState<int>(
         value: null,
-        error: ValidatorsError.requiredInputFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1320,7 +1264,6 @@ void main() {
         value: 2,
         error: null,
         isInitial: false,
-        isRequired: false,
         suggestions: suggestions,
         isValidated: false,
         isValidating: true,
@@ -1332,27 +1275,27 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(UpdateFieldBlocState(state2));
+      fieldBloc.add(UpdateFieldBlocState(state2));
     });
 
     test('on subscribeToFieldBlocs method and SubscribeToFieldBlocs event.',
         () async {
-      final fieldBloc1 = InputFieldBloc<int>(isRequired: false);
-      final fieldBloc2 = InputFieldBloc<int>(isRequired: false);
+      final fieldBloc1 = InputFieldBloc<int>();
+      final fieldBloc2 = InputFieldBloc<int>();
 
       String isEqual(int value) {
-        if (value == fieldBloc2.currentState.value) {
+        if (value == fieldBloc2.state.value) {
           return 'is equal to fieldBLoc2';
         }
         return null;
       }
 
       String isNotEqual(int value) {
-        if (value != fieldBloc2.currentState.value) {
+        if (value != fieldBloc2.state.value) {
           return 'is not equal to fieldBLoc2';
         }
         return null;
@@ -1362,7 +1305,6 @@ void main() {
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1409,7 +1351,7 @@ void main() {
         state9,
       ];
       expect(
-        fieldBloc1.state,
+        fieldBloc1,
         emitsInOrder(expectedStates),
       );
 
@@ -1421,7 +1363,7 @@ void main() {
       await Future<void>.delayed(Duration(milliseconds: 0));
       fieldBloc1.updateValue(2);
       fieldBloc1.updateValue(null);
-      fieldBloc1.dispatch(DisableFieldBlocAutoValidate());
+      fieldBloc1.add(DisableFieldBlocAutoValidate());
       fieldBloc1.updateValidators([isNotEqual]);
       await Future<void>.delayed(Duration(milliseconds: 0));
       fieldBloc1.updateValue(1);
@@ -1431,13 +1373,12 @@ void main() {
     });
 
     test('addError method and AddFieldBlocError event.', () async {
-      final fieldBloc = InputFieldBloc<int>(isRequired: false);
+      final fieldBloc = InputFieldBloc<int>();
 
       final state1 = InputFieldBlocState<int>(
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1468,7 +1409,7 @@ void main() {
         state5,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -1481,13 +1422,12 @@ void main() {
     test(
         'addError method and AddFieldBlocError event after disable auto validation.',
         () async {
-      final fieldBloc = InputFieldBloc<int>(isRequired: false);
+      final fieldBloc = InputFieldBloc<int>();
 
       final state1 = InputFieldBlocState<int>(
         value: null,
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -1518,11 +1458,11 @@ void main() {
         state5,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispatch(DisableFieldBlocAutoValidate());
+      fieldBloc.add(DisableFieldBlocAutoValidate());
 
       fieldBloc.addError('error');
       await Future<void>.delayed(Duration(milliseconds: 0));

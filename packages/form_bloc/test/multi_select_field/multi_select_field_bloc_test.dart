@@ -7,12 +7,14 @@ void main() {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
-        final validators = [(List<bool> value) => 'error'];
+        final validators = [
+          FieldBlocValidators.requiredMultiSelectFieldBloc,
+          (List<bool> value) => 'error'
+        ];
         final toStringName = 'field';
 
         final fieldBloc = MultiSelectFieldBloc<bool>(
           initialValue: [],
-          isRequired: true,
           validators: validators,
           suggestions: suggestions,
           toStringName: toStringName,
@@ -20,9 +22,8 @@ void main() {
 
         final state1 = MultiSelectFieldBlocState<bool>(
           value: [],
-          error: ValidatorsError.requiredMultiSelectFieldBloc,
+          error: FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc,
           isInitial: true,
-          isRequired: true,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
@@ -40,68 +41,11 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc.state,
+          fieldBloc,
           emitsInOrder(expectedStates),
         );
 
         fieldBloc.updateValue([true]);
-      });
-      test(
-          'when isRequired is true, Validators.requiredMultiSelectFieldBloc is added to validators.',
-          () {
-        MultiSelectFieldBloc fieldBloc;
-        MultiSelectFieldBlocState initialState;
-        List<MultiSelectFieldBlocState> expectedStates;
-
-        fieldBloc = MultiSelectFieldBloc<bool>(
-          initialValue: [],
-          isRequired: true,
-        );
-
-        initialState = MultiSelectFieldBlocState<bool>(
-          value: [],
-          error: ValidatorsError.requiredMultiSelectFieldBloc,
-          isInitial: true,
-          isRequired: true,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          toStringName: null,
-          items: [],
-        );
-
-        expectedStates = [initialState];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
-
-        fieldBloc.dispose();
-
-        fieldBloc = MultiSelectFieldBloc<bool>(
-          initialValue: [],
-          isRequired: false,
-        );
-
-        initialState = MultiSelectFieldBlocState<bool>(
-          value: [],
-          error: null,
-          isInitial: true,
-          isRequired: false,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          toStringName: null,
-          items: [],
-        );
-
-        expectedStates = [initialState];
-
-        expect(
-          fieldBloc.state,
-          emitsInOrder(expectedStates),
-        );
       });
     });
 
@@ -114,9 +58,8 @@ void main() {
 
       initialState = MultiSelectFieldBlocState<bool>(
         value: [],
-        error: ValidatorsError.requiredMultiSelectFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -132,14 +75,13 @@ void main() {
       );
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.dispose();
+      fieldBloc.close();
 
       fieldBloc = MultiSelectFieldBloc<bool>(
-        isRequired: false,
         validators: [(value) => 'error'],
         items: [true, false],
       );
@@ -148,7 +90,6 @@ void main() {
         value: [],
         error: 'error',
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -164,19 +105,18 @@ void main() {
       );
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
     });
 
     test('updateItems method and UpdateFieldBlocItems event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(isRequired: false);
+      final fieldBloc = MultiSelectFieldBloc<bool>();
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -196,7 +136,7 @@ void main() {
         state3,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -206,7 +146,6 @@ void main() {
 
     test('addItem method and  AddFieldBlocItem event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool>(
-        isRequired: false,
         items: [true],
       );
 
@@ -214,7 +153,6 @@ void main() {
         value: [],
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -238,7 +176,7 @@ void main() {
         state4,
       ];
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -249,7 +187,6 @@ void main() {
 
     test('removeItem method and RemoveFieldBlocItem event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool>(
-        isRequired: false,
         items: [true, false],
       );
 
@@ -257,7 +194,6 @@ void main() {
         value: [],
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -282,7 +218,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -292,15 +228,12 @@ void main() {
     });
 
     test('updateValue method.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
-        isRequired: false,
-      );
+      final fieldBloc = MultiSelectFieldBloc<bool>();
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -326,7 +259,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -335,15 +268,12 @@ void main() {
       fieldBloc.updateValue(null);
     });
     test('updateInitialValue method.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
-        isRequired: false,
-      );
+      final fieldBloc = MultiSelectFieldBloc<bool>();
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
         error: null,
         isInitial: true,
-        isRequired: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -370,7 +300,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -383,9 +313,8 @@ void main() {
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
-        error: ValidatorsError.requiredMultiSelectFieldBloc,
+        error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -401,7 +330,6 @@ void main() {
         value: Optional.of([true, false]),
       );
       final state4 = state3.copyWith(
-        error: Optional.of(ValidatorsError.requiredMultiSelectFieldBloc),
         value: Optional.of([]),
       );
       final state5 = state4.copyWith(
@@ -422,7 +350,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 
@@ -440,7 +368,6 @@ void main() {
         value: [true, false],
         error: null,
         isInitial: true,
-        isRequired: true,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -452,7 +379,6 @@ void main() {
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        error: Optional.of(ValidatorsError.requiredMultiSelectFieldBloc),
         value: Optional.of([]),
       );
       final state4 = state3.copyWith(
@@ -476,7 +402,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.state,
+        fieldBloc,
         emitsInOrder(expectedStates),
       );
 

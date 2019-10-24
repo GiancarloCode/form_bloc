@@ -20,9 +20,6 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
   /// Used by [canShowError].
   final bool isInitial;
 
-  /// Indicates if the [FieldBloc] is required.
-  final bool isRequired;
-
   /// Function that returns a list of suggestions
   /// which can be used to update the value.
   final Suggestions<Suggestion> suggestions;
@@ -45,14 +42,12 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
     @required this.value,
     @required this.error,
     @required this.isInitial,
-    @required this.isRequired,
     @required this.suggestions,
     @required this.isValidated,
     @required this.isValidating,
     @required FormBlocState formBlocState,
     @required this.toStringName,
   })  : assert(isInitial != null),
-        assert(isRequired != null),
         assert(isValidated != null),
         this.formBlocState =
             formBlocState ?? FormBlocLoaded<dynamic, dynamic>(true);
@@ -109,7 +104,6 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
     _toString += ' isInitial: $isInitial,';
     _toString += ' isValidated: ${isValidated},';
     _toString += ' isValidating: ${isValidating},';
-    _toString += ' isRequired: ${isRequired},';
     _toString += ' formBlocState: ${formBlocState}';
     _toString += ' }';
 

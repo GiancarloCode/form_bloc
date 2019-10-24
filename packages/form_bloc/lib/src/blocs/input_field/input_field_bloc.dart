@@ -7,9 +7,6 @@ class InputFieldBloc<Value>
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is `null`.
-  /// * [isRequired] : If is `true`,
-  /// [Validators.requiredInputFieldBloc] is added to [validators],
-  /// by default is `true`.
   /// * [validators] : List of [Validator]s.
   /// Each time the `value` will change,
   /// if the [FormBloc] that use this [InputFieldBloc] has set
@@ -34,18 +31,14 @@ class InputFieldBloc<Value>
   /// * [toStringName] : This will be added to [InputFieldBlocState.toStringName].
   InputFieldBloc({
     Value initialValue,
-    bool isRequired = true,
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value> suggestions,
     String toStringName,
-  })  : assert(isRequired != null),
-        assert(asyncValidatorDebounceTime != null),
+  })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue,
-          isRequired,
-          Validators.requiredInputFieldBloc,
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,
@@ -58,7 +51,6 @@ class InputFieldBloc<Value>
         value: _initialValue,
         error: _getInitialStateError,
         isInitial: true,
-        isRequired: _isRequired,
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,

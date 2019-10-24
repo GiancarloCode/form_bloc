@@ -29,7 +29,7 @@ Before to use this package you need to know the [core concepts](https://felangel
 
 ```yaml
 dependencies:
-  form_bloc: ^0.5.2
+  form_bloc: ^0.6.0
 ```
 
 ```dart
@@ -53,9 +53,9 @@ class LoginFormBloc extends FormBloc<String, String> {
         email: emailField.value,
         password: passwordField.value,
       );
-      yield currentState.toSuccess();
+      yield state.toSuccess();
     } catch (e) {
-      yield currentState.toFailure();
+      yield state.toFailure();
     }
   }
 }
@@ -164,13 +164,13 @@ You must call all your business logic of this form here, and `yield` the corresp
 You can yield a new state using:  
 
 
-* [currentState.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html).
-* [currentState.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toSuccess.html).
-* [currentState.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoaded.html).
+* [state.toFailure([FailureResponse failureResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toFailure.html).
+* [state.toSuccess([SuccessResponse successResponse])](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toSuccess.html).
+* [state.toLoaded()](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState/toLoaded.html).
 
 See other states [here](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState-class.html#instance-methods).
 
-For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and yield `currentState.toSuccess()` if the `_userRepository.login` method not throw any exception, and yield `currentState.toFailure()` if throw a exception.
+For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and yield `state.toSuccess()` if the `_userRepository.login` method not throw any exception, and yield `state.toFailure()` if throw a exception.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
@@ -193,9 +193,9 @@ class LoginFormBloc extends FormBloc<String, String> {
         email: emailField.value,
         password: passwordField.value,
       );
-      yield currentState.toSuccess();
+      yield state.toSuccess();
     } catch (e) {
-      yield currentState.toFailure();
+      yield state.toFailure();
     }
   }
 }

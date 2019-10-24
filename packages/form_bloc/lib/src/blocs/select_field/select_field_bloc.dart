@@ -10,9 +10,6 @@ class SelectFieldBloc<Value>
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is `null`.
-  /// * [isRequired] : If is `true`,
-  /// [Validators.requiredSelectFieldBloc] is added to [validators],
-  /// by default is `true`.
   /// * [validators] : List of [Validator]s.
   /// Each time the `value` will change,
   /// if the [FormBloc] that use this [SelectFieldBloc] has set
@@ -38,20 +35,16 @@ class SelectFieldBloc<Value>
   /// * [items] : The list of items that can be selected to update the value.
   SelectFieldBloc({
     Value initialValue,
-    bool isRequired = true,
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value> suggestions,
     String toStringName,
     List<Value> items,
-  })  : assert(isRequired != null),
-        assert(asyncValidatorDebounceTime != null),
+  })  : assert(asyncValidatorDebounceTime != null),
         _items = items ?? [],
         super(
           initialValue,
-          isRequired,
-          Validators.requiredSelectFieldBloc,
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,
@@ -64,7 +57,6 @@ class SelectFieldBloc<Value>
         value: _initialValue,
         error: _getInitialStateError,
         isInitial: true,
-        isRequired: _isRequired,
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
@@ -77,29 +69,29 @@ class SelectFieldBloc<Value>
   /// If you want to add or remove elements to `items`
   /// of the current state,
   /// use [addItem] or [removeItem].
-  void updateItems(List<Value> items) => dispatch(UpdateFieldBlocItems(items));
+  void updateItems(List<Value> items) => add(UpdateFieldBlocItems(items));
 
   /// Add [item] to the current `items`
   /// of the current state.
-  void addItem(Value item) => dispatch(AddFieldBlocItem(item));
+  void addItem(Value item) => add(AddFieldBlocItem(item));
 
   /// Remove [item] to the current `items`
   /// of the current state.
-  void removeItem(Value item) => dispatch(RemoveFieldBlocItem(item));
+  void removeItem(Value item) => add(RemoveFieldBlocItem(item));
 
   @override
   Stream<SelectFieldBlocState<Value>> _mapCustomEventToState(
     FieldBlocEvent event,
   ) async* {
     if (event is UpdateFieldBlocItems<Value>) {
-      yield currentState.copyWith(
+      yield state.copyWith(
         items: Optional.fromNullable(
           FieldBlocBase._itemsWithoutDuplicates(event.items),
         ),
       );
     } else if (event is AddFieldBlocItem<Value>) {
-      List<Value> items = currentState.items ?? [];
-      yield currentState.copyWith(
+      List<Value> items = state.items ?? [];
+      yield state.copyWith(
         items: Optional.fromNullable(
           FieldBlocBase._itemsWithoutDuplicates(
             List<Value>.from(items)..add(event.item),
@@ -107,9 +99,9 @@ class SelectFieldBloc<Value>
         ),
       );
     } else if (event is RemoveFieldBlocItem<Value>) {
-      List<Value> items = currentState.items;
+      List<Value> items = state.items;
       if (items != null && items.isNotEmpty) {
-        yield currentState.copyWith(
+        yield state.copyWith(
           items: Optional.fromNullable(
             FieldBlocBase._itemsWithoutDuplicates(
               List<Value>.from(items)..remove(event.item),

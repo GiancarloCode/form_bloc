@@ -9,9 +9,6 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty `String` ('').
-  /// * [isRequired] : If is `true`,
-  /// [Validators.requiredTextFieldBloc] is added to [validators],
-  /// by default is `true`.
   /// * [validators] : List of [Validator]s.
   /// Each time the `value` will change,
   /// if the [FormBloc] that use this [TextFieldBloc] has set
@@ -36,19 +33,15 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   /// * [toStringName] : This will be added to [TextFieldBlocState.toStringName].
   TextFieldBloc({
     String initialValue = '',
-    bool isRequired = true,
     List<Validator<String>> validators,
     List<AsyncValidator<String>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<String> suggestions,
     String toStringName,
   })  : assert(initialValue != null),
-        assert(isRequired != null),
         assert(asyncValidatorDebounceTime != null),
         super(
           initialValue,
-          isRequired,
-          Validators.requiredTextFieldBloc,
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,
@@ -61,7 +54,6 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
         value: _initialValue,
         error: _getInitialStateError,
         isInitial: true,
-        isRequired: _isRequired,
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
@@ -72,17 +64,17 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   ///
   /// if the `value` is an `int` returns the parsed `value`,
   /// else returns `null`.
-  int get valueToInt => currentState.valueToInt;
+  int get valueToInt => state.valueToInt;
 
   /// Return the parsed `value` to `double` of the current state.
   ///
   /// if the `value` is a `double` returns the parsed `value`,
   /// else returns `null`.
-  double get valueToDouble => currentState.valueToDouble;
+  double get valueToDouble => state.valueToDouble;
 
   /// Set the `value` to `''` of the current state.
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void clear() => dispatch(UpdateFieldBlocValue(''));
+  void clear() => add(UpdateFieldBlocValue(''));
 }

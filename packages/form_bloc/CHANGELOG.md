@@ -1,3 +1,14 @@
+# 0.6.0
+* Updated to `bloc: ^1.0.0`
+    * `bloc.state.listen` -> `bloc.listen`
+    * `bloc.currentState` -> `bloc.state`
+    * `dispatch` -> `add`
+    * `dispose` -> `close`
+* Documentation Updates.
+* `Validators` -> `FieldBlocValidators`
+* `ValidatorsError` -> `FieldBlocValidatorsErrors`
+* Removed `isRequired` property from `FieldBloc` and `FieldBlocState`.
+
 # 0.5.2
 * Documentation Updates.
 * Fixed a bug in `isValid` property of `fieldBlocState`.

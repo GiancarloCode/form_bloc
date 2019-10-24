@@ -1,7 +1,7 @@
 import 'blocs/field/field_bloc.dart';
 
-class ValidatorsError {
-  ValidatorsError._();
+class FieldBlocValidatorsErrors {
+  FieldBlocValidatorsErrors._();
 
   static const String requiredInputFieldBloc =
       'requiredInputFieldBlocValidatorError';
@@ -25,62 +25,62 @@ class ValidatorsError {
   static const String confirmPassword = 'confirmPasswordValidatorError';
 }
 
-class Validators {
-  Validators._();
+class FieldBlocValidators {
+  FieldBlocValidators._();
 
   /// Check if the [value] is not null.
   ///
-  /// Returns [ValidatorsError.requiredInputFieldBloc].
+  /// Returns [FieldBlocValidatorsErrors.requiredInputFieldBloc].
   static String requiredInputFieldBloc(dynamic value) {
     if (value != null) {
       return null;
     }
-    return ValidatorsError.requiredInputFieldBloc;
+    return FieldBlocValidatorsErrors.requiredInputFieldBloc;
   }
 
   /// Check if the [boolean] is `true`.
   ///
-  /// Returns [ValidatorsError.requiredBooleanFieldBloc].
+  /// Returns [FieldBlocValidatorsErrors.requiredBooleanFieldBloc].
   static String requiredBooleanFieldBloc(bool boolean) {
     if (boolean != null && boolean) {
       return null;
     }
-    return ValidatorsError.requiredBooleanFieldBloc;
+    return FieldBlocValidatorsErrors.requiredBooleanFieldBloc;
   }
 
   /// Check if the [string] is not empty.
   ///
-  /// Returns [ValidatorsError.requiredTextFieldBloc].
+  /// Returns [FieldBlocValidatorsErrors.requiredTextFieldBloc].
   static String requiredTextFieldBloc(String string) {
-    if (string != null && string.trim().isNotEmpty) {
+    if (string != null && string.isNotEmpty) {
       return null;
     }
-    return ValidatorsError.requiredTextFieldBloc;
+    return FieldBlocValidatorsErrors.requiredTextFieldBloc;
   }
 
   /// Check if the [value] is not null.
   ///
-  /// Returns [ValidatorsError.requiredSelectFieldBloc].
+  /// Returns [FieldBlocValidatorsErrors.requiredSelectFieldBloc].
   static String requiredSelectFieldBloc(dynamic value) {
     if (value != null) {
       return null;
     }
-    return ValidatorsError.requiredSelectFieldBloc;
+    return FieldBlocValidatorsErrors.requiredSelectFieldBloc;
   }
 
   /// Check if the [list] is not empty.
   ///
-  /// Returns [ValidatorsError.requiredMultiSelectFieldBloc].
+  /// Returns [FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc].
   static String requiredMultiSelectFieldBloc(List<dynamic> list) {
     if (list != null && list.isNotEmpty) {
       return null;
     }
-    return ValidatorsError.requiredMultiSelectFieldBloc;
+    return FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc;
   }
 
   /// Check if the [string] is an email.
   ///
-  /// Returns [ValidatorsError.email].
+  /// Returns [FieldBlocValidatorsErrors.email].
   static String email(String string) {
     final RegExp emailRegExp = RegExp(
       r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
@@ -89,24 +89,24 @@ class Validators {
     if (string != null && emailRegExp.hasMatch(string)) {
       return null;
     }
-    return ValidatorsError.email;
+    return FieldBlocValidatorsErrors.email;
   }
 
   /// Check if the [password] has min 6 chars.
   ///
-  /// Returns [ValidatorsError.passwordMin6Chars].
+  /// Returns [FieldBlocValidatorsErrors.passwordMin6Chars].
   static String passwordMin6Chars(String password) {
     if (password != null && password.runes.length >= 6) {
       return null;
     }
-    return ValidatorsError.passwordMin6Chars;
+    return FieldBlocValidatorsErrors.passwordMin6Chars;
   }
 
   /// Check if the `value` of the current [TextFieldBloc] is equals
   /// to [passwordTextFieldBloc.value].
   ///
   /// Returns a [Validator] `String Function(String confirmPassword)`
-  /// that returns [ValidatorsError.confirmPassword].
+  /// that returns [FieldBlocValidatorsErrors.confirmPassword].
   static Validator<String> confirmPassword(
     TextFieldBloc passwordTextFieldBloc,
   ) {
@@ -114,7 +114,7 @@ class Validators {
       if (confirmPassword == passwordTextFieldBloc.value) {
         return null;
       }
-      return ValidatorsError.confirmPassword;
+      return FieldBlocValidatorsErrors.confirmPassword;
     };
   }
 }

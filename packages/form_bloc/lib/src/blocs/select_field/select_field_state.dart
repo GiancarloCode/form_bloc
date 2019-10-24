@@ -11,7 +11,6 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
     @required Value value,
     @required String error,
     @required bool isInitial,
-    @required bool isRequired,
     @required Suggestions<Value> suggestions,
     @required bool isValidated,
     @required bool isValidating,
@@ -22,7 +21,6 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
           value: value,
           error: error,
           isInitial: isInitial,
-          isRequired: isRequired,
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
@@ -45,7 +43,6 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
       value: value == null ? this.value : value.orNull,
       error: error == null ? this.error : error.orNull,
       isInitial: isInitial ?? this.isInitial,
-      isRequired: isRequired,
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
@@ -69,7 +66,6 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
     _toString += ' isInitial: $isInitial,';
     _toString += ' isValidated: ${isValidated},';
     _toString += ' isValidating: ${isValidating},';
-    _toString += ' isRequired: ${isRequired},';
     _toString += ' formBlocState: ${formBlocState},';
     _toString += ' items: $items,';
     _toString += ' }';
@@ -82,7 +78,6 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
         value,
         error,
         isInitial,
-        isRequired,
         suggestions,
         isValidated,
         isValidating,

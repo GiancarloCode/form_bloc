@@ -12,7 +12,6 @@ class MultiSelectFieldBlocState<Value>
     @required List<Value> value,
     @required String error,
     @required bool isInitial,
-    @required bool isRequired,
     @required Suggestions<Value> suggestions,
     @required bool isValidated,
     @required bool isValidating,
@@ -23,7 +22,6 @@ class MultiSelectFieldBlocState<Value>
           value: value,
           error: error,
           isInitial: isInitial,
-          isRequired: isRequired,
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
@@ -46,7 +44,6 @@ class MultiSelectFieldBlocState<Value>
       value: value == null ? this.value : value.orNull,
       error: error == null ? this.error : error.orNull,
       isInitial: isInitial ?? this.isInitial,
-      isRequired: isRequired,
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
@@ -70,7 +67,6 @@ class MultiSelectFieldBlocState<Value>
     _toString += ' isInitial: $isInitial,';
     _toString += ' isValidated: ${isValidated},';
     _toString += ' isValidating: ${isValidating},';
-    _toString += ' isRequired: ${isRequired},';
     _toString += ' formBlocState: ${formBlocState},';
     _toString += ' items: $items,';
     _toString += ' }';
@@ -83,7 +79,6 @@ class MultiSelectFieldBlocState<Value>
         value,
         error,
         isInitial,
-        isRequired,
         suggestions,
         isValidated,
         isValidating,
