@@ -23,6 +23,10 @@ class FieldBlocValidatorsErrors {
   static const String passwordMin6Chars = 'passwordMin6CharsValidatorError';
 
   static const String confirmPassword = 'confirmPasswordValidatorError';
+  
+  static const String date = 'dateValidatorError';
+
+  static const String number = 'numberValidatorError';
 }
 
 class FieldBlocValidators {
@@ -116,5 +120,27 @@ class FieldBlocValidators {
       }
       return FieldBlocValidatorsErrors.confirmPassword;
     };
+  }
+
+  /// Check if the [string] is an date.
+  ///
+  /// Returns [FieldBlocValidatorsErrors.date].
+  static String date(String string) {
+
+    if (string != null && DateTime.tryParse(string) != null) {
+      return null;
+    }
+    return FieldBlocValidatorsErrors.date;
+  }
+
+  /// Check if the [string] is a number.
+  ///
+  /// Returns [FieldBlocValidatorsErrors.number].
+  static String number(String string) {
+
+    if (string != null && double.tryParse(string) != null) {
+      return null;
+    }
+    return FieldBlocValidatorsErrors.number;
   }
 }
