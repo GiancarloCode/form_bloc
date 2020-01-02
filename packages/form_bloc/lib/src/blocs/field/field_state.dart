@@ -92,7 +92,7 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
 
   @override
   String toString() {
-    String _toString = '';
+    var _toString = '';
     if (toStringName != null) {
       _toString += '${toStringName}';
     } else {

@@ -222,7 +222,7 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
 
   @override
   String toString() {
-    String _toString = '$runtimeType { isValid: $isValid';
+    var _toString = '$runtimeType { isValid: $isValid';
     if (hasFailureResponse) {
       _toString += ', failureResponse: $failureResponse';
     }
@@ -281,7 +281,7 @@ class FormBlocSubmitting<SuccessResponse, FailureResponse>
 
   @override
   String toString() {
-    String _toString =
+    var _toString =
         '$runtimeType { isValid: $isValid, progress: $submissionProgress';
     if (isCanceling) {
       _toString += ', isCancelling: $isCanceling';
@@ -317,7 +317,7 @@ class FormBlocSuccess<SuccessResponse, FailureResponse>
 
   @override
   String toString() {
-    String _toString = '$runtimeType { isValid: $isValid';
+    var _toString = '$runtimeType { isValid: $isValid';
     if (hasSuccessResponse) {
       _toString += ', successResponse: $successResponse';
     }
@@ -352,7 +352,7 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
 
   @override
   String toString() {
-    String _toString = '$runtimeType { isValid: $isValid';
+    var _toString = '$runtimeType { isValid: $isValid';
     if (hasFailureResponse) {
       _toString += ', failureResponse: $failureResponse';
     }

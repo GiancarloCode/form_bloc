@@ -98,7 +98,7 @@ void main() {
           error: Optional.absent(),
         );
 
-        final List<InputFieldBlocState<int>> expectedStates = [
+        final expectedStates = [
           state1,
           state2,
           state3,
@@ -156,7 +156,7 @@ void main() {
           isValidated: true,
         );
 
-        final List<InputFieldBlocState<int>> expectedStates = [
+        final expectedStates = [
           state1,
           state2,
           state3,
@@ -174,7 +174,7 @@ void main() {
         final suggestions = (String pattern) async => [1, 2, 3];
         final fieldBloc = InputFieldBloc<int>(suggestions: suggestions);
 
-        final List<InputFieldBlocState> expectedStates = [
+        final expectedStates = [
           InputFieldBlocState<int>(
             value: null,
             error: null,
@@ -202,7 +202,7 @@ void main() {
         final toStringName = 'name';
         final fieldBloc = InputFieldBloc<int>(toStringName: toStringName);
 
-        final List<InputFieldBlocState> expectedStates = [
+        final expectedStates = [
           InputFieldBlocState<int>(
             value: null,
             error: null,
@@ -219,7 +219,7 @@ void main() {
           emitsInOrder(expectedStates),
         );
 
-        String toString = toStringName + ' {';
+        var toString = toStringName + ' {';
         toString += ' value: null,';
         toString += ' error: "null",';
         toString += ' isInitial: true,';
@@ -249,7 +249,7 @@ void main() {
         toStringName: null,
       );
 
-      final List<InputFieldBlocState> expectedStates = [
+      final expectedStates = [
         initialState,
       ];
 
@@ -292,7 +292,7 @@ void main() {
         error: Optional.absent(),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -376,7 +376,7 @@ void main() {
         isValidated: true,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -479,7 +479,7 @@ void main() {
         isInitial: true,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -565,7 +565,7 @@ void main() {
         isValidated: true,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -655,7 +655,7 @@ void main() {
         isInitial: false,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
       ];
@@ -673,7 +673,7 @@ void main() {
         () {
       final fieldBloc = InputFieldBloc<int>();
 
-      final List<int> expectedSuggestions = [1, 2, 3];
+      final expectedSuggestions = [1, 2, 3];
 
       expect(
         fieldBloc.selectedSuggestion,
@@ -709,7 +709,7 @@ void main() {
         isInitial: false,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -755,7 +755,7 @@ void main() {
         isInitial: false,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -795,7 +795,7 @@ void main() {
         isInitial: false,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -838,7 +838,7 @@ void main() {
         isInitial: false,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -891,7 +891,7 @@ void main() {
         value: Optional.absent(),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -960,7 +960,7 @@ void main() {
         error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -1015,7 +1015,7 @@ void main() {
         suggestions: Optional.absent(),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -1074,7 +1074,7 @@ void main() {
         value: Optional.of(2),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -1140,7 +1140,7 @@ void main() {
         error: Optional.of('async == 2'),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -1177,7 +1177,7 @@ void main() {
         isValidated: false,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
       ];
@@ -1206,7 +1206,7 @@ void main() {
         formBlocState: newFormBlocState,
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
       ];
@@ -1234,7 +1234,7 @@ void main() {
         error: Optional.of('error2'),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
       ];
@@ -1270,7 +1270,7 @@ void main() {
         toStringName: 'name',
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
       ];
@@ -1339,7 +1339,7 @@ void main() {
         value: Optional.absent(),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -1401,7 +1401,7 @@ void main() {
         error: Optional.of('error'),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,
@@ -1450,7 +1450,7 @@ void main() {
         value: Optional.absent(),
       );
 
-      final List<InputFieldBlocState<int>> expectedStates = [
+      final expectedStates = [
         state1,
         state2,
         state3,

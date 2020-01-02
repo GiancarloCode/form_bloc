@@ -53,7 +53,7 @@ class FormBlocDelegate extends BlocDelegate {
 
   @override
   void onEvent(Bloc bloc, Object event) {
-    bool notify = true;
+    var notify = true;
 
     if (bloc is FieldBlocBase && !notifyOnFieldBlocEvent) {
       notify = false;
@@ -69,7 +69,7 @@ class FormBlocDelegate extends BlocDelegate {
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
-    bool notify = true;
+    var notify = true;
 
     if (bloc is FieldBlocBase && !notifyOnFieldBlocTransition) {
       notify = false;
@@ -85,7 +85,7 @@ class FormBlocDelegate extends BlocDelegate {
 
   @override
   void onError(Bloc bloc, Object error, StackTrace stacktrace) {
-    bool notify = true;
+    var notify = true;
 
     if (bloc is FieldBlocBase && !notifyOnFieldBlocError) {
       notify = false;

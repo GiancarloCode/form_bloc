@@ -1,3 +1,6 @@
+# 0.7.0
+* Updated to `bloc: ^3.0.0`
+
 # 0.6.0
 * Updated to `bloc: ^1.0.0`
     * `bloc.state.listen` -> `bloc.listen`

@@ -82,7 +82,7 @@ class FieldBlocValidators {
   ///
   /// Returns [FieldBlocValidatorsErrors.email].
   static String email(String string) {
-    final RegExp emailRegExp = RegExp(
+    final emailRegExp = RegExp(
       r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
     );
 

@@ -109,13 +109,13 @@ abstract class FieldBlocBase<Value, Suggestion,
       _autoValidate ? isValidating ? false : true : false;
 
   @override
-  void close() {
-    _selectedSuggestionSubject.close();
-    _asyncValidatorsSubject.close();
-    _asyncValidatorsSubscription.cancel();
-    _revalidateFieldBlocsSubscription?.cancel();
+  Future<void> close() async {
+    unawaited(_selectedSuggestionSubject.close());
+    unawaited(_asyncValidatorsSubject.close());
+    unawaited(_asyncValidatorsSubscription.cancel());
+    unawaited(_revalidateFieldBlocsSubscription?.cancel());
 
-    super.close();
+    unawaited(super.close());
   }
 
   /// Set [value] to the `value` of the current state.
@@ -476,7 +476,7 @@ abstract class FieldBlocBase<Value, Suggestion,
     unawaited(_revalidateFieldBlocsSubscription?.cancel());
     if (event.fieldBlocs != null && event.fieldBlocs.isNotEmpty) {
       _revalidateFieldBlocsSubscription =
-          Observable.combineLatest<dynamic, void>(
+          Rx.combineLatest<dynamic, void>(
         event.fieldBlocs.whereType<FieldBlocBase>().toList().map(
               (state) => state.map<dynamic>((state) => state.value).distinct(),
             ),

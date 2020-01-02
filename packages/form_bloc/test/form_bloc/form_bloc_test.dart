@@ -265,7 +265,7 @@ void main() {
     test('when isLoading is true, onLoading is called, and LoadFormBloc event.',
         () async {
       final formBloc = FormBlocWithIsLoadingTrue();
-      final List<FormBlocState> expectedStates = [
+      final expectedStates = [
         FormBlocLoading<String, String>(),
         FormBlocLoadFailed<String, String>(isValid: false),
         FormBlocLoaded<String, String>(false),
@@ -288,7 +288,7 @@ void main() {
 
     test('when isLoading is false, onLoading is not called.', () async {
       final formBloc = FormBlocWithIsLoadingFalse();
-      final List<FormBlocState> expectedStates = [
+      final expectedStates = [
         FormBlocLoaded<String, String>(true),
         FormBlocSubmitting<String, String>(
           isValid: true,
@@ -360,7 +360,7 @@ void main() {
 
     test('FormBlocState is valid when all field blocs are valid.', () async {
       final formBloc = FormBlocWithFieldsRequired();
-      final List<FormBlocState> expectedStates = [
+      final expectedStates = [
         FormBlocLoaded<String, String>(false),
         FormBlocLoaded<String, String>(true),
       ];
@@ -380,7 +380,7 @@ void main() {
           () async {
         final formBloc = FormBlocWithFieldsRequired();
 
-        final List<FormBlocState> expectedStates = [
+        final expectedStates = [
           FormBlocLoaded<String, String>(false),
           FormBlocSubmissionFailed<String, String>(false),
           FormBlocLoaded<String, String>(false),
@@ -399,7 +399,7 @@ void main() {
           () async {
         final formBloc = FormBlocWithFieldsNotRequired();
 
-        final List<FormBlocState> expectedStates = [
+        final expectedStates = [
           FormBlocLoaded<String, String>(true),
           FormBlocSubmitting<String, String>(
             isValid: true,
@@ -516,7 +516,7 @@ void main() {
     test('updateState method and updateFormBlocState event.', () async {
       final formBloc = FormBlocWithFieldsRequired();
 
-      final List<FormBlocState> expectedStates = [
+      final expectedStates = [
         FormBlocLoaded<String, String>(false),
         FormBlocSuccess<String, String>(isValid: true),
       ];
@@ -560,7 +560,7 @@ void main() {
     test('reload method and ReloadFormBloc event.', () async {
       final formBloc = FormBlocWithFieldsRequired();
 
-      final List<FormBlocState> expectedStates = [
+      final expectedStates = [
         FormBlocLoaded<String, String>(false),
         FormBlocLoading<String, String>(isValid: false),
         FormBlocLoadFailed<String, String>(
@@ -578,7 +578,7 @@ void main() {
         () async {
       final formBloc = FormBlocWithFieldsRequired();
 
-      final List<FormBlocState> expectedStates = [
+      final expectedStates = [
         FormBlocLoaded<String, String>(false),
         FormBlocLoaded<String, String>(true),
         FormBlocSubmitting<String, String>(
@@ -612,7 +612,7 @@ void main() {
     test('UpdateFormBlocStateIsValid event.', () async {
       final formBloc = FormBlocWithFieldsRequired();
 
-      final List<FormBlocState> expectedStates = [
+      final expectedStates = [
         FormBlocLoaded<String, String>(false),
         FormBlocLoaded<String, String>(true),
         FormBlocLoaded<String, String>(false),

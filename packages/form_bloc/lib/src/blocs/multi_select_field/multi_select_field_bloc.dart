@@ -134,7 +134,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
         ),
       );
     } else if (event is AddFieldBlocItem<Value>) {
-      List<Value> items = state.items ?? [];
+      var items = state.items ?? [];
       yield state.copyWith(
         items: Optional.fromNullable(
           FieldBlocBase._itemsWithoutDuplicates(
@@ -143,7 +143,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
         ),
       );
     } else if (event is RemoveFieldBlocItem<Value>) {
-      List<Value> items = state.items;
+      var items = state.items;
       if (items != null && items.isNotEmpty) {
         yield state.copyWith(
           items: Optional.fromNullable(
@@ -154,7 +154,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
         );
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
-      List<Value> newValue = state.value ?? [];
+      var newValue = state.value ?? [];
       newValue = FieldBlocBase._itemsWithoutDuplicates(
         List<Value>.from(newValue)..add(event.valueToSelect),
       );
@@ -173,7 +173,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
         );
       }
     } else if (event is DeselectMultiSelectFieldBlocValue<Value>) {
-      List<Value> newValue = state.value;
+      var newValue = state.value;
       newValue = List<Value>.from(newValue)..remove(event.valueToDeselect);
       if (_canUpdateValue(value: newValue, isInitialValue: false)) {
         final error = _getError(newValue);

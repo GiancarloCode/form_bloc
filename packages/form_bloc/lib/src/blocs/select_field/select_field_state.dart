@@ -54,7 +54,7 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
 
   @override
   String toString() {
-    String _toString = '';
+    var _toString = '';
     if (toStringName != null) {
       _toString += '${toStringName}';
     } else {

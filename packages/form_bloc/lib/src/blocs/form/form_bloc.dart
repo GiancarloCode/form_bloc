@@ -148,16 +148,14 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       add(UpdateFormBlocStateIsValid(areAllFieldsValid));
 
   @override
-  void close() {
-    _areAllFieldsValidSubscription?.cancel();
-
-    _formBlocStateSubscription?.cancel();
-
-    _onSubmittingSubscription?.cancel();
+  Future<void> close() async {
+    unawaited(_areAllFieldsValidSubscription?.cancel());
+    unawaited(_formBlocStateSubscription?.cancel());
+    unawaited(_onSubmittingSubscription?.cancel());
 
     _fieldBlocs?.forEach((fieldBloc) => fieldBloc?.close());
 
-    super.close();
+    unawaited(super.close());
   }
 
   @override
@@ -183,8 +181,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// `fieldBloc` in [FieldBlocs] to update [FormBlocState.isValid]
   /// when any `fieldBloc` changes it state.
   void _setupAreAllFieldsValidSubscription() {
-    _areAllFieldsValidSubscription =
-        Observable.combineLatest<FieldBlocState, bool>(
+    _areAllFieldsValidSubscription = Rx.combineLatest<FieldBlocState, bool>(
       _fieldBlocs,
       (fieldStates) => fieldStates.every(
         (fieldState) {
@@ -283,8 +280,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         },
       );
 
-      _onSubmittingSubscription =
-          Observable.combineLatest<FieldBlocState, bool>(
+      _onSubmittingSubscription = Rx.combineLatest<FieldBlocState, bool>(
         _fieldBlocs,
         (states) => states.every((state) => state.isValidated),
       ).listen(

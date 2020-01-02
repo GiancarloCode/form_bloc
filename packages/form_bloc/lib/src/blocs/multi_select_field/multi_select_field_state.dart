@@ -55,7 +55,7 @@ class MultiSelectFieldBlocState<Value>
 
   @override
   String toString() {
-    String _toString = '';
+    var _toString = '';
     if (toStringName != null) {
       _toString += '${toStringName}';
     } else {

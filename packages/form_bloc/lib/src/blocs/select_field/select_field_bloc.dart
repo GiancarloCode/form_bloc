@@ -90,7 +90,7 @@ class SelectFieldBloc<Value>
         ),
       );
     } else if (event is AddFieldBlocItem<Value>) {
-      List<Value> items = state.items ?? [];
+      var items = state.items ?? [];
       yield state.copyWith(
         items: Optional.fromNullable(
           FieldBlocBase._itemsWithoutDuplicates(
@@ -99,7 +99,7 @@ class SelectFieldBloc<Value>
         ),
       );
     } else if (event is RemoveFieldBlocItem<Value>) {
-      List<Value> items = state.items;
+      var items = state.items;
       if (items != null && items.isNotEmpty) {
         yield state.copyWith(
           items: Optional.fromNullable(
