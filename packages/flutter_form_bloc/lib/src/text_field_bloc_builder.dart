@@ -587,8 +587,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   void initState() {
     super.initState();
     _controllerListener = _textControllerListener;
-    _controller =
-        TextEditingController(text: widget.textFieldBloc.state.value);
+    _controller = TextEditingController(text: widget.textFieldBloc.state.value);
 
     _controller.addListener(_controllerListener);
 
@@ -698,6 +697,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               scrollPadding: widget.scrollPadding,
               focusNode: _effectiveFocusNode,
             ),
+            onTap: widget.onTap,
             hideOnLoading: widget.hideOnLoadingSuggestions,
             hideOnEmpty: widget.hideOnEmptySuggestions,
             hideOnError: widget.hideOnSuggestionsError,

@@ -9,7 +9,7 @@ class ManuallySetFieldBlocErrorForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ManuallySetFieldBlocErrorFormBloc>(
-      builder: (context) => ManuallySetFieldBlocErrorFormBloc(),
+      create: (context) => ManuallySetFieldBlocErrorFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc =

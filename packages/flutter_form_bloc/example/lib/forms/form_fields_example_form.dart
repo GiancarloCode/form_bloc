@@ -9,7 +9,7 @@ class FormFieldsExampleForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FormFieldsExampleFormBloc>(
-      builder: (context) => FormFieldsExampleFormBloc(),
+      create: (context) => FormFieldsExampleFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<FormFieldsExampleFormBloc>(context);

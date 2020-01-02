@@ -8,7 +8,7 @@ class NotAutoValidationForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NotAutoValidationFormBloc>(
-      builder: (context) => NotAutoValidationFormBloc(),
+      create: (context) => NotAutoValidationFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<NotAutoValidationFormBloc>(context);

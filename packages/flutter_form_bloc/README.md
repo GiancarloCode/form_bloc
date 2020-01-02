@@ -101,9 +101,9 @@ If you want me to add other widgets please let me know, or make a pull request.
 
 ```yaml
 dependencies:
-  form_bloc: ^0.6.0
-  flutter_form_bloc: ^0.5.0
-  flutter_bloc: ^1.0.0
+  form_bloc: ^0.7.0
+  flutter_form_bloc: ^0.6.0
+  flutter_bloc: ^3.1.0
 ```
 
 ```dart
@@ -147,7 +147,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginFormBloc>(
-      builder: (context) =>
+      create: (context) =>
           LoginFormBloc(RepositoryProvider.of<UserRepository>(context)),
       child: Builder(
         builder: (context) {
@@ -351,7 +351,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginFormBloc>(
-      builder: (context) =>
+      create: (context) =>
           LoginFormBloc(RepositoryProvider.of<UserRepository>(context)),
       child: Builder(
         builder: (context) {

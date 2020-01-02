@@ -27,7 +27,7 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ComplexLoginFormBloc>(
-      builder: (context) => ComplexLoginFormBloc(),
+      create: (context) => ComplexLoginFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<ComplexLoginFormBloc>(context);
@@ -50,7 +50,7 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
                 children: <Widget>[
                   TextFieldBlocBuilder(
                     textFieldBloc: formBloc.emailField,
-                    nextFocusNode: _focusNodes[0],
+                    // nextFocusNode: _focusNodes[0],
                     keyboardType: TextInputType.emailAddress,
                     hideOnLoadingSuggestions: true,
                     removeSuggestionOnLongPress: true,
@@ -62,6 +62,7 @@ class _ComplexLoginFormState extends State<ComplexLoginForm> {
                   ),
                   TextFieldBlocBuilder(
                     textFieldBloc: formBloc.passwordField,
+                    onTap: () => print('onTap'),
                     focusNode: _focusNodes[0],
                     nextFocusNode: _focusNodes[1],
                     suffixButton: SuffixButton.obscureText,

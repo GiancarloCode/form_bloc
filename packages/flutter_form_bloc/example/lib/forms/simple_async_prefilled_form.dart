@@ -8,7 +8,7 @@ class SimpleAsyncPrefilledForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SimpleAsyncPrefilledFormBloc>(
-      builder: (context) => SimpleAsyncPrefilledFormBloc(),
+      create: (context) => SimpleAsyncPrefilledFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc =

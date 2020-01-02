@@ -13,7 +13,7 @@ class ProgressForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ProgressFormBloc>(
-      builder: (context) => ProgressFormBloc(),
+      create: (context) => ProgressFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<ProgressFormBloc>(context);

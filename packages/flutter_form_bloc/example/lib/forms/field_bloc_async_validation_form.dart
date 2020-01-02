@@ -29,7 +29,7 @@ class _FieldBlocAsyncValidationFormState
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FieldBlocAsyncValidationFormBloc>(
-      builder: (context) => FieldBlocAsyncValidationFormBloc(),
+      create: (context) => FieldBlocAsyncValidationFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc =

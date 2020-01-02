@@ -441,6 +441,26 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to 500 milliseconds.
   final Duration animationDuration;
 
+  /// Called when the user taps on this text field.
+  ///
+  /// The text field builds a [GestureDetector] to handle input events like tap,
+  /// to trigger focus requests, to move the caret, adjust the selection, etc.
+  /// Handling some of those events by wrapping the text field with a competing
+  /// GestureDetector is problematic.
+  ///
+  /// To unconditionally handle taps, without interfering with the text field's
+  /// internal gesture detector, provide this callback.
+  ///
+  /// If the text field is created with [enabled] false, taps will not be
+  /// recognized.
+  ///
+  /// To be notified when the text field gains or loses the focus, provide a
+  /// [focusNode] and add a listener to that.
+  ///
+  /// To listen to arbitrary pointer events without competing with the
+  /// text field's internal gesture detector, use a [Listener].
+  final GestureTapCallback onTap;
+
   /// Determine the [SuggestionBox]'s direction.
   ///
   /// If [AxisDirection.down], the [SuggestionBox] will be below the [TextField]
@@ -559,6 +579,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.autoFlipDirection = false,
     this.removeSuggestionOnLongPress,
     this.showSuggestionsWhenIsEmpty = false,
+    this.onTap,
   })  : assert(itemBuilder != null),
         assert(removeSuggestionOnLongPress != null),
         assert(onSuggestionSelected != null),
@@ -813,6 +834,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         maxLength: widget.textFieldConfiguration.maxLength,
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
         obscureText: widget.textFieldConfiguration.obscureText,
+        onTap: widget.onTap,
         onChanged: (value) {
           if (widget.textFieldConfiguration.onChanged != null) {
             widget.textFieldConfiguration.onChanged(value);

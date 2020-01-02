@@ -29,7 +29,7 @@ class _ComplexAsyncPrefilledFormState extends State<ComplexAsyncPrefilledForm> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ComplexAsyncPrefilledFormBloc>(
-      builder: (context) => ComplexAsyncPrefilledFormBloc(),
+      create: (context) => ComplexAsyncPrefilledFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc =

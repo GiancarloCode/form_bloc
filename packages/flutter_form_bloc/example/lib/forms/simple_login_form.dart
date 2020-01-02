@@ -8,7 +8,7 @@ class SimpleLoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SimpleLoginFormBloc>(
-      builder: (context) => SimpleLoginFormBloc(),
+      create: (context) => SimpleLoginFormBloc(),
       child: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<SimpleLoginFormBloc>(context);

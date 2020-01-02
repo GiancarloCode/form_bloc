@@ -1,3 +1,10 @@
+# 0.6.0
+* Updated to `bloc: ^3.0.0`.
+* Updated to `flutter_bloc: ^3.1.0`.
+* Updated to `form_bloc: ^0.7.0`.
+* Fixed bug in `onTap` method of `TextFieldBlocBuilder`.
+* Documentation Updates.
+
 # 0.5.0
 * Updated to `bloc: ^1.0.0`.
 * Updated to `flutter_bloc: ^1.0.0`.
