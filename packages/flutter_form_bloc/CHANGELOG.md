@@ -1,3 +1,6 @@
+# 0.6.1-beta-1
+* Added `defaultErrorBuilder` property to `FieldBlocBuilder`.
+
 # 0.6.0
 * Updated to `bloc: ^3.0.0`.
 * Updated to `flutter_bloc: ^3.1.0`.
@@ -61,7 +64,7 @@
 # 0.2.0
 
 * Dependencies and Documentation Updates.
-* Add `RadioButtonGroupFieldBlocBuilder` ([#1](https://github.com/GiancarloCode/form_bloc/issues/1)).
+* Added `RadioButtonGroupFieldBlocBuilder` ([#1](https://github.com/GiancarloCode/form_bloc/issues/1)).
 * Add Form with progress example.
 
 # 0.1.0

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
-class FieldBlocBuilder {
-  FieldBlocBuilder._();
+class FieldBlocBuilderDocs {
+  FieldBlocBuilderDocs._();
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   /// The `fieldBloc` for rebuild the widget

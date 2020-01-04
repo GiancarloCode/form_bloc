@@ -1,5 +1,6 @@
 library flutter_form_bloc;
 
+export 'src/field_bloc_builder.dart';
 export 'src/text_field_bloc_builder.dart';
 export 'src/dropdown_field_bloc_builder.dart';
 export 'src/checkbox_field_bloc_builder.dart';

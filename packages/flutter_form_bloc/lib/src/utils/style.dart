@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc/src/field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -34,7 +35,8 @@ class Style {
       if (errorBuilder != null) {
         return errorBuilder(context, fieldBlocState.error);
       } else {
-        return defaultErrorBuilder(context, fieldBlocState.error);
+        return FieldBlocBuilder.defaultErrorBuilder(
+            context, fieldBlocState.error);
       }
     } else {
       return null;
