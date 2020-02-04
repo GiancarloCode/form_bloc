@@ -226,7 +226,7 @@ void main() {
         toString += ' isValidated: true,';
         toString += ' isValidating: false,';
         toString +=
-            ' formBlocState: FormBlocLoaded<dynamic, dynamic> { isValid: true }';
+            ' formBlocState: FormBlocLoaded<dynamic, dynamic> { isValid: true, isEditing: false, submissionProgress: 0.0 }';
         toString += ' }';
 
         expect(

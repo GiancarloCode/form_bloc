@@ -87,6 +87,61 @@ export 'form_state.dart';
 ///
 /// }
 /// ```
+///
+/// ### Use a form bloc like a CRUD:
+/// If you want to use the [FormBloc] as a crud, you must pass to the
+/// constructor super the value of the `isEditing` property, normally
+/// it will be if the object that initializes the value
+/// of the [FieldBloc]s is not null.
+///
+/// You can then use the isEditing property of the current state
+/// in the `onSubmitting` method to perform the create or update operation.
+///
+/// You can also overwrite the `onDelete` method to perform the delete operation.
+/// #### example:
+/// ```dart
+/// class CrudFormBloc extends FormBloc<String, String> {
+///   final TextFieldBloc nameField;
+///
+///   CrudFormBloc({String name})
+///       : nameField = TextFieldBloc(initialValue: name), // Read logic...
+///       super(isEditing: name != null);
+///
+///   @override
+///   List<FieldBloc> get fieldBlocs => [nameField];
+///
+///   @override
+///   Stream<FormBlocState<String, String>> onSubmitting() async* {
+///     if (state.isEditing) {
+///       try {
+///         // Update logic...
+///         yield state.toSuccess();
+///         yield state.toLoaded();
+///       } catch (e) {
+///         yield state.toFailure();
+///       }
+///     } else {
+///       try {
+///         // Create logic...
+///         yield state.toSuccess();
+///         yield state.toLoaded(isEditing: true);
+///       } catch (e) {
+///         yield state.toFailure();
+///       }
+///     }
+///   }
+///
+///   @override
+///   Stream<FormBlocState<String, String>> onDelete() async* {
+///     try {
+///       // Delete Logic...
+///       yield state.toDeleteSuccessful();
+///     } catch (e) {
+///       yield state.toDeleteFailed();
+///     }
+///   }
+/// }
+/// ```
 abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     FormBlocEvent, FormBlocState<SuccessResponse, FailureResponse>> {
   /// See: [_setupAreAllFieldsValidSubscription].
@@ -107,12 +162,19 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   bool _canSubmit = true;
 
   /// Indicates if the initial state must be [FormBlocLoading].
-  bool _isInitialStateLoading;
+  final bool _isInitialStateLoading;
 
-  FormBloc({bool isLoading = false, bool autoValidate = true})
+  /// The value of [FormBlocState.isEditing] of the initial state.
+  final bool _isInitialStateEditing;
+
+  FormBloc(
+      {bool isLoading = false,
+      bool autoValidate = true,
+      bool isEditing = false})
       : assert(isLoading != null),
         assert(autoValidate != null),
-        _isInitialStateLoading = isLoading {
+        _isInitialStateLoading = isLoading,
+        _isInitialStateEditing = isEditing {
     assert(fieldBlocs != null);
     assert(fieldBlocs.isNotEmpty);
 
@@ -161,9 +223,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   @override
   FormBlocState<SuccessResponse, FailureResponse> get initialState {
     if (_isInitialStateLoading) {
-      return FormBlocLoading();
+      return FormBlocLoading(isEditing: _isInitialStateEditing);
     } else {
-      return FormBlocLoaded(_areFieldStatesValid(_fieldsCurrentState));
+      return FormBlocLoaded(_areFieldStatesValid(_fieldsCurrentState),
+          isEditing: _isInitialStateEditing);
     }
   }
 
@@ -240,6 +303,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       yield state.withIsValid(event.isValid);
     } else if (event is OnSubmittingFormBloc) {
       yield* onSubmitting();
+    } else if (event is DeleteFormBloc) {
+      yield* _onDeleteFormBloc();
     }
   }
 
@@ -253,6 +318,11 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   ///
   /// The previous state is [FormBlocLoading].
   Stream<FormBlocState<SuccessResponse, FailureResponse>> onReload() async* {}
+
+  /// This method is called when [delete] is called.
+  ///
+  /// The previous state is [FormBlocDeleting].
+  Stream<FormBlocState<SuccessResponse, FailureResponse>> onDelete() async* {}
 
   /// This method is called when the [FormBloc]
   /// is instantiated and [isLoading] is `true`.
@@ -321,9 +391,20 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         isCanceling: true,
         isValid: stateSnapshot.isValid,
         submissionProgress: stateSnapshot.submissionProgress,
+        isEditing: stateSnapshot.isEditing,
       );
       yield* onCancelSubmission();
     }
+  }
+
+  Stream<FormBlocState<SuccessResponse, FailureResponse>>
+      _onDeleteFormBloc() async* {
+    final stateSnapshot = state;
+    yield FormBlocDeleting(
+      stateSnapshot.isValid,
+      isEditing: stateSnapshot.isEditing,
+    );
+    yield* onDelete();
   }
 
   /// Submit the form, if [FormBlocState.canSubmit] is `true`
@@ -336,6 +417,9 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   /// Call [onReload] and set the current state to [FormBlocLoading].
   void reload() => add(ReloadFormBloc());
+
+  /// Call [onDelete] and set the current state to [FormBlocDeleting].
+  void delete() => add(DeleteFormBloc());
 
   /// Update the form bloc state.
   void updateState(FormBlocState<SuccessResponse, FailureResponse> state) =>

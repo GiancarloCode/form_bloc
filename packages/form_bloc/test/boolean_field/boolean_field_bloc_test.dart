@@ -101,6 +101,35 @@ void main() {
           emitsInOrder(expectedStates),
         );
       });
+      test('if the initialValue is null, it will be false', () {
+        BooleanFieldBloc fieldBloc;
+        BooleanFieldBlocState initialState;
+        List<BooleanFieldBlocState> expectedStates;
+
+        fieldBloc = BooleanFieldBloc(initialValue: null);
+
+        initialState = BooleanFieldBlocState(
+          value: false,
+          error: null,
+          isInitial: true,
+          suggestions: null,
+          isValidated: true,
+          isValidating: false,
+          toStringName: null,
+        );
+
+        expectedStates = [initialState];
+
+        expect(
+          fieldBloc.initialState,
+          initialState,
+        );
+
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
+        );
+      });
 
       test('clear method.', () {
         final fieldBloc = BooleanFieldBloc(

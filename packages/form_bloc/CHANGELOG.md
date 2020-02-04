@@ -1,3 +1,11 @@
+# 0.8.0
+* Added `isEditing` property to `FormBlocState` ([#9](https://github.com/GiancarloCode/form_bloc/issues/9)).
+* Added `delete` event to `FormBloc` ([#9](https://github.com/GiancarloCode/form_bloc/issues/9)).
+* Added `toDeleteFailed` and `toDeleteSuccessful` methods to `FormBlocState` ([#9](https://github.com/GiancarloCode/form_bloc/issues/9)).
+* If the `initialValue` of `TextFieldBloc` is `null` is will be an empty String `''`.
+* If the `initialValue` of `BooleanFieldBloc` is `null` it will be `false`.
+* If the `initialValue` of `MultiSelectFieldBloc` is `null` it will be an empty list `[]`.
+
 # 0.7.0
 * Updated to `bloc: ^3.0.0`
 

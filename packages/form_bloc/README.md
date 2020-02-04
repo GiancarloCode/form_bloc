@@ -29,7 +29,7 @@ Before to use this package you need to know the [core concepts](https://felangel
 
 ```yaml
 dependencies:
-  form_bloc: ^0.7.0
+  form_bloc: ^0.8.0
 ```
 
 ```dart

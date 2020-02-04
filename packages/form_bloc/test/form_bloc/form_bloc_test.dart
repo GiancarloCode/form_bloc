@@ -45,6 +45,12 @@ class FormBlocWithFieldsRequired extends FormBloc<String, String> {
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {}
+
+  @override
+  Stream<FormBlocState<String, String>> onDelete() async* {
+    yield state.toDeleteFailed('fail');
+    yield state.toDeleteSuccessful('success');
+  }
 }
 
 class FormBlocWithFieldsNotRequired extends FormBloc<String, String> {
@@ -141,6 +147,47 @@ class FormBlocWithMockFieldBlocsAndAutoValidateTrue
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {}
+}
+
+class FormBlocWithIsEditingTrueAndIsLoadingTrue
+    extends FormBloc<String, String> {
+  final textField = TextFieldBloc();
+
+  FormBlocWithIsEditingTrueAndIsLoadingTrue()
+      : super(isEditing: true, isLoading: true);
+
+  @override
+  List<FieldBloc> get fieldBlocs => [textField];
+
+  @override
+  Stream<FormBlocState<String, String>> onLoading() async* {
+    yield state.toLoadFailed();
+    yield state.toLoaded();
+  }
+
+  @override
+  Stream<FormBlocState<String, String>> onSubmitting() async* {
+    yield state.toSuccess();
+  }
+}
+
+class FormBlocWithIsEditingTrueAndIsLoadingFalse
+    extends FormBloc<String, String> {
+  final textField = TextFieldBloc();
+
+  FormBlocWithIsEditingTrueAndIsLoadingFalse()
+      : super(isEditing: true, isLoading: false);
+
+  @override
+  List<FieldBloc> get fieldBlocs => [textField];
+
+  @override
+  Stream<FormBlocState<String, String>> onSubmitting() async* {
+    yield state.toSuccess();
+    yield state.toLoaded(isEditing: false);
+    yield state.toLoaded(isEditing: true);
+    yield state.toLoaded(isEditing: false);
+  }
 }
 
 void main() {
@@ -631,6 +678,84 @@ void main() {
       formBloc.updateState(FormBlocSuccess<String, String>(isValid: false));
       formBloc.add(UpdateFormBlocStateIsValid(true));
       formBloc.add(UpdateFormBlocStateIsValid(false));
+    });
+
+    test(
+        'when isEditing is true and isLoading true, the initial state and next states has isInitial true.',
+        () async {
+      final formBloc = FormBlocWithIsEditingTrueAndIsLoadingTrue();
+      final expectedStates = [
+        FormBlocLoading<String, String>(isEditing: true),
+        FormBlocLoadFailed<String, String>(isValid: false, isEditing: true),
+        FormBlocLoaded<String, String>(false, isEditing: true),
+        FormBlocLoaded<String, String>(true, isEditing: true),
+        FormBlocSubmitting<String, String>(
+          isValid: true,
+          isEditing: true,
+          isCanceling: false,
+          submissionProgress: 0.0,
+        ),
+        FormBlocSuccess<String, String>(isValid: true, isEditing: true),
+      ];
+
+      expect(
+        formBloc,
+        emitsInOrder(expectedStates),
+      );
+
+      formBloc.submit();
+    });
+
+    test(
+        'when isEditing is true and isLoading false, the initial state and next states has isInitial true until isEditing changed manually',
+        () async {
+      final formBloc = FormBlocWithIsEditingTrueAndIsLoadingFalse();
+      final expectedStates = [
+        FormBlocLoaded<String, String>(true, isEditing: true),
+        FormBlocSubmitting<String, String>(
+          isValid: true,
+          isEditing: true,
+          isCanceling: false,
+          submissionProgress: 0.0,
+        ),
+        FormBlocSuccess<String, String>(isValid: true, isEditing: true),
+        FormBlocLoaded<String, String>(true, isEditing: false),
+        FormBlocLoaded<String, String>(true, isEditing: true),
+        FormBlocLoaded<String, String>(true, isEditing: false),
+      ];
+
+      expect(
+        formBloc,
+        emitsInOrder(expectedStates),
+      );
+
+      formBloc.submit();
+    });
+
+    test('delete method and DeleteFormBloc event.', () async {
+      final formBloc = FormBlocWithFieldsRequired();
+
+      final expectedStates = [
+        FormBlocLoaded<String, String>(false),
+        FormBlocDeleting<String, String>(false),
+        FormBlocDeleteFailed<String, String>(
+          isValid: false,
+          isEditing: false,
+          failureResponse: 'fail',
+        ),
+        FormBlocDeleteSuccessful<String, String>(
+          isValid: false,
+          isEditing: false,
+          successResponse: 'success',
+        ),
+      ];
+
+      expect(
+        formBloc,
+        emitsInOrder(expectedStates),
+      );
+
+      formBloc.delete();
     });
   });
 }

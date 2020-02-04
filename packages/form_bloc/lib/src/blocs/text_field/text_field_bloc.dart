@@ -9,6 +9,7 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty `String` ('').
+  /// And if the value is `null` it will be a empty `String` ('').
   /// * [validators] : List of [Validator]s.
   /// Each time the `value` will change,
   /// if the [FormBloc] that use this [TextFieldBloc] has set
@@ -38,10 +39,9 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<String> suggestions,
     String toStringName,
-  })  : assert(initialValue != null),
-        assert(asyncValidatorDebounceTime != null),
+  })  : assert(asyncValidatorDebounceTime != null),
         super(
-          initialValue,
+          initialValue ?? '',
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,

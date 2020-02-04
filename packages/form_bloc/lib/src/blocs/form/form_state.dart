@@ -12,6 +12,9 @@ import 'package:form_bloc/src/blocs/field/field_bloc.dart';
 /// * [FormBlocFailure]
 /// * [FormBlocSubmissionCancelled]
 /// * [FormBlocSubmissionFailed]
+/// * [FormBlocDeleting]
+/// * [FormBlocDeleteFailed]
+/// * [FormBlocDeleteSuccessful]
 abstract class FormBlocState<SuccessResponse, FailureResponse>
     extends Equatable {
   /// Indicates if each [FieldBloc] in [FormBloc.fieldBlocs] is valid.
@@ -21,10 +24,16 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   /// it can be any value between 0.0 and 1.0.
   final double submissionProgress;
 
+  /// It is usually used in forms that are used as CRUD,
+  /// so when it is true it means that you can
+  /// perform the update operation.
+  final bool isEditing;
+
   /// Returns `true` if the state is
   /// [FormBlocLoaded] or [FormBlocFailure] or
   /// [FormBlocSubmissionCancelled] or
-  /// [FormBlocSubmissionFailed].
+  /// [FormBlocSubmissionFailed] or
+  /// [FormBlocDeleteFailed].
   bool get canSubmit => (runtimeType ==
           _typeOf<FormBlocLoaded<SuccessResponse, FailureResponse>>() ||
       runtimeType ==
@@ -35,7 +44,9 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
                   FailureResponse>>() ||
       runtimeType ==
           _typeOf<
-              FormBlocSubmissionFailed<SuccessResponse, FailureResponse>>());
+              FormBlocSubmissionFailed<SuccessResponse, FailureResponse>>() ||
+      runtimeType ==
+          _typeOf<FormBlocDeleteFailed<SuccessResponse, FailureResponse>>());
 
   /// Returns `true` if the state is [FormBlocSubmitting] or [FormBlocSuccess]
   bool get canShowProgress =>
@@ -44,7 +55,10 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       runtimeType ==
           _typeOf<FormBlocSuccess<SuccessResponse, FailureResponse>>();
 
-  FormBlocState({@required this.isValid, @required this.submissionProgress});
+  FormBlocState(
+      {@required this.isValid,
+      @required this.submissionProgress,
+      @required this.isEditing});
 
   /// Returns a [FormBlocLoading]
   /// {@template form_bloc.copy_to_form_bloc_state}
@@ -54,7 +68,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   ///
   /// {@macro form_bloc.form_state.FormBlocLoading}
   FormBlocState<SuccessResponse, FailureResponse> toLoading() =>
-      FormBlocLoading(isValid: isValid);
+      FormBlocLoading(isValid: isValid, isEditing: isEditing);
 
   /// Returns a [FormBlocLoadFailed]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -62,14 +76,17 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   /// {@macro form_bloc.form_state.FormBlocLoadFailed}
   FormBlocState<SuccessResponse, FailureResponse> toLoadFailed(
           [FailureResponse failureResponse]) =>
-      FormBlocLoadFailed(isValid: isValid, failureResponse: failureResponse);
+      FormBlocLoadFailed(
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse: failureResponse);
 
   /// Returns a [FormBlocLoaded]
   /// {@macro form_bloc.copy_to_form_bloc_state}
   ///
   /// {@macro form_bloc.form_state.FormBlocLoaded}
-  FormBlocState<SuccessResponse, FailureResponse> toLoaded() =>
-      FormBlocLoaded(isValid);
+  FormBlocState<SuccessResponse, FailureResponse> toLoaded({bool isEditing}) =>
+      FormBlocLoaded(isValid, isEditing: isEditing ?? this.isEditing);
 
   /// Returns a [FormBlocSubmitting]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -84,6 +101,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
           double progress) =>
       FormBlocSubmitting(
         isValid: isValid,
+        isEditing: isEditing,
         submissionProgress: progress,
         isCanceling: runtimeType ==
                 _typeOf<FormBlocSubmitting<SuccessResponse, FailureResponse>>()
@@ -98,7 +116,10 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   /// {@macro form_bloc.form_state.FormBlocSuccess}
   FormBlocState<SuccessResponse, FailureResponse> toSuccess(
           [SuccessResponse successResponse]) =>
-      FormBlocSuccess(isValid: isValid, successResponse: successResponse);
+      FormBlocSuccess(
+          isValid: isValid,
+          isEditing: isEditing,
+          successResponse: successResponse);
 
   /// Returns a [FormBlocFailure]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -106,34 +127,61 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   /// {@macro form_bloc.form_state.FormBlocFailure}
   FormBlocState<SuccessResponse, FailureResponse> toFailure(
           [FailureResponse failureResponse]) =>
-      FormBlocFailure(isValid: isValid, failureResponse: failureResponse);
+      FormBlocFailure(
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse: failureResponse);
 
   /// Returns a [FormBlocSubmissionCancelled]
   /// {@macro form_bloc.copy_to_form_bloc_state}
   ///
   /// {@macro form_bloc.form_state.FormBlocSubmissionCancelled}
   FormBlocState<SuccessResponse, FailureResponse> toSubmissionCancelled() =>
-      FormBlocSubmissionCancelled(isValid);
+      FormBlocSubmissionCancelled(isValid, isEditing: isEditing);
+
+  /// Returns a [FormBlocDeleteFailed]
+  /// {@macro form_bloc.copy_to_form_bloc_state}
+  ///
+  /// {@macro form_bloc.form_state.FormBlocDeleteFailed}
+  FormBlocState<SuccessResponse, FailureResponse> toDeleteFailed(
+          [FailureResponse failureResponse]) =>
+      FormBlocDeleteFailed(
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse: failureResponse);
+
+  /// Returns a [FormBlocDeleteSuccessful]
+  /// {@macro form_bloc.copy_to_form_bloc_state}
+  ///
+  /// {@macro form_bloc.form_state.FormBlocDeleteSuccessful}
+  FormBlocState<SuccessResponse, FailureResponse> toDeleteSuccessful(
+          [SuccessResponse successResponse]) =>
+      FormBlocDeleteSuccessful(
+          isValid: isValid,
+          isEditing: isEditing,
+          successResponse: successResponse);
 
   /// Returns a copy of the current state by changing [isValid].
   FormBlocState<SuccessResponse, FailureResponse> withIsValid(bool isValid) {
     if (runtimeType ==
         _typeOf<FormBlocLoading<SuccessResponse, FailureResponse>>()) {
-      return FormBlocLoading(isValid: isValid);
+      return FormBlocLoading(isValid: isValid, isEditing: isEditing);
     } else if (runtimeType ==
         _typeOf<FormBlocLoadFailed<SuccessResponse, FailureResponse>>()) {
       return FormBlocLoadFailed(
           isValid: isValid,
+          isEditing: isEditing,
           failureResponse:
               (this as FormBlocLoadFailed<SuccessResponse, FailureResponse>)
                   .failureResponse);
     } else if (runtimeType ==
         _typeOf<FormBlocLoaded<SuccessResponse, FailureResponse>>()) {
-      return FormBlocLoaded(isValid);
+      return FormBlocLoaded(isValid, isEditing: isEditing);
     } else if (runtimeType ==
         _typeOf<FormBlocSubmitting<SuccessResponse, FailureResponse>>()) {
       return FormBlocSubmitting(
         isValid: isValid,
+        isEditing: isEditing,
         submissionProgress: submissionProgress,
         isCanceling:
             (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
@@ -143,6 +191,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
         _typeOf<FormBlocSuccess<SuccessResponse, FailureResponse>>()) {
       return FormBlocSuccess(
         isValid: isValid,
+        isEditing: isEditing,
         successResponse:
             (this as FormBlocSuccess<SuccessResponse, FailureResponse>)
                 .successResponse,
@@ -151,24 +200,47 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
         _typeOf<FormBlocFailure<SuccessResponse, FailureResponse>>()) {
       return FormBlocFailure(
         isValid: isValid,
+        isEditing: isEditing,
         failureResponse:
             (this as FormBlocFailure<SuccessResponse, FailureResponse>)
                 .failureResponse,
       );
     } else if (runtimeType ==
         _typeOf<FormBlocSubmissionFailed<SuccessResponse, FailureResponse>>()) {
-      return FormBlocSubmissionFailed(isValid);
+      return FormBlocSubmissionFailed(isValid, isEditing: isEditing);
     } else if (runtimeType ==
         _typeOf<
             FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>>()) {
-      return FormBlocSubmissionCancelled(isValid);
+      return FormBlocSubmissionCancelled(isValid, isEditing: isEditing);
+    } else if (runtimeType ==
+        _typeOf<FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>>()) {
+      return FormBlocDeleteSuccessful(
+        isValid: isValid,
+        isEditing: isEditing,
+        successResponse:
+            (this as FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>)
+                .successResponse,
+      );
+    } else if (runtimeType ==
+        _typeOf<FormBlocDeleteFailed<SuccessResponse, FailureResponse>>()) {
+      return FormBlocDeleteFailed(
+        isValid: isValid,
+        isEditing: isEditing,
+        failureResponse:
+            (this as FormBlocDeleteFailed<SuccessResponse, FailureResponse>)
+                .failureResponse,
+      );
+    } else if (runtimeType ==
+        _typeOf<FormBlocDeleting<SuccessResponse, FailureResponse>>()) {
+      return FormBlocDeleting(isValid, isEditing: isEditing);
     } else {
       return this;
     }
   }
 
   @override
-  String toString() => '$runtimeType { isValid: $isValid }';
+  String toString() =>
+      '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress }';
 
   /// Returns the type [T].
   /// See https://stackoverflow.com/questions/52891537/how-to-get-generic-type
@@ -189,11 +261,11 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
 /// [FormBlocState.toLoading].
 class FormBlocLoading<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocLoading({bool isValid = false})
-      : super(isValid: isValid, submissionProgress: 0.0);
+  FormBlocLoading({bool isValid = false, bool isEditing = false})
+      : super(isValid: isValid, submissionProgress: 0.0, isEditing: isEditing);
 
   @override
-  List<Object> get props => [isValid, submissionProgress];
+  List<Object> get props => [isValid, submissionProgress, isEditing];
 }
 
 /// {@template form_bloc.form_state.FormBlocLoadFailed}
@@ -214,15 +286,18 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
 
   FormBlocLoadFailed({
     @required bool isValid,
+    bool isEditing = false,
     this.failureResponse,
-  }) : super(isValid: isValid, submissionProgress: 0.0);
+  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0.0);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, failureResponse];
+  List<Object> get props =>
+      [isValid, submissionProgress, failureResponse, isEditing];
 
   @override
   String toString() {
-    var _toString = '$runtimeType { isValid: $isValid';
+    var _toString =
+        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress';
     if (hasFailureResponse) {
       _toString += ', failureResponse: $failureResponse';
     }
@@ -239,11 +314,11 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
 /// [FormBlocState.toLoaded].
 class FormBlocLoaded<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocLoaded(bool isValid)
-      : super(isValid: isValid, submissionProgress: 0.0);
+  FormBlocLoaded(bool isValid, {bool isEditing = false})
+      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0.0);
 
   @override
-  List<Object> get props => [isValid, submissionProgress];
+  List<Object> get props => [isValid, submissionProgress, isEditing];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmitting}
@@ -266,23 +341,26 @@ class FormBlocSubmitting<SuccessResponse, FailureResponse>
   /// * If [submissionProgress] is greater than 1, it will become 1.0
   FormBlocSubmitting({
     @required bool isValid,
+    bool isEditing = false,
     @required double submissionProgress,
     @required this.isCanceling,
   })  : assert(submissionProgress != null),
         assert(isCanceling != null),
         super(
             isValid: isValid,
+            isEditing: isEditing,
             submissionProgress: submissionProgress < 0
                 ? 0.0
                 : submissionProgress > 1 ? 1.0 : submissionProgress);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, isCanceling];
+  List<Object> get props =>
+      [isValid, submissionProgress, isCanceling, isEditing];
 
   @override
   String toString() {
     var _toString =
-        '$runtimeType { isValid: $isValid, progress: $submissionProgress';
+        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress';
     if (isCanceling) {
       _toString += ', isCancelling: $isCanceling';
     }
@@ -309,15 +387,18 @@ class FormBlocSuccess<SuccessResponse, FailureResponse>
 
   FormBlocSuccess({
     @required bool isValid,
+    bool isEditing = false,
     this.successResponse,
-  }) : super(isValid: isValid, submissionProgress: 1.0);
+  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 1.0);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, successResponse];
+  List<Object> get props =>
+      [isValid, submissionProgress, successResponse, isEditing];
 
   @override
   String toString() {
-    var _toString = '$runtimeType { isValid: $isValid';
+    var _toString =
+        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress';
     if (hasSuccessResponse) {
       _toString += ', successResponse: $successResponse';
     }
@@ -344,15 +425,18 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
 
   FormBlocFailure({
     @required bool isValid,
+    bool isEditing = false,
     this.failureResponse,
-  }) : super(isValid: isValid, submissionProgress: 0);
+  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, failureResponse];
+  List<Object> get props =>
+      [isValid, submissionProgress, failureResponse, isEditing];
 
   @override
   String toString() {
-    var _toString = '$runtimeType { isValid: $isValid';
+    var _toString =
+        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress';
     if (hasFailureResponse) {
       _toString += ', failureResponse: $failureResponse';
     }
@@ -371,11 +455,11 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
 /// [FormBlocState.toSubmissionCancelled].
 class FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocSubmissionCancelled(bool isValid)
-      : super(isValid: isValid, submissionProgress: 0);
+  FormBlocSubmissionCancelled(bool isValid, {bool isEditing = false})
+      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
 
   @override
-  List<Object> get props => [isValid, submissionProgress];
+  List<Object> get props => [isValid, submissionProgress, isEditing];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmissionFailed}
@@ -384,9 +468,97 @@ class FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>
 /// {@endtemplate}
 class FormBlocSubmissionFailed<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocSubmissionFailed(bool isValid)
-      : super(isValid: isValid, submissionProgress: 0);
+  FormBlocSubmissionFailed(bool isValid, {bool isEditing = false})
+      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
 
   @override
-  List<Object> get props => [isValid, submissionProgress];
+  List<Object> get props => [isValid, submissionProgress, isEditing];
+}
+
+/// {@template form_bloc.form_state.FormBlocDeleting}
+/// It is the state when [FormBloc.delete] is called.
+/// {@endtemplate}
+class FormBlocDeleting<SuccessResponse, FailureResponse>
+    extends FormBlocState<SuccessResponse, FailureResponse> {
+  FormBlocDeleting(bool isValid, {bool isEditing = false})
+      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
+
+  @override
+  List<Object> get props => [isValid, submissionProgress, isEditing];
+}
+
+/// {@template form_bloc.form_state.FormBlocDeleteFailed}
+/// It is the state when the form are deleting and fail.
+/// The previous state must be [FormBlocDeleting].
+///
+/// It has [FailureResponse] to indicate more details.
+/// {@endtemplate}
+///
+/// {@macro form_bloc.form_state.notUseThisClassInsteadUseToMethod}
+/// [FormBlocState.toFailure].
+class FormBlocDeleteFailed<SuccessResponse, FailureResponse>
+    extends FormBlocState<SuccessResponse, FailureResponse>
+    with EquatableMixin {
+  final FailureResponse failureResponse;
+
+  bool get hasFailureResponse => FailureResponse != null;
+
+  FormBlocDeleteFailed({
+    @required bool isValid,
+    bool isEditing = false,
+    this.failureResponse,
+  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
+
+  @override
+  List<Object> get props =>
+      [isValid, submissionProgress, failureResponse, isEditing];
+
+  @override
+  String toString() {
+    var _toString =
+        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress';
+    if (hasFailureResponse) {
+      _toString += ', failureResponse: $failureResponse';
+    }
+    _toString += ' }';
+    return _toString;
+  }
+}
+
+/// {@template form_bloc.form_state.FormBlocDeleteSuccessful}
+/// It is the state when the form is deleted successfully.
+/// The previous state must be [FormBlocDeleting].
+///
+/// It has [SuccessResponse] to indicate more details.
+/// {@endtemplate}
+///
+/// {@macro form_bloc.form_state.notUseThisClassInsteadUseToMethod}
+/// [FormBlocState.toSuccess].
+class FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>
+    extends FormBlocState<SuccessResponse, FailureResponse>
+    with EquatableMixin {
+  final SuccessResponse successResponse;
+
+  bool get hasSuccessResponse => successResponse != null;
+
+  FormBlocDeleteSuccessful({
+    @required bool isValid,
+    bool isEditing = false,
+    this.successResponse,
+  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 1.0);
+
+  @override
+  List<Object> get props =>
+      [isValid, submissionProgress, successResponse, isEditing];
+
+  @override
+  String toString() {
+    var _toString =
+        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress';
+    if (hasSuccessResponse) {
+      _toString += ', successResponse: $successResponse';
+    }
+    _toString += ' }';
+    return _toString;
+  }
 }

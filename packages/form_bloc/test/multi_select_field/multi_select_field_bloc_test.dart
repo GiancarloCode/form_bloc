@@ -109,6 +109,36 @@ void main() {
         emitsInOrder(expectedStates),
       );
     });
+    test('if the initialValue is null, it will be an empty list', () {
+      MultiSelectFieldBloc fieldBloc;
+      MultiSelectFieldBlocState initialState;
+      List<MultiSelectFieldBlocState> expectedStates;
+
+      fieldBloc = MultiSelectFieldBloc<bool>(initialValue: null);
+
+      initialState = MultiSelectFieldBlocState<bool>(
+        value: [],
+        error: null,
+        isInitial: true,
+        suggestions: null,
+        isValidated: true,
+        isValidating: false,
+        toStringName: null,
+        items: [],
+      );
+
+      expectedStates = [initialState];
+
+      expect(
+        fieldBloc.initialState,
+        initialState,
+      );
+
+      expect(
+        fieldBloc,
+        emitsInOrder(expectedStates),
+      );
+    });
 
     test('updateItems method and UpdateFieldBlocItems event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool>();

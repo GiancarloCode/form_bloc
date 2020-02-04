@@ -58,3 +58,8 @@ class OnSubmittingFormBloc extends FormBlocEvent {
   @override
   List<Object> get props => [];
 }
+
+class DeleteFormBloc extends FormBlocEvent {
+  @override
+  List<Object> get props => [];
+}

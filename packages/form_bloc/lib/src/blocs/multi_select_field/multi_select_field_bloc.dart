@@ -10,6 +10,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty list `[]`.
+  /// And if the value is `null` it will be a empty list `[]`.
   /// * [validators] : List of [Validator]s.
   /// Each time the `value` will change,
   /// if the [FormBloc] that use this [MultiSelectFieldBloc] has set
@@ -41,12 +42,10 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
     Suggestions<Value> suggestions,
     String toStringName,
     List<Value> items = const [],
-  })  : assert(initialValue != null),
-        assert(items != null),
-        assert(asyncValidatorDebounceTime != null),
-        _items = items,
+  })  : assert(asyncValidatorDebounceTime != null),
+        _items = items ?? const [],
         super(
-          initialValue,
+          initialValue ?? const [],
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,

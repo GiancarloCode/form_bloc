@@ -7,6 +7,7 @@ class BooleanFieldBloc
   ///
   /// * [initialValue] : The initial value of the field,
   /// by default is `false`.
+  /// And if the value is `null` it will be `false`.
   /// * [validators] : List of [Validator]s.
   /// Each time the `value` will change,
   /// if the [FormBloc] that use this [BooleanFieldBloc] has set
@@ -36,10 +37,9 @@ class BooleanFieldBloc
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<bool> suggestions,
     String toStringName,
-  })  : assert(initialValue != null),
-        assert(asyncValidatorDebounceTime != null),
+  })  : assert(asyncValidatorDebounceTime != null),
         super(
-          initialValue,
+          initialValue ?? false,
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,

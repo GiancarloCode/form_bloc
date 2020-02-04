@@ -475,8 +475,7 @@ abstract class FieldBlocBase<Value, Suggestion,
   Stream<State> _onSubscribeToFieldBlocs(SubscribeToFieldBlocs event) async* {
     unawaited(_revalidateFieldBlocsSubscription?.cancel());
     if (event.fieldBlocs != null && event.fieldBlocs.isNotEmpty) {
-      _revalidateFieldBlocsSubscription =
-          Rx.combineLatest<dynamic, void>(
+      _revalidateFieldBlocsSubscription = Rx.combineLatest<dynamic, void>(
         event.fieldBlocs.whereType<FieldBlocBase>().toList().map(
               (state) => state.map<dynamic>((state) => state.value).distinct(),
             ),
