@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc_example/bloc_delegate.dart';
 import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/complex_login_form.dart';
+import 'package:flutter_form_bloc_example/forms/crud_form.dart';
 import 'package:flutter_form_bloc_example/forms/field_bloc_async_validation_form.dart';
 import 'package:flutter_form_bloc_example/forms/form_fields_example_form.dart';
 import 'package:flutter_form_bloc_example/forms/manually_set_field_bloc_error_form.dart';
@@ -145,6 +146,18 @@ class Form {
       'Complex Async prefilled form',
       'Prefilled form with async data (like API fetch), and retry when fail to load.',
       ComplexAsyncPrefilledForm(),
+    ),
+    Form(
+      'CRUD not prefilled',
+      'CRUD not prefilled',
+      CrudForm(),
+    ),
+    Form(
+      'CRUD prefilled',
+      'CRUD prefilled',
+      CrudForm(
+        name: 'Giancarlo',
+      ),
     ),
   ];
 }

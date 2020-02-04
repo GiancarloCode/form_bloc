@@ -1,3 +1,10 @@
+# 0.7.0
+* Added `defaultErrorBuilder` property to `FieldBlocBuilder`.
+* Updated to `form_bloc: ^0.8.0`.
+* Updated to `flutter_bloc: ^3.2.0`.
+* Added `onDeleting`, `onDeleteFailed`, `onDeleteSuccessful` callbacks to `FormBlocListener`.
+* Added more examples.
+
 # 0.6.1-beta-1
 * Added `defaultErrorBuilder` property to `FieldBlocBuilder`.
 

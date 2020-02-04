@@ -63,6 +63,24 @@ class FormBlocListener<
       SuccessResponse,
       ErrorResponse> onSubmissionFailed;
 
+  /// {@macro form_bloc.form_state.FormBlocSubmissionFailed}
+  final FormBlocListenerCallback<
+      form_bloc.FormBlocDeleting<SuccessResponse, ErrorResponse>,
+      SuccessResponse,
+      ErrorResponse> onDeleting;
+
+  /// {@macro form_bloc.form_state.FormBlocSubmissionFailed}
+  final FormBlocListenerCallback<
+      form_bloc.FormBlocDeleteFailed<SuccessResponse, ErrorResponse>,
+      SuccessResponse,
+      ErrorResponse> onDeleteFailed;
+
+  /// {@macro form_bloc.form_state.FormBlocSubmissionFailed}
+  final FormBlocListenerCallback<
+      form_bloc.FormBlocDeleteSuccessful<SuccessResponse, ErrorResponse>,
+      SuccessResponse,
+      ErrorResponse> onDeleteSuccessful;
+
   /// If the [formBloc] parameter is omitted, [FormBlocListener]
   /// will automatically perform a lookup using
   /// [BlocProvider].of<[FormBloc]> and the current [BuildContext].
@@ -83,6 +101,9 @@ class FormBlocListener<
     this.onFailure,
     this.onSubmissionCancelled,
     this.onSubmissionFailed,
+    this.onDeleting,
+    this.onDeleteFailed,
+    this.onDeleteSuccessful,
   }) : super(key: key);
 
   @override
@@ -166,6 +187,18 @@ The context used was: $context""",
                 .FormBlocSubmissionFailed<SuccessResponse, ErrorResponse> &&
             widget.onSubmissionFailed != null) {
           widget.onSubmissionFailed(context, state);
+        } else if (state
+                is form_bloc.FormBlocDeleting<SuccessResponse, ErrorResponse> &&
+            widget.onDeleting != null) {
+          widget.onDeleting(context, state);
+        } else if (state is form_bloc
+                .FormBlocDeleteFailed<SuccessResponse, ErrorResponse> &&
+            widget.onDeleteFailed != null) {
+          widget.onDeleteFailed(context, state);
+        } else if (state is form_bloc
+                .FormBlocDeleteSuccessful<SuccessResponse, ErrorResponse> &&
+            widget.onDeleteSuccessful != null) {
+          widget.onDeleteSuccessful(context, state);
         }
       },
       child: widget.child,
