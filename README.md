@@ -1,4 +1,4 @@
-Easy Form State Management using BLoC pattern - Create Beautiful Forms in Flutter. The easiest way to Prefill, Async Validation, Update Form Fields, and Show Progress, Failures, Successes or Navigate by Reacting to the Form State.
+Easy Form State Management using BLoC pattern - Create Beautiful Forms in Flutter. The easiest way to Prefill, Dynamic fields, Async Validation, Update Form Fields, and Show Progress, Failures, Successes or Navigate by Reacting to the Form State.
 
 | Package                                                                            | Pub                                                                                                    |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
