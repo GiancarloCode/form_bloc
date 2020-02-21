@@ -17,8 +17,7 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
     this.activeColor,
     this.padding,
     this.nextFocusNode,
-  })  : assert(booleanFieldBloc != null),
-        assert(enableOnlyWhenFormBlocCanSubmit != null),
+  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(body != null),
         super(key: key);
@@ -52,6 +51,9 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (booleanFieldBloc == null) {
+      return Container();
+    }
     return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
       bloc: booleanFieldBloc,
       builder: (context, state) {

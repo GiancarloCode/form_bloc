@@ -1,18 +1,23 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class ManuallySetFieldBlocErrorFormBloc extends FormBloc<String, String> {
-  final usernameField = TextFieldBloc(
-    validators: [FieldBlocValidators.requiredTextFieldBloc],
-  );
-
-  @override
-  List<FieldBloc> get fieldBlocs => [usernameField];
+  ManuallySetFieldBlocErrorFormBloc() {
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'username',
+        validators: [FieldBlocValidators.requiredTextFieldBloc],
+      ),
+    );
+  }
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
     // Form logic...
 
     // Get the fields values:
+
+    final usernameField = state.fieldBlocFromPath('username').asTextFieldBloc;
+
     print(usernameField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));

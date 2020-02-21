@@ -1,3 +1,10 @@
+# 0.10.0
+## Breaking changes
+
+* Updated to `form_bloc: ^0.10.0`.
+* Documentation Updates.
+* Added more examples.
+
 # 0.7.0
 * Added `defaultErrorBuilder` property to `FieldBlocBuilder`.
 * Updated to `form_bloc: ^0.8.0`.

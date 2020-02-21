@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc_example/forms/form_fields_example_form_bloc.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
@@ -28,69 +27,67 @@ class FormFieldsExampleForm extends StatelessWidget {
                 Notifications.showSnackBarWithError(
                     context, state.failureResponse);
               },
-              child: ListView(
-                physics: ClampingScrollPhysics(),
-                children: <Widget>[
-                  TextFieldBlocBuilder(
-                    textFieldBloc: formBloc.textField,
-                    decoration: InputDecoration(
-                      labelText: 'TextFieldBlocBuilder',
-                      prefixIcon: Icon(Icons.sentiment_very_satisfied),
+              child: BlocBuilder<FormFieldsExampleFormBloc, FormBlocState>(
+                  builder: (context, state) {
+                return ListView(
+                  physics: ClampingScrollPhysics(),
+                  children: <Widget>[
+                    TextFieldBlocBuilder(
+                      textFieldBloc: state.fieldBlocFromPath('text'),
+                      decoration: InputDecoration(
+                        labelText: 'TextFieldBlocBuilder',
+                        prefixIcon: Icon(Icons.sentiment_very_satisfied),
+                      ),
+                      errorBuilder: (context, error) {
+                        switch (error) {
+                          case FieldBlocValidatorsErrors.requiredTextFieldBloc:
+                            return 'You must write amazing text.';
+                            break;
+                          default:
+                            return 'This text is nor valid.';
+                        }
+                      },
                     ),
-                    errorBuilder: (context, error) {
-                      switch (error) {
-                        case FieldBlocValidatorsErrors.requiredTextFieldBloc:
-                          return 'You must write amazing text.';
-                          break;
-                        default:
-                          return 'This text is nor valid.';
-                      }
-                    },
-                  ),
-                  DropdownFieldBlocBuilder<String>(
-                    selectFieldBloc: formBloc.selectField1,
-                    decoration: InputDecoration(
-                      labelText: 'DropdownFieldBlocBuilder',
-                      prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                    DropdownFieldBlocBuilder<String>(
+                      selectFieldBloc: state.fieldBlocFromPath('select1'),
+                      decoration: InputDecoration(
+                        labelText: 'DropdownFieldBlocBuilder',
+                        prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                      ),
+                      itemBuilder: (context, value) => value,
                     ),
-                    itemBuilder: (context, value) => value,
-                  ),
-                  CheckboxGroupFieldBlocBuilder<String>(
-                    multiSelectFieldBloc: formBloc.multiSelectField,
-                    itemBuilder: (context, item) => item,
-                    decoration: InputDecoration(
-                      labelText: 'CheckboxGroupFieldBlocBuilder',
-                      prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                    CheckboxGroupFieldBlocBuilder<String>(
+                      multiSelectFieldBloc:
+                          state.fieldBlocFromPath('multiSelect'),
+                      itemBuilder: (context, item) => item,
+                      decoration: InputDecoration(
+                        labelText: 'CheckboxGroupFieldBlocBuilder',
+                        prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                      ),
                     ),
-                  ),
-                  RadioButtonGroupFieldBlocBuilder<String>(
-                    selectFieldBloc: formBloc.selectField2,
-                    decoration: InputDecoration(
-                      labelText: 'RadioButtonGroupFieldBlocBuilder',
-                      prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                    RadioButtonGroupFieldBlocBuilder<String>(
+                      selectFieldBloc: state.fieldBlocFromPath('select2'),
+                      decoration: InputDecoration(
+                        labelText: 'RadioButtonGroupFieldBlocBuilder',
+                        prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                      ),
+                      itemBuilder: (context, item) => item,
                     ),
-                    itemBuilder: (context, item) => item,
-                  ),
-                  CheckboxFieldBlocBuilder(
-                    booleanFieldBloc: formBloc.booleanField,
-                    body: Text('CheckboxFieldBlocBuilder'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
+                    CheckboxFieldBlocBuilder(
+                      booleanFieldBloc: state.fieldBlocFromPath('boolean'),
+                      body: Text('CheckboxFieldBlocBuilder'),
+                    ),
+                    FormButton(
+                      text: 'SUBMIT',
                       onPressed: formBloc.submit,
-                      child: Center(child: Text('SUBMIT')),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: RaisedButton(
+                    FormButton(
+                      text: 'CLEAR',
                       onPressed: formBloc.clear,
-                      child: Center(child: Text('CLEAR')),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              }),
             ),
           );
         },

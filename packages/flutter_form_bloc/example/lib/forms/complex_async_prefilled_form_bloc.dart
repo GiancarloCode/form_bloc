@@ -1,15 +1,15 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
-  final prefilledTextField = TextFieldBloc();
-  final prefilledSelectField = SelectFieldBloc<String>();
-  final prefilledBooleanField = BooleanFieldBloc();
+  final _prefilledTextField = TextFieldBloc(name: 'text');
+  final _prefilledSelectField = SelectFieldBloc<String>(name: 'select');
+  final _prefilledBooleanField = BooleanFieldBloc(name: 'boolean');
 
-  ComplexAsyncPrefilledFormBloc() : super(isLoading: true);
-
-  @override
-  List<FieldBloc> get fieldBlocs =>
-      [prefilledTextField, prefilledSelectField, prefilledBooleanField];
+  ComplexAsyncPrefilledFormBloc() : super(isLoading: true) {
+    addFieldBloc(fieldBloc: _prefilledTextField);
+    addFieldBloc(fieldBloc: _prefilledSelectField);
+    addFieldBloc(fieldBloc: _prefilledBooleanField);
+  }
 
   @override
   Stream<FormBlocState<String, String>> onLoading() async* {
@@ -24,9 +24,9 @@ class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
     // Get the fields values:
-    print(prefilledTextField.value);
-    print(prefilledSelectField.value);
-    print(prefilledBooleanField.value);
+    print(_prefilledTextField.value);
+    print(_prefilledSelectField.value);
+    print(_prefilledBooleanField.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
     yield state.toSuccess();
@@ -41,16 +41,16 @@ class ComplexAsyncPrefilledFormBloc extends FormBloc<String, String> {
         throw Exception('Network request failed. Please try again later.');
       }
       // Update value
-      prefilledTextField.updateInitialValue('I am prefilled');
+      _prefilledTextField.updateInitialValue('I am prefilled');
 
       // Update items
-      prefilledSelectField.updateItems(['Option 1', 'Option 2', 'Option 3']);
+      _prefilledSelectField.updateItems(['Option 1', 'Option 2', 'Option 3']);
 
       // Update value
-      prefilledSelectField.updateInitialValue('Option 2');
+      _prefilledSelectField.updateInitialValue('Option 2');
 
       // Update value
-      prefilledBooleanField.updateInitialValue(true);
+      _prefilledBooleanField.updateInitialValue(true);
 
       yield state.toLoaded();
     } catch (e) {

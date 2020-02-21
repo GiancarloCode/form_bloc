@@ -25,8 +25,7 @@ class DropdownFieldBlocBuilder<Value> extends StatefulWidget {
     this.millisecondsForShowDropdownItemsWhenKeyboardIsOpen = 600,
     this.nextFocusNode,
     this.focusNode,
-  })  : assert(selectFieldBloc != null),
-        assert(enableOnlyWhenFormBlocCanSubmit != null),
+  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
         assert(showEmptyItem != null),
@@ -126,6 +125,10 @@ class _DropdownFieldBlocBuilderState<Value>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.selectFieldBloc == null) {
+      return Container();
+    }
+
     return Focus(
       focusNode: _effectiveFocusNode,
       child: BlocBuilder<SelectFieldBloc<Value>, SelectFieldBlocState<Value>>(

@@ -11,24 +11,28 @@ enum LoginResponse {
 class ComplexLoginFormBloc extends FormBloc<String, String> {
   static const String _usedEmailsKey = 'usedEmails';
 
-  final emailField = TextFieldBloc(
-    validators: [FieldBlocValidators.email],
-  );
-  final passwordField = TextFieldBloc(
-    validators: [FieldBlocValidators.requiredTextFieldBloc],
-  );
-  final responseField = SelectFieldBloc<LoginResponse>(
-    items: LoginResponse.values,
-    validators: [FieldBlocValidators.requiredSelectFieldBloc],
-  );
-
-  @override
-  List<FieldBloc> get fieldBlocs =>
-      [emailField, passwordField, responseField, responseField];
-
   ComplexLoginFormBloc() {
-    emailField.updateSuggestions(suggestUsedEmails);
-    emailField.selectedSuggestion.listen(_deleteEmail);
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'email',
+        validators: [FieldBlocValidators.email],
+      )
+        ..updateSuggestions(suggestUsedEmails)
+        ..selectedSuggestion.listen(_deleteEmail),
+    );
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'password',
+        validators: [FieldBlocValidators.requiredTextFieldBloc],
+      ),
+    );
+    addFieldBloc(
+      fieldBloc: SelectFieldBloc<LoginResponse>(
+        name: 'response',
+        items: LoginResponse.values,
+        validators: [FieldBlocValidators.requiredSelectFieldBloc],
+      ),
+    );
   }
 
   Future<List<String>> suggestUsedEmails(String value) async {
@@ -41,16 +45,24 @@ class ComplexLoginFormBloc extends FormBloc<String, String> {
     // Login logic...
 
     // Get the fields values:
-    print(emailField.value);
-    print(passwordField.value);
-    print(responseField.value);
+
+    final email = state.fieldBlocFromPath('email').asTextFieldBloc.value;
+    final password = state.fieldBlocFromPath('password').asTextFieldBloc.value;
+    final response = state
+        .fieldBlocFromPath('response')
+        .asSelectFieldBloc<LoginResponse>()
+        .value;
+
+    print(email);
+    print(password);
+    print(response);
 
     await Future<void>.delayed(Duration(seconds: 2));
 
-    switch (responseField.state.value) {
+    switch (response) {
       case LoginResponse.saveEmailAndFail:
         await _saveEmail();
-        yield state.toFailure();
+        yield state.toFailure('Email saved :(');
         break;
       case LoginResponse.wrongPassword:
         yield state.toFailure(
@@ -73,7 +85,7 @@ class ComplexLoginFormBloc extends FormBloc<String, String> {
   Future<void> _saveEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final usedEmails = prefs.getStringList(_usedEmailsKey) ?? [];
-    final email = emailField.state.value;
+    final email = state.fieldBlocFromPath('email').asTextFieldBloc.state.value;
     if (!usedEmails.contains(email)) {
       usedEmails.add(email);
       prefs.setStringList(_usedEmailsKey, usedEmails);

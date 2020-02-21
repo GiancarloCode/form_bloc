@@ -4,14 +4,18 @@ import 'package:form_bloc/form_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProgressFormBloc extends FormBloc<String, String> {
-  final imageField = InputFieldBloc<File>();
-  final nameField = TextFieldBloc(initialValue: '🔥 GiancarloCode 🔥');
-
   List<FakeUpload> _fakeUploads = List();
   List<StreamSubscription<double>> _fakeUploadProgressSubscriptions = List();
 
-  @override
-  List<FieldBloc> get fieldBlocs => [imageField, nameField];
+  ProgressFormBloc() {
+    addFieldBloc(fieldBloc: InputFieldBloc<File>(name: 'image'));
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'name',
+        initialValue: '🔥 GiancarloCode 🔥',
+      ),
+    );
+  }
 
   @override
   Stream<FormBlocState<String, String>> onCancelSubmission() async* {
@@ -23,8 +27,8 @@ class ProgressFormBloc extends FormBloc<String, String> {
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    // Get the field value:
-    print(imageField.value);
+    print(state.fieldBlocFromPath('name').asTextFieldBloc.value);
+    print(state.fieldBlocFromPath('image').asInputFieldBloc<File>().value);
 
     final int _currentUploadIndex = _fakeUploads.length;
     _fakeUploads.add(FakeUpload());

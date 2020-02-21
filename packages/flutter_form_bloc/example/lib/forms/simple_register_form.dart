@@ -41,50 +41,53 @@ class _SimpleRegisterFormState extends State<SimpleRegisterForm> {
           LoadingDialog.hide(context);
           Notifications.showSnackBarWithError(context, state.failureResponse);
         },
-        child: ListView(
-          physics: ClampingScrollPhysics(),
-          children: <Widget>[
-            TextFieldBlocBuilder(
-              textFieldBloc: _formBloc.emailField,
-              autofocus: true,
-              nextFocusNode: _focusNodes[0],
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.email),
-              ),
-            ),
-            TextFieldBlocBuilder(
-              textFieldBloc: _formBloc.passwordField,
-              focusNode: _focusNodes[0],
-              nextFocusNode: _focusNodes[1],
-              suffixButton: SuffixButton.obscureText,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                prefixIcon: Icon(Icons.lock),
-              ),
-            ),
-            TextFieldBlocBuilder(
-              textFieldBloc: _formBloc.confirmPasswordField,
-              focusNode: _focusNodes[1],
-              suffixButton: SuffixButton.obscureText,
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                prefixIcon: Icon(Icons.lock),
-              ),
-            ),
-            CheckboxFieldBlocBuilder(
-              booleanFieldBloc: _formBloc.termAndConditionsField,
-              body: Text('I Agree to the terms & conditions.'),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: RaisedButton(
-                onPressed: _formBloc.submit,
-                child: Center(child: Text('REGISTER')),
-              ),
-            ),
-          ],
+        child: BlocBuilder<SimpleRegisterFormBloc, FormBlocState>(
+          bloc: _formBloc,
+          builder: (context, state) {
+            return ListView(
+              physics: ClampingScrollPhysics(),
+              children: <Widget>[
+                TextFieldBlocBuilder(
+                  textFieldBloc: state.fieldBlocFromPath('email'),
+                  autofocus: true,
+                  nextFocusNode: _focusNodes[0],
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
+                  ),
+                ),
+                TextFieldBlocBuilder(
+                  textFieldBloc: state.fieldBlocFromPath('password'),
+                  focusNode: _focusNodes[0],
+                  nextFocusNode: _focusNodes[1],
+                  suffixButton: SuffixButton.obscureText,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                ),
+                TextFieldBlocBuilder(
+                  textFieldBloc: state.fieldBlocFromPath('confirmPassword'),
+                  focusNode: _focusNodes[1],
+                  suffixButton: SuffixButton.obscureText,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                ),
+                CheckboxFieldBlocBuilder(
+                  booleanFieldBloc:
+                      state.fieldBlocFromPath('termsAndConditions'),
+                  body: Text('I Agree to the terms & conditions.'),
+                ),
+                FormButton(
+                  text: 'REGISTER',
+                  onPressed: _formBloc.submit,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

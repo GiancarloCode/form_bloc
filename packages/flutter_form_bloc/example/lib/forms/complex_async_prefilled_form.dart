@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form_bloc.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
@@ -91,7 +90,7 @@ class _ComplexAsyncPrefilledFormState extends State<ComplexAsyncPrefilledForm> {
                       physics: ClampingScrollPhysics(),
                       children: <Widget>[
                         TextFieldBlocBuilder(
-                          textFieldBloc: formBloc.prefilledTextField,
+                          textFieldBloc: state.fieldBlocFromPath('text'),
                           nextFocusNode: _focusNodes[0],
                           decoration: InputDecoration(
                             labelText: 'Prefilled text field',
@@ -99,7 +98,7 @@ class _ComplexAsyncPrefilledFormState extends State<ComplexAsyncPrefilledForm> {
                           ),
                         ),
                         DropdownFieldBlocBuilder<String>(
-                          selectFieldBloc: formBloc.prefilledSelectField,
+                          selectFieldBloc: state.fieldBlocFromPath('select'),
                           focusNode: _focusNodes[0],
                           millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
                               320,
@@ -110,22 +109,16 @@ class _ComplexAsyncPrefilledFormState extends State<ComplexAsyncPrefilledForm> {
                           ),
                         ),
                         CheckboxFieldBlocBuilder(
-                          booleanFieldBloc: formBloc.prefilledBooleanField,
+                          booleanFieldBloc: state.fieldBlocFromPath('boolean'),
                           body: Text('Prefilled boolean field.'),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: RaisedButton(
-                            onPressed: formBloc.submit,
-                            child: Center(child: Text('SUBMIT')),
-                          ),
+                        FormButton(
+                          text: 'SUBMIT',
+                          onPressed: formBloc.submit,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: RaisedButton(
-                            onPressed: formBloc.clear,
-                            child: Center(child: Text('CLEAR')),
-                          ),
+                        FormButton(
+                          text: 'CLEAR',
+                          onPressed: formBloc.clear,
                         ),
                       ],
                     );

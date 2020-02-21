@@ -16,8 +16,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.decoration = const InputDecoration(),
     this.canDeselect = true,
     this.nextFocusNode,
-  })  : assert(selectFieldBloc != null),
-        assert(enableOnlyWhenFormBlocCanSubmit != null),
+  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(canDeselect != null),
         assert(decoration != null),
@@ -53,6 +52,10 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (selectFieldBloc == null) {
+      return Container();
+    }
+
     return BlocBuilder<SelectFieldBloc<Value>, SelectFieldBlocState<Value>>(
       bloc: selectFieldBloc,
       builder: (context, state) {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc_example/forms/manually_set_field_bloc_error_form_bloc.dart';
-
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 
 class ManuallySetFieldBlocErrorForm extends StatelessWidget {
@@ -29,25 +27,26 @@ class ManuallySetFieldBlocErrorForm extends StatelessWidget {
                 Notifications.showSnackBarWithError(
                     context, state.failureResponse);
               },
-              child: ListView(
-                physics: ClampingScrollPhysics(),
-                children: <Widget>[
-                  TextFieldBlocBuilder(
-                    textFieldBloc: formBloc.usernameField,
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon: Icon(Icons.person),
+              child:
+                  BlocBuilder<ManuallySetFieldBlocErrorFormBloc, FormBlocState>(
+                      builder: (context, state) {
+                return ListView(
+                  physics: ClampingScrollPhysics(),
+                  children: <Widget>[
+                    TextFieldBlocBuilder(
+                      textFieldBloc: state.fieldBlocFromPath('username'),
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        prefixIcon: Icon(Icons.person),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
+                    FormButton(
+                      text: 'SUBMIT',
                       onPressed: formBloc.submit,
-                      child: Center(child: Text('SUBMIT')),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              }),
             ),
           );
         },

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc_example/forms/crud_form_bloc.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
-import 'package:form_bloc/form_bloc.dart';
 
 class CrudForm extends StatelessWidget {
   final String name;
@@ -47,43 +45,30 @@ class CrudForm extends StatelessWidget {
                 Notifications.showSnackBarWithSuccess(
                     context, 'Deleted Successful!');
               },
-              child: ListView(
-                physics: ClampingScrollPhysics(),
-                children: <Widget>[
-                  TextFieldBlocBuilder(
-                    textFieldBloc: formBloc.nameField,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      prefixIcon: Icon(Icons.person),
+              child: BlocBuilder<CrudFormBloc, FormBlocState>(
+                  builder: (context, state) {
+                return ListView(
+                  physics: ClampingScrollPhysics(),
+                  children: <Widget>[
+                    TextFieldBlocBuilder(
+                      textFieldBloc: state.fieldBlocFromPath('name'),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        prefixIcon: Icon(Icons.person),
+                      ),
                     ),
-                  ),
-                  BlocBuilder<CrudFormBloc, FormBlocState>(
-                    builder: (context, state) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RaisedButton(
-                          onPressed: formBloc.submit,
-                          child: Center(
-                              child:
-                                  Text(state.isEditing ? 'UPDATE' : 'CREATE')),
-                        ),
-                      );
-                    },
-                  ),
-                  BlocBuilder<CrudFormBloc, FormBlocState>(
-                    builder: (context, state) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RaisedButton(
-                          onPressed: state.isEditing ? formBloc.delete : null,
-                          child: Center(child: Text('DELETE')),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                    FormButton(
+                      onPressed: formBloc.submit,
+                      text: state.isEditing ? 'UPDATE' : 'CREATE',
+                    ),
+                    FormButton(
+                      onPressed: state.isEditing ? formBloc.delete : null,
+                      text: 'DELETE',
+                    ),
+                  ],
+                );
+              }),
             ),
           );
         },

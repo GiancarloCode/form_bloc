@@ -1,19 +1,20 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class FieldBlocAsyncValidationFormBloc extends FormBloc<String, String> {
-  final usernameField =
-      TextFieldBloc(asyncValidatorDebounceTime: Duration(milliseconds: 600));
-
-  final emailField = TextFieldBloc(
-    validators: [FieldBlocValidators.email],
-    asyncValidators: [FakeApi.emailValidator],
-  );
-
-  @override
-  List<FieldBloc> get fieldBlocs => [usernameField, emailField];
-
   FieldBlocAsyncValidationFormBloc() {
-    usernameField.addAsyncValidators([FakeApi.usernameValidator]);
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'email',
+        validators: [FieldBlocValidators.email],
+        asyncValidators: [FakeApi.emailValidator],
+      ),
+    );
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'username',
+        asyncValidatorDebounceTime: Duration(milliseconds: 600),
+      )..addAsyncValidators([FakeApi.usernameValidator]),
+    );
   }
 
   @override
@@ -21,8 +22,8 @@ class FieldBlocAsyncValidationFormBloc extends FormBloc<String, String> {
     // Form logic...
 
     // Get the fields values:
-    print(usernameField.value);
-    print(emailField.value);
+    print(state.fieldBlocFromPath('email').asTextFieldBloc.value);
+    print(state.fieldBlocFromPath('username').asTextFieldBloc.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
     yield state

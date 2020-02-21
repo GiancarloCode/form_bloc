@@ -17,8 +17,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.checkColor,
     this.activeColor,
     this.nextFocusNode,
-  })  : assert(multiSelectFieldBloc != null),
-        assert(enableOnlyWhenFormBlocCanSubmit != null),
+  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
         super(key: key);
@@ -55,6 +54,10 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (multiSelectFieldBloc == null) {
+      return Container();
+    }
+
     return BlocBuilder<MultiSelectFieldBloc<Value>,
         MultiSelectFieldBlocState<Value>>(
       bloc: multiSelectFieldBloc,

@@ -6,52 +6,50 @@ class SimpleAsyncPrefilledFormBloc extends FormBloc<String, String> {
   static const String _prefilledSelectFieldKey = 'prefilledSelectField';
   static const String _prefilledBooleanFieldKey = 'prefilledBooleanField';
 
-  final prefilledTextField = TextFieldBloc();
+  final _prefilledTextField = TextFieldBloc(
+    name: 'text',
+  );
 
-  final prefilledSelectField = SelectFieldBloc<String>(
+  final _prefilledSelectField = SelectFieldBloc<String>(
+    name: 'select',
     items: ['Option 1', 'Option 2', 'Option 3'],
   );
 
-  final prefilledBooleanField = BooleanFieldBloc();
+  final _prefilledBooleanField = BooleanFieldBloc(name: 'boolean');
 
   SimpleAsyncPrefilledFormBloc() {
+    addFieldBloc(fieldBloc: _prefilledTextField);
+    addFieldBloc(fieldBloc: _prefilledSelectField);
+    addFieldBloc(fieldBloc: _prefilledBooleanField);
+
     prefillFields();
   }
 
   void prefillFields() async {
     final prefs = await SharedPreferences.getInstance();
-    prefilledTextField
+    _prefilledTextField
         .updateInitialValue(prefs.getString(_prefilledTextFieldKey));
-    prefilledSelectField
+    _prefilledSelectField
         .updateInitialValue(prefs.getString(_prefilledSelectFieldKey));
-    prefilledBooleanField
+    _prefilledBooleanField
         .updateInitialValue(prefs.getBool(_prefilledBooleanFieldKey));
   }
 
   @override
-  List<FieldBloc> get fieldBlocs =>
-      [prefilledTextField, prefilledSelectField, prefilledBooleanField];
-
-  @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
     // Get the fields values:
-    print(prefilledTextField.value);
-    print(prefilledSelectField.value);
-    print(prefilledBooleanField.value);
+    print(_prefilledTextField.value);
+    print(_prefilledSelectField.value);
+    print(_prefilledBooleanField.value);
 
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_prefilledTextFieldKey, prefilledTextField.value);
-    prefs.setString(_prefilledSelectFieldKey, prefilledSelectField.value);
-    prefs.setBool(_prefilledBooleanFieldKey, prefilledBooleanField.value);
+    prefs.setString(_prefilledTextFieldKey, _prefilledTextField.value);
+    prefs.setString(_prefilledSelectFieldKey, _prefilledSelectField.value);
+    prefs.setBool(_prefilledBooleanFieldKey, _prefilledBooleanField.value);
 
-    yield state.toSuccess('Values saved in shared preferences.');
-
-    // yield `state.toLoaded()` because
-    // you can't submit if the current state is `FormBlocSuccess`.
-    // In most cases you don't need to do this,
-    // because you only want to submit only once,
-    // but in this case you want the user to submit more than once.
-    // See: https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html
-    yield state.toLoaded();
+    yield state.toSuccess(
+      successResponse: 'Values saved in shared preferences.',
+      canSubmitAgain: true,
+    );
   }
 }

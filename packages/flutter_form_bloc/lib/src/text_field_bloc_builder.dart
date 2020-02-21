@@ -128,8 +128,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.suggestionsErrorBuilder,
     this.keepSuggestionsOnLoading = false,
     this.showSuggestionsWhenIsEmpty = true,
-  })  : assert(textFieldBloc != null),
-        assert(enableOnlyWhenFormBlocCanSubmit != null),
+  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(suggestionsAnimationDuration != null),
         assert(removeSuggestionOnLongPress != null),
@@ -586,8 +585,10 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   @override
   void initState() {
     super.initState();
+
     _controllerListener = _textControllerListener;
-    _controller = TextEditingController(text: widget.textFieldBloc.state.value);
+    _controller =
+        TextEditingController(text: widget.textFieldBloc?.state?.value);
 
     _controller.addListener(_controllerListener);
 
@@ -639,6 +640,9 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.textFieldBloc == null) {
+      return Container();
+    }
     return BlocBuilder<TextFieldBloc, TextFieldBlocState>(
       bloc: widget.textFieldBloc,
       builder: (context, state) {

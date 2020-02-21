@@ -1,7 +1,7 @@
 import 'package:form_bloc/form_bloc.dart';
 
-class NotAutoValidationFormBloc extends FormBloc<String, String> {
-  NotAutoValidationFormBloc() : super(autoValidate: false) {
+class LoginFormBloc extends FormBloc<String, String> {
+  LoginFormBloc() {
     addFieldBloc(
       fieldBloc: TextFieldBloc(
         name: 'email',

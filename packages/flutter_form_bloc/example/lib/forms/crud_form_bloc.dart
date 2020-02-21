@@ -1,16 +1,14 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class CrudFormBloc extends FormBloc<String, String> {
-  final TextFieldBloc nameField;
-
-  CrudFormBloc({String name})
-      : nameField = TextFieldBloc(initialValue: name, validators: [
-          FieldBlocValidators.requiredTextFieldBloc
-        ]), // Read logic...
-        super(isEditing: name != null);
-
-  @override
-  List<FieldBloc> get fieldBlocs => [nameField];
+  CrudFormBloc({String name}) : super(isEditing: name != null) {
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'name', initialValue: name, // Read logic...
+        validators: [FieldBlocValidators.requiredTextFieldBloc],
+      ),
+    );
+  }
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
@@ -20,8 +18,7 @@ class CrudFormBloc extends FormBloc<String, String> {
 
         // throw Exception();
 
-        yield state.toSuccess();
-        yield state.toLoaded();
+        yield state.toSuccess(canSubmitAgain: true);
       } catch (e) {
         yield state.toFailure();
       }
@@ -32,8 +29,7 @@ class CrudFormBloc extends FormBloc<String, String> {
         // Fake exception...
         // throw Exception();
 
-        yield state.toSuccess();
-        yield state.toLoaded(isEditing: true);
+        yield state.toSuccess(canSubmitAgain: true, isEditing: true);
       } catch (e) {
         yield state.toFailure();
       }
@@ -41,7 +37,7 @@ class CrudFormBloc extends FormBloc<String, String> {
   }
 
   @override
-  Stream<FormBlocState<String, String>> onDelete() async* {
+  Stream<FormBlocState<String, String>> onDeleting() async* {
     try {
       // Delete Logic...
       await Future.delayed(Duration(milliseconds: 1000));
