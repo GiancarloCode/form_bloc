@@ -7,10 +7,10 @@ void main() {
       final loadingState =
           FormBlocLoading<String, String>(isEditing: true, isValid: true);
       final loadFailed = loadingState.toLoadFailed('fail');
-      final loaded1 = loadFailed.toLoaded(isEditing: false);
-      final loaded2 = loaded1.toLoaded(isEditing: true);
+      final loaded1 = loadFailed.toLoaded();
+      final loaded2 = loaded1.toLoaded();
       final submitting = loaded2.toSubmitting(0.5);
-      final success = submitting.toSuccess('success');
+      final success = submitting.toSuccess(successResponse: 'success');
       final failure = success.toFailure('fail');
       final submissionCancelled = failure.toSubmissionCancelled();
       final deleteFailed = submissionCancelled.toDeleteFailed('fail');
@@ -33,7 +33,7 @@ void main() {
         FormBlocLoading<String, String>(isEditing: true, isValid: true),
         FormBlocLoadFailed<String, String>(
             isValid: true, failureResponse: 'fail', isEditing: true),
-        FormBlocLoaded<String, String>(true, isEditing: false),
+        FormBlocLoaded<String, String>(true, isEditing: true),
         FormBlocLoaded<String, String>(true, isEditing: true),
         FormBlocSubmitting<String, String>(
             isValid: true,

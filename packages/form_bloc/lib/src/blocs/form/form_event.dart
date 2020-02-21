@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-import 'form_state.dart';
+part of 'form_bloc.dart';
 
 abstract class FormBlocEvent extends Equatable {}
 
@@ -62,4 +60,33 @@ class OnSubmittingFormBloc extends FormBlocEvent {
 class DeleteFormBloc extends FormBlocEvent {
   @override
   List<Object> get props => [];
+}
+
+class AddFieldBloc extends FormBlocEvent {
+  final String path;
+  final FieldBloc fieldBloc;
+
+  AddFieldBloc({@required this.path, @required this.fieldBloc});
+
+  @override
+  List<Object> get props => [path, fieldBloc];
+}
+
+/// {@macro form_bloc.path_definition}
+class RemoveFieldBloc extends FormBlocEvent {
+  final String path;
+
+  RemoveFieldBloc({@required this.path});
+
+  @override
+  List<Object> get props => [path];
+}
+
+class ClearFieldBlocList extends FormBlocEvent {
+  final String path;
+
+  ClearFieldBlocList({@required this.path});
+
+  @override
+  List<Object> get props => [path];
 }

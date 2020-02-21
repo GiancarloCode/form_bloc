@@ -4,9 +4,12 @@ part of '../field/field_bloc.dart';
 /// it is also used to obtain `int` and `double` values
 /// ​​of texts thanks to the methods
 /// [valueToInt] and [valueToDouble].
-class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
+class TextFieldBloc
+    extends SingleFieldBloc<String, String, TextFieldBlocState> {
   /// ### Properties:
   ///
+  /// * [name] : It is the string that identifies the fieldBloc,
+  /// it is available in [FieldBlocState.name].
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty `String` ('').
   /// And if the value is `null` it will be a empty `String` ('').
@@ -31,14 +34,13 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
-  /// * [toStringName] : This will be added to [TextFieldBlocState.toStringName].
   TextFieldBloc({
+    @required String name,
     String initialValue = '',
     List<Validator<String>> validators,
     List<AsyncValidator<String>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<String> suggestions,
-    String toStringName,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue ?? '',
@@ -46,7 +48,7 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
           asyncValidators,
           asyncValidatorDebounceTime,
           suggestions,
-          toStringName,
+          name,
         );
 
   @override
@@ -57,7 +59,7 @@ class TextFieldBloc extends FieldBlocBase<String, String, TextFieldBlocState> {
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
-        toStringName: _toStringName,
+        name: _name,
       );
 
   /// Return the parsed `value` to `int` of the current state.

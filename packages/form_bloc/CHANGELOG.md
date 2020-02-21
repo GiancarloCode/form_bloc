@@ -1,3 +1,26 @@
+# 0.10.0
+## Breaking changes
+
+* Removed `fieldBlocs` getter of `FormBloc`. now you must use `addFieldBloc` method.
+* Renamed `onDelete` method of `FormBloc` to `onDeleting`.
+* Added `canSubmitAgain` parameter to `toSuccess` method of `FormBlocState`.
+* Now `FieldBloc` can be dynamically added to a `FormBloc` with `addFieldBloc`.
+* Now `FieldBloc` can be dynamically removed from a `FormBloc` with `removeFieldBloc`.
+* Added `fieldBlocs` property to `FormBlocState`.
+* `FieldBloc` is now implemented by 3 classes:
+  * `SingleFieldBloc` which is the Interface of:
+    * `InputFieldBloc`.
+    * `TextFieldBloc`.
+    * `BooleanFieldBloc`.
+    * `SelectFieldBloc`.
+    * `MultiSelectFieldBloc`.
+  * `GroupFieldBloc`.
+  * `FieldBlocList`.
+* Documentation Updates.
+  
+
+
+
 # 0.8.0
 * Added `isEditing` property to `FormBlocState` ([#9](https://github.com/GiancarloCode/form_bloc/issues/9)).
 * Added `delete` event to `FormBloc` ([#9](https://github.com/GiancarloCode/form_bloc/issues/9)).

@@ -1,7 +1,4 @@
-import 'package:meta/meta.dart';
-import 'package:equatable/equatable.dart';
-import 'package:form_bloc/src/blocs/form/form_bloc.dart';
-import 'package:form_bloc/src/blocs/field/field_bloc.dart';
+part of 'form_bloc.dart';
 
 /// The base class for all Form Bloc States:
 /// * [FormBlocLoading]
@@ -29,12 +26,29 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   /// perform the update operation.
   final bool isEditing;
 
+  /// Map containing all the [fieldBloc]s.
+  ///
+  /// The `key` of each [FieldBloc] will be
+  /// its name ([FieldBlocState.name]).
+  ///
+  /// To easily access nested [FieldBloc]s use
+  /// [fieldBlocFromPath];
+  final Map<String, FieldBloc> fieldBlocs;
+
+  /// Returns the [FieldBloc] that is in the [path].
+  ///
+  /// {@macro form_bloc.path_definition}
+  FieldBloc fieldBlocFromPath(String path) =>
+      FormBlocUtils.getFieldBlocFromPath(path: path, fieldBlocs: fieldBlocs);
+
   /// Returns `true` if the state is
   /// [FormBlocLoaded] or [FormBlocFailure] or
   /// [FormBlocSubmissionCancelled] or
   /// [FormBlocSubmissionFailed] or
-  /// [FormBlocDeleteFailed].
-  bool get canSubmit => (runtimeType ==
+  /// [FormBlocDeleteFailed] or
+  /// [FormBlocSuccess.canSubmitAgain].
+  bool get canSubmit =>
+      runtimeType ==
           _typeOf<FormBlocLoaded<SuccessResponse, FailureResponse>>() ||
       runtimeType ==
           _typeOf<FormBlocFailure<SuccessResponse, FailureResponse>>() ||
@@ -46,7 +60,11 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
           _typeOf<
               FormBlocSubmissionFailed<SuccessResponse, FailureResponse>>() ||
       runtimeType ==
-          _typeOf<FormBlocDeleteFailed<SuccessResponse, FailureResponse>>());
+          _typeOf<FormBlocDeleteFailed<SuccessResponse, FailureResponse>>() ||
+      (runtimeType ==
+              _typeOf<FormBlocSuccess<SuccessResponse, FailureResponse>>() &&
+          (this as FormBlocSuccess<SuccessResponse, FailureResponse>)
+              .canSubmitAgain);
 
   /// Returns `true` if the state is [FormBlocSubmitting] or [FormBlocSuccess]
   bool get canShowProgress =>
@@ -58,7 +76,8 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   FormBlocState(
       {@required this.isValid,
       @required this.submissionProgress,
-      @required this.isEditing});
+      @required this.isEditing,
+      @required this.fieldBlocs});
 
   /// Returns a [FormBlocLoading]
   /// {@template form_bloc.copy_to_form_bloc_state}
@@ -68,7 +87,8 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   ///
   /// {@macro form_bloc.form_state.FormBlocLoading}
   FormBlocState<SuccessResponse, FailureResponse> toLoading() =>
-      FormBlocLoading(isValid: isValid, isEditing: isEditing);
+      FormBlocLoading(
+          isValid: isValid, isEditing: isEditing, fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocLoadFailed]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -79,14 +99,15 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       FormBlocLoadFailed(
           isValid: isValid,
           isEditing: isEditing,
-          failureResponse: failureResponse);
+          failureResponse: failureResponse,
+          fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocLoaded]
   /// {@macro form_bloc.copy_to_form_bloc_state}
   ///
   /// {@macro form_bloc.form_state.FormBlocLoaded}
-  FormBlocState<SuccessResponse, FailureResponse> toLoaded({bool isEditing}) =>
-      FormBlocLoaded(isValid, isEditing: isEditing ?? this.isEditing);
+  FormBlocState<SuccessResponse, FailureResponse> toLoaded() =>
+      FormBlocLoaded(isValid, isEditing: isEditing, fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocSubmitting]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -100,26 +121,31 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   FormBlocState<SuccessResponse, FailureResponse> toSubmitting(
           double progress) =>
       FormBlocSubmitting(
-        isValid: isValid,
-        isEditing: isEditing,
-        submissionProgress: progress,
-        isCanceling: runtimeType ==
-                _typeOf<FormBlocSubmitting<SuccessResponse, FailureResponse>>()
-            ? (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
-                .isCanceling
-            : false,
-      );
+          isValid: isValid,
+          isEditing: isEditing,
+          submissionProgress: progress,
+          isCanceling: runtimeType ==
+                  _typeOf<
+                      FormBlocSubmitting<SuccessResponse, FailureResponse>>()
+              ? (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
+                  .isCanceling
+              : false,
+          fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocSuccess]
   /// {@macro form_bloc.copy_to_form_bloc_state}
   ///
   /// {@macro form_bloc.form_state.FormBlocSuccess}
   FormBlocState<SuccessResponse, FailureResponse> toSuccess(
-          [SuccessResponse successResponse]) =>
+          {SuccessResponse successResponse,
+          bool canSubmitAgain = false,
+          bool isEditing}) =>
       FormBlocSuccess(
           isValid: isValid,
-          isEditing: isEditing,
-          successResponse: successResponse);
+          isEditing: isEditing ?? this.isEditing,
+          successResponse: successResponse,
+          canSubmitAgain: canSubmitAgain,
+          fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocFailure]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -130,14 +156,16 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       FormBlocFailure(
           isValid: isValid,
           isEditing: isEditing,
-          failureResponse: failureResponse);
+          failureResponse: failureResponse,
+          fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocSubmissionCancelled]
   /// {@macro form_bloc.copy_to_form_bloc_state}
   ///
   /// {@macro form_bloc.form_state.FormBlocSubmissionCancelled}
   FormBlocState<SuccessResponse, FailureResponse> toSubmissionCancelled() =>
-      FormBlocSubmissionCancelled(isValid, isEditing: isEditing);
+      FormBlocSubmissionCancelled(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocDeleteFailed]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -148,7 +176,8 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       FormBlocDeleteFailed(
           isValid: isValid,
           isEditing: isEditing,
-          failureResponse: failureResponse);
+          failureResponse: failureResponse,
+          fieldBlocs: fieldBlocs);
 
   /// Returns a [FormBlocDeleteSuccessful]
   /// {@macro form_bloc.copy_to_form_bloc_state}
@@ -159,13 +188,15 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       FormBlocDeleteSuccessful(
           isValid: isValid,
           isEditing: isEditing,
-          successResponse: successResponse);
+          successResponse: successResponse,
+          fieldBlocs: fieldBlocs);
 
   /// Returns a copy of the current state by changing [isValid].
   FormBlocState<SuccessResponse, FailureResponse> withIsValid(bool isValid) {
     if (runtimeType ==
         _typeOf<FormBlocLoading<SuccessResponse, FailureResponse>>()) {
-      return FormBlocLoading(isValid: isValid, isEditing: isEditing);
+      return FormBlocLoading(
+          isValid: isValid, isEditing: isEditing, fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocLoadFailed<SuccessResponse, FailureResponse>>()) {
       return FormBlocLoadFailed(
@@ -173,66 +204,161 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
           isEditing: isEditing,
           failureResponse:
               (this as FormBlocLoadFailed<SuccessResponse, FailureResponse>)
-                  .failureResponse);
+                  .failureResponse,
+          fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocLoaded<SuccessResponse, FailureResponse>>()) {
-      return FormBlocLoaded(isValid, isEditing: isEditing);
+      return FormBlocLoaded(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocSubmitting<SuccessResponse, FailureResponse>>()) {
       return FormBlocSubmitting(
-        isValid: isValid,
-        isEditing: isEditing,
-        submissionProgress: submissionProgress,
-        isCanceling:
-            (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
-                .isCanceling,
-      );
+          isValid: isValid,
+          isEditing: isEditing,
+          submissionProgress: submissionProgress,
+          isCanceling:
+              (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
+                  .isCanceling,
+          fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocSuccess<SuccessResponse, FailureResponse>>()) {
       return FormBlocSuccess(
-        isValid: isValid,
-        isEditing: isEditing,
-        successResponse:
-            (this as FormBlocSuccess<SuccessResponse, FailureResponse>)
-                .successResponse,
-      );
+          isValid: isValid,
+          isEditing: isEditing,
+          successResponse:
+              (this as FormBlocSuccess<SuccessResponse, FailureResponse>)
+                  .successResponse,
+          canSubmitAgain:
+              (this as FormBlocSuccess<SuccessResponse, FailureResponse>)
+                  .canSubmitAgain,
+          fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocFailure<SuccessResponse, FailureResponse>>()) {
       return FormBlocFailure(
-        isValid: isValid,
-        isEditing: isEditing,
-        failureResponse:
-            (this as FormBlocFailure<SuccessResponse, FailureResponse>)
-                .failureResponse,
-      );
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse:
+              (this as FormBlocFailure<SuccessResponse, FailureResponse>)
+                  .failureResponse,
+          fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocSubmissionFailed<SuccessResponse, FailureResponse>>()) {
-      return FormBlocSubmissionFailed(isValid, isEditing: isEditing);
+      return FormBlocSubmissionFailed(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<
             FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>>()) {
-      return FormBlocSubmissionCancelled(isValid, isEditing: isEditing);
+      return FormBlocSubmissionCancelled(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>>()) {
       return FormBlocDeleteSuccessful(
-        isValid: isValid,
-        isEditing: isEditing,
-        successResponse:
-            (this as FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>)
-                .successResponse,
-      );
+          isValid: isValid,
+          isEditing: isEditing,
+          successResponse: (this
+                  as FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>)
+              .successResponse,
+          fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocDeleteFailed<SuccessResponse, FailureResponse>>()) {
       return FormBlocDeleteFailed(
-        isValid: isValid,
-        isEditing: isEditing,
-        failureResponse:
-            (this as FormBlocDeleteFailed<SuccessResponse, FailureResponse>)
-                .failureResponse,
-      );
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse:
+              (this as FormBlocDeleteFailed<SuccessResponse, FailureResponse>)
+                  .failureResponse,
+          fieldBlocs: fieldBlocs);
     } else if (runtimeType ==
         _typeOf<FormBlocDeleting<SuccessResponse, FailureResponse>>()) {
-      return FormBlocDeleting(isValid, isEditing: isEditing);
+      return FormBlocDeleting(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
+    } else {
+      return this;
+    }
+  }
+
+  /// Returns a copy of the current state by changing [fieldBlocs].
+  FormBlocState<SuccessResponse, FailureResponse> withFieldBlocs(
+      Map<String, FieldBloc> fieldBlocs) {
+    if (runtimeType ==
+        _typeOf<FormBlocLoading<SuccessResponse, FailureResponse>>()) {
+      return FormBlocLoading(
+          isValid: isValid, isEditing: isEditing, fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocLoadFailed<SuccessResponse, FailureResponse>>()) {
+      return FormBlocLoadFailed(
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse:
+              (this as FormBlocLoadFailed<SuccessResponse, FailureResponse>)
+                  .failureResponse,
+          fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocLoaded<SuccessResponse, FailureResponse>>()) {
+      return FormBlocLoaded(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocSubmitting<SuccessResponse, FailureResponse>>()) {
+      return FormBlocSubmitting(
+          isValid: isValid,
+          isEditing: isEditing,
+          submissionProgress: submissionProgress,
+          isCanceling:
+              (this as FormBlocSubmitting<SuccessResponse, FailureResponse>)
+                  .isCanceling,
+          fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocSuccess<SuccessResponse, FailureResponse>>()) {
+      return FormBlocSuccess(
+          isValid: isValid,
+          isEditing: isEditing,
+          successResponse:
+              (this as FormBlocSuccess<SuccessResponse, FailureResponse>)
+                  .successResponse,
+          canSubmitAgain:
+              (this as FormBlocSuccess<SuccessResponse, FailureResponse>)
+                  .canSubmitAgain,
+          fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocFailure<SuccessResponse, FailureResponse>>()) {
+      return FormBlocFailure(
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse:
+              (this as FormBlocFailure<SuccessResponse, FailureResponse>)
+                  .failureResponse,
+          fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocSubmissionFailed<SuccessResponse, FailureResponse>>()) {
+      return FormBlocSubmissionFailed(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<
+            FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>>()) {
+      return FormBlocSubmissionCancelled(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>>()) {
+      return FormBlocDeleteSuccessful(
+          isValid: isValid,
+          isEditing: isEditing,
+          successResponse: (this
+                  as FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>)
+              .successResponse,
+          fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocDeleteFailed<SuccessResponse, FailureResponse>>()) {
+      return FormBlocDeleteFailed(
+          isValid: isValid,
+          isEditing: isEditing,
+          failureResponse:
+              (this as FormBlocDeleteFailed<SuccessResponse, FailureResponse>)
+                  .failureResponse,
+          fieldBlocs: fieldBlocs);
+    } else if (runtimeType ==
+        _typeOf<FormBlocDeleting<SuccessResponse, FailureResponse>>()) {
+      return FormBlocDeleting(isValid,
+          isEditing: isEditing, fieldBlocs: fieldBlocs);
     } else {
       return this;
     }
@@ -261,11 +387,19 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
 /// [FormBlocState.toLoading].
 class FormBlocLoading<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocLoading({bool isValid = false, bool isEditing = false})
-      : super(isValid: isValid, submissionProgress: 0.0, isEditing: isEditing);
+  FormBlocLoading(
+      {bool isValid = false,
+      bool isEditing = false,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            submissionProgress: 0.0,
+            isEditing: isEditing,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, isEditing];
+  List<Object> get props =>
+      [isValid, submissionProgress, isEditing, fieldBlocs.hashCode];
 }
 
 /// {@template form_bloc.form_state.FormBlocLoadFailed}
@@ -284,15 +418,25 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
 
   bool get hasFailureResponse => FailureResponse != null;
 
-  FormBlocLoadFailed({
-    @required bool isValid,
-    bool isEditing = false,
-    this.failureResponse,
-  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0.0);
+  FormBlocLoadFailed(
+      {@required bool isValid,
+      bool isEditing = false,
+      this.failureResponse,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 0.0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props =>
-      [isValid, submissionProgress, failureResponse, isEditing];
+  List<Object> get props => [
+        isValid,
+        submissionProgress,
+        failureResponse,
+        isEditing,
+        fieldBlocs.hashCode
+      ];
 
   @override
   String toString() {
@@ -314,11 +458,18 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
 /// [FormBlocState.toLoaded].
 class FormBlocLoaded<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocLoaded(bool isValid, {bool isEditing = false})
-      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0.0);
+  FormBlocLoaded(bool isValid,
+      {bool isEditing = false,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 0.0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, isEditing];
+  List<Object> get props =>
+      [isValid, submissionProgress, isEditing, fieldBlocs.hashCode];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmitting}
@@ -339,23 +490,30 @@ class FormBlocSubmitting<SuccessResponse, FailureResponse>
   ///
   /// * If [submissionProgress] is less than 0, it will become 0.0
   /// * If [submissionProgress] is greater than 1, it will become 1.0
-  FormBlocSubmitting({
-    @required bool isValid,
-    bool isEditing = false,
-    @required double submissionProgress,
-    @required this.isCanceling,
-  })  : assert(submissionProgress != null),
+  FormBlocSubmitting(
+      {@required bool isValid,
+      bool isEditing = false,
+      @required double submissionProgress,
+      @required this.isCanceling,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : assert(submissionProgress != null),
         assert(isCanceling != null),
         super(
             isValid: isValid,
             isEditing: isEditing,
             submissionProgress: submissionProgress < 0
                 ? 0.0
-                : submissionProgress > 1 ? 1.0 : submissionProgress);
+                : submissionProgress > 1 ? 1.0 : submissionProgress,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props =>
-      [isValid, submissionProgress, isCanceling, isEditing];
+  List<Object> get props => [
+        isValid,
+        submissionProgress,
+        isCanceling,
+        isEditing,
+        fieldBlocs.hashCode
+      ];
 
   @override
   String toString() {
@@ -382,23 +540,36 @@ class FormBlocSuccess<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse>
     with EquatableMixin {
   final SuccessResponse successResponse;
+  final bool canSubmitAgain;
 
   bool get hasSuccessResponse => successResponse != null;
 
-  FormBlocSuccess({
-    @required bool isValid,
-    bool isEditing = false,
-    this.successResponse,
-  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 1.0);
+  FormBlocSuccess(
+      {@required bool isValid,
+      bool isEditing = false,
+      this.successResponse,
+      this.canSubmitAgain = false,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 1.0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props =>
-      [isValid, submissionProgress, successResponse, isEditing];
+  List<Object> get props => [
+        isValid,
+        submissionProgress,
+        successResponse,
+        isEditing,
+        canSubmitAgain,
+        fieldBlocs.hashCode,
+      ];
 
   @override
   String toString() {
     var _toString =
-        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress';
+        '$runtimeType { isValid: $isValid, isEditing: $isEditing, submissionProgress: $submissionProgress, canSubmitAgain: $canSubmitAgain';
     if (hasSuccessResponse) {
       _toString += ', successResponse: $successResponse';
     }
@@ -423,15 +594,25 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
 
   bool get hasFailureResponse => FailureResponse != null;
 
-  FormBlocFailure({
-    @required bool isValid,
-    bool isEditing = false,
-    this.failureResponse,
-  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
+  FormBlocFailure(
+      {@required bool isValid,
+      bool isEditing = false,
+      this.failureResponse,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props =>
-      [isValid, submissionProgress, failureResponse, isEditing];
+  List<Object> get props => [
+        isValid,
+        submissionProgress,
+        failureResponse,
+        isEditing,
+        fieldBlocs.hashCode
+      ];
 
   @override
   String toString() {
@@ -455,11 +636,18 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
 /// [FormBlocState.toSubmissionCancelled].
 class FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocSubmissionCancelled(bool isValid, {bool isEditing = false})
-      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
+  FormBlocSubmissionCancelled(bool isValid,
+      {bool isEditing = false,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, isEditing];
+  List<Object> get props =>
+      [isValid, submissionProgress, isEditing, fieldBlocs.hashCode];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmissionFailed}
@@ -468,11 +656,18 @@ class FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>
 /// {@endtemplate}
 class FormBlocSubmissionFailed<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocSubmissionFailed(bool isValid, {bool isEditing = false})
-      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
+  FormBlocSubmissionFailed(bool isValid,
+      {bool isEditing = false,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, isEditing];
+  List<Object> get props =>
+      [isValid, submissionProgress, isEditing, fieldBlocs.hashCode];
 }
 
 /// {@template form_bloc.form_state.FormBlocDeleting}
@@ -480,11 +675,18 @@ class FormBlocSubmissionFailed<SuccessResponse, FailureResponse>
 /// {@endtemplate}
 class FormBlocDeleting<SuccessResponse, FailureResponse>
     extends FormBlocState<SuccessResponse, FailureResponse> {
-  FormBlocDeleting(bool isValid, {bool isEditing = false})
-      : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
+  FormBlocDeleting(bool isValid,
+      {bool isEditing = false,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props => [isValid, submissionProgress, isEditing];
+  List<Object> get props =>
+      [isValid, submissionProgress, isEditing, fieldBlocs.hashCode];
 }
 
 /// {@template form_bloc.form_state.FormBlocDeleteFailed}
@@ -503,15 +705,25 @@ class FormBlocDeleteFailed<SuccessResponse, FailureResponse>
 
   bool get hasFailureResponse => FailureResponse != null;
 
-  FormBlocDeleteFailed({
-    @required bool isValid,
-    bool isEditing = false,
-    this.failureResponse,
-  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 0);
+  FormBlocDeleteFailed(
+      {@required bool isValid,
+      bool isEditing = false,
+      this.failureResponse,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props =>
-      [isValid, submissionProgress, failureResponse, isEditing];
+  List<Object> get props => [
+        isValid,
+        submissionProgress,
+        failureResponse,
+        isEditing,
+        fieldBlocs.hashCode
+      ];
 
   @override
   String toString() {
@@ -541,15 +753,25 @@ class FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>
 
   bool get hasSuccessResponse => successResponse != null;
 
-  FormBlocDeleteSuccessful({
-    @required bool isValid,
-    bool isEditing = false,
-    this.successResponse,
-  }) : super(isValid: isValid, isEditing: isEditing, submissionProgress: 1.0);
+  FormBlocDeleteSuccessful(
+      {@required bool isValid,
+      bool isEditing = false,
+      this.successResponse,
+      Map<String, FieldBloc> fieldBlocs = const <String, FieldBloc>{}})
+      : super(
+            isValid: isValid,
+            isEditing: isEditing,
+            submissionProgress: 1.0,
+            fieldBlocs: fieldBlocs);
 
   @override
-  List<Object> get props =>
-      [isValid, submissionProgress, successResponse, isEditing];
+  List<Object> get props => [
+        isValid,
+        submissionProgress,
+        successResponse,
+        isEditing,
+        fieldBlocs.hashCode
+      ];
 
   @override
   String toString() {

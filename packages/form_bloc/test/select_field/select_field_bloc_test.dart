@@ -11,13 +11,12 @@ void main() {
           FieldBlocValidators.requiredSelectFieldBloc,
           (bool value) => value ? 'error' : null
         ];
-        final toStringName = 'field';
 
         final fieldBloc = SelectFieldBloc<bool>(
+          name: 'name',
           initialValue: null,
           validators: validators,
           suggestions: suggestions,
-          toStringName: toStringName,
         );
 
         final state1 = SelectFieldBlocState<bool>(
@@ -27,7 +26,7 @@ void main() {
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
-          toStringName: toStringName,
+          name: 'name',
           items: [],
         );
         final state2 = state1.copyWith(
@@ -54,7 +53,9 @@ void main() {
       SelectFieldBlocState initialState;
       List<SelectFieldBlocState> expectedStates;
 
-      fieldBloc = SelectFieldBloc<bool>();
+      fieldBloc = SelectFieldBloc<bool>(
+        name: 'name',
+      );
 
       initialState = SelectFieldBlocState<bool>(
         value: null,
@@ -63,7 +64,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
 
@@ -82,6 +83,7 @@ void main() {
       fieldBloc.close();
 
       fieldBloc = SelectFieldBloc<bool>(
+        name: 'name',
         validators: [(value) => 'error'],
         items: [true, false],
       );
@@ -93,7 +95,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [true, false],
       );
 
@@ -111,7 +113,9 @@ void main() {
     });
 
     test('updateItems method and UpdateFieldBlocItems event.', () {
-      final fieldBloc = SelectFieldBloc<bool>();
+      final fieldBloc = SelectFieldBloc<bool>(
+        name: 'name',
+      );
 
       final state1 = SelectFieldBlocState<bool>(
         value: null,
@@ -120,7 +124,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
       final state2 = state1.copyWith(
@@ -146,6 +150,7 @@ void main() {
 
     test('addItem method and  AddFieldBlocItem event.', () {
       final fieldBloc = SelectFieldBloc<bool>(
+        name: 'name',
         items: [true],
       );
 
@@ -156,7 +161,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [true],
       );
       final state2 = state1.copyWith(
@@ -187,6 +192,7 @@ void main() {
 
     test('removeItem method and RemoveFieldBlocItem event.', () {
       final fieldBloc = SelectFieldBloc<bool>(
+        name: 'name',
         items: [true, false],
       );
 
@@ -197,7 +203,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [true, false],
       );
       final state2 = state1.copyWith(

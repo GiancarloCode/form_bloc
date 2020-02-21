@@ -11,13 +11,12 @@ void main() {
           FieldBlocValidators.requiredInputFieldBloc,
           (bool value) => value ? 'error' : null,
         ];
-        final toStringName = 'field';
 
         final fieldBloc = InputFieldBloc<bool>(
+          name: 'name',
           initialValue: null,
           validators: validators,
           suggestions: suggestions,
-          toStringName: toStringName,
         );
 
         final state1 = InputFieldBlocState<bool>(
@@ -27,7 +26,7 @@ void main() {
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
-          toStringName: toStringName,
+          name: 'name',
         );
         final state2 = state1.copyWith(
           value: Optional.of(true),
@@ -53,7 +52,9 @@ void main() {
       InputFieldBlocState initialState;
       List<InputFieldBlocState> expectedStates;
 
-      fieldBloc = InputFieldBloc<bool>();
+      fieldBloc = InputFieldBloc<bool>(
+        name: 'name',
+      );
 
       initialState = InputFieldBlocState<bool>(
         value: null,
@@ -62,7 +63,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
       );
 
       expectedStates = [initialState];
@@ -80,6 +81,7 @@ void main() {
       fieldBloc.close();
 
       fieldBloc = InputFieldBloc<bool>(
+        name: 'name',
         validators: [(value) => 'error'],
       );
 
@@ -90,7 +92,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
       );
 
       expectedStates = [initialState];

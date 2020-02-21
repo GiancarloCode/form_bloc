@@ -55,7 +55,7 @@ class FormBlocDelegate extends BlocDelegate {
   void onEvent(Bloc bloc, Object event) {
     var notify = true;
 
-    if (bloc is FieldBlocBase && !notifyOnFieldBlocEvent) {
+    if (bloc is SingleFieldBloc && !notifyOnFieldBlocEvent) {
       notify = false;
     } else if (bloc is FormBloc && !notifyOnFormBlocEvent) {
       notify = false;
@@ -71,7 +71,7 @@ class FormBlocDelegate extends BlocDelegate {
   void onTransition(Bloc bloc, Transition transition) {
     var notify = true;
 
-    if (bloc is FieldBlocBase && !notifyOnFieldBlocTransition) {
+    if (bloc is SingleFieldBloc && !notifyOnFieldBlocTransition) {
       notify = false;
     } else if (bloc is FormBloc && !notifyOnFormBlocTransition) {
       notify = false;
@@ -87,7 +87,7 @@ class FormBlocDelegate extends BlocDelegate {
   void onError(Bloc bloc, Object error, StackTrace stacktrace) {
     var notify = true;
 
-    if (bloc is FieldBlocBase && !notifyOnFieldBlocError) {
+    if (bloc is SingleFieldBloc && !notifyOnFieldBlocError) {
       notify = false;
     } else if (bloc is FormBloc && !notifyOnFormBlocError) {
       notify = false;

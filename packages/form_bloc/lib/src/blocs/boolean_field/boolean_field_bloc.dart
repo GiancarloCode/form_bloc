@@ -2,9 +2,11 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for `bool` type.
 class BooleanFieldBloc
-    extends FieldBlocBase<bool, bool, BooleanFieldBlocState> {
+    extends SingleFieldBloc<bool, bool, BooleanFieldBlocState> {
   /// ### Properties:
   ///
+  /// * [name] : It is the string that identifies the fieldBloc,
+  /// it is available in [FieldBlocState.name].
   /// * [initialValue] : The initial value of the field,
   /// by default is `false`.
   /// And if the value is `null` it will be `false`.
@@ -29,14 +31,13 @@ class BooleanFieldBloc
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
-  /// * [toStringName] : This will be added to [BooleanFieldBlocState.toStringName].
   BooleanFieldBloc({
+    @required String name,
     bool initialValue = false,
     List<Validator<bool>> validators,
     List<AsyncValidator<bool>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<bool> suggestions,
-    String toStringName,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue ?? false,
@@ -44,7 +45,7 @@ class BooleanFieldBloc
           asyncValidators,
           asyncValidatorDebounceTime,
           suggestions,
-          toStringName,
+          name,
         );
 
   @override
@@ -55,7 +56,7 @@ class BooleanFieldBloc
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
-        toStringName: _toStringName,
+        name: _name,
       );
 
   /// Set the `value` to `false` of the current state.

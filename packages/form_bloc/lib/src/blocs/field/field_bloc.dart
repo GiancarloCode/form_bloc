@@ -1,29 +1,33 @@
 import 'dart:async';
 import 'dart:collection' show LinkedHashSet;
 
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:form_bloc/src/blocs/form/form_bloc.dart';
 import '../form_bloc_delegate.dart';
-import 'field_event.dart';
-import 'field_state.dart';
+
 import '../input_field/input_field_state.dart';
 import '../text_field/text_field_state.dart';
 import '../boolean_field/boolean_field_state.dart';
 import '../select_field/select_field_state.dart';
 import '../multi_select_field/multi_select_field_state.dart';
 
-export 'field_event.dart';
-export 'field_state.dart';
 export '../input_field/input_field_state.dart';
 export '../text_field/text_field_state.dart';
 export '../boolean_field/boolean_field_state.dart';
 export '../select_field/select_field_state.dart';
 export '../multi_select_field/multi_select_field_state.dart';
+
+part 'field_event.dart';
+part 'field_state.dart';
+part 'field_bloc_list.dart';
+part 'group_field_bloc.dart';
 
 part '../input_field/input_field_bloc.dart';
 part '../text_field/text_field_bloc.dart';
@@ -46,33 +50,51 @@ typedef AsyncValidator<Value> = Future<String> Function(Value value);
 typedef Suggestions<Value> = Future<List<Value>> Function(String pattern);
 
 /// The common interface of all field blocs:
-///
-/// * [InputFieldBloc].
-/// * [TextFieldBloc].
-/// * [BooleanFieldBloc].
-/// * [SelectFieldBloc].
-/// * [MultiSelectFieldBloc].
+/// * [SingleFieldBloc].
+///   * [InputFieldBloc].
+///   * [TextFieldBloc].
+///   * [BooleanFieldBloc].
+///   * [SelectFieldBloc].
+///   * [MultiSelectFieldBloc].
+/// * [GroupFieldBloc].
+/// * [FieldBlocList].
+mixin FieldBloc {
+  InputFieldBloc<Value> asInputFieldBloc<Value>() =>
+      this as InputFieldBloc<Value>;
 
-class FieldBloc {}
+  TextFieldBloc get asTextFieldBloc => this as TextFieldBloc;
+
+  BooleanFieldBloc get asBooleanFieldBloc => this as BooleanFieldBloc;
+
+  SelectFieldBloc<Value> asSelectFieldBloc<Value>() =>
+      this as SelectFieldBloc<Value>;
+
+  MultiSelectFieldBloc<Value> asMultiSelectFieldBloc<Value>() =>
+      this as MultiSelectFieldBloc<Value>;
+
+  FieldBlocList get asFieldBlocList => this as FieldBlocList;
+
+  GroupFieldBloc get asGroupFieldBloc => this as GroupFieldBloc;
+}
 
 /// The base class with the common behavior
-/// of all field blocs:
+/// of all single field blocs:
 ///
 /// * [InputFieldBloc].
 /// * [TextFieldBloc].
 /// * [BooleanFieldBloc].
 /// * [SelectFieldBloc].
 /// * [MultiSelectFieldBloc].
-abstract class FieldBlocBase<Value, Suggestion,
+abstract class SingleFieldBloc<Value, Suggestion,
         State extends FieldBlocState<Value, Suggestion>>
-    extends Bloc<FieldBlocEvent, State> implements FieldBloc {
+    extends Bloc<FieldBlocEvent, State> with FieldBloc {
   final Value _initialValue;
   bool _autoValidate = true;
   List<Validator<Value>> _validators;
   List<AsyncValidator<Value>> _asyncValidators;
   final Duration _asyncValidatorDebounceTime;
   final Suggestions<Suggestion> _suggestions;
-  final String _toStringName;
+  final String _name;
 
   final PublishSubject<Value> _asyncValidatorsSubject = PublishSubject();
   StreamSubscription<UpdateFieldBlocStateError> _asyncValidatorsSubscription;
@@ -81,13 +103,13 @@ abstract class FieldBlocBase<Value, Suggestion,
 
   StreamSubscription<void> _revalidateFieldBlocsSubscription;
 
-  FieldBlocBase(
+  SingleFieldBloc(
     this._initialValue,
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
     this._asyncValidatorDebounceTime,
     this._suggestions,
-    this._toStringName,
+    this._name,
   )   : assert(_asyncValidatorDebounceTime != null),
         _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [] {
@@ -476,7 +498,7 @@ abstract class FieldBlocBase<Value, Suggestion,
     unawaited(_revalidateFieldBlocsSubscription?.cancel());
     if (event.fieldBlocs != null && event.fieldBlocs.isNotEmpty) {
       _revalidateFieldBlocsSubscription = Rx.combineLatest<dynamic, void>(
-        event.fieldBlocs.whereType<FieldBlocBase>().toList().map(
+        event.fieldBlocs.whereType<SingleFieldBloc>().toList().map(
               (state) => state.map<dynamic>((state) => state.value).distinct(),
             ),
         (_) => null,

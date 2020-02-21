@@ -11,13 +11,12 @@ void main() {
           FieldBlocValidators.requiredMultiSelectFieldBloc,
           (List<bool> value) => 'error'
         ];
-        final toStringName = 'field';
 
         final fieldBloc = MultiSelectFieldBloc<bool>(
+          name: 'name',
           initialValue: [],
           validators: validators,
           suggestions: suggestions,
-          toStringName: toStringName,
         );
 
         final state1 = MultiSelectFieldBlocState<bool>(
@@ -27,7 +26,7 @@ void main() {
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
-          toStringName: toStringName,
+          name: 'name',
           items: [],
         );
         final state2 = state1.copyWith(
@@ -54,7 +53,9 @@ void main() {
       MultiSelectFieldBlocState initialState;
       List<MultiSelectFieldBlocState> expectedStates;
 
-      fieldBloc = MultiSelectFieldBloc<bool>();
+      fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
+      );
 
       initialState = MultiSelectFieldBlocState<bool>(
         value: [],
@@ -63,7 +64,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
 
@@ -82,6 +83,7 @@ void main() {
       fieldBloc.close();
 
       fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
         validators: [(value) => 'error'],
         items: [true, false],
       );
@@ -93,7 +95,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [true, false],
       );
 
@@ -114,7 +116,7 @@ void main() {
       MultiSelectFieldBlocState initialState;
       List<MultiSelectFieldBlocState> expectedStates;
 
-      fieldBloc = MultiSelectFieldBloc<bool>(initialValue: null);
+      fieldBloc = MultiSelectFieldBloc<bool>(name: 'name', initialValue: null);
 
       initialState = MultiSelectFieldBlocState<bool>(
         value: [],
@@ -123,7 +125,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
 
@@ -141,7 +143,9 @@ void main() {
     });
 
     test('updateItems method and UpdateFieldBlocItems event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>();
+      final fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
+      );
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
@@ -150,7 +154,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
       final state2 = state1.copyWith(
@@ -176,6 +180,7 @@ void main() {
 
     test('addItem method and  AddFieldBlocItem event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
         items: [true],
       );
 
@@ -186,7 +191,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [true],
       );
       final state2 = state1.copyWith(
@@ -217,6 +222,7 @@ void main() {
 
     test('removeItem method and RemoveFieldBlocItem event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
         items: [true, false],
       );
 
@@ -227,7 +233,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [true, false],
       );
       final state2 = state1.copyWith(
@@ -258,7 +264,9 @@ void main() {
     });
 
     test('updateValue method.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>();
+      final fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
+      );
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
@@ -267,7 +275,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
       final state2 = state1.copyWith(
@@ -298,7 +306,9 @@ void main() {
       fieldBloc.updateValue(null);
     });
     test('updateInitialValue method.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>();
+      final fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
+      );
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
@@ -307,7 +317,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
       final state2 = state1.copyWith(
@@ -339,7 +349,9 @@ void main() {
       fieldBloc.updateInitialValue(null);
     });
     test('select method SelectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>();
+      final fieldBloc = MultiSelectFieldBloc<bool>(
+        name: 'name',
+      );
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [],
@@ -348,7 +360,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
       final state2 = state1.copyWith(
@@ -392,7 +404,8 @@ void main() {
     });
 
     test('deselect method DeselectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(initialValue: [true, false]);
+      final fieldBloc =
+          MultiSelectFieldBloc<bool>(name: 'name', initialValue: [true, false]);
 
       final state1 = MultiSelectFieldBlocState<bool>(
         value: [true, false],
@@ -401,7 +414,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
         items: [],
       );
       final state2 = state1.copyWith(

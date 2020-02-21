@@ -1,9 +1,4 @@
-import 'package:form_bloc/src/blocs/form/form_bloc.dart';
-import 'package:meta/meta.dart';
-import 'package:quiver/core.dart';
-import 'package:equatable/equatable.dart';
-
-import 'field_bloc.dart';
+part of 'field_bloc.dart';
 
 abstract class FieldBlocState<Value, Suggestion> extends Equatable {
   /// The current value of this state.
@@ -24,8 +19,8 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
   /// which can be used to update the value.
   final Suggestions<Suggestion> suggestions;
 
-  /// The string name to show like a tag when call [toString].
-  final String toStringName;
+  /// It is the string that identifies the [FieldBloc].
+  final String name;
 
   /// Indicate if [value] was checked with the validators
   /// of the [FieldBloc].
@@ -46,7 +41,7 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
     @required this.isValidated,
     @required this.isValidating,
     @required FormBlocState formBlocState,
-    @required this.toStringName,
+    @required this.name,
   })  : assert(isInitial != null),
         assert(isValidated != null),
         this.formBlocState =
@@ -93,8 +88,8 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
   @override
   String toString() {
     var _toString = '';
-    if (toStringName != null) {
-      _toString += '${toStringName}';
+    if (name != null) {
+      _toString += '${name}';
     } else {
       _toString += '${runtimeType}';
     }

@@ -15,7 +15,7 @@ void main() {
         isValidated: false,
         isValidating: false,
         formBlocState: FormBlocLoaded<dynamic, dynamic>(true),
-        toStringName: null,
+        name: null,
         items: null,
       );
       final stateCopy1 = state.copyWith(
@@ -49,7 +49,7 @@ void main() {
           isValidated: true,
           isValidating: false,
           formBlocState: FormBlocLoading<dynamic, dynamic>(),
-          toStringName: null,
+          name: null,
           items: [1],
         ),
         state,

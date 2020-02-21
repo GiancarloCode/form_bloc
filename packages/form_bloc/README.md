@@ -1,7 +1,7 @@
 # form_bloc
 [![Pub](https://img.shields.io/pub/v/form_bloc.svg)](https://pub.dev/packages/form_bloc)
 
-Easy Form State Management using BLoC pattern. Separate the Form State and Business Logic from the User Interface. Async Validation, Progress, Failures, Successes, and more.
+Easy Form State Management using BLoC pattern. Separate the Form State and Business Logic from the User Interface. Dynamic Fields, Async Validation, Progress, Failures, Successes, and more.
 
 ---
 
@@ -14,6 +14,7 @@ Before to use this package you need to know the [core concepts](https://felangel
 
 
 # Examples
+* Form with dynamic fields: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/dynamic_fields_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/dynamic_fields_form.dart).
 * FieldBlocs with async validation: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/field_bloc_async_validation_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/field_bloc_async_validation_form.dart).
 * Manually set FieldBloc error: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/manually_set_field_bloc_error_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/manually_set_field_bloc_error_form.dart).
 * FormBloc with submission progress: [BLoC](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/progress_form_bloc.dart) - [UI](https://github.com/GiancarloCode/form_bloc/blob/master/packages/flutter_form_bloc/example/lib/forms/progress_form_bloc.dart).
@@ -29,40 +30,45 @@ Before to use this package you need to know the [core concepts](https://felangel
 
 ```yaml
 dependencies:
-  form_bloc: ^0.8.0
+  form_bloc: ^0.10.0
 ```
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
-  final passwordField = TextFieldBloc();
+  LoginFormBloc() {
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'email',
+        validators: [FieldBlocValidators.email],
+      ),
+    );
 
-  final UserRepository _userRepository;
-
-  LoginFormBloc(this._userRepository);
-
-  @override
-  List<FieldBloc> get fieldBlocs => [emailField, passwordField];
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'password',
+        validators: [FieldBlocValidators.requiredTextFieldBloc],
+      ),
+    );
+  }
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    try {
-      _userRepository.login(
-        email: emailField.value,
-        password: passwordField.value,
-      );
-      yield state.toSuccess();
-    } catch (e) {
-      yield state.toFailure();
-    }
+    // Login logic...
+
+    // Get the fields values:
+    print(state.fieldBlocFromPath('email').asTextFieldBloc.value);
+    print(state.fieldBlocFromPath('password').asTextFieldBloc.value);
+
+    await Future<void>.delayed(Duration(seconds: 2));
+    yield state.toSuccess();
   }
 }
-
 ```
 
-# Basic use
+
+# Basic usage
 
 ## 1. Import it
 ```dart
@@ -77,7 +83,7 @@ import 'package:form_bloc/form_bloc.dart';
 
 **`FailureResponse`** The type of the failure response.
 
-For example, the `SuccessResponse` type and `FailureResponse` type of `LoginFormBloc` will be `String`
+For example, the `SuccessResponse` type and `FailureResponse` type of `LoginFormBloc` will be `String`.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
@@ -86,8 +92,8 @@ class LoginFormBloc extends FormBloc<String, String> {}
 
 ```
 
-## 2. Create Field Blocs
-You need to create field blocs, and these need to be final.
+## 3. Create the Field Blocs
+Add the field blocs to the form bloc using `addFieldBloc` method.
 
 You can create:
 
@@ -99,65 +105,50 @@ You can create:
 
 For example the `LoginFormBloc` will have two `TextFieldBloc`.
 
-```dart
-import 'package:form_bloc/form_bloc.dart';
+The `name` parameter must be an unique string and will serve to identify that field bloc.
 
-class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
-  final passwordField = TextFieldBloc();
-}
-
-```
-
-
-## 3. Add Services/Repositories
-In this example we need a `UserRepository` for make the login.
+The state of the form has a `Map<String, FieldBloc> fieldBlocs` property, in which each field bloc can be accessed using its name as a key.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
-  final passwordField = TextFieldBloc();
+  LoginFormBloc() {
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'email',
+        validators: [FieldBlocValidators.email],
+      ),
+    );
 
-  final UserRepository _userRepository;
-
-  LoginFormBloc(this._userRepository);
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'password',
+        validators: [FieldBlocValidators.requiredTextFieldBloc],
+      ),
+    );
+  }
 }
 
 ```
 
-## 4. Implement the get method fieldBlocs
-You need to override the get method [fieldBlocs](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/fieldBlocs.html) and return a list with all `FieldBlocs`.
-
-
-For example the `LoginFormBloc` need to return a List with `emailField` and `passwordField`.
-
-
-```dart
-import 'package:form_bloc/form_bloc.dart';
-
-class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
-  final passwordField = TextFieldBloc();
-
-  final UserRepository _userRepository;
-
-  LoginFormBloc(this._userRepository);
-
-  @override
-  List<FieldBloc> get fieldBlocs => [emailField, passwordField];
-}
-
-```
-
-## 5. Implement onSubmitting method
+## 4. Implement onSubmitting method
 
 [onSubmitting](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBloc/onSubmitting.html) returns a `Stream<FormBlocState<SuccessResponse, FailureResponse>>`.
 
 This method is called when you call `loginFormBloc.submit()` and `FormBlocState.isValid` is `true`, so each field bloc has a valid value.
 
-You can get the current `value` of each field bloc calling `emailField.value` or `passwordField.value`.
+To get the value of each field bloc you can do it through the `state` of the form bloc, and using the `fieldBlocFromPath` method that receives a `path` and will return the corresponding field bloc. Then you will have to cast the corresponding type and you will get the value by using the `value` property.
+
+The `path` is a `String` that allows easy access to the `Map<String, FieldBloc> fieldBlocs` that is found in `state.fieldBlocs`.
+
+To access nested field Blocs, you must use the `/` character.
+
+Examples:
+* `email`
+* `group1/name`
+* `group1/group2/name/`
+
 
 You must call all your business logic of this form here, and `yield` the corresponding state.
 
@@ -170,37 +161,40 @@ You can yield a new state using:
 
 See other states [here](https://pub.dev/documentation/form_bloc/latest/form_bloc/FormBlocState-class.html#instance-methods).
 
-For example `onSubmitting` of `LoginFormBloc` will return a `Stream<FormBlocState<String, String>> ` and yield `state.toSuccess()` if the `_userRepository.login` method not throw any exception, and yield `state.toFailure()` if throw a exception.
 
 ```dart
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final emailField = TextFieldBloc(validators: [Validators.email]);
-  final passwordField = TextFieldBloc();
+  LoginFormBloc() {
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'email',
+        validators: [FieldBlocValidators.email],
+      ),
+    );
 
-  final UserRepository _userRepository;
-
-  LoginFormBloc(this._userRepository);
-
-  @override
-  List<FieldBloc> get fieldBlocs => [emailField, passwordField];
+    addFieldBloc(
+      fieldBloc: TextFieldBloc(
+        name: 'password',
+        validators: [FieldBlocValidators.requiredTextFieldBloc],
+      ),
+    );
+  }
 
   @override
   Stream<FormBlocState<String, String>> onSubmitting() async* {
-    try {
-      _userRepository.login(
-        email: emailField.value,
-        password: passwordField.value,
-      );
-      yield state.toSuccess();
-    } catch (e) {
-      yield state.toFailure();
-    }
+    // Login logic...
+
+    // Get the fields values:
+    print(state.fieldBlocFromPath('email').asTextFieldBloc.value);
+    print(state.fieldBlocFromPath('password').asTextFieldBloc.value);
+
+    await Future<void>.delayed(Duration(seconds: 2));
+    yield state.toSuccess();
   }
 }
 ```
-
 # Credits
 This package uses the following packages:
 

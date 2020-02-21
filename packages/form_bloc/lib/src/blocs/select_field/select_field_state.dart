@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
-import '../form/form_state.dart';
+import '../form/form_bloc.dart';
 import '../field/field_bloc.dart';
 
 class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
@@ -15,7 +15,7 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
     @required bool isValidated,
     @required bool isValidating,
     FormBlocState formBlocState,
-    @required String toStringName,
+    @required String name,
     @required this.items,
   }) : super(
           value: value,
@@ -25,7 +25,7 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
           isValidated: isValidated,
           isValidating: isValidating,
           formBlocState: formBlocState,
-          toStringName: toStringName,
+          name: name,
         );
 
   @override
@@ -47,7 +47,7 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
       formBlocState: formBlocState ?? this.formBlocState,
-      toStringName: toStringName,
+      name: name,
       items: items == null ? this.items : items.orNull,
     );
   }
@@ -55,8 +55,8 @@ class SelectFieldBlocState<Value> extends FieldBlocState<Value, Value> {
   @override
   String toString() {
     var _toString = '';
-    if (toStringName != null) {
-      _toString += '${toStringName}';
+    if (name != null) {
+      _toString += '${name}';
     } else {
       _toString += '${runtimeType}';
     }

@@ -2,9 +2,11 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for any type, for example `DateTime` or `File`.
 class InputFieldBloc<Value>
-    extends FieldBlocBase<Value, Value, InputFieldBlocState<Value>> {
+    extends SingleFieldBloc<Value, Value, InputFieldBlocState<Value>> {
   /// ### Properties:
   ///
+  /// * [name] : It is the string that identifies the fieldBloc,
+  /// it is available in [FieldBlocState.name].
   /// * [initialValue] : The initial value of the field,
   /// by default is `null`.
   /// * [validators] : List of [Validator]s.
@@ -28,14 +30,13 @@ class InputFieldBloc<Value>
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
-  /// * [toStringName] : This will be added to [InputFieldBlocState.toStringName].
   InputFieldBloc({
+    @required String name,
     Value initialValue,
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value> suggestions,
-    String toStringName,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue,
@@ -43,7 +44,7 @@ class InputFieldBloc<Value>
           asyncValidators,
           asyncValidatorDebounceTime,
           suggestions,
-          toStringName,
+          name,
         );
 
   @override
@@ -54,6 +55,6 @@ class InputFieldBloc<Value>
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
-        toStringName: _toStringName,
+        name: _name,
       );
 }

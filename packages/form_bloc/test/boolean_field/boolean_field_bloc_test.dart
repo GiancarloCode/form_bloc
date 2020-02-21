@@ -8,13 +8,12 @@ void main() {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
         final validators = [(bool value) => value ? 'error' : null];
-        final toStringName = 'field';
 
         final fieldBloc = BooleanFieldBloc(
+          name: 'name',
           initialValue: false,
           validators: validators,
           suggestions: suggestions,
-          toStringName: toStringName,
         );
 
         final state1 = BooleanFieldBlocState(
@@ -24,7 +23,7 @@ void main() {
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
-          toStringName: toStringName,
+          name: 'name',
         );
         final state2 = state1.copyWith(
           value: Optional.of(true),
@@ -49,7 +48,9 @@ void main() {
         BooleanFieldBlocState initialState;
         List<BooleanFieldBlocState> expectedStates;
 
-        fieldBloc = BooleanFieldBloc();
+        fieldBloc = BooleanFieldBloc(
+          name: 'name',
+        );
 
         initialState = BooleanFieldBlocState(
           value: false,
@@ -58,7 +59,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: 'name',
         );
 
         expectedStates = [initialState];
@@ -76,6 +77,7 @@ void main() {
         fieldBloc.close();
 
         fieldBloc = BooleanFieldBloc(
+          name: 'name',
           validators: [(value) => 'error'],
         );
 
@@ -86,7 +88,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: null,
         );
 
         expectedStates = [initialState];
@@ -106,7 +108,7 @@ void main() {
         BooleanFieldBlocState initialState;
         List<BooleanFieldBlocState> expectedStates;
 
-        fieldBloc = BooleanFieldBloc(initialValue: null);
+        fieldBloc = BooleanFieldBloc(name: 'name', initialValue: null);
 
         initialState = BooleanFieldBlocState(
           value: false,
@@ -115,7 +117,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: null,
         );
 
         expectedStates = [initialState];
@@ -133,6 +135,7 @@ void main() {
 
       test('clear method.', () {
         final fieldBloc = BooleanFieldBloc(
+          name: 'name',
           initialValue: true,
         );
 
@@ -143,7 +146,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: null,
         );
         final state2 = state1.copyWith(
           value: Optional.of(false),

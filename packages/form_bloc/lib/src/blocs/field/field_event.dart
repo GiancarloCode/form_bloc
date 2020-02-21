@@ -1,8 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-
-import '../form/form_state.dart';
-import 'field_bloc.dart';
+part of 'field_bloc.dart';
 
 abstract class FieldBlocEvent extends Equatable {}
 

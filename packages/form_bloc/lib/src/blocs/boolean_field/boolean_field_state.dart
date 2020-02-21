@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
-import '../form/form_state.dart';
+import '../form/form_bloc.dart';
 import '../field/field_bloc.dart';
 
 class BooleanFieldBlocState extends FieldBlocState<bool, bool> {
@@ -13,7 +13,7 @@ class BooleanFieldBlocState extends FieldBlocState<bool, bool> {
     @required bool isValidated,
     @required bool isValidating,
     FormBlocState formBlocState,
-    @required String toStringName,
+    @required String name,
     List additionalProps = const <dynamic>[],
   }) : super(
           value: value,
@@ -23,7 +23,7 @@ class BooleanFieldBlocState extends FieldBlocState<bool, bool> {
           isValidated: isValidated,
           isValidating: isValidating,
           formBlocState: formBlocState,
-          toStringName: toStringName,
+          name: name,
         );
 
   @override
@@ -44,7 +44,7 @@ class BooleanFieldBlocState extends FieldBlocState<bool, bool> {
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
       formBlocState: formBlocState ?? this.formBlocState,
-      toStringName: toStringName,
+      name: name,
     );
   }
 

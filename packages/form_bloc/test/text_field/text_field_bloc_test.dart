@@ -11,13 +11,12 @@ void main() {
           FieldBlocValidators.requiredTextFieldBloc,
           (String value) => 'error'
         ];
-        final toStringName = 'field';
 
         final fieldBloc = TextFieldBloc(
+          name: 'name',
           initialValue: '',
           validators: validators,
           suggestions: suggestions,
-          toStringName: toStringName,
         );
 
         final state1 = TextFieldBlocState(
@@ -27,7 +26,7 @@ void main() {
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
-          toStringName: toStringName,
+          name: 'name',
         );
         final state2 = state1.copyWith(
           value: Optional.of('1'),
@@ -53,7 +52,9 @@ void main() {
       TextFieldBlocState initialState;
       List<TextFieldBlocState> expectedStates;
 
-      fieldBloc = TextFieldBloc();
+      fieldBloc = TextFieldBloc(
+        name: 'name',
+      );
 
       initialState = TextFieldBlocState(
         value: '',
@@ -62,7 +63,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
       );
 
       expectedStates = [initialState];
@@ -80,6 +81,7 @@ void main() {
       fieldBloc.close();
 
       fieldBloc = TextFieldBloc(
+        name: 'name',
         validators: [(value) => 'error'],
       );
 
@@ -90,7 +92,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
       );
 
       expectedStates = [initialState];
@@ -108,6 +110,7 @@ void main() {
 
     test('clear method.', () {
       final fieldBloc = TextFieldBloc(
+        name: 'name',
         initialValue: '1',
       );
 
@@ -118,7 +121,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
       );
       final state2 = state1.copyWith(
         value: Optional.of(''),
@@ -142,7 +145,7 @@ void main() {
       TextFieldBlocState initialState;
       List<TextFieldBlocState> expectedStates;
 
-      fieldBloc = TextFieldBloc(initialValue: null);
+      fieldBloc = TextFieldBloc(name: 'name', initialValue: null);
 
       initialState = TextFieldBlocState(
         value: '',
@@ -151,7 +154,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'name',
       );
 
       expectedStates = [initialState];

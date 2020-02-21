@@ -16,7 +16,9 @@ void main() {
         InputFieldBlocState<int> initialState;
         List<InputFieldBlocState> expectedStates;
 
-        fieldBloc = InputFieldBloc<int>();
+        fieldBloc = InputFieldBloc<int>(
+          name: 'fieldName',
+        );
         initialState = InputFieldBlocState<int>(
           value: null,
           error: null,
@@ -24,7 +26,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: 'fieldName',
         );
         expectedStates = [initialState];
 
@@ -39,7 +41,7 @@ void main() {
         );
 
         fieldBloc.close();
-        fieldBloc = InputFieldBloc<int>(initialValue: 1);
+        fieldBloc = InputFieldBloc<int>(name: 'fieldName', initialValue: 1);
         initialState = InputFieldBlocState<int>(
           value: 1,
           error: null,
@@ -47,7 +49,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: 'fieldName',
         );
         expectedStates = [initialState];
 
@@ -64,6 +66,7 @@ void main() {
 
       test('validators verify the value and add the corresponding error.', () {
         final fieldBloc = InputFieldBloc<int>(
+          name: 'fieldName',
           validators: [
             (value) => value == null ? 'null' : null,
             (value) => value > 5 ? '> 5' : null,
@@ -78,7 +81,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: 'fieldName',
         );
         final state2 = state1.copyWith(
           value: Optional.of(1),
@@ -119,6 +122,7 @@ void main() {
       test('asyncValidators verify the value and add the corresponding error.',
           () {
         final fieldBloc = InputFieldBloc<int>(
+          name: 'fieldName',
           validators: [
             (value) => value == null ? 'null' : null,
           ],
@@ -141,7 +145,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          toStringName: null,
+          name: 'fieldName',
         );
         final state2 = state1.copyWith(
           value: Optional.of(1),
@@ -172,7 +176,8 @@ void main() {
       test('_suggestions is added to suggestions of the current state.',
           () async {
         final suggestions = (String pattern) async => [1, 2, 3];
-        final fieldBloc = InputFieldBloc<int>(suggestions: suggestions);
+        final fieldBloc =
+            InputFieldBloc<int>(name: 'fieldName', suggestions: suggestions);
 
         final expectedStates = [
           InputFieldBlocState<int>(
@@ -182,7 +187,7 @@ void main() {
             suggestions: suggestions,
             isValidated: true,
             isValidating: false,
-            toStringName: null,
+            name: 'fieldName',
           ),
         ];
 
@@ -197,10 +202,11 @@ void main() {
         );
       });
       test(
-          '_toStringName is added to toStringName of the current state and show when call toString method.',
+          '_name is added to name of the current state and show when call toString method.',
           () async {
-        final toStringName = 'name';
-        final fieldBloc = InputFieldBloc<int>(toStringName: toStringName);
+        final fieldBloc = InputFieldBloc<int>(
+          name: 'fieldName',
+        );
 
         final expectedStates = [
           InputFieldBlocState<int>(
@@ -210,7 +216,7 @@ void main() {
             suggestions: null,
             isValidated: true,
             isValidating: false,
-            toStringName: toStringName,
+            name: 'fieldName',
           ),
         ];
 
@@ -219,7 +225,7 @@ void main() {
           emitsInOrder(expectedStates),
         );
 
-        var toString = toStringName + ' {';
+        var toString = 'fieldName {';
         toString += ' value: null,';
         toString += ' error: "null",';
         toString += ' isInitial: true,';
@@ -237,7 +243,9 @@ void main() {
     });
 
     test('initial state has isInitial in true.', () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final initialState = InputFieldBlocState<int>(
         value: null,
@@ -246,7 +254,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
 
       final expectedStates = [
@@ -266,6 +274,7 @@ void main() {
 
     test('updateValue method and UpdateFieldBlocValue event.', () {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         validators: [FieldBlocValidators.requiredInputFieldBloc],
       );
 
@@ -276,7 +285,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         value: Optional.of(1),
@@ -311,7 +320,9 @@ void main() {
     test(
         'updateValue method and UpdateFieldBlocValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
         () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
@@ -320,7 +331,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         value: Optional.of(1),
@@ -448,6 +459,7 @@ void main() {
     test('updateInitialValue method and UpdateFieldBlocInitialValue event.',
         () {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         validators: [FieldBlocValidators.requiredInputFieldBloc],
       );
 
@@ -458,7 +470,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         value: Optional.of(1),
@@ -501,7 +513,9 @@ void main() {
     test(
         'updateInitialValue method and UpdateFieldBlocInitialValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
         () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
@@ -510,7 +524,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         value: Optional.of(1),
@@ -636,6 +650,7 @@ void main() {
 
     test('clear method set value to null.', () {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         initialValue: 1,
         validators: [FieldBlocValidators.requiredInputFieldBloc],
       );
@@ -647,7 +662,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         value: Optional.absent(),
@@ -671,7 +686,9 @@ void main() {
     test(
         'selectSuggestion method SelectSuggestion event and selectedSuggestion stream.',
         () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final expectedSuggestions = [1, 2, 3];
 
@@ -687,6 +704,7 @@ void main() {
 
     test('addValidators method and AddValidators event.', () async {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         initialValue: 1,
         validators: [FieldBlocValidators.requiredInputFieldBloc],
       );
@@ -698,7 +716,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         error: Optional.of('1 error'),
@@ -726,6 +744,7 @@ void main() {
 
     test('addAsyncValidators method and AddAsyncValidators event.', () async {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         initialValue: 1,
         validators: [FieldBlocValidators.requiredInputFieldBloc],
         asyncValidatorDebounceTime: Duration(milliseconds: 0),
@@ -738,7 +757,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         isValidating: true,
@@ -776,7 +795,7 @@ void main() {
     test(
         'addValidators method and AddValidators event, after DisableFieldBlocAutoValidate event was dispatched.',
         () {
-      final fieldBloc = InputFieldBloc<int>(initialValue: 1);
+      final fieldBloc = InputFieldBloc<int>(name: 'fieldName', initialValue: 1);
 
       final state1 = InputFieldBlocState<int>(
         value: 1,
@@ -785,7 +804,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         isValidated: false,
@@ -816,6 +835,7 @@ void main() {
         'addAsyncValidators method and AddAsyncValidators event, after DisableFieldBlocAutoValidate event was dispatched.',
         () async {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         initialValue: 1,
         validators: [FieldBlocValidators.requiredInputFieldBloc],
       );
@@ -827,7 +847,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         isValidated: false,
@@ -860,6 +880,7 @@ void main() {
 
     test('updateValidators method and UpdateValidators event.', () {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         initialValue: 1,
         validators: [
           (value) => value == 1 ? '1 error' : null,
@@ -873,7 +894,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         value: Optional.of(2),
@@ -912,6 +933,7 @@ void main() {
     test('updateAsyncValidators method and UpdateAsyncValidators event.',
         () async {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         initialValue: 1,
         asyncValidatorDebounceTime: Duration(milliseconds: 0),
         validators: [FieldBlocValidators.requiredInputFieldBloc],
@@ -927,7 +949,7 @@ void main() {
         suggestions: null,
         isValidated: false,
         isValidating: true,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         error: Optional.of('1 error'),
@@ -996,6 +1018,7 @@ void main() {
       final suggestions2 = (String pattern) async => [2];
 
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         suggestions: suggestions1,
       );
 
@@ -1006,7 +1029,7 @@ void main() {
         suggestions: suggestions1,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         suggestions: Optional.of(suggestions2),
@@ -1034,6 +1057,7 @@ void main() {
         'after DisableFieldBlocAutoValidate event was dispatched, updateValue method updates the value without verify the value in validators and asyncValidators.',
         () {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         validators: [
           FieldBlocValidators.requiredInputFieldBloc,
           (value) => value > 5 ? '> 5' : null,
@@ -1051,7 +1075,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         error: Optional.absent(),
@@ -1100,6 +1124,7 @@ void main() {
         'ValidateFieldBloc event verify the value in validators and asyncValidators.',
         () {
       final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
         validators: [FieldBlocValidators.requiredInputFieldBloc],
         asyncValidators: [
           (value) async => value == 2 ? 'async == 2' : null,
@@ -1113,7 +1138,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         error: Optional.absent(),
@@ -1162,7 +1187,9 @@ void main() {
     });
 
     test('ResetFieldBlocStateIsValidated event.', () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
@@ -1171,7 +1198,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         isValidated: false,
@@ -1189,7 +1216,9 @@ void main() {
       fieldBloc.add(ResetFieldBlocStateIsValidated());
     });
     test('UpdateFieldBlocStateFormBlocState event.', () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final newFormBlocState = FormBlocLoading<int, int>();
 
@@ -1200,7 +1229,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         formBlocState: newFormBlocState,
@@ -1219,7 +1248,9 @@ void main() {
     });
 
     test('UpdateFieldBlocStateError event.', () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
@@ -1228,7 +1259,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         error: Optional.of('error2'),
@@ -1248,7 +1279,9 @@ void main() {
     });
 
     test('UpdateFieldBlocState event.', () {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
       final suggestions = (String pattern) async => [1];
 
       final state1 = InputFieldBlocState<int>(
@@ -1258,7 +1291,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = InputFieldBlocState<int>(
         value: 2,
@@ -1267,7 +1300,7 @@ void main() {
         suggestions: suggestions,
         isValidated: false,
         isValidating: true,
-        toStringName: 'name',
+        name: 'name',
       );
 
       final expectedStates = [
@@ -1284,8 +1317,12 @@ void main() {
 
     test('on subscribeToFieldBlocs method and SubscribeToFieldBlocs event.',
         () async {
-      final fieldBloc1 = InputFieldBloc<int>();
-      final fieldBloc2 = InputFieldBloc<int>();
+      final fieldBloc1 = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
+      final fieldBloc2 = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       String isEqual(int value) {
         if (value == fieldBloc2.state.value) {
@@ -1308,7 +1345,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
       final state2 = state1.copyWith(
         error: Optional.of('is equal to fieldBLoc2'),
@@ -1373,7 +1410,9 @@ void main() {
     });
 
     test('addError method and AddFieldBlocError event.', () async {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
@@ -1382,7 +1421,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
 
       final state2 = state1.copyWith(
@@ -1422,7 +1461,9 @@ void main() {
     test(
         'addError method and AddFieldBlocError event after disable auto validation.',
         () async {
-      final fieldBloc = InputFieldBloc<int>();
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
 
       final state1 = InputFieldBlocState<int>(
         value: null,
@@ -1431,7 +1472,7 @@ void main() {
         suggestions: null,
         isValidated: true,
         isValidating: false,
-        toStringName: null,
+        name: 'fieldName',
       );
 
       final state2 = state1.copyWith(

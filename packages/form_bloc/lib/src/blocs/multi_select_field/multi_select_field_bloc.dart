@@ -2,12 +2,14 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used to select multiple items
 /// from multiple items.
-class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
+class MultiSelectFieldBloc<Value> extends SingleFieldBloc<List<Value>, Value,
     MultiSelectFieldBlocState<Value>> {
   final List<Value> _items;
 
   /// ### Properties:
   ///
+  /// * [name] : It is the string that identifies the fieldBloc,
+  /// it is available in [FieldBlocState.name].
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty list `[]`.
   /// And if the value is `null` it will be a empty list `[]`.
@@ -32,15 +34,14 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
-  /// * [toStringName] : This will be added to [MultiSelectFieldBlocState.toStringName].
   /// * [items] : The list of items that can be selected to update the value.
   MultiSelectFieldBloc({
+    @required String name,
     List<Value> initialValue = const [],
     List<Validator<List<Value>>> validators,
     List<AsyncValidator<List<Value>>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value> suggestions,
-    String toStringName,
     List<Value> items = const [],
   })  : assert(asyncValidatorDebounceTime != null),
         _items = items ?? const [],
@@ -50,7 +51,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
           asyncValidators,
           asyncValidatorDebounceTime,
           suggestions,
-          toStringName,
+          name,
         );
 
   @override
@@ -62,8 +63,8 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
         suggestions: _suggestions,
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
-        toStringName: _toStringName,
-        items: FieldBlocBase._itemsWithoutDuplicates(_items),
+        name: _name,
+        items: SingleFieldBloc._itemsWithoutDuplicates(_items),
       );
 
   /// Set [items] to the `items` of the current state.
@@ -129,14 +130,14 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
     if (event is UpdateFieldBlocItems<Value>) {
       yield state.copyWith(
         items: Optional.fromNullable(
-          FieldBlocBase._itemsWithoutDuplicates(event.items),
+          SingleFieldBloc._itemsWithoutDuplicates(event.items),
         ),
       );
     } else if (event is AddFieldBlocItem<Value>) {
       var items = state.items ?? [];
       yield state.copyWith(
         items: Optional.fromNullable(
-          FieldBlocBase._itemsWithoutDuplicates(
+          SingleFieldBloc._itemsWithoutDuplicates(
             List<Value>.from(items)..add(event.item),
           ),
         ),
@@ -146,7 +147,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
       if (items != null && items.isNotEmpty) {
         yield state.copyWith(
           items: Optional.fromNullable(
-            FieldBlocBase._itemsWithoutDuplicates(
+            SingleFieldBloc._itemsWithoutDuplicates(
               List<Value>.from(items)..remove(event.item),
             ),
           ),
@@ -154,7 +155,7 @@ class MultiSelectFieldBloc<Value> extends FieldBlocBase<List<Value>, Value,
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
       var newValue = state.value ?? [];
-      newValue = FieldBlocBase._itemsWithoutDuplicates(
+      newValue = SingleFieldBloc._itemsWithoutDuplicates(
         List<Value>.from(newValue)..add(event.valueToSelect),
       );
       if (_canUpdateValue(value: newValue, isInitialValue: false)) {
