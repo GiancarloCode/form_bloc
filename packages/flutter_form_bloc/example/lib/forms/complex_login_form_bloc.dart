@@ -16,9 +16,8 @@ class ComplexLoginFormBloc extends FormBloc<String, String> {
       fieldBloc: TextFieldBloc(
         name: 'email',
         validators: [FieldBlocValidators.email],
-      )
-        ..updateSuggestions(suggestUsedEmails)
-        ..selectedSuggestion.listen(_deleteEmail),
+        suggestions: suggestUsedEmails,
+      )..selectedSuggestion.listen(_deleteEmail),
     );
     addFieldBloc(
       fieldBloc: TextFieldBloc(

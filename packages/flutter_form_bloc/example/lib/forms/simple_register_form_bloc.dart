@@ -4,13 +4,11 @@ class SimpleRegisterFormBloc extends FormBloc<String, String> {
   SimpleRegisterFormBloc() {
     final passwordField = TextFieldBloc(
       name: 'password',
-      validators: [FieldBlocValidators.passwordMin6Chars],
     );
-    final confirmPasswordField = TextFieldBloc(name: 'confirmPassword');
-
-    confirmPasswordField.subscribeToFieldBlocs([passwordField]);
-    confirmPasswordField
-        .addValidators([FieldBlocValidators.confirmPassword(passwordField)]);
+    final confirmPasswordField = TextFieldBloc(
+      name: 'confirmPassword',
+      validators: [FieldBlocValidators.confirmPassword(passwordField)],
+    )..subscribeToFieldBlocs([passwordField]);
 
     addFieldBloc(
       fieldBloc: TextFieldBloc(
