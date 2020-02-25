@@ -63,5 +63,5 @@ class BooleanFieldBloc
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void clear() => add(UpdateFieldBlocValue(false));
+  void clear() => updateInitialValue(false);
 }

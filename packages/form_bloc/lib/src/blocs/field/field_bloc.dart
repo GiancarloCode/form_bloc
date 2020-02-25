@@ -160,7 +160,7 @@ abstract class SingleFieldBloc<Value, Suggestion,
   /// Set the `value` to `null` of the current state.
   ///
   /// {@macro form_bloc.field_bloc.update_value}
-  void clear() => updateValue(null);
+  void clear() => updateInitialValue(null);
 
   /// Add a [suggestion] to [selectedSuggestion].
   void selectSuggestion(Suggestion suggestion) =>

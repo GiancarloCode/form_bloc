@@ -78,5 +78,5 @@ class TextFieldBloc
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void clear() => add(UpdateFieldBlocValue(''));
+  void clear() => updateInitialValue('');
 }

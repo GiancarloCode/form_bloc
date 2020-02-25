@@ -152,11 +152,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     } else if (event is UpdateFormBlocState<SuccessResponse, FailureResponse>) {
       yield event.state;
     } else if (event is ClearFormBloc) {
-      final allFieldBlocs =
-          state.fieldBlocs?.values?.whereType<SingleFieldBloc>()?.toList() ??
-              [];
-
-      allFieldBlocs.forEach((fieldBloc) => fieldBloc.clear());
+      yield* _onClearFormBloc();
     } else if (event is ReloadFormBloc) {
       yield state.toLoading();
       yield* onReload();
@@ -261,6 +257,14 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         },
       );
     }
+  }
+
+  Stream<FormBlocState<SuccessResponse, FailureResponse>>
+      _onClearFormBloc() async* {
+    final allSingleFieldBlocs =
+        FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs.values);
+
+    allSingleFieldBlocs.forEach((fieldBloc) => fieldBloc.clear());
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
@@ -411,9 +415,9 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// Examples:
   ///
   /// * `group1/name`
-  /// * `group1/group2/name/`
+  /// * `group1/group2/name`
   ///
-  /// To access an index of a [FieldBlocList] you must start the index between brackets.
+  /// To access an index of a [FieldBlocList] you must write the index between brackets.
   ///
   /// Examples:
   ///

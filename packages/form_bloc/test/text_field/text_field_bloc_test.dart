@@ -125,7 +125,7 @@ void main() {
       );
       final state2 = state1.copyWith(
         value: Optional.of(''),
-        isInitial: false,
+        isInitial: true,
       );
 
       final expectedStates = [

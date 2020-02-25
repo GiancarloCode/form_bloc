@@ -667,7 +667,7 @@ void main() {
       final state2 = state1.copyWith(
         value: Optional.absent(),
         error: Optional.of(FieldBlocValidatorsErrors.requiredInputFieldBloc),
-        isInitial: false,
+        isInitial: true,
       );
 
       final expectedStates = [

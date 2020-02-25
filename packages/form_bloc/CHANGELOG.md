@@ -1,3 +1,9 @@
+# 0.10.1
+
+* `clear` method of `FieldBloc` now call `updateInitialValue` instead of `updateValue`.
+* Fixed `clear` method of `FormBloc`.
+* Documentation Updates.
+
 # 0.10.0
 ## Breaking changes
 
