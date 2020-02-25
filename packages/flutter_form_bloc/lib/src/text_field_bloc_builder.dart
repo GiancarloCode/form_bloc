@@ -815,7 +815,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               borderRadius: BorderRadius.circular(25),
               child: Icon(Icons.clear),
               onTap: () {
-                widget.textFieldBloc.updateValue('');
+                widget.textFieldBloc.clear();
               },
             ),
           );
