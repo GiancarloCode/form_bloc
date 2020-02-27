@@ -681,6 +681,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               autofocus: widget.autofocus,
               obscureText: _obscureText,
               autocorrect: widget.autocorrect,
+              minLines: widget.minLines,
               maxLines: widget.maxLines,
               maxLength: widget.maxLength,
               maxLengthEnforced: widget.maxLengthEnforced,

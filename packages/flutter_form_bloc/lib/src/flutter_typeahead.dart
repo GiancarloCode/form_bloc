@@ -830,6 +830,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         autofocus: widget.textFieldConfiguration.autofocus,
         inputFormatters: widget.textFieldConfiguration.inputFormatters,
         autocorrect: widget.textFieldConfiguration.autocorrect,
+        minLines: widget.textFieldConfiguration.minLines,
         maxLines: widget.textFieldConfiguration.maxLines,
         maxLength: widget.textFieldConfiguration.maxLength,
         maxLengthEnforced: widget.textFieldConfiguration.maxLengthEnforced,
@@ -1403,6 +1404,9 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.autocorrect](https://docs.flutter.io/flutter/material/TextField/autocorrect.html)
   final bool autocorrect;
 
+  /// {@macro flutter.widgets.editableText.minLines}
+  final int minLines;
+
   /// The maximum number of lines for the text to span, wrapping if necessary.
   ///
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
@@ -1486,6 +1490,7 @@ class TextFieldConfiguration<T> {
       this.obscureText = false,
       this.maxLengthEnforced = true,
       this.maxLength,
+      this.minLines,
       this.maxLines = 1,
       this.autocorrect = true,
       this.inputFormatters,
@@ -1515,6 +1520,7 @@ class TextFieldConfiguration<T> {
       bool obscureText,
       bool maxLengthEnforced,
       int maxLength,
+      int minLines,
       int maxLines,
       bool autocorrect,
       List<TextInputFormatter> inputFormatters,
@@ -1541,6 +1547,7 @@ class TextFieldConfiguration<T> {
         obscureText: obscureText ?? this.obscureText,
         maxLengthEnforced: maxLengthEnforced ?? this.maxLengthEnforced,
         maxLength: maxLength ?? this.maxLength,
+        minLines: minLines ?? this.minLines,
         maxLines: maxLines ?? this.maxLines,
         autocorrect: autocorrect ?? this.autocorrect,
         inputFormatters: inputFormatters ?? this.inputFormatters,

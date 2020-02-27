@@ -1,3 +1,7 @@
+# 0.10.2
+
+* Fixed `minLines` property of `TextFieldBlocBuilder`.
+
 # 0.10.1
 
 * Fixed `SuffixButton.clearText` of `TextFieldBlocBuilder`.
