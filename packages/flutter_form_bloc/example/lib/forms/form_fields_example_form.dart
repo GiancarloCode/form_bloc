@@ -19,16 +19,14 @@ class FormFieldsExampleForm extends StatelessWidget {
               onSubmitting: (context, state) => LoadingDialog.show(context),
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
-                Notifications.showSnackBarWithSuccess(
-                    context, state.successResponse);
+                Notifications.showSnackBarWithSuccess(context, state.successResponse);
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
-                Notifications.showSnackBarWithError(
-                    context, state.failureResponse);
+                Notifications.showSnackBarWithError(context, state.failureResponse);
               },
-              child: BlocBuilder<FormFieldsExampleFormBloc, FormBlocState>(
-                  builder: (context, state) {
+              child:
+                  BlocBuilder<FormFieldsExampleFormBloc, FormBlocState>(builder: (context, state) {
                 return ListView(
                   physics: ClampingScrollPhysics(),
                   children: <Widget>[
@@ -57,8 +55,7 @@ class FormFieldsExampleForm extends StatelessWidget {
                       itemBuilder: (context, value) => value,
                     ),
                     CheckboxGroupFieldBlocBuilder<String>(
-                      multiSelectFieldBloc:
-                          state.fieldBlocFromPath('multiSelect'),
+                      multiSelectFieldBloc: state.fieldBlocFromPath('multiSelect'),
                       itemBuilder: (context, item) => item,
                       decoration: InputDecoration(
                         labelText: 'CheckboxGroupFieldBlocBuilder',
@@ -76,6 +73,18 @@ class FormFieldsExampleForm extends StatelessWidget {
                     CheckboxFieldBlocBuilder(
                       booleanFieldBloc: state.fieldBlocFromPath('boolean'),
                       body: Text('CheckboxFieldBlocBuilder'),
+                    ),
+                    ExpansionSwitchTileFieldBlocBuilder(
+                      booleanFieldBloc: state.fieldBlocFromPath('select3'),
+                      title: Text('ExpansionSwitchTileFieldBlocBuilder'),
+                      children: <Widget>[
+                        SwitchFieldBlocBuilder(
+                          booleanFieldBloc: state.fieldBlocFromPath('select4'),
+                          child: Text('SwitchFieldBlocBuilder'),
+                        ),
+
+                        /// More fields or widgets
+                      ],
                     ),
                     FormButton(
                       text: 'SUBMIT',

@@ -9,9 +9,10 @@ class FormFieldsExampleFormBloc extends FormBloc<String, String> {
       ),
     );
     addFieldBloc(
-        fieldBloc: BooleanFieldBloc(
-      name: 'boolean',
-    ));
+      fieldBloc: BooleanFieldBloc(
+        name: 'boolean',
+      ),
+    );
     addFieldBloc(
       fieldBloc: SelectFieldBloc(
         name: 'select1',
@@ -30,6 +31,16 @@ class FormFieldsExampleFormBloc extends FormBloc<String, String> {
         items: ['Option 1', 'Option 2', 'Option 3'],
       ),
     );
+    addFieldBloc(
+      fieldBloc: BooleanFieldBloc(
+        name: 'select3',
+      ),
+    );
+    addFieldBloc(
+      fieldBloc: BooleanFieldBloc(
+        name: 'select4',
+      ),
+    );
   }
 
   @override
@@ -42,10 +53,9 @@ class FormFieldsExampleFormBloc extends FormBloc<String, String> {
     print(state.fieldBlocFromPath('boolean').asBooleanFieldBloc.value);
     print(state.fieldBlocFromPath('select1').asSelectFieldBloc<String>().value);
     print(state.fieldBlocFromPath('select2').asSelectFieldBloc<String>().value);
-    print(state
-        .fieldBlocFromPath('multiSelect')
-        .asMultiSelectFieldBloc<String>()
-        .value);
+    print(state.fieldBlocFromPath('multiSelect').asMultiSelectFieldBloc<String>().value);
+    print(state.fieldBlocFromPath('select3').asSelectFieldBloc<String>().value);
+    print(state.fieldBlocFromPath('select4').asSelectFieldBloc<String>().value);
 
     await Future<void>.delayed(Duration(seconds: 2));
     yield state.toSuccess(successResponse: 'Success', canSubmitAgain: true);
