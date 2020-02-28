@@ -34,6 +34,7 @@ class FormFieldsExampleFormBloc extends FormBloc<String, String> {
     addFieldBloc(
       fieldBloc: BooleanFieldBloc(
         name: 'select3',
+        initialValue: true,
       ),
     );
     addFieldBloc(
