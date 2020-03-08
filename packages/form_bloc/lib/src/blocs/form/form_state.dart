@@ -416,7 +416,7 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
     with EquatableMixin {
   final FailureResponse failureResponse;
 
-  bool get hasFailureResponse => FailureResponse != null;
+  bool get hasFailureResponse => failureResponse != null;
 
   FormBlocLoadFailed(
       {@required bool isValid,
@@ -592,7 +592,7 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
     with EquatableMixin {
   final FailureResponse failureResponse;
 
-  bool get hasFailureResponse => FailureResponse != null;
+  bool get hasFailureResponse => failureResponse != null;
 
   FormBlocFailure(
       {@required bool isValid,
@@ -703,7 +703,7 @@ class FormBlocDeleteFailed<SuccessResponse, FailureResponse>
     with EquatableMixin {
   final FailureResponse failureResponse;
 
-  bool get hasFailureResponse => FailureResponse != null;
+  bool get hasFailureResponse => failureResponse != null;
 
   FormBlocDeleteFailed(
       {@required bool isValid,

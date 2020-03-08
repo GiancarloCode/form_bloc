@@ -55,5 +55,56 @@ void main() {
         expectedStates,
       );
     });
+    group('hasSuccessResponse property:', () {
+      test('FormBlocSuccess', () {
+        final successWithResponse =
+            FormBlocSuccess<Object, Object>(isValid: true, successResponse: 1);
+        final successWithoutResponse =
+            FormBlocSuccess<Object, Object>(isValid: true);
+
+        expect(successWithResponse.hasSuccessResponse, true);
+        expect(successWithoutResponse.hasSuccessResponse, false);
+      });
+      test('FormBlocDeleteSuccessful', () {
+        final deleteSuccessfulWithResponse =
+            FormBlocDeleteSuccessful<Object, Object>(
+                isValid: true, successResponse: 1);
+        final deleteSuccessfulWithoutResponse =
+            FormBlocDeleteSuccessful<Object, Object>(isValid: true);
+
+        expect(deleteSuccessfulWithResponse.hasSuccessResponse, true);
+        expect(deleteSuccessfulWithoutResponse.hasSuccessResponse, false);
+      });
+    });
+
+    group('hasFailureResponse property:', () {
+      test('FormBlocLoadFailed', () {
+        final loadedFailedWithResponse = FormBlocLoadFailed<Object, Object>(
+            isValid: true, failureResponse: 1);
+        final loadedFailedWithoutResponse =
+            FormBlocLoadFailed<Object, Object>(isValid: true);
+
+        expect(loadedFailedWithResponse.hasFailureResponse, true);
+        expect(loadedFailedWithoutResponse.hasFailureResponse, false);
+      });
+      test('FormBlocFailure', () {
+        final failureWithResponse =
+            FormBlocFailure<Object, Object>(isValid: true, failureResponse: 1);
+        final failureWithoutResponse =
+            FormBlocFailure<Object, Object>(isValid: true);
+
+        expect(failureWithResponse.hasFailureResponse, true);
+        expect(failureWithoutResponse.hasFailureResponse, false);
+      });
+      test('FormBlocDeleteFailed', () {
+        final deleteFailedWithResponse = FormBlocDeleteFailed<Object, Object>(
+            isValid: true, failureResponse: 1);
+        final deleteFailedWithoutResponse =
+            FormBlocDeleteFailed<Object, Object>(isValid: true);
+
+        expect(deleteFailedWithResponse.hasFailureResponse, true);
+        expect(deleteFailedWithoutResponse.hasFailureResponse, false);
+      });
+    });
   });
 }

@@ -1,3 +1,6 @@
+# 0.10.3
+* Fixed `hasFailureResponse` property of `FormBlocLoadFailed`, `FormBlocFailure` and `FormBlocDeleteFailed`.
+
 # 0.10.2
 * Changes `FieldBloc.addError(String error)` to `FieldBloc.addError(String error, {bool isPermanent = false})`.
 * Documentation Updates.
