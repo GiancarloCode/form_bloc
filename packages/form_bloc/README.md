@@ -147,7 +147,7 @@ To access nested field Blocs, you must use the `/` character.
 Examples:
 * `email`
 * `group1/name`
-* `group1/group2/name/`
+* `group1/group2/name`
 
 
 You must call all your business logic of this form here, and `yield` the corresponding state.

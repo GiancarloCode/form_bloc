@@ -241,12 +241,18 @@ class UpdateAsyncValidators<Value> extends FieldBlocEvent {
 class AddFieldBlocError<Value> extends FieldBlocEvent {
   final Value value;
   final String error;
+  final bool isPermanent;
 
-  AddFieldBlocError({@required this.error, @required this.value});
+  AddFieldBlocError({
+    @required this.error,
+    @required this.value,
+    @required this.isPermanent,
+  });
 
   @override
-  String toString() => '$runtimeType { value: $value, error: $error }';
+  String toString() =>
+      '$runtimeType { value: $value, error: $error, $isPermanent: isPermanent }';
 
   @override
-  List<Object> get props => [value, error];
+  List<Object> get props => [value, error, isPermanent];
 }

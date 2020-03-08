@@ -1,3 +1,7 @@
+# 0.10.2
+* Changes `FieldBloc.addError(String error)` to `FieldBloc.addError(String error, {bool isPermanent = false})`.
+* Documentation Updates.
+
 # 0.10.1
 
 * `clear` method of `FieldBloc` now call `updateInitialValue` instead of `updateValue`.

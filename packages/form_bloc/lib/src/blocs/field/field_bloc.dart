@@ -198,14 +198,18 @@ abstract class SingleFieldBloc<Value, Suggestion,
   void subscribeToFieldBlocs(List<FieldBloc> fieldBlocs) =>
       add(SubscribeToFieldBlocs(fieldBlocs));
 
+  /// If [isPermanent] is `false`, add an error to [FieldBlocState.error].
+  ///
+  /// Else if [isPermanent] is `true`
   /// Add a `validator` that returns [error] when the value
   /// is the current [value].
   /// and then validate the `fieldBloc`.
   ///
   /// It is useful when you want to add errors that
   /// you have obtained when submitting the `FormBloc`.
-  void addError(String error) =>
-      add(AddFieldBlocError(value: value, error: error));
+  void addError(String error, {bool isPermanent = false}) =>
+      add(AddFieldBlocError(
+          value: value, error: error, isPermanent: isPermanent ?? false));
 
   @mustCallSuper
   @override
@@ -364,20 +368,7 @@ abstract class SingleFieldBloc<Value, Suggestion,
   }
 
   Stream<State> _onAddValidators(AddValidators<Value> event) async* {
-    if (event.validators != null) {
-      _validators.addAll(event.validators);
-
-      final error = _getError(state.value);
-
-      final isValidating =
-          _getAsyncValidatorsError(value: state.value, error: error);
-
-      yield state.copyWith(
-        error: Optional.fromNullable(error),
-        isValidated: _isValidated(isValidating),
-        isValidating: isValidating,
-      ) as State;
-    }
+    yield* _addValidators(event.validators);
   }
 
   Stream<State> _onAddAsyncValidators(AddAsyncValidators<Value> event) async* {
@@ -516,8 +507,17 @@ abstract class SingleFieldBloc<Value, Suggestion,
   }
 
   Stream<State> _onAddFieldBlocError(AddFieldBlocError event) async* {
-    addValidators([(value) => value == event.value ? event.error : null]);
-    add(ValidateFieldBloc(true));
+    if (event.isPermanent) {
+      yield* _addValidators(
+          [(value) => value == event.value ? event.error : null]);
+      add(ValidateFieldBloc(true));
+    } else if (event.error != null) {
+      yield state.copyWith(
+        isValidated: false,
+        isInitial: false,
+        error: Optional.fromNullable(event.error),
+      ) as State;
+    }
   }
 
   /// {@template form_bloc.field_bloc.itemsWithoutDuplicates}
@@ -547,6 +547,23 @@ abstract class SingleFieldBloc<Value, Suggestion,
     if (_getInitialStateIsValidating) {
       _getAsyncValidatorsError(
           error: _getInitialStateError, value: _initialValue);
+    }
+  }
+
+  Stream<State> _addValidators(List<Validator<Value>> validators) async* {
+    if (validators != null) {
+      _validators.addAll(validators);
+
+      final error = _getError(state.value);
+
+      final isValidating =
+          _getAsyncValidatorsError(value: state.value, error: error);
+
+      yield state.copyWith(
+        error: Optional.fromNullable(error),
+        isValidated: _isValidated(isValidating),
+        isValidating: isValidating,
+      ) as State;
     }
   }
 }

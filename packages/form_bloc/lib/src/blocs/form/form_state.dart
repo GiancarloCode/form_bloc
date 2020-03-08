@@ -501,9 +501,9 @@ class FormBlocSubmitting<SuccessResponse, FailureResponse>
         super(
             isValid: isValid,
             isEditing: isEditing,
-            submissionProgress: submissionProgress < 0
+            submissionProgress: submissionProgress < 0.0
                 ? 0.0
-                : submissionProgress > 1 ? 1.0 : submissionProgress,
+                : submissionProgress > 1.0 ? 1.0 : submissionProgress,
             fieldBlocs: fieldBlocs);
 
   @override
@@ -602,7 +602,7 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
       : super(
             isValid: isValid,
             isEditing: isEditing,
-            submissionProgress: 0,
+            submissionProgress: 0.0,
             fieldBlocs: fieldBlocs);
 
   @override
@@ -642,7 +642,7 @@ class FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>
       : super(
             isValid: isValid,
             isEditing: isEditing,
-            submissionProgress: 0,
+            submissionProgress: 0.0,
             fieldBlocs: fieldBlocs);
 
   @override
@@ -662,7 +662,7 @@ class FormBlocSubmissionFailed<SuccessResponse, FailureResponse>
       : super(
             isValid: isValid,
             isEditing: isEditing,
-            submissionProgress: 0,
+            submissionProgress: 0.0,
             fieldBlocs: fieldBlocs);
 
   @override
@@ -681,7 +681,7 @@ class FormBlocDeleting<SuccessResponse, FailureResponse>
       : super(
             isValid: isValid,
             isEditing: isEditing,
-            submissionProgress: 0,
+            submissionProgress: 0.0,
             fieldBlocs: fieldBlocs);
 
   @override
@@ -713,7 +713,7 @@ class FormBlocDeleteFailed<SuccessResponse, FailureResponse>
       : super(
             isValid: isValid,
             isEditing: isEditing,
-            submissionProgress: 0,
+            submissionProgress: 0.0,
             fieldBlocs: fieldBlocs);
 
   @override

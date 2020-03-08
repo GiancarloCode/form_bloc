@@ -1409,7 +1409,8 @@ void main() {
       fieldBloc1.updateValue(null);
     });
 
-    test('addError method and AddFieldBlocError event.', () async {
+    test('addError method and AddFieldBlocError event with isPermanent false.',
+        () async {
       final fieldBloc = InputFieldBloc<int>(
         name: 'fieldName',
       );
@@ -1426,18 +1427,66 @@ void main() {
 
       final state2 = state1.copyWith(
         error: Optional.of('error'),
+        isInitial: false,
+        isValidated: false,
+      );
+      final state3 = state2.copyWith(
+        value: Optional.of(1),
+        error: Optional.absent(),
+        isValidated: true,
+      );
+      final state4 = state3.copyWith(
+        value: Optional.absent(),
+      );
+
+      final expectedStates = [
+        state1,
+        state2,
+        state3,
+        state4,
+      ];
+      expect(
+        fieldBloc,
+        emitsInOrder(expectedStates),
+      );
+
+      fieldBloc.addError('error');
+      await Future<void>.delayed(Duration(milliseconds: 0));
+      fieldBloc.updateValue(1);
+      fieldBloc.updateValue(null);
+    });
+
+    test('addError method and AddFieldBlocError event with isPermanent true.',
+        () async {
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
+
+      final state1 = InputFieldBlocState<int>(
+        value: null,
+        error: null,
+        isInitial: true,
+        suggestions: null,
+        isValidated: true,
+        isValidating: false,
+        name: 'fieldName',
+      );
+
+      final state2 = state1.copyWith(
+        error: Optional.of('error'),
+        isValidated: true,
       );
       final state3 = state2.copyWith(
         isInitial: false,
-        error: Optional.of('error'),
       );
       final state4 = state3.copyWith(
         value: Optional.of(1),
         error: Optional.absent(),
       );
-      final state5 = state4.copyWith(
+      final state5 = state3.copyWith(
         value: Optional.absent(),
         error: Optional.of('error'),
+        isValidated: true,
       );
 
       final expectedStates = [
@@ -1452,14 +1501,14 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.addError('error');
+      fieldBloc.addError('error', isPermanent: true);
       await Future<void>.delayed(Duration(milliseconds: 0));
       fieldBloc.updateValue(1);
       fieldBloc.updateValue(null);
     });
 
     test(
-        'addError method and AddFieldBlocError event after disable auto validation.',
+        'addError method and AddFieldBlocError event with isPermanent true after disable auto validation.',
         () async {
       final fieldBloc = InputFieldBloc<int>(
         name: 'fieldName',
@@ -1484,8 +1533,60 @@ void main() {
         error: Optional.of('error'),
       );
       final state4 = state3.copyWith(
-        value: Optional.of(1),
         isValidated: false,
+        value: Optional.of(1),
+      );
+      final state5 = state4.copyWith(
+        value: Optional.absent(),
+      );
+
+      final expectedStates = [
+        state1,
+        state2,
+        state3,
+        state4,
+        state5,
+      ];
+      expect(
+        fieldBloc,
+        emitsInOrder(expectedStates),
+      );
+
+      fieldBloc.add(DisableFieldBlocAutoValidate());
+
+      fieldBloc.addError('error', isPermanent: true);
+      await Future<void>.delayed(Duration(milliseconds: 0));
+      fieldBloc.updateValue(1);
+      fieldBloc.updateValue(null);
+    });
+
+    test(
+        'addError method and AddFieldBlocError event with isPermanent false after disable auto validation.',
+        () async {
+      final fieldBloc = InputFieldBloc<int>(
+        name: 'fieldName',
+      );
+
+      final state1 = InputFieldBlocState<int>(
+        value: null,
+        error: null,
+        isInitial: true,
+        suggestions: null,
+        isValidated: true,
+        isValidating: false,
+        name: 'fieldName',
+      );
+
+      final state2 = state1.copyWith(
+        isValidated: false,
+      );
+      final state3 = state2.copyWith(
+        isInitial: false,
+        isValidated: false,
+        error: Optional.of('error'),
+      );
+      final state4 = state3.copyWith(
+        value: Optional.of(1),
       );
       final state5 = state4.copyWith(
         value: Optional.absent(),
