@@ -128,6 +128,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.suggestionsErrorBuilder,
     this.keepSuggestionsOnLoading = false,
     this.showSuggestionsWhenIsEmpty = true,
+    this.readonly = false,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(suggestionsAnimationDuration != null),
@@ -300,6 +301,11 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// Defaults to true.
   final bool showSuggestionsWhenIsEmpty;
+
+  /// If set to true, the text field will be readonly
+  ///
+  /// Default to false;
+  final bool readonly;
 
   /// --------------------------------------------------------------------------
   ///                          [TextField] properties
@@ -659,6 +665,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         return DefaultFieldBlocBuilderPadding(
           padding: widget.padding,
           child: TypeAheadField<String>(
+            readonly: widget.readonly,
             textFieldConfiguration: TextFieldConfiguration<String>(
               controller: _controller,
               decoration: buildDecoration(state),

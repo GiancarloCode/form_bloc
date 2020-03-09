@@ -550,37 +550,43 @@ class TypeAheadField<T> extends StatefulWidget {
   /// Defaults to false
   final bool autoFlipDirection;
 
+  /// If set to true, the text field will be readonly
+  ///
+  /// Default to false;
+  final bool readonly;
+
   /// Creates a [TypeAheadField]
-  TypeAheadField({
-    Key key,
-    @required this.suggestionsCallback,
-    @required this.itemBuilder,
-    @required this.onSuggestionSelected,
-    @required this.onSuggestionRemoved,
-    this.textFieldConfiguration = const TextFieldConfiguration(),
-    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
-    this.debounceDuration = const Duration(milliseconds: 300),
-    this.suggestionsBoxController,
-    this.loadingBuilder,
-    this.noItemsFoundBuilder,
-    this.errorBuilder,
-    this.transitionBuilder,
-    this.animationStart = 0.25,
-    this.animationDuration = const Duration(milliseconds: 500),
-    this.getImmediateSuggestions = false,
-    this.suggestionsBoxVerticalOffset = 5.0,
-    this.direction = AxisDirection.down,
-    this.hideOnLoading = false,
-    this.hideOnEmpty = false,
-    this.hideOnError = false,
-    this.hideSuggestionsOnKeyboardHide = true,
-    this.keepSuggestionsOnLoading = true,
-    this.keepSuggestionsOnSuggestionSelected = false,
-    this.autoFlipDirection = false,
-    this.removeSuggestionOnLongPress,
-    this.showSuggestionsWhenIsEmpty = false,
-    this.onTap,
-  })  : assert(itemBuilder != null),
+  TypeAheadField(
+      {Key key,
+      @required this.suggestionsCallback,
+      @required this.itemBuilder,
+      @required this.onSuggestionSelected,
+      @required this.onSuggestionRemoved,
+      this.textFieldConfiguration = const TextFieldConfiguration(),
+      this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
+      this.debounceDuration = const Duration(milliseconds: 300),
+      this.suggestionsBoxController,
+      this.loadingBuilder,
+      this.noItemsFoundBuilder,
+      this.errorBuilder,
+      this.transitionBuilder,
+      this.animationStart = 0.25,
+      this.animationDuration = const Duration(milliseconds: 500),
+      this.getImmediateSuggestions = false,
+      this.suggestionsBoxVerticalOffset = 5.0,
+      this.direction = AxisDirection.down,
+      this.hideOnLoading = false,
+      this.hideOnEmpty = false,
+      this.hideOnError = false,
+      this.hideSuggestionsOnKeyboardHide = true,
+      this.keepSuggestionsOnLoading = true,
+      this.keepSuggestionsOnSuggestionSelected = false,
+      this.autoFlipDirection = false,
+      this.removeSuggestionOnLongPress,
+      this.showSuggestionsWhenIsEmpty = false,
+      this.onTap,
+      this.readonly})
+      : assert(itemBuilder != null),
         assert(removeSuggestionOnLongPress != null),
         assert(onSuggestionSelected != null),
         assert(animationStart != null &&
@@ -820,6 +826,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     return CompositedTransformTarget(
       link: this._layerLink,
       child: TextField(
+        readOnly: widget.readonly,
         focusNode: this._effectiveFocusNode,
         controller: this._effectiveController,
         decoration: widget.textFieldConfiguration.decoration,
