@@ -6,9 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/dropdown.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
+import 'package:keyboard_utils/keyboard_listener.dart';
+import 'package:keyboard_utils/keyboard_utils.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 /// A material design dropdown.
 class DropdownFieldBlocBuilder<Value> extends StatefulWidget {
@@ -79,11 +80,13 @@ class _DropdownFieldBlocBuilderState<Value>
 
   double _dropdownHeight = 0;
 
-  KeyboardVisibilityNotification _keyboardVisibility =
-      KeyboardVisibilityNotification();
+  KeyboardUtils _keyboardUtils = KeyboardUtils();
   int _keyboardSubscriptionId;
 
   FocusNode _focusNode = FocusNode();
+
+  /// True if widget is focused after keyboard closed
+  bool focusedAfterKeyboardClosing = false;
 
   @override
   void initState() {
@@ -101,10 +104,7 @@ class _DropdownFieldBlocBuilderState<Value>
 
     _effectiveFocusNode.addListener(_onFocusRequest);
 
-    _keyboardSubscriptionId = _keyboardVisibility.addNewListener(
-      onChange: (isVisible) =>
-          _keyboardVisibility.isKeyboardVisible = isVisible,
-    );
+    _keyboardSubscriptionId = _keyboardUtils.add(listener: KeyboardListener());
   }
 
   @override
@@ -112,9 +112,10 @@ class _DropdownFieldBlocBuilderState<Value>
     _onPressedController.close();
     _dropdownHeightController.close();
 
-    _keyboardVisibility.removeListener(_keyboardSubscriptionId);
-
-    _keyboardVisibility.dispose();
+    _keyboardUtils.unsubscribeListener(subscribingId: _keyboardSubscriptionId);
+    if (_keyboardUtils.canCallDispose()) {
+      _keyboardUtils.dispose();
+    }
 
     _effectiveFocusNode.removeListener(_onFocusRequest);
 
@@ -264,16 +265,23 @@ class _DropdownFieldBlocBuilderState<Value>
 
   void _onDropdownPressed() async {
     if (widget.selectFieldBloc.state.items.isNotEmpty) {
-//TODO: Trick: https://github.com/flutter/flutter/issues/18672#issuecomment-426522889
-      if (_keyboardVisibility.isKeyboardVisible) {
+      if (_keyboardUtils.isKeyboardOpen) {
         _effectiveFocusNode.requestFocus();
-        await Future<void>.delayed(Duration(milliseconds: 1));
-        _effectiveFocusNode.unfocus();
-        await Future<void>.delayed(Duration(
-            milliseconds:
-                widget.millisecondsForShowDropdownItemsWhenKeyboardIsOpen));
+        await Future<void>.delayed(Duration(milliseconds: 10));
+        _onPressedController.add(null);
+        setState(() {
+          focusedAfterKeyboardClosing = true;
+        });
+      } else {
+        if (focusedAfterKeyboardClosing) {
+          FocusScope.of(context).unfocus();
+          setState(() {
+            focusedAfterKeyboardClosing = false;
+          });
+        } else {
+          _onPressedController.add(null);
+        }
       }
-      _onPressedController.add(null);
     }
   }
 
