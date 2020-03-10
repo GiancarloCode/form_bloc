@@ -1,3 +1,6 @@
+# 0.10.4
+* Fixed minor bug.
+
 # 0.10.3
 * Fixed `hasFailureResponse` property of `FormBlocLoadFailed`, `FormBlocFailure` and `FormBlocDeleteFailed`.
 

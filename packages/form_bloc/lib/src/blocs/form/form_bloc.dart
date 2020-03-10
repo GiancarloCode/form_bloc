@@ -251,7 +251,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
               updateState(FormBlocSubmissionFailed(false,
                   isEditing: stateSnapshot.isEditing,
                   fieldBlocs: stateSnapshot.fieldBlocs));
-              updateState(stateSnapshot);
+              updateState(stateSnapshot.toLoaded());
             }
           }
         },
