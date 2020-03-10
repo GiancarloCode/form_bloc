@@ -5,12 +5,15 @@ class FormFieldsExampleFormBloc extends FormBloc<String, String> {
     addFieldBloc(
       fieldBloc: TextFieldBloc(
         name: 'text',
-        validators: [FieldBlocValidators.requiredTextFieldBloc],
       ),
     );
     addFieldBloc(
         fieldBloc: BooleanFieldBloc(
-      name: 'boolean',
+      name: 'boolean1',
+    ));
+    addFieldBloc(
+        fieldBloc: BooleanFieldBloc(
+      name: 'boolean2',
     ));
     addFieldBloc(
       fieldBloc: SelectFieldBloc(
@@ -39,7 +42,8 @@ class FormFieldsExampleFormBloc extends FormBloc<String, String> {
     // Get the fields values:
 
     print(state.fieldBlocFromPath('text').asTextFieldBloc.value);
-    print(state.fieldBlocFromPath('boolean').asBooleanFieldBloc.value);
+    print(state.fieldBlocFromPath('boolean1').asBooleanFieldBloc.value);
+    print(state.fieldBlocFromPath('boolean2').asBooleanFieldBloc.value);
     print(state.fieldBlocFromPath('select1').asSelectFieldBloc<String>().value);
     print(state.fieldBlocFromPath('select2').asSelectFieldBloc<String>().value);
     print(state

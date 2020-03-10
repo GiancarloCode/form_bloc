@@ -74,8 +74,20 @@ class FormFieldsExampleForm extends StatelessWidget {
                       itemBuilder: (context, item) => item,
                     ),
                     CheckboxFieldBlocBuilder(
-                      booleanFieldBloc: state.fieldBlocFromPath('boolean'),
-                      body: Text('CheckboxFieldBlocBuilder'),
+                      booleanFieldBloc: state.fieldBlocFromPath('boolean1'),
+                      // controlAffinity: FieldBlocBuilderControlAffinity.trailing,
+                      body: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('CheckboxFieldBlocBuilder'),
+                      ),
+                    ),
+                    SwitchFieldBlocBuilder(
+                      booleanFieldBloc: state.fieldBlocFromPath('boolean2'),
+                      // controlAffinity: FieldBlocBuilderControlAffinity.trailing,
+                      body: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('CheckboxFieldBlocBuilder'),
+                      ),
                     ),
                     FormButton(
                       text: 'SUBMIT',
