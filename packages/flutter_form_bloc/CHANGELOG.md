@@ -1,3 +1,6 @@
+# 0.10.4
+* Fixed `DropdownFieldBlocBuilder` focus [28](https://github.com/GiancarloCode/form_bloc/issues/28).
+
 # 0.10.3
 
 * Added `SwitchFieldBlocBuilder`.

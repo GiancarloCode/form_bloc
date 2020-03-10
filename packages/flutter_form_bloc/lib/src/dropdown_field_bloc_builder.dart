@@ -85,7 +85,7 @@ class _DropdownFieldBlocBuilderState<Value>
 
   FocusNode _focusNode = FocusNode();
 
-  bool focusedAfterKeyboardClosing = false;
+  bool _focusedAfterKeyboardClosing = false;
 
   @override
   void initState() {
@@ -270,13 +270,13 @@ class _DropdownFieldBlocBuilderState<Value>
             milliseconds:
                 widget.millisecondsForShowDropdownItemsWhenKeyboardIsOpen));
         setState(() {
-          focusedAfterKeyboardClosing = true;
+          _focusedAfterKeyboardClosing = true;
         });
         _onPressedController.add(null);
-      } else if (focusedAfterKeyboardClosing) {
+      } else if (_focusedAfterKeyboardClosing) {
         FocusScope.of(context).unfocus();
         setState(() {
-          focusedAfterKeyboardClosing = false;
+          _focusedAfterKeyboardClosing = false;
         });
       } else {
         _onPressedController.add(null);
