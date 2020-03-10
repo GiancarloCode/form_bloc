@@ -258,6 +258,7 @@ library flutter_typeahead;
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -852,6 +853,19 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         cursorRadius: widget.textFieldConfiguration.cursorRadius,
         cursorColor: widget.textFieldConfiguration.cursorColor,
         textDirection: widget.textFieldConfiguration.textDirection,
+        buildCounter: widget.textFieldConfiguration.buildCounter,
+        dragStartBehavior: widget.textFieldConfiguration.dragStartBehavior,
+        enableInteractiveSelection:
+            widget.textFieldConfiguration.enableInteractiveSelection,
+        enableSuggestions: widget.textFieldConfiguration.enableSuggestions,
+        expands: widget.textFieldConfiguration.expands,
+        readOnly: widget.textFieldConfiguration.readOnly,
+        scrollController: widget.textFieldConfiguration.scrollController,
+        scrollPhysics: widget.textFieldConfiguration.scrollPhysics,
+        showCursor: widget.textFieldConfiguration.showCursor,
+        strutStyle: widget.textFieldConfiguration.strutStyle,
+        textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
+        toolbarOptions: widget.textFieldConfiguration.toolbarOptions,
       ),
     );
   }
@@ -1480,34 +1494,113 @@ class TextFieldConfiguration<T> {
   /// Same as [TextField.textInputAction](https://docs.flutter.io/flutter/material/TextField/textInputAction.html)
   final TextInputAction textInputAction;
 
+  /// Callback that generates a custom [InputDecorator.counter] widget.
+  ///
+  /// See [InputCounterWidgetBuilder] for an explanation of the passed in
+  /// arguments.  The returned widget will be placed below the line in place of
+  /// the default widget built when [counterText] is specified.
+  ///
+  /// The returned widget will be wrapped in a [Semantics] widget for
+  /// accessibility, but it also needs to be accessible itself.  For example,
+  /// if returning a Text widget, set the [semanticsLabel] property.
+  ///
+  /// {@tool sample}
+  /// ```dart
+  /// Widget counter(
+  ///   BuildContext context,
+  ///   {
+  ///     int currentLength,
+  ///     int maxLength,
+  ///     bool isFocused,
+  ///   }
+  /// ) {
+  ///   return Text(
+  ///     '$currentLength of $maxLength characters',
+  ///     semanticsLabel: 'character count',
+  ///   );
+  /// }
+  /// ```
+  /// {@end-tool}
+  final InputCounterWidgetBuilder buildCounter;
+
+  /// {@macro flutter.widgets.scrollable.dragStartBehavior}
+  final DragStartBehavior dragStartBehavior;
+
+  /// {@macro flutter.widgets.editableText.enableInteractiveSelection}
+  final bool enableInteractiveSelection;
+
+  /// {@macro flutter.services.textInput.enableSuggestions}
+  final bool enableSuggestions;
+
+  /// {@macro flutter.widgets.editableText.expands}
+  final bool expands;
+
+  /// {@macro flutter.widgets.editableText.readOnly}
+  final bool readOnly;
+
+  /// {@macro flutter.widgets.editableText.scrollController}
+  final ScrollController scrollController;
+
+  /// {@macro flutter.widgets.editableText.strutStyle}
+  final StrutStyle strutStyle;
+
+  /// {@macro flutter.widgets.editableText.showCursor}
+  final bool showCursor;
+
+  /// {@macro flutter.widgets.edtiableText.scrollPhysics}
+  final ScrollPhysics scrollPhysics;
+
+  /// {@macro flutter.material.inputDecorator.textAlignVertical}
+  final TextAlignVertical textAlignVertical;
+
+  /// Configuration of toolbar options.
+  ///
+  /// If not set, select all and paste will default to be enabled. Copy and cut
+  /// will be disabled if [obscureText] is true. If [readOnly] is true,
+  /// paste and cut will be disabled regardless.
+  final ToolbarOptions toolbarOptions;
+
   /// Creates a TextFieldConfiguration
-  const TextFieldConfiguration(
-      {this.decoration = const InputDecoration(),
-      this.style,
-      this.controller,
-      this.onChanged,
-      this.onSubmitted,
-      this.obscureText = false,
-      this.maxLengthEnforced = true,
-      this.maxLength,
-      this.minLines,
-      this.maxLines = 1,
-      this.autocorrect = true,
-      this.inputFormatters,
-      this.autofocus = false,
-      this.keyboardType = TextInputType.text,
-      this.enabled = true,
-      this.textAlign = TextAlign.start,
-      this.focusNode,
-      this.cursorColor,
-      this.cursorRadius,
-      this.textInputAction,
-      this.textCapitalization = TextCapitalization.none,
-      this.cursorWidth = 2.0,
-      this.keyboardAppearance,
-      this.onEditingComplete,
-      this.textDirection,
-      this.scrollPadding = const EdgeInsets.all(20.0)});
+  const TextFieldConfiguration({
+    this.decoration = const InputDecoration(),
+    this.style,
+    this.controller,
+    this.onChanged,
+    this.onSubmitted,
+    this.obscureText = false,
+    this.maxLengthEnforced = true,
+    this.maxLength,
+    this.minLines,
+    this.maxLines = 1,
+    this.autocorrect = true,
+    this.inputFormatters,
+    this.autofocus = false,
+    this.keyboardType = TextInputType.text,
+    this.enabled = true,
+    this.textAlign = TextAlign.start,
+    this.focusNode,
+    this.cursorColor,
+    this.cursorRadius,
+    this.textInputAction,
+    this.textCapitalization = TextCapitalization.none,
+    this.cursorWidth = 2.0,
+    this.keyboardAppearance,
+    this.onEditingComplete,
+    this.textDirection,
+    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.buildCounter,
+    this.dragStartBehavior,
+    this.enableInteractiveSelection,
+    this.enableSuggestions,
+    this.expands,
+    this.readOnly,
+    this.scrollController,
+    this.strutStyle,
+    this.showCursor,
+    this.scrollPhysics,
+    this.textAlignVertical,
+    this.toolbarOptions,
+  });
 
   /// Copies the [TextFieldConfiguration] and only changes the specified
   /// properties

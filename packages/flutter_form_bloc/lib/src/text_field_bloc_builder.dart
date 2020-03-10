@@ -109,7 +109,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20.0),
     this.dragStartBehavior = DragStartBehavior.start,
-    this.enableInteractiveSelection,
+    this.enableInteractiveSelection = true,
     this.onTap,
     this.buildCounter,
     this.scrollController,
@@ -128,6 +128,9 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.suggestionsErrorBuilder,
     this.keepSuggestionsOnLoading = false,
     this.showSuggestionsWhenIsEmpty = true,
+    this.readOnly = false,
+    this.toolbarOptions,
+    this.enableSuggestions = true,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(suggestionsAnimationDuration != null),
@@ -514,6 +517,19 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.enableInteractiveSelection}
   final bool enableInteractiveSelection;
 
+  /// {@macro flutter.widgets.editableText.readOnly}
+  final bool readOnly;
+
+  /// Configuration of toolbar options.
+  ///
+  /// If not set, select all and paste will default to be enabled. Copy and cut
+  /// will be disabled if [obscureText] is true. If [readOnly] is true,
+  /// paste and cut will be disabled regardless.
+  final ToolbarOptions toolbarOptions;
+
+  /// {@macro flutter.services.textInput.enableSuggestions}
+  final bool enableSuggestions;
+
   /// {@macro flutter.widgets.scrollable.dragStartBehavior}
   final DragStartBehavior dragStartBehavior;
 
@@ -701,6 +717,18 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               keyboardAppearance: widget.keyboardAppearance,
               scrollPadding: widget.scrollPadding,
               focusNode: _effectiveFocusNode,
+              buildCounter: widget.buildCounter,
+              dragStartBehavior: widget.dragStartBehavior,
+              enableInteractiveSelection: widget.enableInteractiveSelection,
+              enableSuggestions: widget.enableSuggestions,
+              expands: widget.expands,
+              readOnly: widget.readOnly,
+              scrollController: widget.scrollController,
+              scrollPhysics: widget.scrollPhysics,
+              showCursor: widget.showCursor,
+              strutStyle: widget.strutStyle,
+              textAlignVertical: widget.textAlignVertical,
+              toolbarOptions: widget.toolbarOptions,
             ),
             onTap: widget.onTap,
             hideOnLoading: widget.hideOnLoadingSuggestions,

@@ -1,3 +1,19 @@
+# 0.10.3
+
+* Added/Fixed properties of `TextFieldBlocBuilder`:
+    * readOnly
+    * buildCounter
+    * dragStartBehavior
+    * enableInteractiveSelection
+    * enableSuggestions
+    * expands
+    * scrollController
+    * strutStyle
+    * showCursor
+    * scrollPhysics
+    * textAlignVertical
+    * toolbarOptions
+
 # 0.10.2
 
 * Fixed `minLines` property of `TextFieldBlocBuilder`.
