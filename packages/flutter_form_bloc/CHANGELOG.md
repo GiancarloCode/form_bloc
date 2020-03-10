@@ -14,6 +14,9 @@
     * textAlignVertical
     * toolbarOptions
 
+* Added controlAffinity property to:
+  * CheckboxFieldBlocBuilder    
+
 # 0.10.2
 
 * Fixed `minLines` property of `TextFieldBlocBuilder`.

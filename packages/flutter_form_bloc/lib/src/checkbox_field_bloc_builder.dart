@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
-
 import 'package:form_bloc/form_bloc.dart';
+import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 
 /// A material design checkbox.
 class CheckboxFieldBlocBuilder extends StatelessWidget {
@@ -17,13 +17,18 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
     this.activeColor,
     this.padding,
     this.nextFocusNode,
+    this.controlAffinity = FieldBlocBuilderControlAffinity.leading,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
+        assert(controlAffinity != null),
         assert(isEnabled != null),
         assert(body != null),
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final BooleanFieldBloc booleanFieldBloc;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilderControlAffinity}
+  final FieldBlocBuilderControlAffinity controlAffinity;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder errorBuilder;
@@ -67,19 +72,15 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
           padding: padding,
           child: InputDecorator(
             decoration: Style.inputDecorationWithoutBorder.copyWith(
-              prefixIcon: Checkbox(
-                checkColor: Style.getIconColor(
-                  customColor: checkColor,
-                  defaultColor: Theme.of(context).toggleableActiveColor,
-                ),
-                activeColor: activeColor,
-                value: state.value,
-                onChanged: fieldBlocBuilderOnChange<bool>(
-                  isEnabled: isEnabled,
-                  nextFocusNode: nextFocusNode,
-                  onChanged: booleanFieldBloc.updateValue,
-                ),
-              ),
+              contentPadding: EdgeInsets.all(0),
+              prefixIcon:
+                  controlAffinity == FieldBlocBuilderControlAffinity.leading
+                      ? _buildCheckbox(context: context, state: state)
+                      : null,
+              suffixIcon:
+                  controlAffinity == FieldBlocBuilderControlAffinity.trailing
+                      ? _buildCheckbox(context: context, state: state)
+                      : null,
               errorText: Style.getErrorText(
                 context: context,
                 errorBuilder: errorBuilder,
@@ -88,11 +89,31 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
             ),
             child: DefaultFieldBlocBuilderTextStyle(
               isEnabled: isEnabled,
-              child: body,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: 48),
+                child: body,
+              ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Checkbox _buildCheckbox(
+      {@required BuildContext context, @required BooleanFieldBlocState state}) {
+    return Checkbox(
+      checkColor: Style.getIconColor(
+        customColor: checkColor,
+        defaultColor: Theme.of(context).toggleableActiveColor,
+      ),
+      activeColor: activeColor,
+      value: state.value,
+      onChanged: fieldBlocBuilderOnChange<bool>(
+        isEnabled: isEnabled,
+        nextFocusNode: nextFocusNode,
+        onChanged: booleanFieldBloc.updateValue,
+      ),
     );
   }
 }
