@@ -266,7 +266,9 @@ class _DropdownFieldBlocBuilderState<Value>
     if (widget.selectFieldBloc.state.items.isNotEmpty) {
       if (_keyboardUtils.isKeyboardOpen) {
         _effectiveFocusNode.requestFocus();
-        await Future<void>.delayed(Duration(milliseconds: 10));
+        await Future<void>.delayed(Duration(
+            milliseconds:
+                widget.millisecondsForShowDropdownItemsWhenKeyboardIsOpen));
         setState(() {
           focusedAfterKeyboardClosing = true;
         });
