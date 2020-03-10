@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -109,4 +110,9 @@ class FieldBlocBuilderDocs {
   /// Defaults to [ThemeData.toggleableActiveColor].
   /// {@endtemplate}
   Color activeColor;
+
+  /// {@template flutter_form_bloc.FieldBlocBuilderControlAffinity}
+  // Where to place the control in widgets
+  /// {@endtemplate}
+  FieldBlocBuilderControlAffinity controlAffinity;
 }
