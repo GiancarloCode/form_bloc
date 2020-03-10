@@ -1,5 +1,6 @@
 # 0.10.3
 
+* Added `SwitchFieldBlocBuilder`.
 * Added/Fixed properties of `TextFieldBlocBuilder`:
     * readOnly
     * buildCounter
@@ -13,9 +14,8 @@
     * scrollPhysics
     * textAlignVertical
     * toolbarOptions
-
-* Added controlAffinity property to:
-  * CheckboxFieldBlocBuilder    
+* Added `controlAffinity` property to `CheckboxFieldBlocBuilder`.  
+* Documentation Updates.
 
 # 0.10.2
 

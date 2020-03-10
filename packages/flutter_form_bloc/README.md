@@ -78,6 +78,7 @@ Before to use this package you need to know the [core concepts of bloc package](
 * [DropdownFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/DropdownFieldBlocBuilder-class.html): A material design dropdown.
 * [RadioButtonGroupFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/RadioButtonGroupFieldBlocBuilder-class.html): A material design radio buttons.
 * [CheckboxFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/CheckboxFieldBlocBuilder-class.html): A material design checkbox.
+* [SwitchFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/SwitchFieldBlocBuilder-class.html): A material design switch.
 * [CheckboxGroupFieldBlocBuilder](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/CheckboxGroupFieldBlocBuilder-class.html): A material design checkboxes.
 * [FormBlocListener](https://pub.dev/documentation/flutter_form_bloc/latest/flutter_form_bloc/FormBlocListener-class.html): BlocListener that reacts to the state changes of the FormBloc.
 
