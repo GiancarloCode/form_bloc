@@ -1,3 +1,6 @@
+# 0.10.5
+* Fixed `decoration.hintText` property of `DropdownFieldBlocBuilder`
+
 # 0.10.4
 * Fixed `DropdownFieldBlocBuilder` focus [28](https://github.com/GiancarloCode/form_bloc/issues/28).
 

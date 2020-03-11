@@ -26,6 +26,7 @@ class DropdownFieldBlocBuilder<Value> extends StatefulWidget {
     this.millisecondsForShowDropdownItemsWhenKeyboardIsOpen = 600,
     this.nextFocusNode,
     this.focusNode,
+    this.textAlign,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -67,6 +68,9 @@ class DropdownFieldBlocBuilder<Value> extends StatefulWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
+
+  /// How the text in the decoration should be aligned horizontally.
+  final TextAlign textAlign;
 
   _DropdownFieldBlocBuilderState<Value> createState() =>
       _DropdownFieldBlocBuilderState();
@@ -176,6 +180,7 @@ class _DropdownFieldBlocBuilderState<Value>
                 ),
                 InputDecorator(
                   decoration: decoration,
+                  textAlign: widget.textAlign,
                   isEmpty:
                       fieldState.value == null && decoration.hintText == null,
                   child: Builder(
@@ -189,7 +194,16 @@ class _DropdownFieldBlocBuilderState<Value>
                           height == 0) {
                         _dropdownHeightController.add(height);
                       }
-
+                      if (fieldState.value == null &&
+                          decoration.hintText != null) {
+                        return Text(
+                          decoration.hintText,
+                          style: decoration.hintStyle,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: widget.textAlign,
+                          maxLines: decoration.hintMaxLines,
+                        );
+                      }
                       return Text(
                         text,
                         maxLines: 1,
