@@ -152,6 +152,7 @@ class _DropdownFieldBlocBuilderState<Value>
           return DefaultFieldBlocBuilderPadding(
             padding: widget.padding,
             child: Stack(
+              fit: StackFit.passthrough,
               children: <Widget>[
                 DropdownButtonHideUnderline(
                   child: Container(

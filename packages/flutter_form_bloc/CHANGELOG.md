@@ -1,3 +1,6 @@
+# 0.10.6
+* Fixed bug of size on first rendered of `DropdownFieldBlocBuilder`.
+
 # 0.10.5
 * Fixed `decoration.hintText` property of `DropdownFieldBlocBuilder`
 
