@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_form_bloc_example/bloc_delegate.dart';
 import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form.dart';
 import 'package:flutter_form_bloc_example/forms/complex_login_form.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_form_bloc_example/forms/simple_register_form.dart';
 import 'package:flutter_form_bloc_example/styles/themes.dart';
 import 'package:flutter_form_bloc_example/widgets/widgets.dart';
 import 'package:form_bloc/form_bloc.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +37,11 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Themes.formTheme,
+      localizationsDelegates: [
+        GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        FormBlocLocalizations.delegate,
+      ],
       initialRoute: 'home',
       routes: {
         'home': (context) => HomeScreen(),
@@ -88,8 +95,7 @@ class ListItem extends StatelessWidget {
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
       ),
-      onTap: () => Navigator.of(context)
-          .push<void>(MaterialPageRoute(builder: (_) => form.widget)),
+      onTap: () => Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => form.widget)),
     );
   }
 }

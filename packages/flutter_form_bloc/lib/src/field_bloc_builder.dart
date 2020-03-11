@@ -2,26 +2,27 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
+import 'package:flutter_form_bloc/generated/l10n.dart';
+
 class FieldBlocBuilder {
-  static FieldBlocErrorBuilder defaultErrorBuilder =
-      (BuildContext context, String error) {
+  static FieldBlocErrorBuilder defaultErrorBuilder = (BuildContext context, String error) {
     switch (error) {
       case FieldBlocValidatorsErrors.requiredInputFieldBloc:
-        return 'This field is required.';
+        return FormBlocLocalizations.of(context).requiredInputFieldBloc;
       case FieldBlocValidatorsErrors.requiredBooleanFieldBloc:
-        return 'This field is required.';
+        return FormBlocLocalizations.of(context).requiredBooleanFieldBloc;
       case FieldBlocValidatorsErrors.requiredTextFieldBloc:
-        return 'This field is required.';
+        return FormBlocLocalizations.of(context).requiredTextFieldBloc;
       case FieldBlocValidatorsErrors.requiredSelectFieldBloc:
-        return 'Please select an option.';
+        return FormBlocLocalizations.of(context).requiredSelectFieldBloc;
       case FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc:
-        return 'Please select an option.';
+        return FormBlocLocalizations.of(context).requiredMultiSelectFieldBloc;
       case FieldBlocValidatorsErrors.email:
-        return 'The email address is badly formatted.';
+        return FormBlocLocalizations.of(context).email;
       case FieldBlocValidatorsErrors.passwordMin6Chars:
-        return 'The password must contain at least 6 characters.';
+        return FormBlocLocalizations.of(context).passwordMin6Chars;
       case FieldBlocValidatorsErrors.confirmPassword:
-        return 'Must be equal to password.';
+        return FormBlocLocalizations.of(context).confirmPassword;
       default:
         return error;
     }

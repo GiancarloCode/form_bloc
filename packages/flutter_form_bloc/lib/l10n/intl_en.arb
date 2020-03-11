@@ -1,0 +1,10 @@
+{
+  "requiredInputFieldBloc": "This field is required.",
+  "requiredBooleanFieldBloc": "This field is required.",
+  "requiredTextFieldBloc": "This field is required.",
+  "requiredSelectFieldBloc": "Please select an option.",
+  "requiredMultiSelectFieldBloc": "Please select an option.",
+  "email": "The email address is badly formatted.",
+  "passwordMin6Chars": "The password must contain at least 6 characters.",
+  "confirmPassword": "Must be equal to password."
+}

@@ -3,6 +3,8 @@ library flutter_form_bloc;
 export 'package:form_bloc/form_bloc.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 
+export 'generated/l10n.dart' show FormBlocLocalizations;
+
 export 'src/field_bloc_builder.dart';
 export 'src/field_bloc_builder_control_affinity.dart';
 export 'src/text_field_bloc_builder.dart';
