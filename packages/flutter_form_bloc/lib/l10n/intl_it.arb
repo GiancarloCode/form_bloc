@@ -4,7 +4,7 @@
   "requiredTextFieldBloc": "Questo campo è richiesto.",
   "requiredSelectFieldBloc": "Seleziona un'opzione.",
   "requiredMultiSelectFieldBloc": "Seleziona un'opzione.",
-  "email": "L'indirizzo email non è mal formattato.",
+  "email": "L'indirizzo email è mal formattato.",
   "passwordMin6Chars": "La password deve contenere almeno 6 caratteri.",
   "confirmPassword": "Deve essere uguale alla password."
 }

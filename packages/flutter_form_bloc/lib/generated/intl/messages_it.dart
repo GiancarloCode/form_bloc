@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "confirmPassword" : MessageLookupByLibrary.simpleMessage("Deve essere uguale alla password."),
-    "email" : MessageLookupByLibrary.simpleMessage("L\'indirizzo email non è mal formattato."),
+    "email" : MessageLookupByLibrary.simpleMessage("L\'indirizzo email è mal formattato."),
     "passwordMin6Chars" : MessageLookupByLibrary.simpleMessage("La password deve contenere almeno 6 caratteri."),
     "requiredBooleanFieldBloc" : MessageLookupByLibrary.simpleMessage("Questo campo è richiesto."),
     "requiredInputFieldBloc" : MessageLookupByLibrary.simpleMessage("Questo campo è richiesto."),
