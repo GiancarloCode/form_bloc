@@ -72,6 +72,9 @@ class DropdownFieldBlocBuilder<Value> extends StatefulWidget {
   /// How the text in the decoration should be aligned horizontally.
   final TextAlign textAlign;
 
+  /// Callback when value has changed
+  final Function() onChanged;
+
   _DropdownFieldBlocBuilderState<Value> createState() =>
       _DropdownFieldBlocBuilderState();
 }
@@ -171,6 +174,7 @@ class _DropdownFieldBlocBuilderState<Value>
                         onChanged: (value) {
                           widget.selectFieldBloc.updateValue(value);
                           FocusScope.of(context).requestFocus(FocusNode());
+                          widget.onChanged();
                         },
                       ),
                       items: fieldState.items.isEmpty
