@@ -27,7 +27,7 @@ class DropdownFieldBlocBuilder<Value> extends StatefulWidget {
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
-    @required this.onChanged,
+    this.onChanged,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -175,7 +175,9 @@ class _DropdownFieldBlocBuilderState<Value>
                         onChanged: (value) {
                           widget.selectFieldBloc.updateValue(value);
                           FocusScope.of(context).requestFocus(FocusNode());
-                          widget.onChanged();
+                          if (widget.onChanged != null) {
+                            widget.onChanged();
+                          }
                         },
                       ),
                       items: fieldState.items.isEmpty
