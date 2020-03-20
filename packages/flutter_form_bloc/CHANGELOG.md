@@ -1,3 +1,6 @@
+# 0.10.7
+* Fixed bug in `DropdownFieldBlocBuilder` and `TextFieldBlocBuilder` on Flutter Web.
+
 # 0.10.6
 * Fixed bug of size on first rendered of `DropdownFieldBlocBuilder`.
 

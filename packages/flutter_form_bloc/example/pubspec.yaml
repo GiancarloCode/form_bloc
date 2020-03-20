@@ -15,8 +15,11 @@ dependencies:
   shared_preferences: ^0.5.6+1
   liquid_progress_indicator: ^0.3.2
   image_picker: ^0.6.2+3 
-  flushbar: ^1.9.1
-
+  # flushbar: ^1.9.1
+  flushbar:
+    git:
+      url: git://github.com/valterh4ck3r/flushbar.git
+  groovin_widgets: ^1.4.5
 
 dev_dependencies:
   flutter_test:
