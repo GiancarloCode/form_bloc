@@ -28,7 +28,7 @@ jobs:
         run: flutter build web
         working-directory: ./flutter_form_bloc
       - name: Deploy
-      - run: |
+        run: |
           cd build/web
           git init
           git config --global user.email GiancarloCode@gmail.com 
