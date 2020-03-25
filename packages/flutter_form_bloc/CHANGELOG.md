@@ -1,3 +1,6 @@
+# 0.11.0+1
+* Fix pub health issues
+
 # 0.11.0
 ## Breaking changes
 

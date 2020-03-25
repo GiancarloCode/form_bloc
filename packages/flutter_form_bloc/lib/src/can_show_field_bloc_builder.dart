@@ -97,6 +97,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
 
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
     final _fieldBloc = widget.fieldBloc as Bloc;
 
     if (_showOnFirstFrame == null) {
