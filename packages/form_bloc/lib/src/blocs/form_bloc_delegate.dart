@@ -55,7 +55,10 @@ class FormBlocDelegate extends BlocDelegate {
   void onEvent(Bloc bloc, Object event) {
     var notify = true;
 
-    if (bloc is SingleFieldBloc && !notifyOnFieldBlocEvent) {
+    if ((bloc is SingleFieldBloc ||
+            bloc is GroupFieldBloc ||
+            bloc is ListFieldBloc) &&
+        !notifyOnFieldBlocEvent) {
       notify = false;
     } else if (bloc is FormBloc && !notifyOnFormBlocEvent) {
       notify = false;
@@ -71,7 +74,10 @@ class FormBlocDelegate extends BlocDelegate {
   void onTransition(Bloc bloc, Transition transition) {
     var notify = true;
 
-    if (bloc is SingleFieldBloc && !notifyOnFieldBlocTransition) {
+    if ((bloc is SingleFieldBloc ||
+            bloc is GroupFieldBloc ||
+            bloc is ListFieldBloc) &&
+        !notifyOnFieldBlocTransition) {
       notify = false;
     } else if (bloc is FormBloc && !notifyOnFormBlocTransition) {
       notify = false;
@@ -87,7 +93,10 @@ class FormBlocDelegate extends BlocDelegate {
   void onError(Bloc bloc, Object error, StackTrace stacktrace) {
     var notify = true;
 
-    if (bloc is SingleFieldBloc && !notifyOnFieldBlocError) {
+    if ((bloc is SingleFieldBloc ||
+            bloc is GroupFieldBloc ||
+            bloc is ListFieldBloc) &&
+        !notifyOnFieldBlocError) {
       notify = false;
     } else if (bloc is FormBloc && !notifyOnFormBlocError) {
       notify = false;

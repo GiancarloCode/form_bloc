@@ -9,14 +9,14 @@ void main() {
         final suggestions = (String pattern) async => [true];
         final validators = [(bool value) => value ? 'error' : null];
 
-        final fieldBloc = BooleanFieldBloc(
+        final fieldBloc = BooleanFieldBloc<dynamic>(
           name: 'name',
           initialValue: false,
           validators: validators,
           suggestions: suggestions,
         );
 
-        final state1 = BooleanFieldBlocState(
+        final state1 = BooleanFieldBlocState<dynamic>(
           value: false,
           error: null,
           isInitial: true,
@@ -48,11 +48,11 @@ void main() {
         BooleanFieldBlocState initialState;
         List<BooleanFieldBlocState> expectedStates;
 
-        fieldBloc = BooleanFieldBloc(
+        fieldBloc = BooleanFieldBloc<dynamic>(
           name: 'name',
         );
 
-        initialState = BooleanFieldBlocState(
+        initialState = BooleanFieldBlocState<dynamic>(
           value: false,
           error: null,
           isInitial: true,
@@ -76,13 +76,15 @@ void main() {
 
         fieldBloc.close();
 
-        fieldBloc = BooleanFieldBloc(
+        fieldBloc = BooleanFieldBloc<dynamic>(
           name: 'name',
+          isRequired: true,
+          initialValue: true,
           validators: [(value) => 'error'],
         );
 
-        initialState = BooleanFieldBlocState(
-          value: false,
+        initialState = BooleanFieldBlocState<dynamic>(
+          value: true,
           error: 'error',
           isInitial: true,
           suggestions: null,
@@ -108,9 +110,9 @@ void main() {
         BooleanFieldBlocState initialState;
         List<BooleanFieldBlocState> expectedStates;
 
-        fieldBloc = BooleanFieldBloc(name: 'name', initialValue: null);
+        fieldBloc = BooleanFieldBloc<dynamic>(name: 'name', initialValue: null);
 
-        initialState = BooleanFieldBlocState(
+        initialState = BooleanFieldBlocState<dynamic>(
           value: false,
           error: null,
           isInitial: true,
@@ -134,12 +136,12 @@ void main() {
       });
 
       test('clear method.', () {
-        final fieldBloc = BooleanFieldBloc(
+        final fieldBloc = BooleanFieldBloc<dynamic>(
           name: 'name',
           initialValue: true,
         );
 
-        final state1 = BooleanFieldBlocState(
+        final state1 = BooleanFieldBlocState<dynamic>(
           value: true,
           error: null,
           isInitial: true,
@@ -164,6 +166,23 @@ void main() {
 
         fieldBloc.clear();
       });
+    });
+
+    test('toJson return value', () async {
+      final fieldBloc = BooleanFieldBloc<dynamic>();
+
+      expect(fieldBloc.state.toJson(), false);
+    });
+
+    test('extraData added to extraData in state', () async {
+      final expectedExtraData = 0;
+
+      final fieldBloc = BooleanFieldBloc<int>(extraData: 0);
+
+      expect(
+        fieldBloc.state.extraData,
+        expectedExtraData,
+      );
     });
   });
 }

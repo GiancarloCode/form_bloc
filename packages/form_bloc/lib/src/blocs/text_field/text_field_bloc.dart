@@ -4,12 +4,16 @@ part of '../field/field_bloc.dart';
 /// it is also used to obtain `int` and `double` values
 /// ​​of texts thanks to the methods
 /// [valueToInt] and [valueToDouble].
-class TextFieldBloc
-    extends SingleFieldBloc<String, String, TextFieldBlocState> {
+class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
+    TextFieldBlocState<ExtraData>, ExtraData> {
+  /// ## TextFieldBloc<ExtraData>
+  ///
   /// ### Properties:
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
   /// it is available in [FieldBlocState.name].
+  /// * [isRequired] : It is `true`, when the value is `''` an empty string or `null`, it will add
+  /// [FieldBlocValidatorsErrors.required].
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty `String` ('').
   /// And if the value is `null` it will be a empty `String` ('').
@@ -34,13 +38,16 @@ class TextFieldBloc
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
+  /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   TextFieldBloc({
-    @required String name,
+    String name,
+    bool isRequired = false,
     String initialValue = '',
     List<Validator<String>> validators,
     List<AsyncValidator<String>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<String> suggestions,
+    ExtraData extraData,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue ?? '',
@@ -49,10 +56,24 @@ class TextFieldBloc
           asyncValidatorDebounceTime,
           suggestions,
           name,
+          (value) => value,
+          extraData,
+          isRequired,
+          _requiredTextFieldBloc,
         );
 
+  /// Check if the [string] is not empty.
+  ///
+  /// Returns [FieldBlocValidatorsErrors.requiredTextFieldBloc].
+  static String _requiredTextFieldBloc(String string) {
+    if (string != null && string.isNotEmpty) {
+      return null;
+    }
+    return FieldBlocValidatorsErrors.required;
+  }
+
   @override
-  TextFieldBlocState get initialState => TextFieldBlocState(
+  TextFieldBlocState<ExtraData> get initialState => TextFieldBlocState(
         value: _initialValue,
         error: _getInitialStateError,
         isInitial: true,
@@ -60,6 +81,8 @@ class TextFieldBloc
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
         name: _name,
+        toJson: _toJson,
+        extraData: _extraData,
       );
 
   /// Return the parsed `value` to `int` of the current state.

@@ -7,21 +7,19 @@ void main() {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => ['1'];
-        final validators = [
-          FieldBlocValidators.requiredTextFieldBloc,
-          (String value) => 'error'
-        ];
+        final validators = [(String value) => 'error'];
 
-        final fieldBloc = TextFieldBloc(
+        final fieldBloc = TextFieldBloc<dynamic>(
           name: 'name',
+          isRequired: true,
           initialValue: '',
           validators: validators,
           suggestions: suggestions,
         );
 
-        final state1 = TextFieldBlocState(
+        final state1 = TextFieldBlocState<dynamic>(
           value: '',
-          error: FieldBlocValidatorsErrors.requiredTextFieldBloc,
+          error: FieldBlocValidatorsErrors.required,
           isInitial: true,
           suggestions: suggestions,
           isValidated: true,
@@ -52,11 +50,11 @@ void main() {
       TextFieldBlocState initialState;
       List<TextFieldBlocState> expectedStates;
 
-      fieldBloc = TextFieldBloc(
+      fieldBloc = TextFieldBloc<dynamic>(
         name: 'name',
       );
 
-      initialState = TextFieldBlocState(
+      initialState = TextFieldBlocState<dynamic>(
         value: '',
         error: null,
         isInitial: true,
@@ -80,13 +78,14 @@ void main() {
 
       fieldBloc.close();
 
-      fieldBloc = TextFieldBloc(
+      fieldBloc = TextFieldBloc<dynamic>(
         name: 'name',
+        initialValue: 'a',
         validators: [(value) => 'error'],
       );
 
-      initialState = TextFieldBlocState(
-        value: '',
+      initialState = TextFieldBlocState<dynamic>(
+        value: 'a',
         error: 'error',
         isInitial: true,
         suggestions: null,
@@ -109,12 +108,12 @@ void main() {
     });
 
     test('clear method.', () {
-      final fieldBloc = TextFieldBloc(
+      final fieldBloc = TextFieldBloc<dynamic>(
         name: 'name',
         initialValue: '1',
       );
 
-      final state1 = TextFieldBlocState(
+      final state1 = TextFieldBlocState<dynamic>(
         value: '1',
         error: null,
         isInitial: true,
@@ -145,9 +144,9 @@ void main() {
       TextFieldBlocState initialState;
       List<TextFieldBlocState> expectedStates;
 
-      fieldBloc = TextFieldBloc(name: 'name', initialValue: null);
+      fieldBloc = TextFieldBloc<dynamic>(name: 'name', initialValue: null);
 
-      initialState = TextFieldBlocState(
+      initialState = TextFieldBlocState<dynamic>(
         value: '',
         error: null,
         isInitial: true,
@@ -167,6 +166,23 @@ void main() {
       expect(
         fieldBloc,
         emitsInOrder(expectedStates),
+      );
+    });
+
+    test('toJson return value', () async {
+      final fieldBloc = TextFieldBloc<dynamic>(initialValue: 'hello');
+
+      expect(fieldBloc.state.toJson(), 'hello');
+    });
+
+    test('extraData added to extraData in state', () async {
+      final expectedExtraData = 0;
+
+      final fieldBloc = TextFieldBloc<int>(extraData: 0);
+
+      expect(
+        fieldBloc.state.extraData,
+        expectedExtraData,
       );
     });
   });

@@ -2,38 +2,34 @@ import 'dart:async';
 import 'dart:collection' show LinkedHashSet;
 
 import 'package:equatable/equatable.dart';
+import 'package:form_bloc/src/field_bloc_validators.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:pedantic/pedantic.dart';
-import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:form_bloc/src/blocs/form/form_bloc.dart';
+import 'package:uuid/uuid.dart';
 import '../form_bloc_delegate.dart';
-
-import '../input_field/input_field_state.dart';
-import '../text_field/text_field_state.dart';
-import '../boolean_field/boolean_field_state.dart';
-import '../select_field/select_field_state.dart';
-import '../multi_select_field/multi_select_field_state.dart';
-
-export '../input_field/input_field_state.dart';
-export '../text_field/text_field_state.dart';
-export '../boolean_field/boolean_field_state.dart';
-export '../select_field/select_field_state.dart';
-export '../multi_select_field/multi_select_field_state.dart';
 
 part 'field_event.dart';
 part 'field_state.dart';
-part 'field_bloc_list.dart';
-part 'group_field_bloc.dart';
+part '../list_field/list_field_bloc.dart';
+part '../group_field/group_field_bloc.dart';
 
+part '../form/form_bloc_utils.dart';
 part '../input_field/input_field_bloc.dart';
 part '../text_field/text_field_bloc.dart';
 part '../boolean_field/boolean_field_bloc.dart';
 part '../select_field/select_field_bloc.dart';
 part '../multi_select_field/multi_select_field_bloc.dart';
+
+part '../input_field/input_field_state.dart';
+part '../text_field/text_field_state.dart';
+part '../boolean_field/boolean_field_state.dart';
+part '../select_field/select_field_state.dart';
+part '../multi_select_field/multi_select_field_state.dart';
 
 /// Signature for the [Validator] function which takes [value]
 /// and should returns a `String` error, and if doesn't have error
@@ -57,24 +53,10 @@ typedef Suggestions<Value> = Future<List<Value>> Function(String pattern);
 ///   * [SelectFieldBloc].
 ///   * [MultiSelectFieldBloc].
 /// * [GroupFieldBloc].
-/// * [FieldBlocList].
-mixin FieldBloc {
-  InputFieldBloc<Value> asInputFieldBloc<Value>() =>
-      this as InputFieldBloc<Value>;
-
-  TextFieldBloc get asTextFieldBloc => this as TextFieldBloc;
-
-  BooleanFieldBloc get asBooleanFieldBloc => this as BooleanFieldBloc;
-
-  SelectFieldBloc<Value> asSelectFieldBloc<Value>() =>
-      this as SelectFieldBloc<Value>;
-
-  MultiSelectFieldBloc<Value> asMultiSelectFieldBloc<Value>() =>
-      this as MultiSelectFieldBloc<Value>;
-
-  FieldBlocList get asFieldBlocList => this as FieldBlocList;
-
-  GroupFieldBloc get asGroupFieldBloc => this as GroupFieldBloc;
+/// * [ListFieldBloc].
+abstract class FieldBloc {
+  // /// Add the [formBloc] to the fieldBloc
+  // void _addFormBlocAndAutoValidate(FormBloc formBloc, bool autoValidate);
 }
 
 /// The base class with the common behavior
@@ -85,16 +67,32 @@ mixin FieldBloc {
 /// * [BooleanFieldBloc].
 /// * [SelectFieldBloc].
 /// * [MultiSelectFieldBloc].
-abstract class SingleFieldBloc<Value, Suggestion,
-        State extends FieldBlocState<Value, Suggestion>>
-    extends Bloc<FieldBlocEvent, State> with FieldBloc {
+abstract class SingleFieldBloc<
+    Value,
+    Suggestion,
+    State extends FieldBlocState<Value, Suggestion, ExtraData>,
+    ExtraData> extends Bloc<FieldBlocEvent, State> with FieldBloc {
   final Value _initialValue;
+
   bool _autoValidate = true;
+
   List<Validator<Value>> _validators;
+
   List<AsyncValidator<Value>> _asyncValidators;
+
   final Duration _asyncValidatorDebounceTime;
+
   final Suggestions<Suggestion> _suggestions;
+
   final String _name;
+
+  final dynamic Function(Value value) _toJson;
+
+  final ExtraData _extraData;
+
+  final bool _isRequired;
+
+  final Validator<Value> _isRequiredValidator;
 
   final PublishSubject<Value> _asyncValidatorsSubject = PublishSubject();
   StreamSubscription<UpdateFieldBlocStateError> _asyncValidatorsSubscription;
@@ -109,10 +107,16 @@ abstract class SingleFieldBloc<Value, Suggestion,
     List<AsyncValidator<Value>> asyncValidators,
     this._asyncValidatorDebounceTime,
     this._suggestions,
-    this._name,
+    String name,
+    this._toJson,
+    this._extraData,
+    bool isRequired,
+    this._isRequiredValidator,
   )   : assert(_asyncValidatorDebounceTime != null),
         _validators = validators ?? [],
-        _asyncValidators = asyncValidators ?? [] {
+        _asyncValidators = asyncValidators ?? [],
+        _name = name ?? Uuid().v1(),
+        _isRequired = isRequired ?? false {
     FormBlocDelegate.overrideDelegateOfBlocSupervisor();
     _setUpAsyncValidatorsSubscription();
   }
@@ -140,6 +144,41 @@ abstract class SingleFieldBloc<Value, Suggestion,
     unawaited(super.close());
   }
 
+  /// Returns a [StreamSubscription<R>],
+  ///
+  /// [onData] is called with the state every time the values changes,
+  /// after [debounceTime].
+  ///
+  /// [onStart] is called without [debounceTime] and before [onData]
+  /// every time the values changes.
+  ///
+  /// [onFinish] listen [onData] with a [switchMap],
+  /// therefore it will only receive elements of the last change.
+  StreamSubscription<dynamic> onValueChanges<R>({
+    Duration debounceTime = const Duration(),
+    void Function(State previous, State current) onStart,
+    @required Stream<R> Function(State previous, State current) onData,
+    void Function(State previous, State current, R result) onFinish,
+  }) {
+    assert(debounceTime != null, 'debounceTime can\'t be null');
+    assert(onData != null, 'onData function is required');
+
+    final _onStart = onStart ?? (_, __) {};
+
+    final _onFinish = onFinish ?? (State p, State c, R r) {};
+
+    return distinct((p, c) => p.value == c.value)
+        .pairwise()
+        .doOnData((states) => _onStart(states.first, states.last))
+        .debounceTime(debounceTime)
+        .switchMap<List<dynamic>>(
+          (states) => onData(states.first, states.last)
+              .map((r) => <dynamic>[states.first, states.last, r]),
+        )
+        .listen((list) =>
+            _onFinish(list[0] as State, list[1] as State, list[2] as R));
+  }
+
   /// Set [value] to the `value` of the current state.
   /// {@template form_bloc.field_bloc.update_value}
   ///
@@ -147,7 +186,6 @@ abstract class SingleFieldBloc<Value, Suggestion,
   /// `state` of the [FormBloc] that contains this `fieldBloc`
   /// is [FormBlocSubmitting].
   /// {@endtemplate}
-  ///
   void updateValue(Value value) => add(UpdateFieldBlocValue(value));
 
   /// Set [value] to the `value` and set `isInitial` to `true`
@@ -211,6 +249,10 @@ abstract class SingleFieldBloc<Value, Suggestion,
       add(AddFieldBlocError(
           value: value, error: error, isPermanent: isPermanent ?? false));
 
+  /// Updates the `extraData` of the current state.
+  void updateExtraData(ExtraData extraData) =>
+      add(UpdateFieldBlocExtraData<ExtraData>(extraData));
+
   @mustCallSuper
   @override
   Stream<State> mapEventToState(FieldBlocEvent event) async* {
@@ -228,12 +270,8 @@ abstract class SingleFieldBloc<Value, Suggestion,
       yield* _onSelectSuggestion(event);
     } else if (event is ValidateFieldBloc) {
       yield* _onValidateFieldBloc(event);
-    } else if (event is DisableFieldBlocAutoValidate) {
-      yield* _onDisableFieldBlocAutoValidate();
     } else if (event is ResetFieldBlocStateIsValidated) {
       yield* _onResetFieldBlocStateIsValidated();
-    } else if (event is UpdateFieldBlocStateFormBlocState) {
-      yield* _onUpdateFieldBlocStateFormBlocState(event);
     } else if (event is UpdateFieldBlocStateError) {
       yield* _onUpdateFieldBlocStateError(event);
     } else if (event is UpdateFieldBlocState) {
@@ -246,6 +284,10 @@ abstract class SingleFieldBloc<Value, Suggestion,
       yield* _onAddAsyncValidators(event);
     } else if (event is UpdateAsyncValidators<Value>) {
       yield* _onUpdateAsyncValidators(event);
+    } else if (event is UpdateFieldBlocExtraData<ExtraData>) {
+      yield* _onUpdateFieldBlocExtraData(event);
+    } else if (event is AddFormBlocAndAutoValidateToFieldBloc) {
+      yield* _onAddFormBlocAndAutoValidateToFieldBloc(event);
     } else {
       yield* _mapCustomEventToState(event);
     }
@@ -269,7 +311,17 @@ abstract class SingleFieldBloc<Value, Suggestion,
     String error;
 
     if (forceValidation || _autoValidate) {
-      if (error == null && _validators != null) {
+      final isRequiredError = _isRequiredValidator(value);
+
+      if (_isRequired) {
+        error = isRequiredError;
+      }
+
+      final hasError = error != null;
+      final hasRequiredError = isRequiredError != null;
+      final hasValidators = _validators != null;
+
+      if (!hasError && !hasRequiredError && hasValidators) {
         for (var validator in _validators) {
           error = validator(value);
           if (error != null) return error;
@@ -285,16 +337,27 @@ abstract class SingleFieldBloc<Value, Suggestion,
   /// Check [value] in each async validator.
   ///
   /// Returns a `bool` indicating if is validating.
-
   bool _getAsyncValidatorsError({
     @required Value value,
     @required String error,
     bool forceValidation = false,
   }) {
-    final isValidating = (_autoValidate || forceValidation) &&
-        error == null &&
-        _asyncValidators != null &&
+    final hasError = error != null;
+    final hasRequiredError = _isRequiredValidator(value) != null;
+    final hasAsyncValidators = _asyncValidators != null;
+
+    bool isValidating;
+
+    isValidating = (_autoValidate || forceValidation) &&
+        !hasError &&
+        hasAsyncValidators &&
         _asyncValidators.isNotEmpty;
+
+    if (!_isRequired) {
+      if (isValidating) {
+        isValidating = !hasRequiredError;
+      }
+    }
 
     if (isValidating) {
       _asyncValidatorsSubject.add(value);
@@ -308,15 +371,30 @@ abstract class SingleFieldBloc<Value, Suggestion,
       _getError(_initialValue, isInitialState: true);
 
   /// Returns the `isValidating` of the `initialState`.
-  bool get _getInitialStateIsValidating =>
-      _autoValidate &&
-      _getInitialStateError == null &&
-      _asyncValidators != null &&
-      _asyncValidators.isNotEmpty;
+  bool get _getInitialStateIsValidating {
+    final hasInitialStateError = _getInitialStateError != null;
+
+    final hasAsyncValidators = _asyncValidators != null;
+
+    var isValidating = _autoValidate &&
+        !hasInitialStateError &&
+        hasAsyncValidators &&
+        _asyncValidators.isNotEmpty;
+
+    final hasRequiredError = _isRequiredValidator(_initialValue) != null;
+
+    if (!_isRequired) {
+      if (isValidating) {
+        isValidating = !hasRequiredError;
+      }
+    }
+
+    return isValidating;
+  }
 
   bool _canUpdateValue({@required Value value, @required bool isInitialValue}) {
     final stateSnapshot = state;
-    if (stateSnapshot.formBlocState is! FormBlocSubmitting) {
+    if (stateSnapshot.formBloc?.state is! FormBlocSubmitting) {
       if (stateSnapshot.value == value && stateSnapshot.isValidated) {
         if (isInitialValue) {
           return true;
@@ -437,41 +515,11 @@ abstract class SingleFieldBloc<Value, Suggestion,
   }
 
   Stream<State> _onValidateFieldBloc(ValidateFieldBloc event) async* {
-    final error = _getError(
-      state.value,
-      forceValidation: true,
-    );
-
-    final isValidating = _getAsyncValidatorsError(
-      value: state.value,
-      error: error,
-      forceValidation: true,
-    );
-
-    yield state.copyWith(
-      error: Optional.fromNullable(error),
-      isInitial: event.updateIsInitial ? false : state.isInitial,
-      isValidated: !isValidating,
-      isValidating: isValidating,
-    ) as State;
-  }
-
-  Stream<State> _onDisableFieldBlocAutoValidate() async* {
-    _autoValidate = false;
-    yield state.copyWith(
-      error: Optional.absent(),
-      isValidated: false,
-      isValidating: false,
-    ) as State;
+    yield* _validateFieldBloc(event.updateIsInitial);
   }
 
   Stream<State> _onResetFieldBlocStateIsValidated() async* {
     yield state.copyWith(isValidated: false) as State;
-  }
-
-  Stream<State> _onUpdateFieldBlocStateFormBlocState(
-      UpdateFieldBlocStateFormBlocState event) async* {
-    yield state.copyWith(formBlocState: event.formBlocState) as State;
   }
 
   Stream<State> _onUpdateFieldBlocStateError(
@@ -503,20 +551,49 @@ abstract class SingleFieldBloc<Value, Suggestion,
           }
         },
       );
+
+      if (_autoValidate) {
+        yield* _validateFieldBloc(false);
+      } else {
+        yield state.copyWith(isValidated: false) as State;
+      }
     }
   }
 
   Stream<State> _onAddFieldBlocError(AddFieldBlocError event) async* {
     if (event.isPermanent) {
       yield* _addValidators(
-          [(value) => value == event.value ? event.error : null]);
-      add(ValidateFieldBloc(true));
+        [(value) => value == event.value ? event.error : null],
+        true,
+      );
     } else if (event.error != null) {
       yield state.copyWith(
         isValidated: false,
         isInitial: false,
         error: Optional.fromNullable(event.error),
       ) as State;
+    }
+  }
+
+  Stream<State> _onUpdateFieldBlocExtraData(
+      UpdateFieldBlocExtraData<ExtraData> event) async* {
+    yield state.copyWith(
+      extraData: Optional.fromNullable(event.extraData),
+    ) as State;
+  }
+
+  Stream<State> _onAddFormBlocAndAutoValidateToFieldBloc(
+      AddFormBlocAndAutoValidateToFieldBloc event) async* {
+    _autoValidate = event.autoValidate;
+    if (!_autoValidate) {
+      yield state.copyWith(
+        error: Optional.absent(),
+        isValidated: false,
+        isValidating: false,
+        formBloc: event.formBloc,
+      ) as State;
+    } else {
+      yield state.copyWith(formBloc: event.formBloc) as State;
     }
   }
 
@@ -530,19 +607,20 @@ abstract class SingleFieldBloc<Value, Suggestion,
   void _setUpAsyncValidatorsSubscription() {
     _asyncValidatorsSubscription = _asyncValidatorsSubject
         .debounceTime(_asyncValidatorDebounceTime)
-        .asyncMap(
-      (value) async {
-        String error;
+        .switchMap(
+          (value) => ((Value value) async {
+            String error;
 
-        if (error == null && _asyncValidators != null) {
-          for (var asyncValidator in _asyncValidators) {
-            error = await asyncValidator(value);
-            if (error != null) break;
-          }
-        }
-        return UpdateFieldBlocStateError(error: error, value: value);
-      },
-    ).listen(add);
+            if (error == null && _asyncValidators != null) {
+              for (var asyncValidator in _asyncValidators) {
+                error = await asyncValidator(value);
+                if (error != null) break;
+              }
+            }
+            return UpdateFieldBlocStateError(error: error, value: value);
+          }).call(value).asStream(),
+        )
+        .listen(add);
 
     if (_getInitialStateIsValidating) {
       _getAsyncValidatorsError(
@@ -550,20 +628,38 @@ abstract class SingleFieldBloc<Value, Suggestion,
     }
   }
 
-  Stream<State> _addValidators(List<Validator<Value>> validators) async* {
+  Stream<State> _addValidators(List<Validator<Value>> validators,
+      [bool forceValidation = false]) async* {
     if (validators != null) {
       _validators.addAll(validators);
-
-      final error = _getError(state.value);
-
-      final isValidating =
-          _getAsyncValidatorsError(value: state.value, error: error);
-
-      yield state.copyWith(
-        error: Optional.fromNullable(error),
-        isValidated: _isValidated(isValidating),
-        isValidating: isValidating,
-      ) as State;
+      if (_autoValidate || forceValidation) {
+        yield* _validateFieldBloc(false);
+      }
     }
+  }
+
+  @override
+  String toString() {
+    return '$runtimeType';
+  }
+
+  Stream<State> _validateFieldBloc(bool updateIsInitial) async* {
+    final error = _getError(
+      state.value,
+      forceValidation: true,
+    );
+
+    final isValidating = _getAsyncValidatorsError(
+      value: state.value,
+      error: error,
+      forceValidation: true,
+    );
+
+    yield state.copyWith(
+      error: Optional.fromNullable(error),
+      isInitial: updateIsInitial ? false : state.isInitial,
+      isValidated: !isValidating,
+      isValidating: isValidating,
+    ) as State;
   }
 }

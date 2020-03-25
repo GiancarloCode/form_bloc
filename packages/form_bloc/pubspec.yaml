@@ -1,6 +1,6 @@
 name: form_bloc
 description: Easy Form State Management using BLoC pattern. Separate the Form State and Business Logic from the User Interface. Async Validation, Progress, Dynamic fields, and more.
-version: 0.10.4
+version: 0.11.0
 homepage: https://github.com/GiancarloCode/form_bloc/tree/master/packages/form_bloc
 repository: https://github.com/GiancarloCode/form_bloc/tree/master/packages/form_bloc
 issue_tracker: https://github.com/GiancarloCode/form_bloc/issues
@@ -18,6 +18,7 @@ dependencies:
   mockito: ^4.1.1
   pedantic: ^1.8.0+1
   collection: ^1.14.11
+  uuid: ^2.0.4
 
 dev_dependencies:
   test: ^1.6.0

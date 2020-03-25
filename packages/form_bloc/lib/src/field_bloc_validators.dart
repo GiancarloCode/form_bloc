@@ -3,86 +3,25 @@ import 'blocs/field/field_bloc.dart';
 class FieldBlocValidatorsErrors {
   FieldBlocValidatorsErrors._();
 
-  static const String requiredInputFieldBloc =
-      'requiredInputFieldBlocValidatorError';
+  static const String required = 'Required - Validator Error';
 
-  static const String requiredBooleanFieldBloc =
-      'requiredBooleanFieldBlocValidatorError';
+  static const String email = 'Email - Validator Error';
 
-  static const String requiredTextFieldBloc =
-      'requiredTextFieldBlocValidatorError';
+  static const String passwordMin6Chars =
+      'Password Min 6 Chars - Validator Error';
 
-  static const String requiredSelectFieldBloc =
-      'requiredSelectFieldBlocValidatorError';
-
-  static const String requiredMultiSelectFieldBloc =
-      'requiredMultiSelectFieldBlocValidatorError';
-
-  static const String email = 'emailValidatorError';
-
-  static const String passwordMin6Chars = 'passwordMin6CharsValidatorError';
-
-  static const String confirmPassword = 'confirmPasswordValidatorError';
+  static const String confirmPassword = 'Confirm Password - Validator Error';
 }
 
 class FieldBlocValidators {
   FieldBlocValidators._();
-
-  /// Check if the [value] is not null.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredInputFieldBloc].
-  static String requiredInputFieldBloc(dynamic value) {
-    if (value != null) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.requiredInputFieldBloc;
-  }
-
-  /// Check if the [boolean] is `true`.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredBooleanFieldBloc].
-  static String requiredBooleanFieldBloc(bool boolean) {
-    if (boolean != null && boolean) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.requiredBooleanFieldBloc;
-  }
-
-  /// Check if the [string] is not empty.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredTextFieldBloc].
-  static String requiredTextFieldBloc(String string) {
-    if (string != null && string.isNotEmpty) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.requiredTextFieldBloc;
-  }
-
-  /// Check if the [value] is not null.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredSelectFieldBloc].
-  static String requiredSelectFieldBloc(dynamic value) {
-    if (value != null) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.requiredSelectFieldBloc;
-  }
-
-  /// Check if the [list] is not empty.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc].
-  static String requiredMultiSelectFieldBloc(List<dynamic> list) {
-    if (list != null && list.isNotEmpty) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc;
-  }
 
   /// Check if the [string] is an email.
   ///
   /// Returns [FieldBlocValidatorsErrors.email].
   static String email(String string) {
     final emailRegExp = RegExp(
+      // ignore: prefer_single_quotes
       r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
     );
 

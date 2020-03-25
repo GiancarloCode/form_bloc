@@ -155,26 +155,9 @@ class DeselectMultiSelectFieldBlocValue<Value> extends FieldBlocEvent {
   List<Object> get props => [valueToDeselect];
 }
 
-class DisableFieldBlocAutoValidate extends FieldBlocEvent {
-  @override
-  List<Object> get props => [];
-}
-
 class ResetFieldBlocStateIsValidated extends FieldBlocEvent {
   @override
   List<Object> get props => [];
-}
-
-class UpdateFieldBlocStateFormBlocState extends FieldBlocEvent {
-  final FormBlocState formBlocState;
-
-  UpdateFieldBlocStateFormBlocState(this.formBlocState);
-
-  @override
-  String toString() => '$runtimeType { formBlocState: $formBlocState }';
-
-  @override
-  List<Object> get props => [formBlocState];
 }
 
 class UpdateFieldBlocStateError<Value> extends FieldBlocEvent {
@@ -255,4 +238,23 @@ class AddFieldBlocError<Value> extends FieldBlocEvent {
 
   @override
   List<Object> get props => [value, error, isPermanent];
+}
+
+class UpdateFieldBlocExtraData<ExtraData> extends FieldBlocEvent {
+  final ExtraData extraData;
+
+  UpdateFieldBlocExtraData(this.extraData);
+
+  @override
+  List<Object> get props => [extraData];
+}
+
+class AddFormBlocAndAutoValidateToFieldBloc extends FieldBlocEvent {
+  final FormBloc<dynamic, dynamic> formBloc;
+  final bool autoValidate;
+  AddFormBlocAndAutoValidateToFieldBloc(
+      {@required this.formBloc, @required this.autoValidate});
+
+  @override
+  List<Object> get props => [formBloc, autoValidate];
 }

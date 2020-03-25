@@ -7,14 +7,13 @@ void main() {
     test('copyWith.', () {
       final suggestions = (String pattern) async => [1];
 
-      final state = MultiSelectFieldBlocState<int>(
+      final state = MultiSelectFieldBlocState<int, dynamic>(
         value: null,
         error: null,
         isInitial: false,
         suggestions: null,
         isValidated: false,
         isValidating: false,
-        formBlocState: FormBlocLoaded<dynamic, dynamic>(true),
         name: null,
         items: null,
       );
@@ -24,7 +23,6 @@ void main() {
         isInitial: true,
         suggestions: Optional.of(suggestions),
         isValidated: true,
-        formBlocState: FormBlocLoading<dynamic, dynamic>(),
         items: Optional.of([1]),
       );
       final stateCopy2 = stateCopy1.copyWith(
@@ -33,7 +31,6 @@ void main() {
         isInitial: false,
         suggestions: Optional.fromNullable(null),
         isValidated: false,
-        formBlocState: FormBlocLoaded<dynamic, dynamic>(true),
         items: Optional.fromNullable(null),
       );
       final stateCopy3 = stateCopy2.copyWith();
@@ -41,14 +38,13 @@ void main() {
       final statesCopies = [stateCopy1, stateCopy2, stateCopy3];
 
       final expectedStates = [
-        MultiSelectFieldBlocState<int>(
+        MultiSelectFieldBlocState<int, dynamic>(
           value: [1],
           error: 'error',
           isInitial: true,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
-          formBlocState: FormBlocLoading<dynamic, dynamic>(),
           name: null,
           items: [1],
         ),
@@ -58,6 +54,33 @@ void main() {
       expect(
         statesCopies,
         expectedStates,
+      );
+    });
+
+    test('If toJson is null, return value', () async {
+      final expectedValue = [0];
+
+      final fieldBloc = MultiSelectFieldBloc<int, dynamic>(
+        initialValue: [0],
+      );
+
+      expect(
+        fieldBloc.state.toJson(),
+        expectedValue,
+      );
+    });
+
+    test('toJson is added to the state', () async {
+      final expectedValue = '[0]';
+
+      final fieldBloc = MultiSelectFieldBloc<int, dynamic>(
+        initialValue: [0],
+        toJson: (v) => v.toString(),
+      );
+
+      expect(
+        fieldBloc.state.toJson(),
+        expectedValue,
       );
     });
   });

@@ -1,10 +1,7 @@
-import 'package:meta/meta.dart';
-import 'package:quiver/core.dart';
+part of '../field/field_bloc.dart';
 
-import '../form/form_bloc.dart';
-import '../field/field_bloc.dart';
-
-class TextFieldBlocState extends FieldBlocState<String, String> {
+class TextFieldBlocState<ExtraData>
+    extends FieldBlocState<String, String, ExtraData> {
   TextFieldBlocState({
     @required String value,
     @required String error,
@@ -12,9 +9,11 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
     @required Suggestions<String> suggestions,
     @required bool isValidated,
     @required bool isValidating,
-    FormBlocState formBlocState,
+    FormBloc formBloc,
     @required String name,
     List additionalProps = const <dynamic>[],
+    dynamic Function(String value) toJson,
+    ExtraData extraData,
   }) : super(
           value: value,
           error: error,
@@ -22,8 +21,10 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
-          formBlocState: formBlocState,
+          formBloc: formBloc,
           name: name,
+          toJson: toJson,
+          extraData: extraData,
         );
 
   /// Parse the [value] to [int].
@@ -37,14 +38,15 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
   double get valueToDouble => double.tryParse(value);
 
   @override
-  TextFieldBlocState copyWith({
+  TextFieldBlocState<ExtraData> copyWith({
     Optional<String> value,
     Optional<String> error,
     bool isInitial,
     Optional<Suggestions<String>> suggestions,
     bool isValidated,
     bool isValidating,
-    FormBlocState formBlocState,
+    FormBloc formBloc,
+    Optional<ExtraData> extraData,
   }) {
     return TextFieldBlocState(
       value: value == null ? this.value : value.orNull,
@@ -53,8 +55,10 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBlocState: formBlocState ?? this.formBlocState,
+      formBloc: formBloc ?? this.formBloc,
       name: name,
+      toJson: _toJson,
+      extraData: extraData == null ? this.extraData : extraData.orNull,
     );
   }
 
@@ -66,6 +70,7 @@ class TextFieldBlocState extends FieldBlocState<String, String> {
         suggestions,
         isValidated,
         isValidating,
-        formBlocState,
+        extraData,
+        formBloc,
       ];
 }

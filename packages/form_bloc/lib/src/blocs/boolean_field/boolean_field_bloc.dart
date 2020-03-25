@@ -1,12 +1,16 @@
 part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for `bool` type.
-class BooleanFieldBloc
-    extends SingleFieldBloc<bool, bool, BooleanFieldBlocState> {
+class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
+    BooleanFieldBlocState<ExtraData>, ExtraData> {
+  /// ## BooleanFieldBloc<ExtraData>
+  ///
   /// ### Properties:
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
   /// it is available in [FieldBlocState.name].
+  /// * [isRequired] : It is `true`, when the value is `false` it will add
+  /// [FieldBlocValidatorsErrors.required].
   /// * [initialValue] : The initial value of the field,
   /// by default is `false`.
   /// And if the value is `null` it will be `false`.
@@ -31,13 +35,16 @@ class BooleanFieldBloc
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
+  /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   BooleanFieldBloc({
-    @required String name,
+    String name,
+    bool isRequired = false,
     bool initialValue = false,
     List<Validator<bool>> validators,
     List<AsyncValidator<bool>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<bool> suggestions,
+    ExtraData extraData,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue ?? false,
@@ -46,10 +53,24 @@ class BooleanFieldBloc
           asyncValidatorDebounceTime,
           suggestions,
           name,
+          (value) => value,
+          extraData,
+          isRequired,
+          _requiredBooleanFieldBloc,
         );
 
+  /// Check if the [boolean] is `true`.
+  ///
+  /// Returns [FieldBlocValidatorsErrors.requiredBooleanFieldBloc].
+  static String _requiredBooleanFieldBloc(bool boolean) {
+    if (boolean != null && boolean) {
+      return null;
+    }
+    return FieldBlocValidatorsErrors.required;
+  }
+
   @override
-  BooleanFieldBlocState get initialState => BooleanFieldBlocState(
+  BooleanFieldBlocState<ExtraData> get initialState => BooleanFieldBlocState(
         value: _initialValue,
         error: _getInitialStateError,
         isInitial: true,
@@ -57,6 +78,8 @@ class BooleanFieldBloc
         isValidated: _isValidated(_getInitialStateIsValidating),
         isValidating: _getInitialStateIsValidating,
         name: _name,
+        toJson: _toJson,
+        extraData: _extraData,
       );
 
   /// Set the `value` to `false` of the current state.
