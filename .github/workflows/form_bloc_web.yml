@@ -26,7 +26,7 @@ jobs:
       working-directory: ./form_bloc_web
     - name: Deploy
       run: |
-        cd build/web
+        cd form_bloc_web/build/web
         git init
         git config --global user.email GiancarloCode@gmail.com 
         git config --global user.name GiancarloCode 
