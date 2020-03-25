@@ -30,13 +30,17 @@ class Style {
     @required BuildContext context,
     @required FieldBlocState fieldBlocState,
     @required FieldBlocErrorBuilder errorBuilder,
+    @required FieldBloc fieldBloc,
   }) {
     if (fieldBlocState.canShowError) {
       if (errorBuilder != null) {
         return errorBuilder(context, fieldBlocState.error);
       } else {
         return FieldBlocBuilder.defaultErrorBuilder(
-            context, fieldBlocState.error);
+          context,
+          fieldBlocState.error,
+          fieldBloc,
+        );
       }
     } else {
       return null;

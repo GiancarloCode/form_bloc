@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -16,6 +17,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.decoration = const InputDecoration(),
     this.canDeselect = true,
     this.nextFocusNode,
+    this.animateWhenCanShow = true,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(canDeselect != null),
@@ -23,7 +25,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final SelectFieldBloc<Value> selectFieldBloc;
+  final SelectFieldBloc<Value, dynamic> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
   final FieldBlocStringItemBuilder<Value> itemBuilder;
@@ -50,49 +52,61 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
   final FocusNode nextFocusNode;
 
+  /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
+  final bool animateWhenCanShow;
+
   @override
   Widget build(BuildContext context) {
     if (selectFieldBloc == null) {
-      return Container();
+      return SizedBox();
     }
 
-    return BlocBuilder<SelectFieldBloc<Value>, SelectFieldBlocState<Value>>(
-      bloc: selectFieldBloc,
-      builder: (context, state) {
-        final isEnabled = fieldBlocIsEnabled(
-          isEnabled: this.isEnabled,
-          enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-          fieldBlocState: state,
-        );
+    return CanShowFieldBlocBuilder(
+      fieldBloc: selectFieldBloc,
+      animate: animateWhenCanShow,
+      builder: (_, __) {
+        return BlocBuilder<SelectFieldBloc<Value, dynamic>,
+            SelectFieldBlocState<Value, dynamic>>(
+          bloc: selectFieldBloc,
+          builder: (context, state) {
+            final isEnabled = fieldBlocIsEnabled(
+              isEnabled: this.isEnabled,
+              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+              fieldBlocState: state,
+            );
 
-        return DefaultFieldBlocBuilderPadding(
-          padding: padding,
-          child: Stack(
-            children: <Widget>[
-              InputDecorator(
-                decoration: _buildDecoration(context, state, isEnabled),
-                child: Opacity(
-                  opacity: 0.0,
-                  child: _buildRadioButtons(state, isEnabled),
-                ),
-              ),
-              InputDecorator(
-                decoration: Style.inputDecorationWithoutBorder.copyWith(
-                  contentPadding: Style.getGroupFieldBlocContentPadding(
-                    isVisible: true,
-                    decoration: decoration,
+            return DefaultFieldBlocBuilderPadding(
+              padding: padding,
+              child: Stack(
+                children: <Widget>[
+                  InputDecorator(
+                    decoration: _buildDecoration(context, state, isEnabled),
+                    isEmpty: false,
+                    child: Opacity(
+                      opacity: 0.0,
+                      child: _buildRadioButtons(state, isEnabled),
+                    ),
                   ),
-                ),
-                child: _buildRadioButtons(state, isEnabled),
+                  InputDecorator(
+                    decoration: Style.inputDecorationWithoutBorder.copyWith(
+                      contentPadding: Style.getGroupFieldBlocContentPadding(
+                        isVisible: true,
+                        decoration: decoration,
+                      ),
+                    ),
+                    child: _buildRadioButtons(state, isEnabled),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
-  Widget _buildRadioButtons(SelectFieldBlocState<Value> state, bool isEnable) {
+  Widget _buildRadioButtons(
+      SelectFieldBlocState<Value, dynamic> state, bool isEnable) {
     final onChanged = fieldBlocBuilderOnChange<Value>(
       isEnabled: isEnabled,
       nextFocusNode: nextFocusNode,
@@ -136,15 +150,15 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     );
   }
 
-  InputDecoration _buildDecoration(
-      BuildContext context, SelectFieldBlocState<Value> state, bool isEnable) {
+  InputDecoration _buildDecoration(BuildContext context,
+      SelectFieldBlocState<Value, dynamic> state, bool isEnable) {
     InputDecoration decoration = this.decoration;
 
     return decoration.copyWith(
-      suffix: SizedBox.shrink(),
-      prefixIcon: SizedBox.shrink(),
-      prefix: SizedBox.shrink(),
-      suffixIcon: SizedBox.shrink(),
+      suffix: this.decoration.suffix != null ? SizedBox.shrink() : null,
+      prefixIcon: this.decoration.prefixIcon != null ? SizedBox.shrink() : null,
+      prefix: this.decoration.prefix != null ? SizedBox.shrink() : null,
+      suffixIcon: this.decoration.suffixIcon != null ? SizedBox.shrink() : null,
       enabled: isEnable,
       contentPadding: Style.getGroupFieldBlocContentPadding(
         isVisible: false,
@@ -154,6 +168,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
         context: context,
         errorBuilder: errorBuilder,
         fieldBlocState: state,
+        fieldBloc: selectFieldBloc,
       ),
     );
   }

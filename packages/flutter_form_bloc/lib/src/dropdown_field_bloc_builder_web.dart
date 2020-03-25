@@ -31,7 +31,7 @@ class DropdownFieldBlocBuilderWeb<Value> extends StatefulWidget {
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final SelectFieldBloc<Value> selectFieldBloc;
+  final SelectFieldBloc<Value, Object> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder errorBuilder;
@@ -84,8 +84,6 @@ class _DropdownFieldBlocBuilderWebState<Value>
 
   FocusNode _focusNode = FocusNode();
 
-  bool _focusedAfterKeyboardClosing = false;
-
   @override
   void initState() {
     super.initState();
@@ -123,7 +121,8 @@ class _DropdownFieldBlocBuilderWebState<Value>
 
     return Focus(
       focusNode: _effectiveFocusNode,
-      child: BlocBuilder<SelectFieldBloc<Value>, SelectFieldBlocState<Value>>(
+      child: BlocBuilder<SelectFieldBloc<Value, dynamic>,
+          SelectFieldBlocState<Value, dynamic>>(
         bloc: widget.selectFieldBloc,
         builder: (context, fieldState) {
           final isEnabled = fieldBlocIsEnabled(
@@ -271,8 +270,8 @@ class _DropdownFieldBlocBuilderWebState<Value>
     }
   }
 
-  InputDecoration _buildDecoration(
-      BuildContext context, SelectFieldBlocState<Value> state, bool isEnabled) {
+  InputDecoration _buildDecoration(BuildContext context,
+      SelectFieldBlocState<Value, dynamic> state, bool isEnabled) {
     InputDecoration decoration = widget.decoration;
 
     if (decoration.contentPadding == null) {
@@ -295,6 +294,7 @@ class _DropdownFieldBlocBuilderWebState<Value>
         context: context,
         errorBuilder: widget.errorBuilder,
         fieldBlocState: state,
+        fieldBloc: widget.selectFieldBloc,
       ),
     );
 

@@ -1,5 +1,14 @@
-# 0.10.7
-* Fixed bug in `DropdownFieldBlocBuilder` and `TextFieldBlocBuilder` on Flutter Web.
+# 0.11.0
+## Breaking changes
+
+* Updated to `form_bloc: ^0.11.0`.
+* Added `StepperFormBlocBuilder`.
+* Added `DateTimeFieldBlocBuilder`.
+* Added `TimeFieldBlocBuilder`.
+* Added `CanShowFieldBlocBuilder`.
+* All widgets now are animated by default if the `FieldBloc` is added or removed from the `FormBloc`.
+* Documentation Updates.
+
 
 # 0.10.6
 * Fixed bug of size on first rendered of `DropdownFieldBlocBuilder`.

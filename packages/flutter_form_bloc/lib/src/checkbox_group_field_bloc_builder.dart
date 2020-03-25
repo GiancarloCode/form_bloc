@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -17,13 +18,14 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.checkColor,
     this.activeColor,
     this.nextFocusNode,
+    this.animateWhenCanShow = true,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final MultiSelectFieldBloc<Value> multiSelectFieldBloc;
+  final MultiSelectFieldBloc<Value, Object> multiSelectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder errorBuilder;
@@ -52,51 +54,60 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxActiveColor}
   final Color activeColor;
 
+  /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
+  final bool animateWhenCanShow;
+
   @override
   Widget build(BuildContext context) {
     if (multiSelectFieldBloc == null) {
-      return Container();
+      return SizedBox();
     }
 
-    return BlocBuilder<MultiSelectFieldBloc<Value>,
-        MultiSelectFieldBlocState<Value>>(
-      bloc: multiSelectFieldBloc,
-      builder: (context, state) {
-        final isEnabled = fieldBlocIsEnabled(
-          isEnabled: this.isEnabled,
-          enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-          fieldBlocState: state,
-        );
+    return CanShowFieldBlocBuilder(
+      fieldBloc: multiSelectFieldBloc,
+      animate: animateWhenCanShow,
+      builder: (_, __) {
+        return BlocBuilder<MultiSelectFieldBloc<Value, dynamic>,
+            MultiSelectFieldBlocState<Value, dynamic>>(
+          bloc: multiSelectFieldBloc,
+          builder: (context, state) {
+            final isEnabled = fieldBlocIsEnabled(
+              isEnabled: this.isEnabled,
+              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+              fieldBlocState: state,
+            );
 
-        return DefaultFieldBlocBuilderPadding(
-          padding: padding,
-          child: Stack(
-            children: <Widget>[
-              InputDecorator(
-                decoration: _buildDecoration(context, state, isEnabled),
-                child: Opacity(
-                  opacity: 0.0,
-                  child: _buildCheckboxes(state, isEnabled),
-                ),
-              ),
-              InputDecorator(
-                decoration: Style.inputDecorationWithoutBorder.copyWith(
-                  contentPadding: Style.getGroupFieldBlocContentPadding(
-                    isVisible: true,
-                    decoration: decoration,
+            return DefaultFieldBlocBuilderPadding(
+              padding: padding,
+              child: Stack(
+                children: <Widget>[
+                  InputDecorator(
+                    decoration: _buildDecoration(context, state, isEnabled),
+                    child: Opacity(
+                      opacity: 0.0,
+                      child: _buildCheckboxes(state, isEnabled),
+                    ),
                   ),
-                ),
-                child: _buildCheckboxes(state, isEnabled),
+                  InputDecorator(
+                    decoration: Style.inputDecorationWithoutBorder.copyWith(
+                      contentPadding: Style.getGroupFieldBlocContentPadding(
+                        isVisible: true,
+                        decoration: decoration,
+                      ),
+                    ),
+                    child: _buildCheckboxes(state, isEnabled),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
   Widget _buildCheckboxes(
-      MultiSelectFieldBlocState<Value> state, bool isEnabled) {
+      MultiSelectFieldBlocState<Value, dynamic> state, bool isEnabled) {
     return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
@@ -136,14 +147,14 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   }
 
   InputDecoration _buildDecoration(BuildContext context,
-      MultiSelectFieldBlocState<Value> state, bool isEnabled) {
+      MultiSelectFieldBlocState<Value, dynamic> state, bool isEnabled) {
     InputDecoration decoration = this.decoration;
 
     return decoration.copyWith(
-      suffix: SizedBox.shrink(),
-      prefixIcon: SizedBox.shrink(),
-      prefix: SizedBox.shrink(),
-      suffixIcon: SizedBox.shrink(),
+      suffix: this.decoration.suffix != null ? SizedBox.shrink() : null,
+      prefixIcon: this.decoration.prefixIcon != null ? SizedBox.shrink() : null,
+      prefix: this.decoration.prefix != null ? SizedBox.shrink() : null,
+      suffixIcon: this.decoration.suffixIcon != null ? SizedBox.shrink() : null,
       enabled: isEnabled,
       contentPadding: Style.getGroupFieldBlocContentPadding(
         isVisible: false,
@@ -153,6 +164,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
         context: context,
         errorBuilder: errorBuilder,
         fieldBlocState: state,
+        fieldBloc: multiSelectFieldBloc,
       ),
     );
   }

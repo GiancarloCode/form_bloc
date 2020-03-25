@@ -1,25 +1,17 @@
 name: flutter_form_bloc_example
+description: flutter_form_bloc example
+
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flutter: 
+  flutter:
     sdk: flutter
-  form_bloc: ^0.10.1
-  # form_bloc:
-  #   path: ../../form_bloc
   flutter_form_bloc:
-    path: ../
-  shared_preferences: ^0.5.6+1
-  liquid_progress_indicator: ^0.3.2
-  image_picker: ^0.6.2+3 
-  # flushbar: ^1.9.1
-  flushbar:
-    git:
-      url: git://github.com/valterh4ck3r/flushbar.git
-  groovin_widgets: ^1.4.5
+    path:
+      ../
 
 dev_dependencies:
   flutter_test:

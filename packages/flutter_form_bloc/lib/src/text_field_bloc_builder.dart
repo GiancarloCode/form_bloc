@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:flutter/widgets.dart';
+
+export 'package:flutter/widgets.dart' show EditableText;
 
 export 'package:flutter/services.dart'
     show TextInputType, TextInputAction, TextCapitalization;
@@ -132,6 +135,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.readOnly = false,
     this.toolbarOptions,
     this.enableSuggestions = true,
+    this.animateWhenCanShow = true,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(suggestionsAnimationDuration != null),
@@ -168,22 +172,41 @@ class TextFieldBlocBuilder extends StatefulWidget {
             (maxLines == 1 ? TextInputType.text : TextInputType.multiline),
         super(key: key);
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final TextFieldBloc textFieldBloc;
+  /// {@template flutter_form_bloc.FieldBlocBuilder.fieldBloc}
+  /// The `fieldBloc` for rebuild the widget
+  /// when its state changes.
+  /// {@endtemplate}
+  final TextFieldBloc<Object> textFieldBloc;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
+  /// {@template flutter_form_bloc.FieldBlocBuilder.errorBuilder}
+  /// This function take the `context` and the [FieldBlocState.error]
+  /// and must return a String error to display in the widget when
+  /// has an error. By default is [defaultErrorBuilder].
+  /// {@endtemplate}
   final FieldBlocErrorBuilder errorBuilder;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
+  /// {@template flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
+  /// If `true`, this widget will be enabled only
+  /// when the `state` of the [FormBloc] that contains this
+  /// `FieldBloc` has [FormBlocState.canSubmit] in `true`.
+  /// {@endtemplate}
   final bool enableOnlyWhenFormBlocCanSubmit;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
+  /// {@template flutter_form_bloc.FieldBlocBuilder.isEnabled}
+  ///  If false the text field is "disabled": it ignores taps
+  /// and its [decoration] is rendered in grey.
+  /// {@endtemplate}
   final bool isEnabled;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
+  /// {@template flutter_form_bloc.FieldBlocBuilder.padding}
+  /// The amount of space by which to inset the child.
+  /// {@endtemplate}
   final EdgeInsetsGeometry padding;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
+  /// {@template flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
+  /// When change the value of the `FieldBloc`, this will call
+  /// `nextFocusNode.requestFocus()`.
+  /// {@endtemplate}
   final FocusNode nextFocusNode;
 
   /// The suffix button with a default behavior:
@@ -589,6 +612,12 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.scrollController}
   final ScrollController scrollController;
 
+  /// {@template flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
+  /// Set to `true` if you want animate size/fade, when the
+  /// field bloc is added and removed from form bloc.
+  /// {@endtemplate}
+  final bool animateWhenCanShow;
+
   @override
   _TextFieldBlocBuilderState createState() => _TextFieldBlocBuilderState();
 }
@@ -626,7 +655,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   /// Disable editing when the state of the FormBloc is [FormBlocSubmitting].
   void _textControllerListener() {
-    if (widget.textFieldBloc.state.formBlocState is FormBlocSubmitting) {
+    if (widget.textFieldBloc.state.formBloc?.state is FormBlocSubmitting) {
       if (_controller.text != widget.textFieldBloc.value) {
         _fixControllerTextValue(widget.textFieldBloc.value);
       }
@@ -658,24 +687,31 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   @override
   Widget build(BuildContext context) {
     if (widget.textFieldBloc == null) {
-      return Container();
+      return SizedBox();
     }
-    return BlocBuilder<TextFieldBloc, TextFieldBlocState>(
-      bloc: widget.textFieldBloc,
-      builder: (context, state) {
-        final isEnabled = fieldBlocIsEnabled(
-          isEnabled: widget.isEnabled,
-          enableOnlyWhenFormBlocCanSubmit:
-              widget.enableOnlyWhenFormBlocCanSubmit,
-          fieldBlocState: state,
-        );
 
-        if (_controller.text != state.value) {
-          _fixControllerTextValue(state.value);
-        }
-        return DefaultFieldBlocBuilderPadding(
-          padding: widget.padding,
-          child: _buildTextField(state: state, isEnabled: isEnabled),
+    return CanShowFieldBlocBuilder(
+      fieldBloc: widget.textFieldBloc,
+      animate: widget.animateWhenCanShow,
+      builder: (_, __) {
+        return BlocBuilder<TextFieldBloc, TextFieldBlocState>(
+          bloc: widget.textFieldBloc,
+          builder: (context, state) {
+            final isEnabled = fieldBlocIsEnabled(
+              isEnabled: widget.isEnabled,
+              enableOnlyWhenFormBlocCanSubmit:
+                  widget.enableOnlyWhenFormBlocCanSubmit,
+              fieldBlocState: state,
+            );
+
+            if (_controller.text != state.value) {
+              _fixControllerTextValue(state.value);
+            }
+            return DefaultFieldBlocBuilderPadding(
+              padding: widget.padding,
+              child: _buildTextField(state: state, isEnabled: isEnabled),
+            );
+          },
         );
       },
     );
@@ -735,6 +771,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         context: context,
         errorBuilder: widget.errorBuilder,
         fieldBlocState: state,
+        fieldBloc: widget.textFieldBloc,
       ),
     );
   }

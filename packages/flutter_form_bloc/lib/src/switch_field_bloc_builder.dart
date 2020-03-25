@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
@@ -30,6 +31,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
     this.hoverColor,
     this.focusNode,
     this.autofocus = false,
+    this.animateWhenCanShow = true,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(controlAffinity != null),
         assert(isEnabled != null),
@@ -121,47 +123,58 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   /// {@macro flutter.widgets.Focus.autofocus}
   final bool autofocus;
 
+  /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
+  final bool animateWhenCanShow;
+
   @override
   Widget build(BuildContext context) {
     if (booleanFieldBloc == null) {
-      return Container();
+      return SizedBox();
     }
-    return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
-      bloc: booleanFieldBloc,
-      builder: (context, state) {
-        final isEnabled = fieldBlocIsEnabled(
-          isEnabled: this.isEnabled,
-          enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-          fieldBlocState: state,
-        );
 
-        return DefaultFieldBlocBuilderPadding(
-          padding: padding,
-          child: InputDecorator(
-            decoration: Style.inputDecorationWithoutBorder.copyWith(
-              contentPadding: EdgeInsets.all(0),
-              prefixIcon:
-                  controlAffinity == FieldBlocBuilderControlAffinity.leading
+    return CanShowFieldBlocBuilder(
+      fieldBloc: booleanFieldBloc,
+      animate: animateWhenCanShow,
+      builder: (_, __) {
+        return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
+          bloc: booleanFieldBloc,
+          builder: (context, state) {
+            final isEnabled = fieldBlocIsEnabled(
+              isEnabled: this.isEnabled,
+              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+              fieldBlocState: state,
+            );
+
+            return DefaultFieldBlocBuilderPadding(
+              padding: padding,
+              child: InputDecorator(
+                decoration: Style.inputDecorationWithoutBorder.copyWith(
+                  contentPadding: EdgeInsets.all(0),
+                  prefixIcon:
+                      controlAffinity == FieldBlocBuilderControlAffinity.leading
+                          ? _buildSwitch(context: context, state: state)
+                          : null,
+                  suffixIcon: controlAffinity ==
+                          FieldBlocBuilderControlAffinity.trailing
                       ? _buildSwitch(context: context, state: state)
                       : null,
-              suffixIcon:
-                  controlAffinity == FieldBlocBuilderControlAffinity.trailing
-                      ? _buildSwitch(context: context, state: state)
-                      : null,
-              errorText: Style.getErrorText(
-                context: context,
-                errorBuilder: errorBuilder,
-                fieldBlocState: state,
+                  errorText: Style.getErrorText(
+                    context: context,
+                    errorBuilder: errorBuilder,
+                    fieldBlocState: state,
+                    fieldBloc: booleanFieldBloc,
+                  ),
+                ),
+                child: DefaultFieldBlocBuilderTextStyle(
+                  isEnabled: isEnabled,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: 48),
+                    child: body,
+                  ),
+                ),
               ),
-            ),
-            child: DefaultFieldBlocBuilderTextStyle(
-              isEnabled: isEnabled,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: 48),
-                child: body,
-              ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

@@ -132,8 +132,8 @@ class LoginFormBloc extends FormBloc<String, String> {
     // Login logic...
 
     // Get the fields values:
-    print(state.fieldBlocFromPath('email').asTextFieldBloc.value);
-    print(state.fieldBlocFromPath('password').asTextFieldBloc.value);
+    print(state.textFieldBlocOf('email').asTextFieldBloc.value);
+    print(state.textFieldBlocOf('password').asTextFieldBloc.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
     yield state.toSuccess();
@@ -174,7 +174,7 @@ class LoginForm extends StatelessWidget {
                     physics: ClampingScrollPhysics(),
                     children: <Widget>[
                       TextFieldBlocBuilder(
-                        textFieldBloc: state.fieldBlocFromPath('email'),
+                        textFieldBloc: state.textFieldBlocOf('email'),
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email',
@@ -182,7 +182,7 @@ class LoginForm extends StatelessWidget {
                         ),
                       ),
                       TextFieldBlocBuilder(
-                        textFieldBloc: state.fieldBlocFromPath('password'),
+                        textFieldBloc: state.textFieldBlocOf('password'),
                         suffixButton: SuffixButton.obscureText,
                         decoration: InputDecoration(
                           labelText: 'Password',
@@ -326,8 +326,8 @@ class LoginFormBloc extends FormBloc<String, String> {
     // Login logic...
 
     // Get the fields values:
-    print(state.fieldBlocFromPath('email').asTextFieldBloc.value);
-    print(state.fieldBlocFromPath('password').asTextFieldBloc.value);
+    print(state.textFieldBlocOf('email').asTextFieldBloc.value);
+    print(state.textFieldBlocOf('password').asTextFieldBloc.value);
 
     await Future<void>.delayed(Duration(seconds: 2));
     yield state.toSuccess();
@@ -393,7 +393,7 @@ In this example:
 
 ## 7. Connect the Field Blocs with Field Blocs Builder
 
-You need to use a `BlocBuilder` with the `FormBloc`, then you can access to each field bloc by using `state.fieldBlocFromPath('path')`.
+You need to use a `BlocBuilder` with the `FormBloc`, then you can access to each field bloc by using `state.textFieldBlocOf('path')`.
 
 In this example I will use `TextFieldBlocBuilder` for connect with `email` field and `password` field of `LoginFormBloc`.
 
@@ -405,7 +405,7 @@ In this example I will use `TextFieldBlocBuilder` for connect with `email` field
                     physics: ClampingScrollPhysics(),
                     children: <Widget>[
                       TextFieldBlocBuilder(
-                        textFieldBloc: state.fieldBlocFromPath('email'),
+                        textFieldBloc: state.textFieldBlocOf('email'),
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email',
@@ -413,7 +413,7 @@ In this example I will use `TextFieldBlocBuilder` for connect with `email` field
                         ),
                       ),
                       TextFieldBlocBuilder(
-                        textFieldBloc: state.fieldBlocFromPath('password'),
+                        textFieldBloc: state.textFieldBlocOf('password'),
                         suffixButton: SuffixButton.obscureText,
                         decoration: InputDecoration(
                           labelText: 'Password',

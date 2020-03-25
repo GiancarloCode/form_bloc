@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
+import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/dropdown_field_bloc_builder_mobile.dart';
 import 'package:flutter_form_bloc/src/dropdown_field_bloc_builder_web.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -22,6 +23,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
+    this.animateWhenCanShow = true,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -30,12 +32,15 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final SelectFieldBloc<Value> selectFieldBloc;
+  final SelectFieldBloc<Value, Object> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder errorBuilder;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
+  /// {@template flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
+  /// This function takes the `context` and the `value`
+  /// and must return a String that represent that `value`.
+  /// {@endtemplate}
   final FieldBlocStringItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
@@ -61,16 +66,27 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
   final FocusNode focusNode;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
+  /// {@template flutter_form_bloc.FieldBlocBuilder.decoration}
+  /// The decoration to show around the field.
+  /// {@endtemplate}
   final InputDecoration decoration;
 
   /// How the text in the decoration should be aligned horizontally.
   final TextAlign textAlign;
 
+  /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
+  final bool animateWhenCanShow;
+
   @override
   Widget build(BuildContext context) {
+    if (selectFieldBloc == null) {
+      return SizedBox();
+    }
+
+    Widget child;
+
     if (!kIsWeb) {
-      return DropdownFieldBlocBuilderMobile(
+      child = DropdownFieldBlocBuilderMobile(
         selectFieldBloc: selectFieldBloc,
         itemBuilder: itemBuilder,
         decoration: decoration,
@@ -87,7 +103,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         textAlign: textAlign,
       );
     } else {
-      return DropdownFieldBlocBuilderWeb(
+      child = DropdownFieldBlocBuilderWeb(
         selectFieldBloc: selectFieldBloc,
         itemBuilder: itemBuilder,
         decoration: decoration,
@@ -104,5 +120,13 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         textAlign: textAlign,
       );
     }
+
+    return CanShowFieldBlocBuilder(
+      fieldBloc: selectFieldBloc,
+      animate: animateWhenCanShow,
+      builder: (_, __) {
+        return child;
+      },
+    );
   }
 }
