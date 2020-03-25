@@ -15,6 +15,7 @@ jobs:
         with:
           flutter-version: '1.16.1'
           channel: 'dev'
+      - run: cd form_bloc_web    
       - run: flutter config --enable-web
       - run: flutter pub get
       - run: flutter build web --release
