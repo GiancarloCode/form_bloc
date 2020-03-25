@@ -1,0 +1,31 @@
+name: Form Bloc Web
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Build Web
+    env:
+      access_token: ${{secrets.ACCESS_TOKEN}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.16.1'
+          channel: 'dev'
+      - run: flutter config --enable-web
+      - run: flutter pub get
+      - run: flutter build web --release
+      - run: |
+          cd build/web
+          git init
+          git config --global user.email GiancarloCode@gmail.com 
+          git config --global user.name GiancarloCode 
+          git status
+          git remote add origin https://${{secrets.ACCESS_TOKEN}}@github.com/GiancarloCode/form_bloc.git
+          git checkout -b gh-pages
+          git add --all
+          git commit -m "update"
+          git push origin gh-pages -f
