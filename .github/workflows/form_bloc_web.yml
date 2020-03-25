@@ -15,10 +15,19 @@ jobs:
         with:
           flutter-version: '1.16.1'
           channel: 'dev'
-      working-directory: ./form_bloc_web  
-      - run: flutter config --enable-web
-      - run: flutter pub get
-      - run: flutter build web --release
+      - name: Upgrades flutter
+        run: flutter upgrade
+        working-directory: ./flutter_form_bloc
+      - name: Enable Web
+        run: flutter config --enable-web
+        working-directory: ./flutter_form_bloc
+      - name: Install dependencies
+        run: flutter packages get
+        working-directory: ./flutter_form_bloc
+      - name: Build Web
+        run: flutter build web
+        working-directory: ./flutter_form_bloc
+      - name: Deploy
       - run: |
           cd build/web
           git init
