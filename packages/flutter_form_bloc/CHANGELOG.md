@@ -1,11 +1,17 @@
+# 0.11.2
+* Added `clearIcon` to:
+  * `DateTimeFieldBlocBuilder`
+  * `TimeFieldBlocBuilder`
+
+
 # 0.11.1
-* Fix content padding of decoration in:
+* Fixed content padding of decoration in:
   * `DropdownFieldBlocBuilder`
   * `DateTimeFieldBlocBuilder`
   * `TimeFieldBlocBuilder`
 
 # 0.11.0+1
-* Fix pub health issues
+* Fixed pub health issues
 
 # 0.11.0
 ## Breaking changes
