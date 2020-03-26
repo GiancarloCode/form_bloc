@@ -221,16 +221,6 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
       InputFieldBlocState<T, Object> state, bool isEnabled) {
     InputDecoration decoration = this.decoration;
 
-    if (decoration.contentPadding == null) {
-      decoration = decoration.copyWith(
-        contentPadding: decoration.border is OutlineInputBorder ||
-                Theme.of(context).inputDecorationTheme.border
-                    is OutlineInputBorder
-            ? EdgeInsets.fromLTRB(12, 20, 0, 20)
-            : EdgeInsets.fromLTRB(12, 12, 0, 12),
-      );
-    }
-
     decoration = decoration.copyWith(
       enabled: isEnabled,
       errorText: Style.getErrorText(

@@ -308,16 +308,6 @@ class _DropdownFieldBlocBuilderMobileState<Value>
       SelectFieldBlocState<Value, dynamic> state, bool isEnabled) {
     InputDecoration decoration = widget.decoration;
 
-    if (decoration.contentPadding == null) {
-      decoration = decoration.copyWith(
-        contentPadding: decoration.border is OutlineInputBorder ||
-                Theme.of(context).inputDecorationTheme.border
-                    is OutlineInputBorder
-            ? EdgeInsets.fromLTRB(12, 20, 0, 20)
-            : EdgeInsets.fromLTRB(12, 12, 0, 12),
-      );
-    }
-
     if (decoration.suffixIcon == null) {
       decoration = decoration.copyWith(suffixIcon: Icon(Icons.arrow_drop_down));
     }
