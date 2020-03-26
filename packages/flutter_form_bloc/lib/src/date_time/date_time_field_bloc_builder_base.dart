@@ -34,6 +34,8 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
     this.routeSettings,
     @required this.initialTime,
     @required this.animateWhenCanShow,
+    this.showClearIcon = true,
+    this.clearIcon,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -66,6 +68,10 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
+
+  final bool showClearIcon;
+
+  final Icon clearIcon;
 
   final DateTime initialDate;
   final DateTime firstDate;
@@ -128,27 +134,23 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
                     ? null
                     : () async {
                         FocusScope.of(context).requestFocus(FocusNode());
-
+                        var result;
                         if (type == DateTimeFieldBlocBuilderBaseType.date) {
-                          final date = await _showDatePicker(context);
-                          dateTimeFieldBloc.updateValue(date as T);
+                          result = await _showDatePicker(context);
                         } else if (type ==
                             DateTimeFieldBlocBuilderBaseType.both) {
                           final date = await _showDatePicker(context);
 
-                          if (date == null) {
-                            dateTimeFieldBloc.updateValue(null);
-                            return;
+                          if (date != null) {
+                            final time = await _showTimePicker(context);
+                            result = _combine(date, time);
                           }
-
-                          final time = await _showTimePicker(context);
-
-                          dateTimeFieldBloc
-                              .updateValue(_combine(date, time) as T);
                         } else if (type ==
                             DateTimeFieldBlocBuilderBaseType.time) {
-                          final time = await _showTimePicker(context);
-                          dateTimeFieldBloc.updateValue(time as T);
+                          result = await _showTimePicker(context);
+                        }
+                        if (result != null) {
+                          dateTimeFieldBloc.updateValue(result as T);
                         }
                       },
                 child: InputDecorator(
@@ -171,7 +173,6 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
       firstDate: firstDate,
       lastDate: lastDate,
       useRootNavigator: useRootNavigator,
-      builder: builder,
       initialDatePickerMode: initialDatePickerMode,
       locale: locale,
       // routeSettings: routeSettings, /* Use it in flutter >= 1.15.0   */
@@ -229,6 +230,20 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
         fieldBlocState: state,
         fieldBloc: dateTimeFieldBloc,
       ),
+      suffixIcon: decoration.suffixIcon ??
+          (showClearIcon
+              ? AnimatedOpacity(
+                  duration: Duration(milliseconds: 400),
+                  opacity: dateTimeFieldBloc.state.value == null ? 0.0 : 1.0,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(25),
+                    child: clearIcon ?? Icon(Icons.clear),
+                    onTap: dateTimeFieldBloc.state.value == null
+                        ? null
+                        : dateTimeFieldBloc.clear,
+                  ),
+                )
+              : null),
     );
 
     return decoration;

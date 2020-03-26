@@ -28,6 +28,8 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
     this.useRootNavigator = false,
     this.routeSettings,
     this.animateWhenCanShow = true,
+    this.showClearIcon = true,
+    this.clearIcon,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -76,6 +78,10 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
   final RouteSettings routeSettings;
   final TimeOfDay initialTime;
 
+  final bool showClearIcon;
+
+  final Icon clearIcon;
+
   @override
   Widget build(BuildContext context) {
     return DateTimeFieldBlocBuilderBase<DateTime>(
@@ -100,6 +106,8 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
       useRootNavigator: useRootNavigator,
       textDirection: textDirection,
       animateWhenCanShow: animateWhenCanShow,
+      clearIcon: clearIcon,
+      showClearIcon: showClearIcon,
     );
   }
 }
