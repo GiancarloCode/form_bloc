@@ -717,7 +717,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     );
   }
 
-  InputDecoration buildDecoration(TextFieldBlocState state) {
+  InputDecoration _buildDecoration(TextFieldBlocState state) {
     InputDecoration decoration = widget.decoration;
     if (widget.suffixButton != null) {
       switch (widget.suffixButton) {
@@ -782,7 +782,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
       return TypeAheadField<String>(
         textFieldConfiguration: TextFieldConfiguration<String>(
           controller: _controller,
-          decoration: buildDecoration(state),
+          decoration: _buildDecoration(state),
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction != null
               ? widget.textInputAction
@@ -921,7 +921,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     } else {
       return TextField(
         controller: _controller,
-        decoration: buildDecoration(state),
+        decoration: _buildDecoration(state),
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction != null
             ? widget.textInputAction
