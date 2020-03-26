@@ -1,3 +1,9 @@
+# 0.11.1
+* Fix content padding of decoration in:
+  * `DropdownFieldBlocBuilder`
+  * `DateTimeFieldBlocBuilder`
+  * `TimeFieldBlocBuilder`
+
 # 0.11.0+1
 * Fix pub health issues
 
