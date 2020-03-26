@@ -12,9 +12,6 @@ jobs:
       with:
         flutter-version: '1.16.1'
         channel: 'dev'
-    - name: Upgrades flutter
-      run: flutter upgrade
-      working-directory: ./form_bloc_web
     - name: Enable Web
       run: flutter config --enable-web
       working-directory: ./form_bloc_web
