@@ -20,6 +20,8 @@ jobs:
       with:
         channel: 'dev'
         flutter-version: '1.16.1'
+        
+    - name: Enable Flutter web 
       run: flutter config --enable-web
       working-directory: ${{ env.working-directory }}
       
