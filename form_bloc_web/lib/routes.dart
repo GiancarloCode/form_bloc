@@ -10,6 +10,7 @@ import 'package:form_bloc_web/pages/simple_example_page.dart';
 import 'package:form_bloc_web/pages/submission_error_to_field_example_page.dart';
 import 'package:form_bloc_web/pages/submission_progress_example_page.dart';
 import 'package:form_bloc_web/pages/wizard_example_page.dart';
+import 'package:form_bloc_web/pages/validation_based_on_other_field_example_page.dart';
 
 class RouteNames {
   RouteNames._();
@@ -30,6 +31,8 @@ class RouteNames {
   static const String submission_progress_example =
       '/submission_progress_example';
   static const String list_fields_example = '/list_fields_example';
+  static const String validation_based_on_other_field_example =
+      '/validation_based_on_other_field';
 }
 
 final routes = <String, WidgetBuilder>{
@@ -48,4 +51,6 @@ final routes = <String, WidgetBuilder>{
   RouteNames.submission_progress_example: (_) =>
       SubmissionProgressExamplePage(),
   RouteNames.list_fields_example: (_) => ListFieldsExamplePage(),
+  RouteNames.validation_based_on_other_field_example: (_) =>
+      ValidationBasedOnOtherFieldExamplePage(),
 };

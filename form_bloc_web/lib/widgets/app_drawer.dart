@@ -99,6 +99,10 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
         routeName: RouteNames.async_field_validation_example,
       ),
       _buildDrawerItem(
+        title: 'Validation Based on other Field',
+        routeName: RouteNames.validation_based_on_other_field_example,
+      ),
+      _buildDrawerItem(
         title: 'Submission Error to Field',
         routeName: RouteNames.submission_error_to_field_example,
       ),
