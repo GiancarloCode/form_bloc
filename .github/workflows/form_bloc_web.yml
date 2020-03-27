@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - 'form_bloc_web/*'
+      - 'form_bloc_web/**'
 jobs:
   build:
     runs-on: ubuntu-latest
