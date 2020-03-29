@@ -1,3 +1,6 @@
+# 0.11.1
+* Deprecated `isRequired` parameter in all field blocs, in form_bloc `^0.12.0` will be removed, if you want a field to be required, please use the validator `FieldBlocValidators.required`.
+
 # 0.11.0
 ## Breaking changes
 * Add support for forms with steps.
