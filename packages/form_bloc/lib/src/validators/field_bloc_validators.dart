@@ -16,6 +16,22 @@ class FieldBlocValidatorsErrors {
 class FieldBlocValidators {
   FieldBlocValidators._();
 
+  /// Check if the [value] is is not null, not empty or false.
+  ///
+  /// Returns `null` if is valid.
+  ///
+  /// Returns [FieldBlocValidatorsErrors.required]
+  /// if is not valid.
+  static String required(dynamic value) {
+    if (value == null ||
+        value == false ||
+        ((value is Iterable || value is String || value is Map) &&
+            value.length == 0)) {
+      return FieldBlocValidatorsErrors.required;
+    }
+    return null;
+  }
+
   /// Check if the [string] is an email
   /// if [string] is not null and not empty.
   ///
