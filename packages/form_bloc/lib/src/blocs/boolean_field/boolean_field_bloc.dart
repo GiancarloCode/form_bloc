@@ -9,8 +9,6 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
   /// it is available in [FieldBlocState.name].
-  /// * [isRequired] : It is `true`, when the value is `false` it will add
-  /// [FieldBlocValidatorsErrors.required].
   /// * [initialValue] : The initial value of the field,
   /// by default is `false`.
   /// And if the value is `null` it will be `false`.
@@ -38,8 +36,6 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   BooleanFieldBloc({
     String name,
-    @Deprecated('If you want a field to be required, please use the validator [FieldBlocValidators.required]')
-        bool isRequired = false,
     bool initialValue = false,
     List<Validator<bool>> validators,
     List<AsyncValidator<bool>> asyncValidators,
@@ -56,19 +52,7 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
           name,
           (value) => value,
           extraData,
-          isRequired,
-          _requiredBooleanFieldBloc,
         );
-
-  /// Check if the [boolean] is `true`.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredBooleanFieldBloc].
-  static String _requiredBooleanFieldBloc(bool boolean) {
-    if (boolean != null && boolean) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.required;
-  }
 
   @override
   BooleanFieldBlocState<ExtraData> get initialState => BooleanFieldBlocState(

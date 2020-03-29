@@ -90,10 +90,6 @@ abstract class SingleFieldBloc<
 
   final ExtraData _extraData;
 
-  final bool _isRequired;
-
-  final Validator<Value> _isRequiredValidator;
-
   final PublishSubject<Value> _asyncValidatorsSubject = PublishSubject();
   StreamSubscription<UpdateFieldBlocStateError> _asyncValidatorsSubscription;
   final PublishSubject<Suggestion> _selectedSuggestionSubject =
@@ -110,13 +106,10 @@ abstract class SingleFieldBloc<
     String name,
     this._toJson,
     this._extraData,
-    bool isRequired,
-    this._isRequiredValidator,
   )   : assert(_asyncValidatorDebounceTime != null),
         _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
-        _name = name ?? Uuid().v1(),
-        _isRequired = isRequired ?? false {
+        _name = name ?? Uuid().v1() {
     FormBlocDelegate.overrideDelegateOfBlocSupervisor();
     _setUpAsyncValidatorsSubscription();
   }
@@ -311,17 +304,9 @@ abstract class SingleFieldBloc<
     String error;
 
     if (forceValidation || _autoValidate) {
-      final isRequiredError = _isRequiredValidator(value);
-
-      if (_isRequired) {
-        error = isRequiredError;
-      }
-
-      final hasError = error != null;
-      final hasRequiredError = isRequiredError != null;
       final hasValidators = _validators != null;
 
-      if (!hasError && !hasRequiredError && hasValidators) {
+      if (hasValidators) {
         for (var validator in _validators) {
           error = validator(value);
           if (error != null) return error;
@@ -343,7 +328,7 @@ abstract class SingleFieldBloc<
     bool forceValidation = false,
   }) {
     final hasError = error != null;
-    final hasRequiredError = _isRequiredValidator(value) != null;
+
     final hasAsyncValidators = _asyncValidators != null;
 
     bool isValidating;
@@ -352,12 +337,6 @@ abstract class SingleFieldBloc<
         !hasError &&
         hasAsyncValidators &&
         _asyncValidators.isNotEmpty;
-
-    if (!_isRequired) {
-      if (isValidating) {
-        isValidating = !hasRequiredError;
-      }
-    }
 
     if (isValidating) {
       _asyncValidatorsSubject.add(value);
@@ -380,14 +359,6 @@ abstract class SingleFieldBloc<
         !hasInitialStateError &&
         hasAsyncValidators &&
         _asyncValidators.isNotEmpty;
-
-    final hasRequiredError = _isRequiredValidator(_initialValue) != null;
-
-    if (!_isRequired) {
-      if (isValidating) {
-        isValidating = !hasRequiredError;
-      }
-    }
 
     return isValidating;
   }

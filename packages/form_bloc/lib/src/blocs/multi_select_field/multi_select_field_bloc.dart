@@ -15,9 +15,6 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
   /// it is available in [FieldBlocState.name].
-  /// * [isRequired] : It is `true`, when the value is `null`
-  /// or a empty list, it will add
-  /// [FieldBlocValidatorsErrors.required].
   /// * [initialValue] : The initial value of the field,
   /// by default is a empty list `[]`.
   /// And if the value is `null` it will be a empty list `[]`.
@@ -49,8 +46,6 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   MultiSelectFieldBloc({
     String name,
-    @Deprecated('If you want a field to be required, please use the validator [FieldBlocValidators.required]')
-        bool isRequired = false,
     List<Value> initialValue = const [],
     List<Validator<List<Value>>> validators,
     List<AsyncValidator<List<Value>>> asyncValidators,
@@ -70,19 +65,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
           name,
           toJson,
           extraData,
-          isRequired,
-          _requiredMultiSelectFieldBloc,
         );
-
-  /// Check if the [list] is not empty.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc].
-  static String _requiredMultiSelectFieldBloc(List<dynamic> list) {
-    if (list != null && list.isNotEmpty) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.required;
-  }
 
   @override
   MultiSelectFieldBlocState<Value, ExtraData> get initialState =>

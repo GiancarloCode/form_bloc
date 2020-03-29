@@ -7,11 +7,13 @@ void main() {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
-        final validators = [(List<bool> value) => 'error'];
+        final validators = [
+          FieldBlocValidators.required,
+          (List<bool> value) => 'error',
+        ];
 
         final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
           name: 'name',
-          isRequired: true,
           initialValue: [],
           validators: validators,
           suggestions: suggestions,

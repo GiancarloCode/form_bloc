@@ -9,8 +9,6 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
   /// it is available in [FieldBlocState.name].
-  /// * [isRequired] : It is `true`, when the value is `null` it will add
-  /// [FieldBlocValidatorsErrors.required].
   /// * [initialValue] : The initial value of the field,
   /// by default is `null`.
   /// * [validators] : List of [Validator]s.
@@ -40,8 +38,6 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   InputFieldBloc({
     String name,
-    @Deprecated('If you want a field to be required, please use the validator [FieldBlocValidators.required]')
-        bool isRequired = false,
     Value initialValue,
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
@@ -59,19 +55,7 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
           name,
           toJson,
           extraData,
-          isRequired,
-          _requiredInputFieldBloc,
         );
-
-  /// Check if the [value] is not null.
-  ///
-  /// Returns [FieldBlocValidatorsErrors.requiredInputFieldBloc].
-  static String _requiredInputFieldBloc(dynamic value) {
-    if (value != null) {
-      return null;
-    }
-    return FieldBlocValidatorsErrors.required;
-  }
 
   @override
   InputFieldBlocState<Value, ExtraData> get initialState => InputFieldBlocState(

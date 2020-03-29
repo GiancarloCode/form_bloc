@@ -8,13 +8,13 @@ void main() {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
         final validators = [
+          FieldBlocValidators.required,
           (bool value) => value ? 'error' : null,
         ];
 
         final fieldBloc = InputFieldBloc<bool, dynamic>(
           name: 'name',
           initialValue: null,
-          isRequired: true,
           validators: validators,
           suggestions: suggestions,
         );

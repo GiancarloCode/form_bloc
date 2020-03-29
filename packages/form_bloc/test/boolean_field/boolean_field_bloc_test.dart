@@ -78,9 +78,8 @@ void main() {
 
         fieldBloc = BooleanFieldBloc<dynamic>(
           name: 'name',
-          isRequired: true,
           initialValue: true,
-          validators: [(value) => 'error'],
+          validators: [FieldBlocValidators.required, (value) => 'error'],
         );
 
         initialState = BooleanFieldBlocState<dynamic>(

@@ -7,11 +7,13 @@ void main() {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => ['1'];
-        final validators = [(String value) => 'error'];
+        final validators = [
+          FieldBlocValidators.required,
+          (String value) => 'error',
+        ];
 
         final fieldBloc = TextFieldBloc<dynamic>(
           name: 'name',
-          isRequired: true,
           initialValue: '',
           validators: validators,
           suggestions: suggestions,
