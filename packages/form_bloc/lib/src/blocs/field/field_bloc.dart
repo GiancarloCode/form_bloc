@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection' show LinkedHashSet;
 
 import 'package:equatable/equatable.dart';
-import 'package:form_bloc/src/field_bloc_validators.dart';
+import 'package:form_bloc/src/validators/field_bloc_validators.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:pedantic/pedantic.dart';
