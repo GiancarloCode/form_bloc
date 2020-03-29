@@ -45,7 +45,8 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   SelectFieldBloc({
     String name,
-    bool isRequired = false,
+    @Deprecated('If you want a field to be required, please use the validator [FieldBlocValidators.required]')
+        bool isRequired = false,
     Value initialValue,
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,

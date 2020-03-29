@@ -1408,8 +1408,5 @@ void main() {
 
       fieldBloc.updateExtraData(1);
     });
-
-    // TODO: Add test isRequired
-    // TODO: Add events to change is required
   });
 }

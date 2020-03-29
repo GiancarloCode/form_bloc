@@ -38,7 +38,8 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   BooleanFieldBloc({
     String name,
-    bool isRequired = false,
+    @Deprecated('If you want a field to be required, please use the validator [FieldBlocValidators.required]')
+        bool isRequired = false,
     bool initialValue = false,
     List<Validator<bool>> validators,
     List<AsyncValidator<bool>> asyncValidators,

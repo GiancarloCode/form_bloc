@@ -49,7 +49,8 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   MultiSelectFieldBloc({
     String name,
-    bool isRequired = false,
+    @Deprecated('If you want a field to be required, please use the validator [FieldBlocValidators.required]')
+        bool isRequired = false,
     List<Value> initialValue = const [],
     List<Validator<List<Value>>> validators,
     List<AsyncValidator<List<Value>>> asyncValidators,

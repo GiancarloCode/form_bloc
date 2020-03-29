@@ -41,7 +41,8 @@ class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   TextFieldBloc({
     String name,
-    bool isRequired = false,
+    @Deprecated('If you want a field to be required, please use the validator [FieldBlocValidators.required]')
+        bool isRequired = false,
     String initialValue = '',
     List<Validator<String>> validators,
     List<AsyncValidator<String>> asyncValidators,
