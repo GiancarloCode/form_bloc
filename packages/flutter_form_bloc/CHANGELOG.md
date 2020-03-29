@@ -1,8 +1,20 @@
+# 0.12.0+1
+* Fixed changelog.
+
+# 0.12.0
+* ## Breaking changes
+  * Updated to `form_bloc: ^0.12.0`.
+
+* Added properties to `TextFieldBlocBuilder`:
+  * obscureTextTrueIcon
+  * obscureTextFalseIcon
+  * clearTextIcon
+  * asyncValidatingIcon
+
 # 0.11.2
 * Added `clearIcon` to:
   * `DateTimeFieldBlocBuilder`
   * `TimeFieldBlocBuilder`
-
 
 # 0.11.1
 * Fixed content padding of decoration in:

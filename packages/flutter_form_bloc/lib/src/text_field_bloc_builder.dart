@@ -24,7 +24,7 @@ const EdgeInsets _kMenuItemPadding = EdgeInsets.symmetric(horizontal: 16.0);
 enum SuffixButton {
   obscureText,
   clearText,
-  circularIndicatorWhenIsAsyncValidating,
+  asyncValidating,
 }
 
 /// A material design text field that can show suggestions.
@@ -136,7 +136,24 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.toolbarOptions,
     this.enableSuggestions = true,
     this.animateWhenCanShow = true,
+    this.obscureTextTrueIcon = const Icon(Icons.visibility),
+    this.obscureTextFalseIcon = const Icon(Icons.visibility_off),
+    this.clearTextIcon = const Icon(Icons.clear),
+    this.asyncValidatingIcon = const SizedBox(
+      height: 24,
+      width: 24,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: const CircularProgressIndicator(
+          strokeWidth: 2.0,
+        ),
+      ),
+    ),
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
+        assert(obscureTextTrueIcon != null),
+        assert(obscureTextFalseIcon != null),
+        assert(clearTextIcon != null),
+        assert(asyncValidatingIcon != null),
         assert(isEnabled != null),
         assert(suggestionsAnimationDuration != null),
         assert(removeSuggestionOnLongPress != null),
@@ -618,6 +635,42 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// {@endtemplate}
   final bool animateWhenCanShow;
 
+  /// When [suffixButton] is [SuffixButton.obscureText],
+  /// this icon will be displayed when obscure text is `true`.
+  ///
+  /// Default: `Icon(Icons.visibility)`
+  final Widget obscureTextTrueIcon;
+
+  /// When [suffixButton] is [SuffixButton.obscureText],
+  /// this icon will be displayed when obscure text is `false`.
+  ///
+  /// Default: `const Icon(Icons.visibility_off)`
+  final Widget obscureTextFalseIcon;
+
+  /// When [suffixButton] is [SuffixButton.clearText],
+  /// this icon will be displayed.
+  ///
+  /// Default: `const Icon(Icons.clear)`
+  final Widget clearTextIcon;
+
+  /// When [suffixButton] is [SuffixButton.asyncValidating],
+  /// this icon will be displayed.
+  ///
+  /// Default
+  /// ```dart
+  /// const SizedBox(
+  ///  height: 24,
+  ///  width: 24,
+  ///  child: Padding(
+  ///    padding: const EdgeInsets.all(8.0),
+  ///    child: const CircularProgressIndicator(
+  ///      strokeWidth: 2.0,
+  ///    ),
+  ///  ),
+  /// )
+  /// ```
+  final Widget asyncValidatingIcon;
+
   @override
   _TextFieldBlocBuilderState createState() => _TextFieldBlocBuilderState();
 }
@@ -727,8 +780,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               suffixIcon: InkWell(
                   borderRadius: BorderRadius.circular(25),
                   child: _obscureText
-                      ? Icon(Icons.visibility)
-                      : Icon(Icons.visibility_off),
+                      ? widget.obscureTextTrueIcon
+                      : widget.obscureTextFalseIcon,
                   onTap: () {
                     setState(() {
                       _obscureText = !_obscureText;
@@ -741,26 +794,19 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
           decoration = decoration.copyWith(
             suffixIcon: InkWell(
               borderRadius: BorderRadius.circular(25),
-              child: Icon(Icons.clear),
+              child: widget.clearTextIcon,
               onTap: () {
                 widget.textFieldBloc.clear();
               },
             ),
           );
           break;
-        case SuffixButton.circularIndicatorWhenIsAsyncValidating:
+        case SuffixButton.asyncValidating:
           decoration = decoration.copyWith(
             suffixIcon: AnimatedOpacity(
               duration: Duration(milliseconds: 300),
               opacity: state.canShowIsValidating ? 1.0 : 0.0,
-              child: Container(
-                padding: EdgeInsets.all(12),
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3.0,
-                ),
-              ),
+              child: widget.asyncValidatingIcon,
             ),
           );
       }
