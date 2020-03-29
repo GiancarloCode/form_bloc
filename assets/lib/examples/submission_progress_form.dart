@@ -21,7 +21,7 @@ class App extends StatelessWidget {
 
 class SubmissionProgressFormBloc extends FormBloc<String, String> {
   final username = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
     initialValue: 'GiancarloCode',
   );
 

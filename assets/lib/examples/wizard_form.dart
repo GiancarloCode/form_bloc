@@ -17,17 +17,21 @@ class App extends StatelessWidget {
 
 class WizardFormBloc extends FormBloc<String, String> {
   final username = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
 
   final email = TextFieldBloc(
-    isRequired: true,
-    validators: [FieldBlocValidators.email],
+    validators: [
+      FieldBlocValidators.required,
+      FieldBlocValidators.email,
+    ],
   );
 
   final password = TextFieldBloc(
-    isRequired: true,
-    validators: [FieldBlocValidators.passwordMin6Chars],
+    validators: [
+      FieldBlocValidators.required,
+      FieldBlocValidators.passwordMin6Chars,
+    ],
   );
 
   final firstName = TextFieldBloc();
@@ -39,7 +43,7 @@ class WizardFormBloc extends FormBloc<String, String> {
   );
 
   final birthDate = InputFieldBloc<DateTime, Object>(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
 
   final github = TextFieldBloc();
