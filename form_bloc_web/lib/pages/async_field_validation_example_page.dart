@@ -21,8 +21,8 @@ class AsyncFieldValidationExamplePage extends StatelessWidget {
             nestedPath: 'AsyncFieldValidationForm',
             code: '''
 class AsyncFieldValidationFormBloc extends FormBloc<String, String> {            
-  final text = TextFieldBloc(
-    isRequired: true,    
+  final username = TextFieldBloc(
+    validators: [FieldBlocValidators.required], 
   );  
 }  
 ''',
@@ -38,7 +38,7 @@ Very useful for reduce the number of invocations of each `asyncValidator`. for e
             nestedPath: 'AsyncFieldValidationForm',
             code: '''
   final username = TextFieldBloc(
-    isRequired: true,    
+    validators: [FieldBlocValidators.required],
     asyncValidatorDebounceTime: Duration(milliseconds: 300),
   );
 ''',
@@ -79,16 +79,18 @@ In our case, the username will only be valid if it is "flutter dev" without case
           TutorialText.sub('''
 Asynchronous validators will only be called in case all synchronous validators don't return an error.
 
-In our case we will add a synchronous validator so that the username has at least 4 characters.
+In our case we will add other synchronous validator so that the username has at least 4 characters.
 '''),
           CodeCard.main(
             nestedPath: 'AsyncFieldValidationFormBloc',
             code: '''
 class AsyncFieldValidationFormBloc extends FormBloc<String, String> {            
   final username = TextFieldBloc(
-    isRequired: true,    
-    asyncValidatorDebounceTime: Duration(milliseconds: 300),
-    validators: [_min4Char],
+    validators: [
+      FieldBlocValidators.required,
+      _min4Char,
+    ],  
+    asyncValidatorDebounceTime: Duration(milliseconds: 300), 
   );
 
   AsyncFieldValidationFormBloc() {

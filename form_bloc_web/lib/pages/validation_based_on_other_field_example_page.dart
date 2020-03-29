@@ -22,10 +22,10 @@ class ValidationBasedOnOtherFieldExamplePage extends StatelessWidget {
             code: '''
 class MyFormBloc extends FormBloc<String, String> {
   final password = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
   final confirmPassword = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
 }  
 ''',

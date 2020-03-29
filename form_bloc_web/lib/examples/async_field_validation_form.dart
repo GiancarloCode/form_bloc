@@ -17,9 +17,11 @@ class App extends StatelessWidget {
 
 class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
   final username = TextFieldBloc(
-    isRequired: true,
+    validators: [
+      FieldBlocValidators.required,
+      _min4Char,
+    ],
     asyncValidatorDebounceTime: Duration(milliseconds: 300),
-    validators: [_min4Char],
   );
 
   AsyncFieldValidationFormBloc() {
@@ -94,8 +96,7 @@ class AsyncFieldValidationForm extends StatelessWidget {
                   children: <Widget>[
                     TextFieldBlocBuilder(
                       textFieldBloc: formBloc.username,
-                      suffixButton:
-                          SuffixButton.circularIndicatorWhenIsAsyncValidating,
+                      suffixButton: SuffixButton.asyncValidating,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Username',

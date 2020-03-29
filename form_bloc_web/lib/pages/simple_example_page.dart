@@ -129,26 +129,11 @@ The LoginFormBloc will have two TextFieldBloc and one BooleanFieldBloc.
 ''',
         ),
         TutorialText.sub('''
-If you want the fields to be required, simply set `isRequired` to `true`.
-'''),
-        CodeCard.main(
-          nestedPath: _formBlocName,
-          code: '''
-  final email = TextFieldBloc(
-    isRequired: true,
-  );
-
-  final password = TextFieldBloc(
-    isRequired: true,
-  );
-
-  final showSuccessResponse = BooleanFieldBloc();
-''',
-        ),
-        TutorialText.sub('''
 If you want to add validators, just pass them to the `validators` list.
 
-In our case we will only add the email validator, which is already included in the library, but you can add several validators and create them yourself.
+In our case all fields will be required, so we will add `FieldBlocValidators.required`, and for the email we will add `FieldBlocValidators.email`.
+
+This validators are already included in the library, but you can add several validators and create them yourself.
 '''),
         CodeCard.main(
           nestedPath: _formBlocName,
@@ -156,12 +141,15 @@ In our case we will only add the email validator, which is already included in t
   final email = TextFieldBloc(
     isRequired: true,
     validators: [
+      FieldBlocValidators.required,
       FieldBlocValidators.email,
     ],
   );
 
   final password = TextFieldBloc(
-    isRequired: true,
+    validators: [
+      FieldBlocValidators.required,
+    ],
   );
 
   final showSuccessResponse = BooleanFieldBloc();

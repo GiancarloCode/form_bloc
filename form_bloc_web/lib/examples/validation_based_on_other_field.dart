@@ -17,10 +17,10 @@ class App extends StatelessWidget {
 
 class ValidationBasedOnOtherFieldFormBloc extends FormBloc<String, String> {
   final password = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
   final confirmPassword = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
 
   Validator<String> _confirmPassword(

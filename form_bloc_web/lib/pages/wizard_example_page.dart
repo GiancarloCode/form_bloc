@@ -21,7 +21,7 @@ class WizardExamplePage extends StatelessWidget {
             code: '''
 class WizardFormBloc extends FormBloc<String, String> {
   final username = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
   // More field blocs...  
   final firstName = TextFieldBloc();
@@ -64,7 +64,7 @@ When creating the form bloc the current step will be 0.
 Every time you emit a success state, the current step will increment by 1 if it is not the last step.
 
 So you can check what step it is when the submit method is called and perform the corresponding logic.
- 
+
 In our case: 
 * In step 0, the first step, we will await a delay, and we will have a bool variable that will serve as a flag, so that the first time we submit the form in the step 0, we add an error to the email field, and we will emit a failure, but the second time we will emit a success
 

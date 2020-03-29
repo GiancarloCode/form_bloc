@@ -17,18 +17,18 @@ class App extends StatelessWidget {
 
 class ConditionalFieldsFormBloc extends FormBloc<String, String> {
   final doYouLikeFormBloc = SelectFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
     items: ['No', 'Yes'],
   );
 
   final whyNotYouLikeFormBloc = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
 
   final showSecretField = BooleanFieldBloc();
 
   final secretField = TextFieldBloc(
-    isRequired: true,
+    validators: [FieldBlocValidators.required],
   );
 
   ConditionalFieldsFormBloc() {
