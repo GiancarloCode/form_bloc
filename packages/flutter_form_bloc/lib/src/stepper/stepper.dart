@@ -632,17 +632,23 @@ class _StepperState extends State<Stepper> with TickerProviderStateMixin {
           ),
         ),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(24.0),
-            children: <Widget>[
-              AnimatedSize(
-                curve: Curves.fastOutSlowIn,
-                duration: kThemeAnimationDuration,
-                vsync: this,
-                child: widget.steps[widget.currentStep].content,
+          child: AnimatedSize(
+            key: Key('__stepper_horizontal_step_${widget.currentStep}__'),
+            curve: Curves.easeIn,
+            duration: kThemeAnimationDuration,
+            vsync: this,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    widget.steps[widget.currentStep].content,
+                    _buildVerticalControls(),
+                  ],
+                ),
               ),
-              _buildVerticalControls(),
-            ],
+            ),
           ),
         ),
       ],
