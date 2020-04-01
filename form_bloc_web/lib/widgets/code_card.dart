@@ -116,7 +116,7 @@ class CodeCard extends StatelessWidget {
       CodeCard(
         code: '''
 dependencies:
-  flutter_form_bloc: ^0.12.0${extraDependencies == null ? '' : '\n${extraDependencies.substring(0, extraDependencies.length - 1)}'}
+  flutter_form_bloc: ^0.12.1${extraDependencies == null ? '' : '\n${extraDependencies.substring(0, extraDependencies.length - 1)}'}
 ''',
         fileName: 'pubspec.yaml',
         showCopyButton: true,
