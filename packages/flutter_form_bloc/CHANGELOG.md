@@ -1,5 +1,8 @@
+# 0.12.2
+* Fixed Intl version.
+
 # 0.12.1
-* Fixes minor bug in Stepper [54](https://github.com/GiancarloCode/form_bloc/issues/54).
+* Fixed minor bug in Stepper [54](https://github.com/GiancarloCode/form_bloc/issues/54).
 
 # 0.12.0+1
 * Fixed changelog.
