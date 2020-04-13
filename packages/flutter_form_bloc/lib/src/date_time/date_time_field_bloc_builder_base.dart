@@ -175,6 +175,8 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
       useRootNavigator: useRootNavigator,
       initialDatePickerMode: initialDatePickerMode,
       locale: locale,
+      builder: builder,
+      selectableDayPredicate: selectableDayPredicate,
       // routeSettings: routeSettings, /* Use it in flutter >= 1.15.0   */
       textDirection: textDirection,
     );
