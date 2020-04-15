@@ -1,3 +1,6 @@
+# 0.12.3
+* Fixed `pickerBuilder` in `DateTimeFieldBlocBuilder`.
+
 # 0.12.2
 * Fixed Intl version.
 
