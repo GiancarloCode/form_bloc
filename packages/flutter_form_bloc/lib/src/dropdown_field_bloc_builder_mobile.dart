@@ -6,9 +6,8 @@ import 'package:flutter/material.dart'
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/dropdown.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:form_bloc/form_bloc.dart';
-import 'package:keyboard_utils/keyboard_listener.dart';
-import 'package:keyboard_utils/keyboard_utils.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -86,8 +85,9 @@ class _DropdownFieldBlocBuilderMobileState<Value>
 
   double _dropdownHeight = 0;
 
-  KeyboardUtils _keyboardUtils = KeyboardUtils();
-  int _keyboardSubscriptionId;
+  StreamSubscription<bool> _keyboardSubscription;
+
+  bool _isKeyboardVisible;
 
   FocusNode _focusNode = FocusNode();
 
@@ -111,7 +111,14 @@ class _DropdownFieldBlocBuilderMobileState<Value>
 
     _effectiveFocusNode.addListener(_onFocusRequest);
 
-    _keyboardSubscriptionId = _keyboardUtils.add(listener: KeyboardListener());
+    _isKeyboardVisible = KeyboardVisibility.isVisible;
+
+    _keyboardSubscription = KeyboardVisibility.onChange.listen((bool visible) {
+      setState(() {
+        _isKeyboardVisible = visible;
+        print(_isKeyboardVisible);
+      });
+    });
   }
 
   @override
@@ -119,14 +126,11 @@ class _DropdownFieldBlocBuilderMobileState<Value>
     _onPressedController.close();
     _dropdownHeightController.close();
 
-    _keyboardUtils.unsubscribeListener(subscribingId: _keyboardSubscriptionId);
-    if (_keyboardUtils.canCallDispose()) {
-      _keyboardUtils.dispose();
-    }
-
     _effectiveFocusNode.removeListener(_onFocusRequest);
 
     _focusNode.dispose();
+
+    _keyboardSubscription.cancel();
 
     super.dispose();
   }
@@ -284,7 +288,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
 
   void _onDropdownPressed() async {
     if (widget.selectFieldBloc.state.items.isNotEmpty) {
-      if (_keyboardUtils.isKeyboardOpen) {
+      if (_isKeyboardVisible) {
         _effectiveFocusNode.requestFocus();
         await Future<void>.delayed(Duration(
             milliseconds:
