@@ -170,12 +170,6 @@ abstract class SingleFieldBloc<
   }
 
   /// Set [value] to the `value` of the current state.
-  /// {@template form_bloc.field_bloc.update_value}
-  ///
-  /// This method will be ignored if it is called  when the
-  /// `state` of the [FormBloc] that contains this `fieldBloc`
-  /// is [FormBlocSubmitting].
-  /// {@endtemplate}
   void updateValue(Value value) => add(UpdateFieldBlocValue(value));
 
   /// Set [value] to the `value` and set `isInitial` to `true`
@@ -362,18 +356,15 @@ abstract class SingleFieldBloc<
 
   bool _canUpdateValue({@required Value value, @required bool isInitialValue}) {
     final stateSnapshot = state;
-    if (stateSnapshot.formBloc?.state is! FormBlocSubmitting) {
-      if (stateSnapshot.value == value && stateSnapshot.isValidated) {
-        if (isInitialValue) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
+
+    if (stateSnapshot.value == value && stateSnapshot.isValidated) {
+      if (isInitialValue) {
         return true;
+      } else {
+        return false;
       }
     } else {
-      return false;
+      return true;
     }
   }
 

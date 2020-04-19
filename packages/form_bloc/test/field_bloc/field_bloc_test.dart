@@ -328,24 +328,6 @@ void main() {
       fieldBloc.updateValue(null);
       fieldBloc.updateValue(2);
     });
-    test(
-        'updateValue method and UpdateFieldBlocValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
-        () {
-      /* final fieldBloc = InputFieldBloc<int, dynamic>(
-        name: 'fieldName',
-      );
-
-      final state1 = InputFieldBlocState<int, dynamic>(
-        value: null,
-        error: null,
-        isInitial: true,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        name: 'fieldName',
-      ); */
-      // TODO: write test
-    });
 
     test('updateInitialValue method and UpdateFieldBlocInitialValue event.',
         () {
@@ -399,28 +381,6 @@ void main() {
       fieldBloc.updateInitialValue(2);
       fieldBloc.updateValue(null);
       fieldBloc.updateInitialValue(null);
-    });
-
-    test(
-        'updateInitialValue method and UpdateFieldBlocInitialValue event are ignored if it is called when the FormBlocState is FormBlocSubmitting or, is the same value and is validated.',
-        () {
-      /* final fieldBloc = InputFieldBloc<int, dynamic>(
-        name: 'fieldName',
-      );
-
-      final state1 = InputFieldBlocState<int, dynamic>(
-        value: null,
-        error: null,
-        isInitial: true,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        name: 'fieldName',
-      );
-      final state2 = state1.copyWith(
-        value: Optional.of(1),
-      ); */
-      // TODO: write test
     });
 
     test('clear method set value to null.', () {

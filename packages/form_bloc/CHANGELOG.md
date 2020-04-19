@@ -1,3 +1,6 @@
+# 0.13.0
+* Now the value of all field blocs are updated when call `updateValue` and `updateInitialValue` when the `FormBlocState` is `FormBlocSubmitting`.
+
 # 0.12.0
 ## Breaking changes
 * Removed `isRequired` parameter in all field blocs.
@@ -77,7 +80,7 @@
   * `GroupFieldBloc`.
   * `FieldBlocList`.
 * Documentation Updates.
-  
+
 
 
 
