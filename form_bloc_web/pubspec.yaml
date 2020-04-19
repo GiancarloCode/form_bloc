@@ -6,12 +6,12 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flutter: 
+  flutter:
     sdk: flutter
   # form_bloc:
   #   path: ../packages/form_bloc
     # path: ../packages/flutter_form_bloc
-  flutter_form_bloc: ^0.12.1
+  flutter_form_bloc: ^0.13.0
   flutter_gradients: ^1.0.0+1
   flutter_syntax_view: ^1.0.0
   flash: ^1.2.0
@@ -22,7 +22,7 @@ dependencies:
   flutter_fadein: ^1.1.1
   liquid_progress_indicator: ^0.3.2
   rxdart: ^0.23.1
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -30,7 +30,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-  - family: JosefinSans    
+  - family: JosefinSans
     fonts:
     - asset: assets/fonts/JosefinSans-Regular.ttf
     - asset: assets/fonts/JosefinSans-Bold.ttf
