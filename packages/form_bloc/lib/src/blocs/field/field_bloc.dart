@@ -1,35 +1,32 @@
 import 'dart:async';
 import 'dart:collection' show LinkedHashSet;
 
-import 'package:equatable/equatable.dart';
-import 'package:form_bloc/src/validators/field_bloc_validators.dart';
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:form_bloc/src/blocs/form/form_bloc.dart';
+import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:quiver/core.dart';
 import 'package:rxdart/rxdart.dart';
-
-import 'package:form_bloc/src/blocs/form/form_bloc.dart';
 import 'package:uuid/uuid.dart';
+
 import '../form_bloc_delegate.dart';
 
+part '../boolean_field/boolean_field_bloc.dart';
+part '../boolean_field/boolean_field_state.dart';
+part '../form/form_bloc_utils.dart';
+part '../group_field/group_field_bloc.dart';
+part '../input_field/input_field_bloc.dart';
+part '../input_field/input_field_state.dart';
+part '../list_field/list_field_bloc.dart';
+part '../multi_select_field/multi_select_field_bloc.dart';
+part '../multi_select_field/multi_select_field_state.dart';
+part '../select_field/select_field_bloc.dart';
+part '../select_field/select_field_state.dart';
+part '../text_field/text_field_bloc.dart';
+part '../text_field/text_field_state.dart';
 part 'field_event.dart';
 part 'field_state.dart';
-part '../list_field/list_field_bloc.dart';
-part '../group_field/group_field_bloc.dart';
-
-part '../form/form_bloc_utils.dart';
-part '../input_field/input_field_bloc.dart';
-part '../text_field/text_field_bloc.dart';
-part '../boolean_field/boolean_field_bloc.dart';
-part '../select_field/select_field_bloc.dart';
-part '../multi_select_field/multi_select_field_bloc.dart';
-
-part '../input_field/input_field_state.dart';
-part '../text_field/text_field_state.dart';
-part '../boolean_field/boolean_field_state.dart';
-part '../select_field/select_field_state.dart';
-part '../multi_select_field/multi_select_field_state.dart';
 
 /// Signature for the [Validator] function which takes [value]
 /// and should returns a `String` error, and if doesn't have error
