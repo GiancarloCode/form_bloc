@@ -1,6 +1,10 @@
 # 0.13.0
+* Updated to `form_bloc: ^0.13.0`.
 * Changed `keyboard_utils` to `flutter_keyboard_visibility`.
 * `FormBlocListener` now is compatible with `MultiBlocListener`.
+* Added `FocusNode` and `NextFocusNode` to:
+  * `DateTimeFieldBlocBuilder`
+  * `TimeFieldBlocBuilder`
 
 # 0.12.3
 * Fixed `pickerBuilder` in `DateTimeFieldBlocBuilder`.
