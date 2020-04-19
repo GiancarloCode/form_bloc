@@ -622,8 +622,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
   StreamSubscription<bool> _keyboardSubscription;
 
-  bool _isKeyboardVisible;
-
   PublishSubject _hideSuggestionsController;
 
   @override
@@ -675,7 +673,6 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
     _keyboardSubscription = KeyboardVisibility.onChange.listen((bool visible) {
       setState(() {
-        _isKeyboardVisible = visible;
         if (widget.hideSuggestionsOnKeyboardHide && !visible) {
           _effectiveFocusNode.unfocus();
         }

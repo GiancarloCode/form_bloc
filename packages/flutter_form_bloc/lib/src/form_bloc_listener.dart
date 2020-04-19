@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc/src/bloc_listener.dart';
 import 'package:form_bloc/form_bloc.dart' as form_bloc;
 
 typedef FormBlocListenerCallback<
