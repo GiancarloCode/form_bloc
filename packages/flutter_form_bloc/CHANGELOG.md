@@ -1,3 +1,6 @@
+# 0.13.0
+* Changed `keyboard_utils` to `flutter_keyboard_visibility`.
+
 # 0.12.3
 * Fixed `pickerBuilder` in `DateTimeFieldBlocBuilder`.
 
@@ -71,7 +74,7 @@
     * scrollPhysics
     * textAlignVertical
     * toolbarOptions
-* Added `controlAffinity` property to `CheckboxFieldBlocBuilder`.  
+* Added `controlAffinity` property to `CheckboxFieldBlocBuilder`.
 * Documentation Updates.
 
 # 0.10.2
