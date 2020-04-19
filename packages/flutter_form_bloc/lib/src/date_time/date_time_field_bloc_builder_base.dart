@@ -12,7 +12,7 @@ enum DateTimeFieldBlocBuilderBaseType {
 }
 
 /// A material design date picker.
-class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
+class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   const DateTimeFieldBlocBuilderBase({
     Key key,
     @required this.dateTimeFieldBloc,
@@ -36,6 +36,8 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
     @required this.animateWhenCanShow,
     this.showClearIcon = true,
     this.clearIcon,
+    this.nextFocusNode,
+    this.focusNode,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -69,6 +71,12 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
+  final FocusNode nextFocusNode;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
+  final FocusNode focusNode;
+
   final bool showClearIcon;
 
   final Icon clearIcon;
@@ -77,7 +85,6 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
   final DateTime firstDate;
   final DateTime lastDate;
   final SelectableDayPredicate selectableDayPredicate;
-  final DatePickerMode initialDatePickerMode = DatePickerMode.day;
   final Locale locale;
   final TextDirection textDirection;
   final TransitionBuilder builder;
@@ -86,114 +93,159 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
   final TimeOfDay initialTime;
 
   @override
+  _DateTimeFieldBlocBuilderBaseState createState() =>
+      _DateTimeFieldBlocBuilderBaseState();
+}
+
+class _DateTimeFieldBlocBuilderBaseState<T>
+    extends State<DateTimeFieldBlocBuilderBase<T>> {
+  final DatePickerMode initialDatePickerMode = DatePickerMode.day;
+
+  FocusNode _focusNode = FocusNode();
+
+  FocusNode get _effectiveFocusNode => widget.focusNode ?? _focusNode;
+
+  @override
+  void initState() {
+    _effectiveFocusNode.addListener(_onFocusRequest);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _effectiveFocusNode.removeListener(_onFocusRequest);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onFocusRequest() {
+    if (_effectiveFocusNode.hasFocus) {
+      _showPicker(context);
+    }
+  }
+
+  void _showPicker(BuildContext context) async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    var result;
+    if (widget.type == DateTimeFieldBlocBuilderBaseType.date) {
+      result = await _showDatePicker(context);
+    } else if (widget.type == DateTimeFieldBlocBuilderBaseType.both) {
+      final date = await _showDatePicker(context);
+
+      if (date != null) {
+        final time = await _showTimePicker(context);
+        result = _combine(date, time);
+      }
+    } else if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
+      result = await _showTimePicker(context);
+    }
+    if (result != null) {
+      fieldBlocBuilderOnChange<T>(
+        isEnabled: widget.isEnabled,
+        nextFocusNode: widget.nextFocusNode,
+        onChanged: (value) {
+          widget.dateTimeFieldBloc.updateValue(value);
+          // Used for hide keyboard
+          // FocusScope.of(context).requestFocus(FocusNode());
+        },
+      )(result);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (dateTimeFieldBloc == null) {
+    if (widget.dateTimeFieldBloc == null) {
       return SizedBox();
     }
 
-    return CanShowFieldBlocBuilder(
-      fieldBloc: dateTimeFieldBloc,
-      animate: animateWhenCanShow,
-      builder: (_, __) {
-        return BlocBuilder<InputFieldBloc<T, Object>,
-            InputFieldBlocState<T, Object>>(
-          bloc: dateTimeFieldBloc,
-          builder: (context, state) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: this.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: state,
-            );
-
-            Widget child;
-
-            if (state.value == null && decoration.hintText != null) {
-              child = Text(
-                decoration.hintText,
-                style: decoration.hintStyle,
-                overflow: TextOverflow.ellipsis,
-                maxLines: decoration.hintMaxLines,
+    return Focus(
+      focusNode: _effectiveFocusNode,
+      child: CanShowFieldBlocBuilder(
+        fieldBloc: widget.dateTimeFieldBloc,
+        animate: widget.animateWhenCanShow,
+        builder: (_, __) {
+          return BlocBuilder<InputFieldBloc<T, Object>,
+              InputFieldBlocState<T, Object>>(
+            bloc: widget.dateTimeFieldBloc,
+            builder: (context, state) {
+              final isEnabled = fieldBlocIsEnabled(
+                isEnabled: this.widget.isEnabled,
+                enableOnlyWhenFormBlocCanSubmit:
+                    widget.enableOnlyWhenFormBlocCanSubmit,
+                fieldBlocState: state,
               );
-            } else {
-              child = Text(
-                state.value != null ? _tryFormat(state.value, format) : '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
-                style: Style.getDefaultTextStyle(
-                  context: context,
-                  isEnabled: isEnabled,
+
+              Widget child;
+
+              if (state.value == null && widget.decoration.hintText != null) {
+                child = Text(
+                  widget.decoration.hintText,
+                  style: widget.decoration.hintStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: widget.decoration.hintMaxLines,
+                );
+              } else {
+                child = Text(
+                  state.value != null
+                      ? _tryFormat(state.value, widget.format)
+                      : '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
+                  style: Style.getDefaultTextStyle(
+                    context: context,
+                    isEnabled: isEnabled,
+                  ),
+                );
+              }
+
+              return DefaultFieldBlocBuilderPadding(
+                padding: widget.padding,
+                child: GestureDetector(
+                  onTap: !isEnabled ? null : () => _showPicker(context),
+                  child: InputDecorator(
+                    decoration: _buildDecoration(context, state, isEnabled),
+                    isEmpty: state.value == null &&
+                        widget.decoration.hintText == null,
+                    child: child,
+                  ),
                 ),
               );
-            }
-
-            return DefaultFieldBlocBuilderPadding(
-              padding: padding,
-              child: GestureDetector(
-                onTap: !isEnabled
-                    ? null
-                    : () async {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        var result;
-                        if (type == DateTimeFieldBlocBuilderBaseType.date) {
-                          result = await _showDatePicker(context);
-                        } else if (type ==
-                            DateTimeFieldBlocBuilderBaseType.both) {
-                          final date = await _showDatePicker(context);
-
-                          if (date != null) {
-                            final time = await _showTimePicker(context);
-                            result = _combine(date, time);
-                          }
-                        } else if (type ==
-                            DateTimeFieldBlocBuilderBaseType.time) {
-                          result = await _showTimePicker(context);
-                        }
-                        if (result != null) {
-                          dateTimeFieldBloc.updateValue(result as T);
-                        }
-                      },
-                child: InputDecorator(
-                  decoration: _buildDecoration(context, state, isEnabled),
-                  isEmpty: state.value == null && decoration.hintText == null,
-                  child: child,
-                ),
-              ),
-            );
-          },
-        );
-      },
+            },
+          );
+        },
+      ),
     );
   }
 
   Future<DateTime> _showDatePicker(BuildContext context) async {
     return await showDatePicker(
       context: context,
-      initialDate: dateTimeFieldBloc.state.value ?? initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      useRootNavigator: useRootNavigator,
+      initialDate: widget.dateTimeFieldBloc.state.value ?? widget.initialDate,
+      firstDate: widget.firstDate,
+      lastDate: widget.lastDate,
+      useRootNavigator: widget.useRootNavigator,
       initialDatePickerMode: initialDatePickerMode,
-      locale: locale,
-      builder: builder,
-      selectableDayPredicate: selectableDayPredicate,
+      locale: widget.locale,
+      builder: widget.builder,
+      selectableDayPredicate: widget.selectableDayPredicate,
       // routeSettings: routeSettings, /* Use it in flutter >= 1.15.0   */
-      textDirection: textDirection,
+      textDirection: widget.textDirection,
     );
   }
 
   Future<TimeOfDay> _showTimePicker(BuildContext context) async {
     return await showTimePicker(
       context: context,
-      useRootNavigator: useRootNavigator,
-      initialTime: type == DateTimeFieldBlocBuilderBaseType.time
-          ? dateTimeFieldBloc.state.value ?? initialTime
-          : dateTimeFieldBloc.state.value == null
+      useRootNavigator: widget.useRootNavigator,
+      initialTime: widget.type == DateTimeFieldBlocBuilderBaseType.time
+          ? widget.dateTimeFieldBloc.state.value ?? widget.initialTime
+          : widget.dateTimeFieldBloc.state.value == null
               ? TimeOfDay.fromDateTime(
-                  dateTimeFieldBloc.state.value ?? DateTime.now(),
+                  widget.dateTimeFieldBloc.state.value ?? DateTime.now(),
                 )
-              : initialTime,
-      builder: builder,
+              : widget.initialTime,
+      builder: widget.builder,
     );
   }
 
@@ -207,7 +259,7 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
 
   String _tryFormat(T value, DateFormat format) {
     DateTime date;
-    if (type == DateTimeFieldBlocBuilderBaseType.time) {
+    if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
       final time = value as TimeOfDay;
       date = DateTime(1, 1, 1, time?.hour ?? 0, time?.minute ?? 0);
     }
@@ -222,27 +274,28 @@ class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
 
   InputDecoration _buildDecoration(BuildContext context,
       InputFieldBlocState<T, Object> state, bool isEnabled) {
-    InputDecoration decoration = this.decoration;
+    InputDecoration decoration = this.widget.decoration;
 
     decoration = decoration.copyWith(
       enabled: isEnabled,
       errorText: Style.getErrorText(
         context: context,
-        errorBuilder: errorBuilder,
+        errorBuilder: widget.errorBuilder,
         fieldBlocState: state,
-        fieldBloc: dateTimeFieldBloc,
+        fieldBloc: widget.dateTimeFieldBloc,
       ),
       suffixIcon: decoration.suffixIcon ??
-          (showClearIcon
+          (widget.showClearIcon
               ? AnimatedOpacity(
                   duration: Duration(milliseconds: 400),
-                  opacity: dateTimeFieldBloc.state.value == null ? 0.0 : 1.0,
+                  opacity:
+                      widget.dateTimeFieldBloc.state.value == null ? 0.0 : 1.0,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(25),
-                    child: clearIcon ?? Icon(Icons.clear),
-                    onTap: dateTimeFieldBloc.state.value == null
+                    child: widget.clearIcon ?? Icon(Icons.clear),
+                    onTap: widget.dateTimeFieldBloc.state.value == null
                         ? null
-                        : dateTimeFieldBloc.clear,
+                        : widget.dateTimeFieldBloc.clear,
                   ),
                 )
               : null),

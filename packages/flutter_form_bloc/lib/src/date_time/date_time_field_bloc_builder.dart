@@ -30,6 +30,8 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
     this.animateWhenCanShow = true,
     this.showClearIcon = true,
     this.clearIcon,
+    this.nextFocusNode,
+    this.focusNode,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -65,6 +67,12 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
+  final FocusNode nextFocusNode;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
+  final FocusNode focusNode;
 
   final DateTime initialDate;
   final DateTime firstDate;
@@ -108,6 +116,8 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
       animateWhenCanShow: animateWhenCanShow,
       clearIcon: clearIcon,
       showClearIcon: showClearIcon,
+      nextFocusNode: nextFocusNode,
+      focusNode: focusNode,
     );
   }
 }

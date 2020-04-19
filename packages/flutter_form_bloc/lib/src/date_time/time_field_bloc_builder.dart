@@ -26,6 +26,8 @@ class TimeFieldBlocBuilder extends StatelessWidget {
     this.animateWhenCanShow = true,
     this.showClearIcon = true,
     this.clearIcon,
+    this.nextFocusNode,
+    this.focusNode,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -57,6 +59,12 @@ class TimeFieldBlocBuilder extends StatelessWidget {
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
+  final FocusNode nextFocusNode;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
+  final FocusNode focusNode;
 
   final SelectableDayPredicate selectableDayPredicate;
   final DatePickerMode initialDatePickerMode = DatePickerMode.day;
@@ -95,6 +103,8 @@ class TimeFieldBlocBuilder extends StatelessWidget {
       animateWhenCanShow: animateWhenCanShow,
       showClearIcon: showClearIcon,
       clearIcon: clearIcon,
+      nextFocusNode: nextFocusNode,
+      focusNode: focusNode,
     );
   }
 }
