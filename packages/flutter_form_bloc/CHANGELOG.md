@@ -1,3 +1,6 @@
+# 0.13.0+1
+* Fixed pub health suggestions
+
 # 0.13.0
 * Updated to `form_bloc: ^0.13.0`.
 * Changed `keyboard_utils` to `flutter_keyboard_visibility`.
