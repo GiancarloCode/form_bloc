@@ -1,3 +1,6 @@
+# 0.13.1
+* Fixed pedantic version.
+
 # 0.13.0
 * Now the value of all field blocs are updated when call `updateValue` and `updateInitialValue` when the `FormBlocState` is `FormBlocSubmitting`.
 
