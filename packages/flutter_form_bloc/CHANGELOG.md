@@ -1,3 +1,7 @@
+# 0.14.0
+* Updated to `form_bloc: ^0.14.0`.
+* Updated to `flutter_bloc: ^0.4.0`.
+
 # 0.13.1
 * Updated to `form_bloc: ^0.13.1`.
 
