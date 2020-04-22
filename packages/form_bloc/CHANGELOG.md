@@ -1,3 +1,6 @@
+# 0.14.0
+* Updated to `bloc: ^4.0.0`
+
 # 0.13.1
 * Fixed pedantic version.
 
