@@ -173,10 +173,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     } else if (event is ReloadFormBloc) {
       if (state is! FormBlocLoading) {
         yield state.toLoading();
-        onLoading();
+        _callback(onLoading);
       }
     } else if (event is LoadFormBloc) {
-      onLoading();
+      _callback(onLoading);
     } else if (event is CancelSubmissionFormBloc) {
       yield* _onCancelSubmissionFormBloc();
     } else if (event is UpdateFormBlocStateIsValid) {
@@ -204,6 +204,13 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   // CALLBACKS
   // ===========================================================================
 
+  void _callback(Function callback) async {
+    try {
+      await callback();
+    } catch(e, stackTrace) {
+      onError(e, stackTrace);
+    }
+  }
   /// This method is called when [FormBlocState.isValid] is `true`
   /// and [submit] was called and [FormBlocState.canSubmit] is `true`.
   ///
@@ -447,7 +454,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           (isStateUpdated) {
             if (isStateUpdated) {
               _canSubmit = true;
-              onSubmitting();
+              _callback(onSubmitting);
 
               _onSubmittingSubscription.cancel();
             }
@@ -489,7 +496,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
                     null;
                 if (isStateUpdated) {
                   _canSubmit = true;
-                  onSubmitting();
+                  _callback(onSubmitting);
                 }
               } else {
                 final stateSnapshot = state;
@@ -550,7 +557,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       yield newState;
       await firstWhere((state) => state == newState);
 
-      onCancelingSubmission();
+      _callback(onCancelingSubmission);
     }
   }
 
@@ -564,7 +571,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       currentStep: stateSnapshot.currentStep,
       deletingProgress: 0.0,
     );
-    onDeleting();
+    _callback(onDeleting);
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
