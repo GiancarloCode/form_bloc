@@ -52,10 +52,10 @@ class Style {
     @required bool isEnabled,
   }) =>
       isEnabled
-          ? Theme.of(context).textTheme.subhead
+          ? Theme.of(context).textTheme.subtitle1
           : Theme.of(context)
               .textTheme
-              .subhead
+              .subtitle1
               .copyWith(color: Theme.of(context).disabledColor);
 
   /// Returns `EdgeInsets.all(8.0)`.

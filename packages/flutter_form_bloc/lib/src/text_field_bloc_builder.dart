@@ -843,7 +843,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
                       .copyWith(color: Theme.of(context).disabledColor)
                   : Theme.of(context)
                       .textTheme
-                      .subhead
+                      .subtitle1
                       .copyWith(color: Theme.of(context).disabledColor),
           textAlign: widget.textAlign,
           textDirection: widget.textDirection,
@@ -910,7 +910,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
                 child: Text(
                   'No Items Found!',
                   style: widget.suggestionTextStyle ??
-                      Theme.of(context).textTheme.subhead.copyWith(
+                      Theme.of(context).textTheme.subtitle1.copyWith(
                             color: ThemeData.estimateBrightnessForColor(
                                         Theme.of(context).canvasColor) ==
                                     Brightness.dark
@@ -937,7 +937,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
             child: Text(
               suggestion,
               style: widget.suggestionTextStyle ??
-                  Theme.of(context).textTheme.subhead.copyWith(
+                  Theme.of(context).textTheme.subtitle1.copyWith(
                         color: ThemeData.estimateBrightnessForColor(
                                     Theme.of(context).canvasColor) ==
                                 Brightness.dark
@@ -981,7 +981,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
                 ? widget.style.copyWith(color: Theme.of(context).disabledColor)
                 : Theme.of(context)
                     .textTheme
-                    .subhead
+                    .subtitle1
                     .copyWith(color: Theme.of(context).disabledColor),
         textAlign: widget.textAlign,
         textDirection: widget.textDirection,
