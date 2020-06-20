@@ -27,22 +27,31 @@ class DialogFieldBlocBuilder<T> extends StatefulWidget {
         assert(decoration != null),
         super(key: key);
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final InputFieldBloc<T, Object> inputFieldBloc;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder errorBuilder;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
   final bool isEnabled;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry padding;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
 
+  /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
   final FocusNode nextFocusNode;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
   final FocusNode focusNode;
 
   final bool showClearIcon;
@@ -51,8 +60,11 @@ class DialogFieldBlocBuilder<T> extends StatefulWidget {
 
   final TextDirection textDirection;
 
+  /// A callback for showing dialogs. The dialog route must return value to
+  /// update the field bloc.
   final Future<T> Function(BuildContext context) showDialog;
 
+  /// A callback for converting value of field bloc to String representation.
   final String Function(T value) convertToString;
 
   @override
