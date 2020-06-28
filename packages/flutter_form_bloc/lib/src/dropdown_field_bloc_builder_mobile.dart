@@ -26,6 +26,7 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
+    this.onChanged
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -70,6 +71,9 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
 
   /// How the text in the decoration should be aligned horizontally.
   final TextAlign textAlign;
+
+  /// Called when the user selects an item.
+  final ValueChanged<Value> onChanged;
 
   @override
   _DropdownFieldBlocBuilderMobileState<Value> createState() =>
@@ -180,6 +184,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
                         onChanged: (value) {
                           widget.selectFieldBloc.updateValue(value);
                           FocusScope.of(context).requestFocus(FocusNode());
+                          if(widget.onChanged != null) widget.onChanged(value);
                         },
                       ),
                       items: fieldState.items.isEmpty

@@ -24,6 +24,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.focusNode,
     this.textAlign,
     this.animateWhenCanShow = true,
+    this.onChanged
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -77,6 +78,9 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// Called when the user selects an item.
+  final ValueChanged<Value> onChanged;
+
   @override
   Widget build(BuildContext context) {
     if (selectFieldBloc == null) {
@@ -101,6 +105,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         padding: padding,
         showEmptyItem: showEmptyItem,
         textAlign: textAlign,
+        onChanged: onChanged,
       );
     } else {
       child = DropdownFieldBlocBuilderWeb(
@@ -118,6 +123,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         padding: padding,
         showEmptyItem: showEmptyItem,
         textAlign: textAlign,
+        onChanged: onChanged,
       );
     }
 
