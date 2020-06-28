@@ -26,7 +26,8 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
-    this.onChanged
+    this.onChanged,
+    this.emptyItemLabel
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -52,6 +53,8 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
   /// If `true` an empty item is showed at the top of the dropdown items,
   /// and can be used for deselect.
   final bool showEmptyItem;
+
+  final String emptyItemLabel;
 
   /// The milliseconds for show the dropdown items when the keyboard is open
   /// and closes. By default is 600 milliseconds.
@@ -283,7 +286,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
         0,
         DropdownMenuItem<Value>(
           value: null,
-          text: '',
+          text: widget.emptyItemLabel ?? '',
           style: style,
         ),
       );

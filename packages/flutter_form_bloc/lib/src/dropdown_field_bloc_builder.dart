@@ -24,7 +24,9 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.focusNode,
     this.textAlign,
     this.animateWhenCanShow = true,
-    this.onChanged
+
+    this.onChanged,
+    this.emptyItemLabel
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -53,6 +55,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// If `true` an empty item is showed at the top of the dropdown items,
   /// and can be used for deselect.
   final bool showEmptyItem;
+  
+  final String emptyItemLabel;
 
   /// The milliseconds for show the dropdown items when the keyboard is open
   /// and closes. By default is 600 milliseconds.
@@ -106,6 +110,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         showEmptyItem: showEmptyItem,
         textAlign: textAlign,
         onChanged: onChanged,
+        emptyItemLabel: emptyItemLabel,
       );
     } else {
       child = DropdownFieldBlocBuilderWeb(
@@ -124,6 +129,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         showEmptyItem: showEmptyItem,
         textAlign: textAlign,
         onChanged: onChanged,
+        emptyItemLabel: emptyItemLabel,
       );
     }
 
