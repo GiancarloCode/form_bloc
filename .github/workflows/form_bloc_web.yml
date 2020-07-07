@@ -5,6 +5,8 @@ on:
       - master
     paths:
       - 'form_bloc_web/**'
+      - '.github/workflows/**'
+
 jobs:
   build:
     runs-on: ubuntu-latest
