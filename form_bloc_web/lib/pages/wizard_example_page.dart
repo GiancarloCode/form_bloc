@@ -14,7 +14,7 @@ class WizardExamplePage extends StatelessWidget {
       tutorial: TutorialScreen(
         children: <Widget>[
           TutorialText('''
-# 1. Create the field blocs         
+# 1. Create the field blocs
 '''),
           CodeCard.main(
             nestedPath: 'WizardFormBloc',
@@ -23,13 +23,13 @@ class WizardFormBloc extends FormBloc<String, String> {
   final username = TextFieldBloc(
     validators: [FieldBlocValidators.required],
   );
-  // More field blocs...  
+  // More field blocs...
   final firstName = TextFieldBloc();
-  // More field blocs...  
+  // More field blocs...
   final github = TextFieldBloc();
-  // More field blocs...  
-  
-}  
+  // More field blocs...
+
+}
 ''',
           ),
           TutorialText.sub('''
@@ -65,7 +65,7 @@ Every time you emit a success state, the current step will increment by 1 if it 
 
 So you can check what step it is when the submit method is called and perform the corresponding logic.
 
-In our case: 
+In our case:
 * In step 0, the first step, we will await a delay, and we will have a bool variable that will serve as a flag, so that the first time we submit the form in the step 0, we add an error to the email field, and we will emit a failure, but the second time we will emit a success
 
 * In Step 1 we will simply emit a success, for update the current step.
@@ -85,7 +85,7 @@ bool _showEmailTakenError = true;
       if (_showEmailTakenError) {
         _showEmailTakenError = false;
 
-        email.addError('That email is already taken');
+        email.addFieldError('That email is already taken');
 
         emitFailure();
       } else {
@@ -93,10 +93,10 @@ bool _showEmailTakenError = true;
       }
     } else if (state.currentStep == 1) {
       emitSuccess();
-    } else if (state.currentStep == 2) { 
+    } else if (state.currentStep == 2) {
       await Future.delayed(Duration(milliseconds: 500));
 
-      emitSuccess();  
+      emitSuccess();
     }
   }
 ''',

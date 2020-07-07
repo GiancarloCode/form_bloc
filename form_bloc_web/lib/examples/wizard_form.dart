@@ -77,7 +77,7 @@ class WizardFormBloc extends FormBloc<String, String> {
       if (_showEmailTakenError) {
         _showEmailTakenError = false;
 
-        email.addError('That email is already taken');
+        email.addFieldError('That email is already taken');
 
         emitFailure();
       } else {
