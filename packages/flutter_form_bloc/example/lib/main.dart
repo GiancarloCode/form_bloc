@@ -60,15 +60,15 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   }
 
   void addErrors() {
-    text1.addError('Awesome Error!');
-    boolean1.addError('Awesome Error!');
-    boolean2.addError('Awesome Error!');
-    select1.addError('Awesome Error!');
-    select2.addError('Awesome Error!');
-    multiSelect1.addError('Awesome Error!');
-    date1.addError('Awesome Error!');
-    dateAndTime1.addError('Awesome Error!');
-    time1.addError('Awesome Error!');
+    text1.addFieldError('Awesome Error!');
+    boolean1.addFieldError('Awesome Error!');
+    boolean2.addFieldError('Awesome Error!');
+    select1.addFieldError('Awesome Error!');
+    select2.addFieldError('Awesome Error!');
+    multiSelect1.addFieldError('Awesome Error!');
+    date1.addFieldError('Awesome Error!');
+    dateAndTime1.addFieldError('Awesome Error!');
+    time1.addFieldError('Awesome Error!');
   }
 
   @override

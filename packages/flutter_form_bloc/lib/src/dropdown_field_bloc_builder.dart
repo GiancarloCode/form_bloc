@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
@@ -85,7 +87,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
 
     Widget child;
 
-    if (!kIsWeb) {
+    if (Platform.isAndroid || Platform.isIOS) {
       child = DropdownFieldBlocBuilderMobile(
         selectFieldBloc: selectFieldBloc,
         itemBuilder: itemBuilder,
