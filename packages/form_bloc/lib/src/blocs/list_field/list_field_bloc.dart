@@ -77,25 +77,18 @@ class ListFieldBlocState<T extends FieldBloc> extends Equatable {
 
 class ListFieldBloc<T extends FieldBloc>
     extends Bloc<ListFieldBlocEvent, ListFieldBlocState<T>> with FieldBloc {
-  final String _name;
-  final List<T> _initialFieldBlocs;
-
   bool _autoValidate = true;
 
   ListFieldBloc({
     String name,
     List<T> fieldBlocs,
-  })  : _name = name ?? Uuid().v1(),
-        _initialFieldBlocs = fieldBlocs ?? [];
+  }) : super(ListFieldBlocState(
+          name: name ?? Uuid().v1(),
+          fieldBlocs: fieldBlocs ?? [],
+          formBloc: null,
+        ));
 
   List<T> get value => state.fieldBlocs;
-
-  @override
-  ListFieldBlocState<T> get initialState => ListFieldBlocState(
-        name: _name,
-        fieldBlocs: _initialFieldBlocs,
-        formBloc: null,
-      );
 
   void addFieldBloc(T fieldBloc) =>
       add(AddFieldBlocToListFieldBloc<T>(fieldBloc));

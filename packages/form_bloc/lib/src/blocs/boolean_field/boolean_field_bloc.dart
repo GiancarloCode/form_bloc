@@ -52,20 +52,31 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
           name,
           (value) => value,
           extraData,
+          BooleanFieldBlocState(
+            value: initialValue ?? false,
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue ?? false,
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue ?? false,
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue ?? false,
+            ),
+            name: FieldBlocUtils.generateName(name),
+            toJson: (value) => value,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  BooleanFieldBlocState<ExtraData> get initialState => BooleanFieldBlocState(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-        toJson: _toJson,
-        extraData: _extraData,
-      );
 
   /// Set the `value` to `false` of the current state.
   ///

@@ -10,10 +10,10 @@ environment:
 
 dependencies:
   meta: ^1.1.6
-  bloc: ^4.0.0
-  bloc_test: ^5.0.0
-  rxdart: ^0.24.0
-  equatable: ^1.1.0
+  bloc: ^5.0.1
+  bloc_test: ^6.0.1
+  rxdart: ^0.24.1
+  equatable: ^1.2.0
   quiver: ^2.0.5
   mockito: ^4.1.1
   pedantic: ^1.8.0+1

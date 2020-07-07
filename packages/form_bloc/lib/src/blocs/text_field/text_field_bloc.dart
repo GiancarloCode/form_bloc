@@ -55,20 +55,31 @@ class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
           name,
           (value) => value,
           extraData,
+          TextFieldBlocState(
+            value: initialValue ?? '',
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue ?? '',
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue ?? '',
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue ?? '',
+            ),
+            name: FieldBlocUtils.generateName(name),
+            toJson: (value) => value,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  TextFieldBlocState<ExtraData> get initialState => TextFieldBlocState(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-        toJson: _toJson,
-        extraData: _extraData,
-      );
 
   /// Return the parsed `value` to `int` of the current state.
   ///

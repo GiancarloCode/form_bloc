@@ -1,7 +1,12 @@
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 class FieldBlocUtils {
   FieldBlocUtils._();
+
+  static String generateName(String name) {
+    return name ?? Uuid().v1();
+  }
 
   /// Returns the error of the [_initialValue].
   static String getInitialStateError<Value>({
@@ -26,7 +31,7 @@ class FieldBlocUtils {
 
   static bool getInitialIsValidated(bool isValidating) {
     /// TODO: refactor
-    isValidating ? false : true;
+    return isValidating ? false : true;
   }
 
   /// Returns the `isValidating` of the `initialState`.

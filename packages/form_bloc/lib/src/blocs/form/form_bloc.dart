@@ -41,12 +41,6 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// See: [_onSubmitFormBloc] and [_setupFormBlocStateSubscription].
   bool _canSubmit = true;
 
-  /// Indicates if the initial state must be [FormBlocLoading].
-  final bool _isInitialStateLoading;
-
-  /// The value of [FormBlocState.isEditing] of the initial state.
-  final bool _isInitialStateEditing;
-
   /// Indicates if the [_fieldBlocs] must be autoValidated.
   final bool _autoValidate;
 
@@ -62,9 +56,13 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       bool isEditing = false})
       : assert(isLoading != null),
         assert(autoValidate != null),
-        _isInitialStateLoading = isLoading,
-        _isInitialStateEditing = isEditing,
-        _autoValidate = autoValidate {
+        _autoValidate = autoValidate,
+        super(isLoading
+            ? FormBlocLoading(
+                isEditing: isEditing,
+                progress: 0.0,
+              )
+            : FormBlocLoaded(null, isEditing: isEditing)) {
     _callOnLoadingIfNeeded(isLoading);
     _initSetupAreAllFieldsValidSubscription();
   }
@@ -104,18 +102,6 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     unawaited(_setupAreAllFieldsValidSubscriptionSubscription.cancel());
 
     unawaited(super.close());
-  }
-
-  @override
-  FormBlocState<SuccessResponse, FailureResponse> get initialState {
-    if (_isInitialStateLoading) {
-      return FormBlocLoading(
-        isEditing: _isInitialStateEditing,
-        progress: 0.0,
-      );
-    } else {
-      return FormBlocLoaded(null, isEditing: _isInitialStateEditing);
-    }
   }
 
   /// Init the subscription to the state of each
