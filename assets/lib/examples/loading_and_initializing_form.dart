@@ -103,7 +103,7 @@ class LoadingForm extends StatelessWidget {
                       SnackBar(content: Text(state.failureResponse)));
                 },
                 child: BlocBuilder<LoadingFormBloc, FormBlocState>(
-                  condition: (previous, current) =>
+                  buildWhen: (previous, current) =>
                       previous.runtimeType != current.runtimeType ||
                       previous is FormBlocLoading && current is FormBlocLoading,
                   builder: (context, state) {
