@@ -2,7 +2,7 @@
 ## Breaking changes
 * Updated to `bloc: ^5.0.1`.
 * Change `Bloc.addError` to `Bloc.addFieldError`.
-* Change `BlocDelegate` to `BlocObserver`.
+* Change `FormBlocDelegate` to `FormBlocObserver`.
 
 # 0.14.0
 * Updated to `bloc: ^4.0.0`
