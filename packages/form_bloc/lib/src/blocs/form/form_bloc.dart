@@ -173,10 +173,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     } else if (event is ReloadFormBloc) {
       if (state is! FormBlocLoading) {
         yield state.toLoading();
-        _callback(onLoading);
+        _callInBlocContext(onLoading);
       }
     } else if (event is LoadFormBloc) {
-      _callback(onLoading);
+      _callInBlocContext(onLoading);
     } else if (event is CancelSubmissionFormBloc) {
       yield* _onCancelSubmissionFormBloc();
     } else if (event is UpdateFormBlocStateIsValid) {
@@ -204,13 +204,15 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   // CALLBACKS
   // ===========================================================================
 
-  void _callback(Function callback) async {
+  /// Pass exceptions from [callback] to [Bloc.onError] handler
+  void _callInBlocContext(void Function() callback) async {
     try {
-      await callback();
-    } catch(e, stackTrace) {
-      onError(e, stackTrace);
+      callback();
+    } catch (exception, stackTrace) {
+      onError(exception, stackTrace);
     }
   }
+
   /// This method is called when [FormBlocState.isValid] is `true`
   /// and [submit] was called and [FormBlocState.canSubmit] is `true`.
   ///
@@ -454,7 +456,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           (isStateUpdated) {
             if (isStateUpdated) {
               _canSubmit = true;
-              _callback(onSubmitting);
+              _callInBlocContext(onSubmitting);
 
               _onSubmittingSubscription.cancel();
             }
@@ -496,7 +498,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
                     null;
                 if (isStateUpdated) {
                   _canSubmit = true;
-                  _callback(onSubmitting);
+                  _callInBlocContext(onSubmitting);
                 }
               } else {
                 final stateSnapshot = state;
@@ -557,7 +559,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       yield newState;
       await firstWhere((state) => state == newState);
 
-      _callback(onCancelingSubmission);
+      _callInBlocContext(onCancelingSubmission);
     }
   }
 
@@ -571,7 +573,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       currentStep: stateSnapshot.currentStep,
       deletingProgress: 0.0,
     );
-    _callback(onDeleting);
+    _callInBlocContext(onDeleting);
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
