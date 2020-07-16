@@ -3,9 +3,9 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'form_bloc_web/**'
-      - '.github/workflows/**'
+    # paths:
+    #   - 'form_bloc_web/**'
+    #   - '.github/workflows/**'
 
 jobs:
   build:
