@@ -3,7 +3,7 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "main.dart.js": "39fafd60625b374a39f4eb403ba25013",
+  "main.dart.js": "eb8f43484e0ae0ab1ca4de993f0660c9",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "c45571e2d84148a6242f43f0b88a4ee1",
 "assets/fonts/MaterialIcons-Regular.ttf": "56d3ffdef7a25659eab6a68a3fbfaf16",
@@ -20,7 +20,7 @@ const RESOURCES = {
 "assets/lib/examples/submission_error_to_field_form.dart": "6f17e12e27181436a30b9a2d65d0503d",
 "assets/lib/examples/submission_progress_form.dart": "ff0c7884fc01e7ccf403792885a1244c",
 "assets/FontManifest.json": "c249dd39ffe903ef334b7d7296fb1700",
-"assets/NOTICES": "6e7ded79154c6bebecae32e7d8b581e6",
+"assets/NOTICES": "e0315e2e177086551bc613f1b4c75ec6",
 "assets/packages/flutter_markdown/assets/logo.png": "67642a0b80f3d50277c44cde8f450e50",
 "assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
 "assets/assets/fonts/JosefinSans-Bold.ttf": "0fce6d85ecbbf3d97e0d848824454600",
@@ -37,7 +37,7 @@ const CORE = [
   "/",
 "main.dart.js",
 "index.html",
-"assets/NOTICES",
+"assets/LICENSE",
 "assets/AssetManifest.json",
 "assets/FontManifest.json"];
 
@@ -142,7 +142,7 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener('message', (event) => {
   // SkipWaiting can be used to immediately activate a waiting service worker.
   // This will also require a page refresh triggered by the main worker.
-  if (event.data == 'skipWaiting') {
+  if (event.message == 'skipWaiting') {
     return self.skipWaiting();
   }
 
@@ -166,8 +166,8 @@ async function downloadOffline() {
   }
   for (var resourceKey in Object.keys(RESOURCES)) {
     if (!currentContent[resourceKey]) {
-      resources.push(resourceKey);
+      resources.add(resourceKey);
     }
   }
-  return contentCache.addAll(resources);
+  return Cache.addAll(resources);
 }
