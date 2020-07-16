@@ -1,3 +1,6 @@
+# 0.15.1
+  * Fix widgets in web platform.
+
 # 0.15.0
 * ## Breaking changes
   * Updated to `form_bloc: ^0.15.0`.
