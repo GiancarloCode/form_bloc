@@ -104,7 +104,7 @@ class _DialogFieldBlocBuilderState<T> extends State<DialogFieldBlocBuilder<T>> {
         isEnabled: widget.isEnabled,
         nextFocusNode: widget.nextFocusNode,
         onChanged: (value) {
-          widget.inputFieldBloc.updateInitialValue(value);
+          widget.inputFieldBloc.updateValue(value);
         },
       )(result);
     }
