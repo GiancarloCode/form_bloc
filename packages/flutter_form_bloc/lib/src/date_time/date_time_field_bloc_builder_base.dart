@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/dialog_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -12,7 +11,7 @@ enum DateTimeFieldBlocBuilderBaseType {
 }
 
 /// A material design date picker.
-class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
+class DateTimeFieldBlocBuilderBase<T> extends StatelessWidget {
   const DateTimeFieldBlocBuilderBase({
     Key key,
     @required this.dateTimeFieldBloc,
@@ -92,160 +91,36 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   final RouteSettings routeSettings;
   final TimeOfDay initialTime;
 
-  @override
-  _DateTimeFieldBlocBuilderBaseState createState() =>
-      _DateTimeFieldBlocBuilderBaseState();
-}
-
-class _DateTimeFieldBlocBuilderBaseState<T>
-    extends State<DateTimeFieldBlocBuilderBase<T>> {
   final DatePickerMode initialDatePickerMode = DatePickerMode.day;
-
-  FocusNode _focusNode = FocusNode();
-
-  FocusNode get _effectiveFocusNode => widget.focusNode ?? _focusNode;
-
-  @override
-  void initState() {
-    _effectiveFocusNode.addListener(_onFocusRequest);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _effectiveFocusNode.removeListener(_onFocusRequest);
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  void _onFocusRequest() {
-    if (_effectiveFocusNode.hasFocus) {
-      _showPicker(context);
-    }
-  }
-
-  void _showPicker(BuildContext context) async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    var result;
-    if (widget.type == DateTimeFieldBlocBuilderBaseType.date) {
-      result = await _showDatePicker(context);
-    } else if (widget.type == DateTimeFieldBlocBuilderBaseType.both) {
-      final date = await _showDatePicker(context);
-
-      if (date != null) {
-        final time = await _showTimePicker(context);
-        result = _combine(date, time);
-      }
-    } else if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
-      result = await _showTimePicker(context);
-    }
-    if (result != null) {
-      fieldBlocBuilderOnChange<T>(
-        isEnabled: widget.isEnabled,
-        nextFocusNode: widget.nextFocusNode,
-        onChanged: (value) {
-          widget.dateTimeFieldBloc.updateValue(value);
-          // Used for hide keyboard
-          // FocusScope.of(context).requestFocus(FocusNode());
-        },
-      )(result);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.dateTimeFieldBloc == null) {
-      return SizedBox();
-    }
-
-    return Focus(
-      focusNode: _effectiveFocusNode,
-      child: CanShowFieldBlocBuilder(
-        fieldBloc: widget.dateTimeFieldBloc,
-        animate: widget.animateWhenCanShow,
-        builder: (_, __) {
-          return BlocBuilder<InputFieldBloc<T, Object>,
-              InputFieldBlocState<T, Object>>(
-            bloc: widget.dateTimeFieldBloc,
-            builder: (context, state) {
-              final isEnabled = fieldBlocIsEnabled(
-                isEnabled: this.widget.isEnabled,
-                enableOnlyWhenFormBlocCanSubmit:
-                    widget.enableOnlyWhenFormBlocCanSubmit,
-                fieldBlocState: state,
-              );
-
-              Widget child;
-
-              if (state.value == null && widget.decoration.hintText != null) {
-                child = Text(
-                  widget.decoration.hintText,
-                  style: widget.decoration.hintStyle,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: widget.decoration.hintMaxLines,
-                );
-              } else {
-                child = Text(
-                  state.value != null
-                      ? _tryFormat(state.value, widget.format)
-                      : '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  style: Style.getDefaultTextStyle(
-                    context: context,
-                    isEnabled: isEnabled,
-                  ),
-                );
-              }
-
-              return DefaultFieldBlocBuilderPadding(
-                padding: widget.padding,
-                child: GestureDetector(
-                  onTap: !isEnabled ? null : () => _showPicker(context),
-                  child: InputDecorator(
-                    decoration: _buildDecoration(context, state, isEnabled),
-                    isEmpty: state.value == null &&
-                        widget.decoration.hintText == null,
-                    child: child,
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
 
   Future<DateTime> _showDatePicker(BuildContext context) async {
     return await showDatePicker(
       context: context,
-      initialDate: widget.dateTimeFieldBloc.state.value ?? widget.initialDate,
-      firstDate: widget.firstDate,
-      lastDate: widget.lastDate,
-      useRootNavigator: widget.useRootNavigator,
+      initialDate: dateTimeFieldBloc.state.value ?? initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      useRootNavigator: useRootNavigator,
       initialDatePickerMode: initialDatePickerMode,
-      locale: widget.locale,
-      builder: widget.builder,
-      selectableDayPredicate: widget.selectableDayPredicate,
+      locale: locale,
+      builder: builder,
+      selectableDayPredicate: selectableDayPredicate,
       // routeSettings: routeSettings, /* Use it in flutter >= 1.15.0   */
-      textDirection: widget.textDirection,
+      textDirection: textDirection,
     );
   }
 
   Future<TimeOfDay> _showTimePicker(BuildContext context) async {
     return await showTimePicker(
       context: context,
-      useRootNavigator: widget.useRootNavigator,
-      initialTime: widget.type == DateTimeFieldBlocBuilderBaseType.time
-          ? widget.dateTimeFieldBloc.state.value ?? widget.initialTime
-          : widget.dateTimeFieldBloc.state.value == null
+      useRootNavigator: useRootNavigator,
+      initialTime: type == DateTimeFieldBlocBuilderBaseType.time
+          ? dateTimeFieldBloc.state.value ?? initialTime
+          : dateTimeFieldBloc.state.value == null
               ? TimeOfDay.fromDateTime(
-                  widget.dateTimeFieldBloc.state.value ?? DateTime.now(),
+                  dateTimeFieldBloc.state.value ?? DateTime.now(),
                 )
-              : widget.initialTime,
-      builder: widget.builder,
+              : initialTime,
+      builder: builder,
     );
   }
 
@@ -259,7 +134,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
 
   String _tryFormat(T value, DateFormat format) {
     DateTime date;
-    if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
+    if (type == DateTimeFieldBlocBuilderBaseType.time) {
       final time = value as TimeOfDay;
       date = DateTime(1, 1, 1, time?.hour ?? 0, time?.minute ?? 0);
     }
@@ -272,35 +147,41 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     }
   }
 
-  InputDecoration _buildDecoration(BuildContext context,
-      InputFieldBlocState<T, Object> state, bool isEnabled) {
-    InputDecoration decoration = this.widget.decoration;
+  Future<T> _showPicker(BuildContext context) async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    var result;
+    if (type == DateTimeFieldBlocBuilderBaseType.date) {
+      result = await _showDatePicker(context);
+    } else if (type == DateTimeFieldBlocBuilderBaseType.both) {
+      final date = await _showDatePicker(context);
 
-    decoration = decoration.copyWith(
-      enabled: isEnabled,
-      errorText: Style.getErrorText(
-        context: context,
-        errorBuilder: widget.errorBuilder,
-        fieldBlocState: state,
-        fieldBloc: widget.dateTimeFieldBloc,
-      ),
-      suffixIcon: decoration.suffixIcon ??
-          (widget.showClearIcon
-              ? AnimatedOpacity(
-                  duration: Duration(milliseconds: 400),
-                  opacity:
-                      widget.dateTimeFieldBloc.state.value == null ? 0.0 : 1.0,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(25),
-                    child: widget.clearIcon ?? Icon(Icons.clear),
-                    onTap: widget.dateTimeFieldBloc.state.value == null
-                        ? null
-                        : widget.dateTimeFieldBloc.clear,
-                  ),
-                )
-              : null),
+      if (date != null) {
+        final time = await _showTimePicker(context);
+        result = _combine(date, time);
+      }
+    } else if (type == DateTimeFieldBlocBuilderBaseType.time) {
+      result = await _showTimePicker(context);
+    }
+    return result;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DialogFieldBlocBuilder<T>(
+      inputFieldBloc: dateTimeFieldBloc,
+      showDialog: _showPicker,
+      convertToString: (T value) => _tryFormat(value, format),
+      enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+      isEnabled: isEnabled,
+      errorBuilder: errorBuilder,
+      padding: padding,
+      decoration: decoration,
+      textDirection: textDirection,
+      animateWhenCanShow: animateWhenCanShow,
+      showClearIcon: showClearIcon,
+      clearIcon: clearIcon,
+      nextFocusNode: nextFocusNode,
+      focusNode: focusNode,
     );
-
-    return decoration;
   }
 }

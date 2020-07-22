@@ -704,7 +704,8 @@ class DropdownButton<T> extends StatefulWidget {
   /// The text style to use for text in the dropdown button and the dropdown
   /// menu that appears when you tap the button.
   ///
-  /// Defaults to the [TextTheme.subtitle1 value of the current
+  
+  /// Defaults to the [TextTheme.subtitle1] value of the current
   /// [ThemeData.textTheme] of the current [Theme].
   final TextStyle style;
 
