@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-class MyBlocDelegate extends BlocDelegate {
+class MyBlocObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object event) {
     super.onEvent(bloc, event);

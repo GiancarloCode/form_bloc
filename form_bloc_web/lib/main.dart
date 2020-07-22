@@ -6,9 +6,8 @@ import 'package:form_bloc_web/routes.dart';
 import 'package:form_bloc_web/super_bloc_delegate.dart';
 
 void main() {
-  BlocSupervisor.delegate = SuperBlocDelegate();
-  // FormBlocDelegate.notifyOnFormBlocTransition = true;
-
+  Bloc.observer = SuperBlocDelegate();
+  FormBlocObserver.notifyOnFormBlocTransition = true;
   runApp(App());
 }
 

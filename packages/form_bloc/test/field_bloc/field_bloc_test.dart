@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 import '../utils/my_bloc_delegate.dart';
 
 void main() {
-  BlocSupervisor.delegate = MyBlocDelegate();
+  Bloc.observer = MyBlocObserver();
   // FormBlocDelegate.notifyOnFieldBlocEvent = true;
   // FormBlocDelegate.notifyOnFieldBlocTransition = true;
   group('FieldBloc:', () {
@@ -36,7 +36,7 @@ void main() {
         );
 
         expect(
-          fieldBloc.initialState,
+          fieldBloc.state,
           initialState,
         );
 
@@ -60,7 +60,7 @@ void main() {
         );
 
         expect(
-          fieldBloc.initialState,
+          fieldBloc.state,
           initialState,
         );
       });
@@ -231,7 +231,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
       );
 
@@ -1156,7 +1156,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.addError('error');
+      fieldBloc.addFieldError('error');
       await Future<void>.delayed(Duration(milliseconds: 0));
       fieldBloc.updateValue(1);
       fieldBloc.updateValue(null);
@@ -1204,7 +1204,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.addError('error', isPermanent: true);
+      fieldBloc.addFieldError('error', isPermanent: true);
       fieldBloc.updateValue(2);
       fieldBloc.updateValue(1);
     });
@@ -1260,7 +1260,7 @@ void main() {
         autoValidate: false,
       ));
 
-      fieldBloc.addError('error', isPermanent: true);
+      fieldBloc.addFieldError('error', isPermanent: true);
       fieldBloc.updateValue(2);
       fieldBloc.updateValue(1);
     });
@@ -1314,7 +1314,7 @@ void main() {
         autoValidate: false,
       ));
 
-      fieldBloc.addError('error');
+      fieldBloc.addFieldError('error');
       await Future<void>.delayed(Duration(milliseconds: 0));
       fieldBloc.updateValue(1);
       fieldBloc.updateValue(null);

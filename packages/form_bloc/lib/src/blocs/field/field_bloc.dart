@@ -11,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
 import '../form_bloc_delegate.dart';
+import 'field_bloc_utils.dart';
 
 part '../boolean_field/boolean_field_bloc.dart';
 part '../boolean_field/boolean_field_state.dart';
@@ -103,11 +104,13 @@ abstract class SingleFieldBloc<
     String name,
     this._toJson,
     this._extraData,
+    State initialState,
   )   : assert(_asyncValidatorDebounceTime != null),
         _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
-        _name = name ?? Uuid().v1() {
-    FormBlocDelegate.overrideDelegateOfBlocSupervisor();
+        _name = name ?? Uuid().v1(),
+        super(initialState) {
+    FormBlocObserver.overrideDelegateOfBlocSupervisor();
     _setUpAsyncValidatorsSubscription();
   }
 
@@ -229,7 +232,7 @@ abstract class SingleFieldBloc<
   ///
   /// It is useful when you want to add errors that
   /// you have obtained when submitting the `FormBloc`.
-  void addError(String error, {bool isPermanent = false}) =>
+  void addFieldError(String error, {bool isPermanent = false}) =>
       add(AddFieldBlocError(
           value: value, error: error, isPermanent: isPermanent ?? false));
 

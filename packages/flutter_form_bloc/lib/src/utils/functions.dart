@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -30,4 +33,17 @@ bool fieldBlocIsEnabled({
           ? fieldBlocState?.formBloc?.state?.canSubmit ?? true
           : true
       : false;
+}
+
+Widget widgetBasedOnPlatform({
+  @required Widget mobile,
+  @required Widget other,
+}) {
+  if (kIsWeb) {
+    return other;
+  } else if (Platform.isAndroid || Platform.isIOS) {
+    return mobile;
+  } else {
+    return other;
+  }
 }

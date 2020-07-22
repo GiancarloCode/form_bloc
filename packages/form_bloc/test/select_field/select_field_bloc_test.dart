@@ -71,7 +71,7 @@ void main() {
       expectedStates = [initialState];
 
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
       );
 
@@ -103,7 +103,7 @@ void main() {
       expectedStates = [initialState];
 
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
       );
 
@@ -156,7 +156,7 @@ void main() {
         items: [true, false],
       );
 
-      final expectedState = fieldBloc.initialState.copyWith(
+      final expectedState = fieldBloc.state.copyWith(
         value: Optional.absent(),
         items: Optional.of([false]),
       );
@@ -256,7 +256,7 @@ void main() {
         items: [true, false],
       );
 
-      final expectedState = fieldBloc.initialState.copyWith(
+      final expectedState = fieldBloc.state.copyWith(
         value: Optional.absent(),
         items: Optional.of([false]),
       );

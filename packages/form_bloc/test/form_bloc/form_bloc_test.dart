@@ -33,6 +33,8 @@ void main() {
 
         formBloc.addFieldBlocs(fieldBlocs: [text, boolean]);
 
+        formBloc.listen(print);
+
         final state = await formBloc.skip(1).first;
 
         expect(

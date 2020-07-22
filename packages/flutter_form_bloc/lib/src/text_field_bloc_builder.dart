@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -826,8 +828,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   Widget _buildTextField(
       {@required TextFieldBlocState state, @required bool isEnabled}) {
-    if (!kIsWeb) {
-      return TypeAheadField<String>(
+    return widgetBasedOnPlatform(
+      mobile: TypeAheadField<String>(
         textFieldConfiguration: TextFieldConfiguration<String>(
           controller: _controller,
           decoration: _buildDecoration(state),
@@ -965,9 +967,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
             widget.textFieldBloc.selectSuggestion(suggestion);
           }
         },
-      );
-    } else {
-      return TextField(
+      ),
+      other: TextField(
         controller: _controller,
         decoration: _buildDecoration(state),
         keyboardType: widget.keyboardType,
@@ -1021,7 +1022,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         textAlignVertical: widget.textAlignVertical,
         toolbarOptions: widget.toolbarOptions,
         onTap: widget.onTap,
-      );
-    }
+      ),
+    );
   }
 }

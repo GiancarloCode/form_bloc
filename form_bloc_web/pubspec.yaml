@@ -9,9 +9,9 @@ dependencies:
   flutter:
     sdk: flutter
   # form_bloc:
-  #   path: ../packages/form_bloc
-    # path: ../packages/flutter_form_bloc
-  flutter_form_bloc: ^0.13.0
+    # path: ../packages/form_bloc
+  flutter_form_bloc:
+    path: ../packages/flutter_form_bloc
   flutter_gradients: ^1.0.0+1
   flutter_syntax_view: ^1.0.0
   flash: ^1.2.0
@@ -21,7 +21,7 @@ dependencies:
   auto_size_text: ^2.1.0
   flutter_fadein: ^1.1.1
   liquid_progress_indicator: ^0.3.2
-  rxdart: ^0.23.1
+  rxdart: ^0.24.1
 
 dev_dependencies:
   flutter_test:

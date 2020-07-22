@@ -1,3 +1,11 @@
+# 0.15.1
+  * Fix widgets in web platform.
+
+# 0.15.0
+* ## Breaking changes
+  * Updated to `form_bloc: ^0.15.0`.
+  * Updated to `flutter_bloc: ^0.15.1`.
+
 # 0.14.0
 * Updated to `form_bloc: ^0.14.0`.
 * Updated to `flutter_bloc: ^0.4.0`.

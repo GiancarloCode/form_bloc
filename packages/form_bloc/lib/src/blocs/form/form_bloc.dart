@@ -41,12 +41,6 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// See: [_onSubmitFormBloc] and [_setupFormBlocStateSubscription].
   bool _canSubmit = true;
 
-  /// Indicates if the initial state must be [FormBlocLoading].
-  final bool _isInitialStateLoading;
-
-  /// The value of [FormBlocState.isEditing] of the initial state.
-  final bool _isInitialStateEditing;
-
   /// Indicates if the [_fieldBlocs] must be autoValidated.
   final bool _autoValidate;
 
@@ -62,9 +56,13 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       bool isEditing = false})
       : assert(isLoading != null),
         assert(autoValidate != null),
-        _isInitialStateLoading = isLoading,
-        _isInitialStateEditing = isEditing,
-        _autoValidate = autoValidate {
+        _autoValidate = autoValidate,
+        super(isLoading
+            ? FormBlocLoading(
+                isEditing: isEditing,
+                progress: 0.0,
+              )
+            : FormBlocLoaded(null, isEditing: isEditing)) {
     _callOnLoadingIfNeeded(isLoading);
     _initSetupAreAllFieldsValidSubscription();
   }
@@ -104,18 +102,6 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     unawaited(_setupAreAllFieldsValidSubscriptionSubscription.cancel());
 
     unawaited(super.close());
-  }
-
-  @override
-  FormBlocState<SuccessResponse, FailureResponse> get initialState {
-    if (_isInitialStateLoading) {
-      return FormBlocLoading(
-        isEditing: _isInitialStateEditing,
-        progress: 0.0,
-      );
-    } else {
-      return FormBlocLoaded(null, isEditing: _isInitialStateEditing);
-    }
   }
 
   /// Init the subscription to the state of each
@@ -173,10 +159,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     } else if (event is ReloadFormBloc) {
       if (state is! FormBlocLoading) {
         yield state.toLoading();
-        onLoading();
+        _callInBlocContext(onLoading);
       }
     } else if (event is LoadFormBloc) {
-      onLoading();
+      _callInBlocContext(onLoading);
     } else if (event is CancelSubmissionFormBloc) {
       yield* _onCancelSubmissionFormBloc();
     } else if (event is UpdateFormBlocStateIsValid) {
@@ -203,6 +189,15 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   // ===========================================================================
   // CALLBACKS
   // ===========================================================================
+
+  /// Pass exceptions from [callback] to [Bloc.onError] handler
+  void _callInBlocContext(void Function() callback) async {
+    try {
+      callback();
+    } catch (exception, stackTrace) {
+      onError(exception, stackTrace);
+    }
+  }
 
   /// This method is called when [FormBlocState.isValid] is `true`
   /// and [submit] was called and [FormBlocState.canSubmit] is `true`.
@@ -447,7 +442,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           (isStateUpdated) {
             if (isStateUpdated) {
               _canSubmit = true;
-              onSubmitting();
+              _callInBlocContext(onSubmitting);
 
               _onSubmittingSubscription.cancel();
             }
@@ -489,7 +484,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
                     null;
                 if (isStateUpdated) {
                   _canSubmit = true;
-                  onSubmitting();
+                  _callInBlocContext(onSubmitting);
                 }
               } else {
                 final stateSnapshot = state;
@@ -550,7 +545,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       yield newState;
       await firstWhere((state) => state == newState);
 
-      onCancelingSubmission();
+      _callInBlocContext(onCancelingSubmission);
     }
   }
 
@@ -564,7 +559,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       currentStep: stateSnapshot.currentStep,
       deletingProgress: 0.0,
     );
-    onDeleting();
+    _callInBlocContext(onDeleting);
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
