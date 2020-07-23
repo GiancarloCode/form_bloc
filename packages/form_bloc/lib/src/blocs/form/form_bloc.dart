@@ -442,7 +442,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           (isStateUpdated) {
             if (isStateUpdated) {
               _canSubmit = true;
-              await _callInBlocContext(onSubmitting);
+              _callInBlocContext(onSubmitting);
 
               _onSubmittingSubscription.cancel();
             }
