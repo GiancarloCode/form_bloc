@@ -33,14 +33,14 @@ class SubmissionErrorToFieldFormBloc extends FormBloc<String, String> {
     await Future<void>.delayed(Duration(milliseconds: 500));
 
     if (username.value.toLowerCase() == 'dev') {
-      username.addError(
+      username.addFieldError(
         'Cached - That username is taken. Try another.',
         isPermanent: true,
       );
 
       emitFailure(failureResponse: 'Cached error was added to username field.');
     } else {
-      username.addError('That username is taken. Try another.');
+      username.addFieldError('That username is taken. Try another.');
 
       emitFailure(failureResponse: 'Error was added to username field.');
     }

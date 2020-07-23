@@ -69,7 +69,7 @@ void main() {
       expectedStates = [initialState];
 
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
       );
 
@@ -99,7 +99,7 @@ void main() {
       expectedStates = [initialState];
 
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
       );
 

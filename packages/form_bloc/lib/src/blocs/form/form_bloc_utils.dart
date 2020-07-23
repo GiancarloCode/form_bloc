@@ -11,8 +11,8 @@ class FormBlocUtils {
         if (fieldBloc is SingleFieldBloc) {
           singleFieldBlocs.add(fieldBloc);
         } else if (fieldBloc is GroupFieldBloc) {
-          singleFieldBlocs
-              .addAll(getAllSingleFieldBlocs(fieldBloc._fieldBlocs));
+          singleFieldBlocs.addAll(
+              getAllSingleFieldBlocs(fieldBloc.state._fieldBlocs.values));
         } else if (fieldBloc is ListFieldBloc) {
           singleFieldBlocs.addAll(
             getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs),
@@ -32,7 +32,8 @@ class FormBlocUtils {
           _fieldBlocs.add(fieldBloc);
         } else if (fieldBloc is GroupFieldBloc) {
           _fieldBlocs.add(fieldBloc);
-          _fieldBlocs.addAll(getAllFieldBlocs(fieldBloc._fieldBlocs));
+          _fieldBlocs
+              .addAll(getAllFieldBlocs(fieldBloc.state._fieldBlocs.values));
         } else if (fieldBloc is ListFieldBloc) {
           _fieldBlocs.add(fieldBloc);
           _fieldBlocs.addAll(
@@ -147,7 +148,7 @@ class FormBlocUtils {
             getFieldBlocFromPath(path: parentPath, fieldBlocs: fieldBlocs);
 
         if (fieldBlocToRemoveParent is GroupFieldBloc) {
-        
+
           // fieldBlocToRemoveParent.remove(nameOfFieldToRemove);
           return fieldBlocToRemove;
         } else if (fieldBlocToRemoveParent is FieldBlocList) {

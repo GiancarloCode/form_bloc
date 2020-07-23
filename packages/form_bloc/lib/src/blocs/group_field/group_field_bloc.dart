@@ -49,16 +49,9 @@ class GroupFieldBlocState extends Equatable {
 
 class GroupFieldBloc extends Bloc<GroupFieldBlocEvent, GroupFieldBlocState>
     with FieldBloc {
-  final List<FieldBloc> _fieldBlocs;
-  final String _name;
-
   GroupFieldBloc(List<FieldBloc> fieldBlocs, {String name})
-      : _fieldBlocs = fieldBlocs ?? [],
-        _name = name ?? Uuid().v1();
-
-  @override
-  GroupFieldBlocState get initialState =>
-      GroupFieldBlocState(name: _name, fieldBlocs: _fieldBlocs);
+      : super(GroupFieldBlocState(
+            name: name ?? Uuid().v1(), fieldBlocs: fieldBlocs ?? []));
 
   @override
   Stream<GroupFieldBlocState> mapEventToState(

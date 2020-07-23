@@ -4,8 +4,6 @@ part of '../field/field_bloc.dart';
 /// from multiple items.
 class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
     SelectFieldBlocState<Value, ExtraData>, ExtraData> {
-  final List<Value> _items;
-
   /// ## SelectFieldBloc<Value, ExtraData>
   ///
   /// ### Properties:
@@ -51,7 +49,6 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
     dynamic Function(Value value) toJson,
     ExtraData extraData,
   })  : assert(asyncValidatorDebounceTime != null),
-        _items = items ?? [],
         super(
           initialValue,
           validators,
@@ -61,22 +58,32 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
           name,
           toJson,
           extraData,
+          SelectFieldBlocState(
+            value: initialValue,
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue,
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue,
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue,
+            ),
+            name: FieldBlocUtils.generateName(name),
+            items: SingleFieldBloc._itemsWithoutDuplicates(items ?? []),
+            toJson: toJson,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  SelectFieldBlocState<Value, ExtraData> get initialState =>
-      SelectFieldBlocState(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-        items: SingleFieldBloc._itemsWithoutDuplicates(_items),
-        toJson: _toJson,
-        extraData: _extraData,
-      );
 
   /// Set [items] to the `items` of the current state.
   ///

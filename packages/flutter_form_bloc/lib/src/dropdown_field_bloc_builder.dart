@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
@@ -83,49 +85,44 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
       return SizedBox();
     }
 
-    Widget child;
-
-    if (!kIsWeb) {
-      child = DropdownFieldBlocBuilderMobile(
-        selectFieldBloc: selectFieldBloc,
-        itemBuilder: itemBuilder,
-        decoration: decoration,
-        enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-        errorBuilder: errorBuilder,
-        focusNode: focusNode,
-        isEnabled: isEnabled,
-        key: key,
-        millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
-            millisecondsForShowDropdownItemsWhenKeyboardIsOpen,
-        nextFocusNode: nextFocusNode,
-        padding: padding,
-        showEmptyItem: showEmptyItem,
-        textAlign: textAlign,
-      );
-    } else {
-      child = DropdownFieldBlocBuilderWeb(
-        selectFieldBloc: selectFieldBloc,
-        itemBuilder: itemBuilder,
-        decoration: decoration,
-        enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-        errorBuilder: errorBuilder,
-        focusNode: focusNode,
-        isEnabled: isEnabled,
-        key: key,
-        millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
-            millisecondsForShowDropdownItemsWhenKeyboardIsOpen,
-        nextFocusNode: nextFocusNode,
-        padding: padding,
-        showEmptyItem: showEmptyItem,
-        textAlign: textAlign,
-      );
-    }
-
     return CanShowFieldBlocBuilder(
       fieldBloc: selectFieldBloc,
       animate: animateWhenCanShow,
       builder: (_, __) {
-        return child;
+        return widgetBasedOnPlatform(
+          mobile: DropdownFieldBlocBuilderMobile(
+            selectFieldBloc: selectFieldBloc,
+            itemBuilder: itemBuilder,
+            decoration: decoration,
+            enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+            errorBuilder: errorBuilder,
+            focusNode: focusNode,
+            isEnabled: isEnabled,
+            key: key,
+            millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
+                millisecondsForShowDropdownItemsWhenKeyboardIsOpen,
+            nextFocusNode: nextFocusNode,
+            padding: padding,
+            showEmptyItem: showEmptyItem,
+            textAlign: textAlign,
+          ),
+          other: DropdownFieldBlocBuilderWeb(
+            selectFieldBloc: selectFieldBloc,
+            itemBuilder: itemBuilder,
+            decoration: decoration,
+            enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+            errorBuilder: errorBuilder,
+            focusNode: focusNode,
+            isEnabled: isEnabled,
+            key: key,
+            millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
+                millisecondsForShowDropdownItemsWhenKeyboardIsOpen,
+            nextFocusNode: nextFocusNode,
+            padding: padding,
+            showEmptyItem: showEmptyItem,
+            textAlign: textAlign,
+          ),
+        );
       },
     );
   }

@@ -55,18 +55,29 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
           name,
           toJson,
           extraData,
+          InputFieldBlocState(
+            value: initialValue,
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue,
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue,
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue,
+            ),
+            name: FieldBlocUtils.generateName(name),
+            toJson: toJson,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  InputFieldBlocState<Value, ExtraData> get initialState => InputFieldBlocState(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-        toJson: _toJson,
-        extraData: _extraData,
-      );
 }

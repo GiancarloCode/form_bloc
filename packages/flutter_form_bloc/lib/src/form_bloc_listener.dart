@@ -37,7 +37,7 @@ class FormBlocListener<
           key: key,
           child: child,
           bloc: formBloc,
-          condition: (previousState, state) =>
+          listenWhen: (previousState, state) =>
               previousState.runtimeType != state.runtimeType,
           listener: (context, state) {
             if (state is form_bloc

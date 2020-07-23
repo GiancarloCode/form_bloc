@@ -106,13 +106,13 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
 
     return BlocBuilder(
       bloc: _fieldBloc,
-      condition: (p, c) => p.formBloc != c.formBloc,
+      buildWhen: (p, c) => p.formBloc != c.formBloc,
       builder: (context, state) {
         Widget child;
         if (state.formBloc != null) {
           child = BlocListener(
             bloc: state.formBloc as Bloc,
-            condition: (p, c) =>
+            listenWhen: (p, c) =>
                 p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
             listener: (context, formBlocState) {
               if (widget.animate) {
@@ -133,7 +133,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
             },
             child: BlocBuilder(
               bloc: state.formBloc as Bloc,
-              condition: (p, c) =>
+              buildWhen: (p, c) =>
                   p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
               builder: (context, state) {
                 return widget.builder(

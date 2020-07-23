@@ -3,37 +3,38 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'form_bloc_web/**'
+    # paths:
+    #   - 'form_bloc_web/**'
+    #   - '.github/workflows/**'
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     env:
       working-directory: ./form_bloc_web
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    
+
     - name: Setup Flutter
       uses: subosito/flutter-action@v1
       with:
-        channel: 'dev'
-        flutter-version: '1.16.1'
-        
-    - name: Enable Flutter web 
+        channel: 'beta'
+
+    - name: Enable Flutter web
       run: flutter config --enable-web
       working-directory: ${{ env.working-directory }}
-      
+
     - name: Install dependencies
       run: flutter packages get
       working-directory: ${{ env.working-directory }}
-      
+
     - name: Build web
       run: flutter build web
       working-directory: ${{ env.working-directory }}
-      
+
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:

@@ -16,25 +16,25 @@ class SubmissionErrorToFieldExamplePage extends StatelessWidget {
       tutorial: TutorialScreen(
         children: <Widget>[
           TutorialText('''
-You can add an error to field bloc from anywhere using the `addError` method.
+You can add an error to field bloc from anywhere using the `addFieldError` method.
 
 It is usually used to add an error that we get from the server.
 
-For example when the username is not available and we want to show the error in the field.  
+For example when the username is not available and we want to show the error in the field.
 '''),
           CodeCard.main(
             nestedPath: 'MyFormBloc > onSubmitting',
             code: '''
   @override
   void onSubmitting() async {
-    
-    username.addError('That username is taken. Try another.');    
-    
+
+    username.addFieldError('That username is taken. Try another.');
+
   }
 ''',
           ),
           TutorialText.sub('''
-The `addError` method has the optional parameter `isPermanent`, by default it is `false`, but if you assign `true` the error will be cached, so whenever you set that value the error will be added (like a sync validator).
+The `addFieldError` method has the optional parameter `isPermanent`, by default it is `false`, but if you assign `true` the error will be cached, so whenever you set that value the error will be added (like a sync validator).
 '''),
           CodeCard.main(
             nestedPath: 'MyFormBloc > onSubmitting',
@@ -43,12 +43,12 @@ The `addError` method has the optional parameter `isPermanent`, by default it is
   void onSubmitting() async {
 
     if (username.value.toLowerCase() == 'dev') {
-      username.addError(
+      username.addFieldError(
         'Cached - That username is taken. Try another.',
         isPermanent: true,
       );
     } else {
-      username.addError('That username is taken. Try another.');
+      username.addFieldError('That username is taken. Try another.');
     }
   }
 ''',
