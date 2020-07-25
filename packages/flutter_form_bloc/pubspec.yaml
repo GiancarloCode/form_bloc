@@ -11,9 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  bloc: ^5.0.1
-  flutter_bloc: ^5.0.1
-  form_bloc: ^0.15.0
+  bloc: ^6.0.0
+  flutter_bloc: ^6.0.0
+  form_bloc: ^0.16.0
   # form_bloc:
     # path: ../form_bloc
   rxdart: ^0.24.0

@@ -752,7 +752,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
       animate: widget.animateWhenCanShow,
       builder: (_, __) {
         return BlocBuilder<TextFieldBloc, TextFieldBlocState>(
-          bloc: widget.textFieldBloc,
+          cubit: widget.textFieldBloc,
           builder: (context, state) {
             final isEnabled = fieldBlocIsEnabled(
               isEnabled: widget.isEnabled,

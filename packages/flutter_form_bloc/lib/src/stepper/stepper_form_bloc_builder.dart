@@ -161,7 +161,7 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<T, FormBlocState>(
-      bloc: formBloc,
+      cubit: formBloc,
       buildWhen: (p, c) =>
           p.numberOfSteps != c.numberOfSteps || p.currentStep != c.currentStep,
       builder: (context, state) {

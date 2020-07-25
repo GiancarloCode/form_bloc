@@ -36,7 +36,7 @@ class FormBlocListener<
   }) : super(
           key: key,
           child: child,
-          bloc: formBloc,
+          cubit: formBloc,
           listenWhen: (previousState, state) =>
               previousState.runtimeType != state.runtimeType,
           listener: (context, state) {

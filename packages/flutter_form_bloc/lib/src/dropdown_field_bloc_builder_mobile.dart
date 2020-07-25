@@ -145,7 +145,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
       focusNode: _effectiveFocusNode,
       child: BlocBuilder<SelectFieldBloc<Value, dynamic>,
           SelectFieldBlocState<Value, dynamic>>(
-        bloc: widget.selectFieldBloc,
+        cubit: widget.selectFieldBloc,
         builder: (context, fieldState) {
           final isEnabled = fieldBlocIsEnabled(
             isEnabled: widget.isEnabled,
