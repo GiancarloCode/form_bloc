@@ -32,10 +32,10 @@ class SuperBlocDelegate extends BlocObserver {
   }
 
   @override
-  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
-    super.onError(bloc, error, stacktrace);
+  void onError(Cubit cubit, Object error, StackTrace stacktrace) {
+    super.onError(cubit, error, stacktrace);
     _printWrapped(
-      'bloc: ${bloc.runtimeType}, error: $error, stacktrace: $stacktrace',
+      'bloc: ${cubit.runtimeType}, error: $error, stacktrace: $stacktrace',
     );
   }
 
