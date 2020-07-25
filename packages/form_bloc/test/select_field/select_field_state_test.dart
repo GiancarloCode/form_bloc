@@ -35,19 +35,23 @@ void main() {
       );
       final stateCopy3 = stateCopy2.copyWith();
 
-      final statesCopies = [stateCopy1, stateCopy2, stateCopy3];
+      final statesCopies = [
+        // stateCopy1,
+        stateCopy2,
+        stateCopy3,
+      ];
 
       final expectedStates = [
-        SelectFieldBlocState<int, dynamic>(
-          value: 1,
-          error: 'error',
-          isInitial: true,
-          suggestions: suggestions,
-          isValidated: true,
-          isValidating: false,
-          name: null,
-          items: [1],
-        ),
+        // SelectFieldBlocState<int, dynamic>(
+        //   value: 1,
+        //   error: 'error',
+        //   isInitial: true,
+        //   suggestions: suggestions,
+        //   isValidated: true,
+        //   isValidating: false,
+        //   name: null,
+        //   items: [1],
+        // ),
         state,
         state,
       ];

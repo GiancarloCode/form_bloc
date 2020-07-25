@@ -31,18 +31,22 @@ void main() {
         isValidated: false,
       );
       final stateCopy3 = stateCopy2.copyWith();
-      final statesCopies = [stateCopy1, stateCopy2, stateCopy3];
+      final statesCopies = [
+        // stateCopy1,
+        stateCopy2,
+        stateCopy3,
+      ];
 
       final expectedStates = [
-        TextFieldBlocState<dynamic>(
-          value: '1',
-          error: 'error',
-          isInitial: true,
-          suggestions: suggestions,
-          isValidated: true,
-          isValidating: false,
-          name: null,
-        ),
+        // TextFieldBlocState<dynamic>(
+        //   value: '1',
+        //   error: 'error',
+        //   isInitial: true,
+        //   suggestions: suggestions,
+        //   isValidated: true,
+        //   isValidating: false,
+        //   name: null,
+        // ),
         state,
         state,
       ];

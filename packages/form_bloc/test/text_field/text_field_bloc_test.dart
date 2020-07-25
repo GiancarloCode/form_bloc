@@ -35,7 +35,7 @@ void main() {
         );
 
         final expectedStates = [
-          state1,
+          // state1,
           state2,
         ];
         expect(
@@ -50,7 +50,6 @@ void main() {
     test('initial state.', () {
       TextFieldBloc fieldBloc;
       TextFieldBlocState initialState;
-      List<TextFieldBlocState> expectedStates;
 
       fieldBloc = TextFieldBloc<dynamic>(
         name: 'name',
@@ -66,16 +65,9 @@ void main() {
         name: 'name',
       );
 
-      expectedStates = [initialState];
-
       expect(
         fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
 
       fieldBloc.close();
@@ -96,16 +88,9 @@ void main() {
         name: 'name',
       );
 
-      expectedStates = [initialState];
-
       expect(
         fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
     });
 
@@ -130,7 +115,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
       ];
       expect(
@@ -144,7 +129,6 @@ void main() {
     test('if the initialValue is null, it will be an empty string', () {
       TextFieldBloc fieldBloc;
       TextFieldBlocState initialState;
-      List<TextFieldBlocState> expectedStates;
 
       fieldBloc = TextFieldBloc<dynamic>(name: 'name', initialValue: null);
 
@@ -158,16 +142,9 @@ void main() {
         name: 'name',
       );
 
-      expectedStates = [initialState];
-
       expect(
         fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
     });
 
