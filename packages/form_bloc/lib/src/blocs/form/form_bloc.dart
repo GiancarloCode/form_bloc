@@ -159,10 +159,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     } else if (event is ReloadFormBloc) {
       if (state is! FormBlocLoading) {
         yield state.toLoading();
-        _callInBlocContext(onLoading);
+        await _callInBlocContext(onLoading);
       }
     } else if (event is LoadFormBloc) {
-      _callInBlocContext(onLoading);
+      await _callInBlocContext(onLoading);
     } else if (event is CancelSubmissionFormBloc) {
       yield* _onCancelSubmissionFormBloc();
     } else if (event is UpdateFormBlocStateIsValid) {
@@ -191,9 +191,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   // ===========================================================================
 
   /// Pass exceptions from [callback] to [Bloc.onError] handler
-  void _callInBlocContext(void Function() callback) async {
+  /// You must call it with `await` keyword
+  Future<void> _callInBlocContext(void Function() callback) async {
     try {
-      callback();
+      await callback();
     } catch (exception, stackTrace) {
       onError(exception, stackTrace);
     }
@@ -432,19 +433,23 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       _canSubmit = false;
       unawaited(_onSubmittingSubscription?.cancel());
       // get field blocs of the current step and validate
-      final allSingleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(
-          stateSnapshot._fieldBlocs[stateSnapshot.currentStep]?.values ?? []);
+      final currentFieldBlocs = stateSnapshot?._fieldBlocs?.isEmpty ?? true
+          ? <FieldBloc>[]
+          : stateSnapshot?._fieldBlocs[stateSnapshot.currentStep]?.values ?? [];
+
+      final allSingleFieldBlocs =
+          FormBlocUtils.getAllSingleFieldBlocs(currentFieldBlocs);
 
       if (allSingleFieldBlocs.isEmpty) {
         final newState = stateSnapshot.toSubmitting(progress: 0.0);
         _updateState(newState);
         _onSubmittingSubscription = map((state) => state == newState).listen(
-          (isStateUpdated) {
+          (isStateUpdated) async {
             if (isStateUpdated) {
               _canSubmit = true;
-              _callInBlocContext(onSubmitting);
+              await _callInBlocContext(onSubmitting);
 
-              _onSubmittingSubscription.cancel();
+              unawaited(_onSubmittingSubscription.cancel());
             }
           },
         );
@@ -484,7 +489,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
                     null;
                 if (isStateUpdated) {
                   _canSubmit = true;
-                  _callInBlocContext(onSubmitting);
+                  await _callInBlocContext(onSubmitting);
                 }
               } else {
                 final stateSnapshot = state;
@@ -545,7 +550,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       yield newState;
       await firstWhere((state) => state == newState);
 
-      _callInBlocContext(onCancelingSubmission);
+      await _callInBlocContext(onCancelingSubmission);
     }
   }
 
@@ -559,7 +564,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       currentStep: stateSnapshot.currentStep,
       deletingProgress: 0.0,
     );
-    _callInBlocContext(onDeleting);
+    await _callInBlocContext(onDeleting);
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
