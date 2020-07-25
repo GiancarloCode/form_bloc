@@ -1,3 +1,8 @@
+# 0.16.0
+## Breaking changes
+* Updated to `bloc: ^6.0.0`.
+* Fix `onError` of `FormBlocObserver`.
+
 # 0.15.0
 ## Breaking changes
 * Updated to `bloc: ^5.0.1`.
