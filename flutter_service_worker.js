@@ -3,32 +3,32 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "main.dart.js": "1d918afe4caa96b89880cc3718e525bc",
-"favicon.png": "5dcef449791fa27946b3d35ad8803796",
+  "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
+"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "manifest.json": "c45571e2d84148a6242f43f0b88a4ee1",
-"assets/fonts/MaterialIcons-Regular.ttf": "56d3ffdef7a25659eab6a68a3fbfaf16",
-"assets/lib/examples/all_fields_form.dart": "952562ae9335687b5ac92b25474156dd",
-"assets/lib/examples/simple_form.dart": "130d969c08b00e847b1db0f8826b5097",
-"assets/lib/examples/conditional_fields_form.dart": "da0aa4addd807cc30ff1d52da27a38e3",
-"assets/lib/examples/list_fields_form.dart": "6204a9e473c5f449a41629e643af2388",
-"assets/lib/examples/loading_and_initializing_form.dart": "6f8b653a0d5e3a175cacfcd9ff5d0d54",
-"assets/lib/examples/async_field_validation_form.dart": "817318fe666a6f8b4f2bd2e6da5443ec",
-"assets/lib/examples/wizard_form.dart": "b9925dbac8d53cd1892c0fe01065c628",
-"assets/lib/examples/crud_from.dart": "d41d8cd98f00b204e9800998ecf8427e",
-"assets/lib/examples/validation_based_on_other_field.dart": "add7a6b3e888b964c089bb012d9ef3e5",
-"assets/lib/examples/serialized_form.dart": "54ebeea60c5a13fc13724ac1fa6d365c",
-"assets/lib/examples/submission_error_to_field_form.dart": "6f17e12e27181436a30b9a2d65d0503d",
-"assets/lib/examples/submission_progress_form.dart": "ff0c7884fc01e7ccf403792885a1244c",
-"assets/FontManifest.json": "c249dd39ffe903ef334b7d7296fb1700",
-"assets/NOTICES": "e0315e2e177086551bc613f1b4c75ec6",
-"assets/packages/flutter_markdown/assets/logo.png": "67642a0b80f3d50277c44cde8f450e50",
+"assets/NOTICES": "7793559cae0b555f4607f563dc254deb",
 "assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
 "assets/assets/fonts/JosefinSans-Bold.ttf": "0fce6d85ecbbf3d97e0d848824454600",
+"assets/packages/flutter_markdown/assets/logo.png": "67642a0b80f3d50277c44cde8f450e50",
 "assets/AssetManifest.json": "8c3aca620607ed91685e7a9034cb9d69",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
+"assets/fonts/MaterialIcons-Regular.ttf": "56d3ffdef7a25659eab6a68a3fbfaf16",
+"assets/FontManifest.json": "c249dd39ffe903ef334b7d7296fb1700",
+"assets/lib/examples/async_field_validation_form.dart": "817318fe666a6f8b4f2bd2e6da5443ec",
+"assets/lib/examples/wizard_form.dart": "b9925dbac8d53cd1892c0fe01065c628",
+"assets/lib/examples/serialized_form.dart": "54ebeea60c5a13fc13724ac1fa6d365c",
+"assets/lib/examples/loading_and_initializing_form.dart": "6f8b653a0d5e3a175cacfcd9ff5d0d54",
+"assets/lib/examples/list_fields_form.dart": "6204a9e473c5f449a41629e643af2388",
+"assets/lib/examples/validation_based_on_other_field.dart": "add7a6b3e888b964c089bb012d9ef3e5",
+"assets/lib/examples/simple_form.dart": "130d969c08b00e847b1db0f8826b5097",
+"assets/lib/examples/submission_progress_form.dart": "ff0c7884fc01e7ccf403792885a1244c",
+"assets/lib/examples/all_fields_form.dart": "952562ae9335687b5ac92b25474156dd",
+"assets/lib/examples/crud_from.dart": "d41d8cd98f00b204e9800998ecf8427e",
+"assets/lib/examples/submission_error_to_field_form.dart": "6f17e12e27181436a30b9a2d65d0503d",
+"assets/lib/examples/conditional_fields_form.dart": "da0aa4addd807cc30ff1d52da27a38e3",
+"favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "index.html": "83fc3c8c3037f770d8b55bf058ece138",
-"/": "83fc3c8c3037f770d8b55bf058ece138"
+"/": "83fc3c8c3037f770d8b55bf058ece138",
+"main.dart.js": "5d6db9d12b46acdc7fbf1d72113c1bd2"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -37,7 +37,7 @@ const CORE = [
   "/",
 "main.dart.js",
 "index.html",
-"assets/LICENSE",
+"assets/NOTICES",
 "assets/AssetManifest.json",
 "assets/FontManifest.json"];
 
@@ -119,7 +119,7 @@ self.addEventListener("fetch", (event) => {
   if (event.request.url == origin || event.request.url.startsWith(origin + '/#')) {
     key = '/';
   }
-  // If the URL is not the the RESOURCE list, skip the cache.
+  // If the URL is not the RESOURCE list, skip the cache.
   if (!RESOURCES[key]) {
     return event.respondWith(fetch(event.request));
   }
@@ -142,11 +142,11 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener('message', (event) => {
   // SkipWaiting can be used to immediately activate a waiting service worker.
   // This will also require a page refresh triggered by the main worker.
-  if (event.message == 'skipWaiting') {
+  if (event.data === 'skipWaiting') {
     return self.skipWaiting();
   }
 
-  if (event.message = 'downloadOffline') {
+  if (event.message === 'downloadOffline') {
     downloadOffline();
   }
 });
@@ -166,8 +166,8 @@ async function downloadOffline() {
   }
   for (var resourceKey in Object.keys(RESOURCES)) {
     if (!currentContent[resourceKey]) {
-      resources.add(resourceKey);
+      resources.push(resourceKey);
     }
   }
-  return Cache.addAll(resources);
+  return contentCache.addAll(resources);
 }
