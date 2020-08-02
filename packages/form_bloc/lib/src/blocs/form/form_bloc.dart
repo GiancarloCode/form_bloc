@@ -444,12 +444,12 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         final newState = stateSnapshot.toSubmitting(progress: 0.0);
         _updateState(newState);
         _onSubmittingSubscription = map((state) => state == newState).listen(
-          (isStateUpdated) async {
+          (isStateUpdated) {
             if (isStateUpdated) {
               _canSubmit = true;
-              await _callInBlocContext(onSubmitting);
+              _callInBlocContext(onSubmitting);
 
-              unawaited(_onSubmittingSubscription.cancel());
+              _onSubmittingSubscription.cancel();
             }
           },
         );
