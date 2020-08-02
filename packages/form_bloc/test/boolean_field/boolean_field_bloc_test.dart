@@ -32,7 +32,7 @@ void main() {
         );
 
         final expectedStates = [
-          // state1,
+          state1,
           state2,
         ];
         expect(
@@ -46,6 +46,7 @@ void main() {
       test('initial state.', () {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
+        List<BooleanFieldBlocState> expectedStates;
 
         fieldBloc = BooleanFieldBloc<dynamic>(
           name: 'name',
@@ -61,9 +62,16 @@ void main() {
           name: 'name',
         );
 
+        expectedStates = [initialState];
+
         expect(
           fieldBloc.state,
           initialState,
+        );
+
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
         );
 
         fieldBloc.close();
@@ -84,14 +92,22 @@ void main() {
           name: null,
         );
 
+        expectedStates = [initialState];
+
         expect(
           fieldBloc.state,
           initialState,
+        );
+
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
         );
       });
       test('if the initialValue is null, it will be false', () {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
+        List<BooleanFieldBlocState> expectedStates;
 
         fieldBloc = BooleanFieldBloc<dynamic>(name: 'name', initialValue: null);
 
@@ -105,9 +121,16 @@ void main() {
           name: null,
         );
 
+        expectedStates = [initialState];
+
         expect(
           fieldBloc.state,
           initialState,
+        );
+
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
         );
       });
 
@@ -132,7 +155,7 @@ void main() {
         );
 
         final expectedStates = [
-          // state1,
+          state1,
           state2,
         ];
         expect(

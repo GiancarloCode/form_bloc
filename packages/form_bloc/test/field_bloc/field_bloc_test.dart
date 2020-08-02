@@ -14,6 +14,7 @@ void main() {
       test('_initialValue is the value of the initial state.', () {
         InputFieldBloc<int, dynamic> fieldBloc;
         InputFieldBlocState<int, dynamic> initialState;
+        List<InputFieldBlocState> expectedStates;
 
         fieldBloc = InputFieldBloc<int, dynamic>(
           name: 'fieldName',
@@ -26,6 +27,12 @@ void main() {
           isValidated: true,
           isValidating: false,
           name: 'fieldName',
+        );
+        expectedStates = [initialState];
+
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
         );
 
         expect(
@@ -44,6 +51,12 @@ void main() {
           isValidated: true,
           isValidating: false,
           name: 'fieldName',
+        );
+        expectedStates = [initialState];
+
+        expect(
+          fieldBloc,
+          emitsInOrder(expectedStates),
         );
 
         expect(
@@ -91,7 +104,7 @@ void main() {
         );
 
         final expectedStates = [
-          // state1,
+          state1,
           state2,
           state3,
           state4,
@@ -146,7 +159,7 @@ void main() {
         );
 
         final expectedStates = [
-          // state1,
+          state1,
           state2,
           state3,
         ];
@@ -177,8 +190,8 @@ void main() {
         ];
 
         expect(
-          fieldBloc.state,
-          expectedStates.first,
+          fieldBloc,
+          emitsInOrder(expectedStates),
         );
 
         expect(
@@ -213,9 +226,18 @@ void main() {
         name: 'fieldName',
       );
 
+      final expectedStates = [
+        initialState,
+      ];
+
       expect(
         fieldBloc.state,
         initialState,
+      );
+
+      expect(
+        fieldBloc,
+        emitsInOrder(expectedStates),
       );
     });
 
@@ -249,7 +271,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -291,7 +313,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -343,7 +365,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -384,7 +406,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
       ];
 
@@ -441,7 +463,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
       ];
@@ -488,7 +510,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -529,7 +551,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
       ];
@@ -576,7 +598,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
       ];
@@ -633,7 +655,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -703,7 +725,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -759,7 +781,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
       ];
@@ -819,7 +841,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -889,7 +911,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -931,7 +953,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
       ];
       expect(
@@ -961,7 +983,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
       ];
       expect(
@@ -999,7 +1021,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
       ];
       expect(
@@ -1061,7 +1083,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -1124,7 +1146,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -1172,7 +1194,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state4,
         state5,
@@ -1222,7 +1244,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -1276,7 +1298,7 @@ void main() {
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
         state3,
         state4,
@@ -1350,7 +1372,7 @@ void main() {
     });
 
     test('updateExtraData method', () async {
-      final expected = [1];
+      final expected = [null, 1];
 
       final fieldBloc = InputFieldBloc<int, int>();
 

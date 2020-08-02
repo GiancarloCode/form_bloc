@@ -444,12 +444,12 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         final newState = stateSnapshot.toSubmitting(progress: 0.0);
         _updateState(newState);
         _onSubmittingSubscription = map((state) => state == newState).listen(
-          (isStateUpdated) {
+          (isStateUpdated) async {
             if (isStateUpdated) {
               _canSubmit = true;
-              _callInBlocContext(onSubmitting);
+              await _callInBlocContext(onSubmitting);
 
-              _onSubmittingSubscription.cancel();
+              unawaited(_onSubmittingSubscription.cancel());
             }
           },
         );
@@ -462,30 +462,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           },
         );
 
-        final validatedFieldBlocs = List<
-            SingleFieldBloc<
-                dynamic,
-                dynamic,
-                FieldBlocState<dynamic, dynamic, dynamic>,
-                dynamic>>.from(allSingleFieldBlocs)
-          ..retainWhere((element) => element.state.isValidated);
-
-        final notValidatedFieldBlocs = List<
-            SingleFieldBloc<
-                dynamic,
-                dynamic,
-                FieldBlocState<dynamic, dynamic, dynamic>,
-                dynamic>>.from(allSingleFieldBlocs)
-          ..retainWhere((element) => !element.state.isValidated);
-
         _onSubmittingSubscription = Rx.combineLatest<FieldBlocState, bool>(
-          notValidatedFieldBlocs.isEmpty
-              ? <Stream<FieldBlocState>>[
-                  BehaviorSubject<
-                          FieldBlocState<dynamic, dynamic, dynamic>>.seeded(
-                      validatedFieldBlocs.first.state)
-                ]
-              : notValidatedFieldBlocs,
+          allSingleFieldBlocs,
           (states) => states.every((state) => state.isValidated),
         ).listen(
           (areValidated) async {

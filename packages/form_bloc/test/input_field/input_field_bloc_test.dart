@@ -35,7 +35,7 @@ void main() {
         );
 
         final expectedStates = [
-          // state1,
+          state1,
           state2,
         ];
         expect(
@@ -50,6 +50,7 @@ void main() {
     test('initial state.', () {
       InputFieldBloc fieldBloc;
       InputFieldBlocState initialState;
+      List<InputFieldBlocState> expectedStates;
 
       fieldBloc = InputFieldBloc<bool, dynamic>(
         name: 'name',
@@ -65,9 +66,16 @@ void main() {
         name: 'name',
       );
 
+      expectedStates = [initialState];
+
       expect(
         fieldBloc.state,
         initialState,
+      );
+
+      expect(
+        fieldBloc,
+        emitsInOrder(expectedStates),
       );
 
       fieldBloc.close();
@@ -88,9 +96,16 @@ void main() {
         name: 'name',
       );
 
+      expectedStates = [initialState];
+
       expect(
         fieldBloc.state,
         initialState,
+      );
+
+      expect(
+        fieldBloc,
+        emitsInOrder(expectedStates),
       );
     });
 
