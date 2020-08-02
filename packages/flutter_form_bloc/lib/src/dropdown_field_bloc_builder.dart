@@ -26,6 +26,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.focusNode,
     this.textAlign,
     this.animateWhenCanShow = true,
+    this.onChanged,
+    this.emptyItemLabel
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -55,6 +57,9 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// and can be used for deselect.
   final bool showEmptyItem;
 
+  /// A label to display for an empty item
+  final String emptyItemLabel;
+
   /// The milliseconds for show the dropdown items when the keyboard is open
   /// and closes. By default is 600 milliseconds.
   final int millisecondsForShowDropdownItemsWhenKeyboardIsOpen;
@@ -78,6 +83,9 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
+
+  /// Called when the user selects an item.
+  final ValueChanged<Value> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +113,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
             padding: padding,
             showEmptyItem: showEmptyItem,
             textAlign: textAlign,
+            onChanged: onChanged,
+            emptyItemLabel: emptyItemLabel,
           ),
           other: DropdownFieldBlocBuilderWeb(
             selectFieldBloc: selectFieldBloc,
@@ -121,6 +131,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
             padding: padding,
             showEmptyItem: showEmptyItem,
             textAlign: textAlign,
+            onChanged: onChanged,
+            emptyItemLabel: emptyItemLabel,
           ),
         );
       },
