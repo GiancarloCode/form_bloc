@@ -82,6 +82,8 @@ abstract class SingleFieldBloc<
 
   final Duration _asyncValidatorDebounceTime;
 
+/* Previously used to simplify initial state creation
+
   final Suggestions<Suggestion> _suggestions;
 
   final String _name;
@@ -89,6 +91,7 @@ abstract class SingleFieldBloc<
   final dynamic Function(Value value) _toJson;
 
   final ExtraData _extraData;
+  */
 
   final PublishSubject<Value> _asyncValidatorsSubject = PublishSubject();
   StreamSubscription<UpdateFieldBlocStateError> _asyncValidatorsSubscription;
@@ -102,15 +105,14 @@ abstract class SingleFieldBloc<
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
     this._asyncValidatorDebounceTime,
-    this._suggestions,
+    Suggestions<Suggestion> suggestions,
     String name,
-    this._toJson,
-    this._extraData,
+    dynamic Function(Value value) toJson,
+    ExtraData extraData,
     State initialState,
   )   : assert(_asyncValidatorDebounceTime != null),
         _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
-        _name = name ?? Uuid().v1(),
         super(initialState) {
     FormBlocObserver.overrideDelegateOfBlocSupervisor();
     _setUpAsyncValidatorsSubscription();
