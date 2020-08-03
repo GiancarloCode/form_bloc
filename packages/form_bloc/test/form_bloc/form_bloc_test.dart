@@ -15,7 +15,7 @@ void main() {
 
         formBloc.addFieldBloc(fieldBloc: text);
 
-        final state = await formBloc.skip(1).first;
+        final state = await formBloc.first;
 
         expect(
           state.contains(text),
@@ -35,7 +35,7 @@ void main() {
 
         formBloc.listen(print);
 
-        final state = await formBloc.skip(1).first;
+        final state = await formBloc.first;
 
         expect(
           state.contains(text) && state.contains(boolean),
@@ -52,7 +52,7 @@ void main() {
         formBloc.addFieldBloc(fieldBloc: text);
         formBloc.removeFieldBloc(fieldBloc: text);
 
-        final state = await formBloc.skip(2).first;
+        final state = await formBloc.skip(1).first;
 
         expect(
           state.contains(text),
@@ -71,7 +71,7 @@ void main() {
         formBloc.addFieldBlocs(fieldBlocs: [text, boolean]);
         formBloc.removeFieldBlocs(fieldBlocs: [text, boolean]);
 
-        final state = await formBloc.skip(2).first;
+        final state = await formBloc.skip(1).first;
 
         expect(
           !state.contains(text) && !state.contains(boolean),

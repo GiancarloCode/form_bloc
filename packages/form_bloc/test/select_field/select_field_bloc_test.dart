@@ -36,7 +36,7 @@ void main() {
         );
 
         final expectedStates = [
-          state1,
+          // state1,
           state2,
         ];
         expect(
@@ -51,7 +51,6 @@ void main() {
     test('initial state.', () {
       SelectFieldBloc fieldBloc;
       SelectFieldBlocState initialState;
-      List<SelectFieldBlocState> expectedStates;
 
       fieldBloc = SelectFieldBloc<bool, dynamic>(
         name: 'name',
@@ -68,17 +67,12 @@ void main() {
         items: [],
       );
 
-      expectedStates = [initialState];
-
       expect(
         fieldBloc.state,
         initialState,
       );
 
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
-      );
+      fieldBloc.close();
 
       fieldBloc = SelectFieldBloc<bool, dynamic>(
         name: 'name',
@@ -98,16 +92,9 @@ void main() {
         items: [true, false],
       );
 
-      expectedStates = [initialState];
-
       expect(
         fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
     });
 
@@ -134,7 +121,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
       ];
@@ -160,7 +147,7 @@ void main() {
       );
 
       expect(
-        fieldBloc.skip(1),
+        fieldBloc,
         emitsInOrder(<SelectFieldBlocState>[expectedState]),
       );
 
@@ -194,7 +181,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
         state4,
@@ -233,7 +220,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
       ];
@@ -260,7 +247,7 @@ void main() {
       );
 
       expect(
-        fieldBloc.skip(1),
+        fieldBloc,
         emitsInOrder(<SelectFieldBlocState>[expectedState]),
       );
 

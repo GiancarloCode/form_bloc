@@ -4,7 +4,6 @@ import 'dart:collection' show LinkedHashSet;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_bloc/src/blocs/form/form_bloc.dart';
-import 'package:form_bloc/src/utils/emit_latest_state_added_mixin.dart';
 import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:quiver/core.dart';
@@ -67,11 +66,10 @@ abstract class FieldBloc {
 /// * [SelectFieldBloc].
 /// * [MultiSelectFieldBloc].
 abstract class SingleFieldBloc<
-        Value,
-        Suggestion,
-        State extends FieldBlocState<Value, Suggestion, ExtraData>,
-        ExtraData> extends Bloc<FieldBlocEvent, State>
-    with FieldBloc, EmitLatestStateAddedMixin {
+    Value,
+    Suggestion,
+    State extends FieldBlocState<Value, Suggestion, ExtraData>,
+    ExtraData> extends Bloc<FieldBlocEvent, State> with FieldBloc {
   final Value _initialValue;
 
   bool _autoValidate = true;
@@ -82,8 +80,6 @@ abstract class SingleFieldBloc<
 
   final Duration _asyncValidatorDebounceTime;
 
-/* Previously used to simplify initial state creation
-
   final Suggestions<Suggestion> _suggestions;
 
   final String _name;
@@ -91,7 +87,6 @@ abstract class SingleFieldBloc<
   final dynamic Function(Value value) _toJson;
 
   final ExtraData _extraData;
-  */
 
   final PublishSubject<Value> _asyncValidatorsSubject = PublishSubject();
   StreamSubscription<UpdateFieldBlocStateError> _asyncValidatorsSubscription;
@@ -105,14 +100,15 @@ abstract class SingleFieldBloc<
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
     this._asyncValidatorDebounceTime,
-    Suggestions<Suggestion> suggestions,
+    this._suggestions,
     String name,
-    dynamic Function(Value value) toJson,
-    ExtraData extraData,
+    this._toJson,
+    this._extraData,
     State initialState,
   )   : assert(_asyncValidatorDebounceTime != null),
         _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
+        _name = name ?? Uuid().v1(),
         super(initialState) {
     FormBlocObserver.overrideDelegateOfBlocSupervisor();
     _setUpAsyncValidatorsSubscription();
