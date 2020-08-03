@@ -76,7 +76,8 @@ class ListFieldBlocState<T extends FieldBloc> extends Equatable {
 }
 
 class ListFieldBloc<T extends FieldBloc>
-    extends Bloc<ListFieldBlocEvent, ListFieldBlocState<T>> with FieldBloc {
+    extends Bloc<ListFieldBlocEvent, ListFieldBlocState<T>>
+    with FieldBloc, EmitLatestStateAddedMixin {
   bool _autoValidate = true;
 
   ListFieldBloc({

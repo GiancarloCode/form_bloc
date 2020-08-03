@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_bloc/form_bloc.dart';
+import 'package:form_bloc/src/utils/emit_latest_state_added_mixin.dart';
 import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rxdart/rxdart.dart';
@@ -13,8 +14,9 @@ part 'form_state.dart';
 /// The base class for all `FormBlocs`.
 ///
 /// See complex examples here: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example/lib/forms
-abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
-    FormBlocEvent, FormBlocState<SuccessResponse, FailureResponse>> {
+abstract class FormBloc<SuccessResponse, FailureResponse>
+    extends Bloc<FormBlocEvent, FormBlocState<SuccessResponse, FailureResponse>>
+    with EmitLatestStateAddedMixin {
   /// Indicates ig the bloc is closed
   var _isClosed = false;
 

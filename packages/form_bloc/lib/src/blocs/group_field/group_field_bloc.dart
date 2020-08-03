@@ -48,7 +48,7 @@ class GroupFieldBlocState extends Equatable {
 }
 
 class GroupFieldBloc extends Bloc<GroupFieldBlocEvent, GroupFieldBlocState>
-    with FieldBloc {
+    with FieldBloc, EmitLatestStateAddedMixin {
   GroupFieldBloc(List<FieldBloc> fieldBlocs, {String name})
       : super(GroupFieldBlocState(
             name: name ?? Uuid().v1(), fieldBlocs: fieldBlocs ?? []));

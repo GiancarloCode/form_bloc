@@ -4,6 +4,7 @@ import 'dart:collection' show LinkedHashSet;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_bloc/src/blocs/form/form_bloc.dart';
+import 'package:form_bloc/src/utils/emit_latest_state_added_mixin.dart';
 import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:quiver/core.dart';
@@ -66,10 +67,11 @@ abstract class FieldBloc {
 /// * [SelectFieldBloc].
 /// * [MultiSelectFieldBloc].
 abstract class SingleFieldBloc<
-    Value,
-    Suggestion,
-    State extends FieldBlocState<Value, Suggestion, ExtraData>,
-    ExtraData> extends Bloc<FieldBlocEvent, State> with FieldBloc {
+        Value,
+        Suggestion,
+        State extends FieldBlocState<Value, Suggestion, ExtraData>,
+        ExtraData> extends Bloc<FieldBlocEvent, State>
+    with FieldBloc, EmitLatestStateAddedMixin {
   final Value _initialValue;
 
   bool _autoValidate = true;
