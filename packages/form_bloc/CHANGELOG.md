@@ -1,13 +1,16 @@
-# 0.17.0
+# 0.19.0
 ## Breaking changes
 * Updated to `bloc: ^6.0.0`.
 * Fix `onError` of `FormBlocObserver`.
-* Fix important bug in `FormBloc.onSubmit` generated in `form_bloc: 0.16.0`.
+
+# 0.18.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.0`
+
+# 0.17.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.0`
 
 # 0.16.0
-## Breaking changes
-* Updated to `bloc: ^6.0.0`.
-* Fix `onError` of `FormBlocObserver`.
+Bad version, you should use `>=0.19.0` or `<= 0.15.0`
 
 # 0.15.0
 ## Breaking changes
