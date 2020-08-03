@@ -40,7 +40,7 @@ void main() {
           initialState,
         );
 
-        fieldBloc.close();
+        // fieldBloc.close();
         fieldBloc =
             InputFieldBloc<int, dynamic>(name: 'fieldName', initialValue: 1);
         initialState = InputFieldBlocState<int, dynamic>(

@@ -78,8 +78,6 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.close();
-
       fieldBloc = TextFieldBloc<dynamic>(
         name: 'name',
         initialValue: 'a',

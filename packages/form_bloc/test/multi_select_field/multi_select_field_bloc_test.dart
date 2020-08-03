@@ -80,8 +80,6 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.close();
-
       fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
         initialValue: [true],

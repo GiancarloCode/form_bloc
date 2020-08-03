@@ -80,8 +80,6 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.close();
-
       fieldBloc = SelectFieldBloc<bool, dynamic>(
         name: 'name',
         initialValue: true,
