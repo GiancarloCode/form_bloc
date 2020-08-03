@@ -1,3 +1,14 @@
+# 0.18.0
+## Breaking changes
+* Updated to `bloc: ^6.0.0`.
+  * **Note:** when a new listener subscribes to the `FieldBloc` or `FormBloc`, the latest `State` will be emitted to the listener.
+* Fix `onError` of `FormBlocObserver`.
+
+# 0.17.0
+Bad version, you should use `>=0.18.0` or `<= 0.15.0`
+# 0.16.0
+Bad version, you should use `>=0.18.0` or `<= 0.15.0`
+
 # 0.15.0
 ## Breaking changes
 * Updated to `bloc: ^5.0.1`.
