@@ -1,11 +1,13 @@
-# 0.17.0
+# 0.18.0
   ## Breaking changes
-  * Updated to `form_bloc: ^0.17.0`.
+  * Updated to `form_bloc: ^0.18.0`.
   * Updated to `flutter_bloc: ^6.0.0`.
 
+# 0.17.0
+Bad version, you should use `>=0.18.0` or `<= 0.15.1`.
+
 # 0.16.0
-  ## Breaking changes
-  * Updated to `form_bloc: ^0.16.0`.
+Bad version, you should use `>=0.18.0` or `<= 0.15.1`.
 
 # 0.15.1
   * Fix widgets in web platform.
@@ -13,11 +15,11 @@
 # 0.15.0
   ## Breaking changes
   * Updated to `form_bloc: ^0.15.0`.
-  * Updated to `flutter_bloc: ^0.15.1`.
+  * Updated to `flutter_bloc: ^5.0.1`.
 
 # 0.14.0
 * Updated to `form_bloc: ^0.14.0`.
-* Updated to `flutter_bloc: ^0.4.0`.
+* Updated to `flutter_bloc: ^4.0.0`.
 
 # 0.13.1
 * Updated to `form_bloc: ^0.13.1`.
