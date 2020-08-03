@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../flutter_form_bloc.dart';
 
@@ -45,7 +46,12 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
   }
 
   void _init() async {
-    final formBloc = await (widget.fieldBloc as Bloc)
+    final bloc = (widget.fieldBloc as Bloc);
+
+    final formBloc = await Rx.merge([
+      Stream.value(bloc.state),
+      bloc,
+    ])
         .firstWhere((state) => state.formBloc != null)
         .timeout(Duration(milliseconds: 10), onTimeout: () => null);
 
@@ -60,10 +66,17 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     _initAnimation();
     setState(() {});
     try {
-      await (widget.fieldBloc as Bloc)
-          .firstWhere((state) => state.formBloc != null);
+      await Rx.merge([
+        Stream.value(bloc.state),
+        bloc,
+      ]).firstWhere((state) => state.formBloc != null);
 
-      await ((widget.fieldBloc as dynamic).state.formBloc as Bloc).firstWhere(
+      final formBloc = (widget.fieldBloc as dynamic).state.formBloc as Bloc;
+
+      await Rx.merge([
+        Stream.value(formBloc.state),
+        formBloc,
+      ]).firstWhere(
           (formBlocState) => formBlocState.contains(widget.fieldBloc));
 
       if (widget.animate) {
