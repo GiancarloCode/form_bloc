@@ -123,7 +123,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       (key, singleFieldBlocs) {
         _areAllFieldsValidSubscription[key] =
             Rx.combineLatest<FieldBlocState, List<FieldBlocState>>(
-          singleFieldBlocs,
+          singleFieldBlocs.map((fieldBloc) => Rx.merge([
+                Stream.value(fieldBloc.state),
+                fieldBloc,
+              ])),
           (fieldStates) {
             // if any value change, then can submit again
             _canSubmit = true;
