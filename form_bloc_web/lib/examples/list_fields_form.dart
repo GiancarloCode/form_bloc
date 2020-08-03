@@ -218,7 +218,7 @@ class ListFieldsForm extends StatelessWidget {
                       ),
                       BlocBuilder<ListFieldBloc<MemberFieldBloc>,
                           ListFieldBlocState<MemberFieldBloc>>(
-                        bloc: formBloc.members,
+                        cubit: formBloc.members,
                         builder: (context, state) {
                           if (state.fieldBlocs.isNotEmpty) {
                             return ListView.builder(
@@ -311,7 +311,7 @@ class MemberCard extends StatelessWidget {
             ),
             BlocBuilder<ListFieldBloc<TextFieldBloc>,
                 ListFieldBlocState<TextFieldBloc>>(
-              bloc: memberField.hobbies,
+              cubit: memberField.hobbies,
               builder: (context, state) {
                 if (state.fieldBlocs.isNotEmpty) {
                   return ListView.builder(
