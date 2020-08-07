@@ -1,3 +1,6 @@
+# 0.19.1
+* Fix add `FormBloc` of items in `ListFieldBloc`.
+
 # 0.19.0
 ## Breaking changes
 * Updated to `bloc: ^6.0.0`.
