@@ -107,27 +107,6 @@ class ListFieldBloc<T extends FieldBloc>
     if (event is AddFieldBlocToListFieldBloc<T>) {
       final stateSnapshot = state;
       if (event.fieldBloc != null) {
-        final allFieldBlocs = FormBlocUtils.getAllFieldBlocs([event.fieldBloc]);
-
-        allFieldBlocs.forEach((e) {
-          if (e is SingleFieldBloc) {
-            e.add(
-              AddFormBlocAndAutoValidateToFieldBloc(
-                  formBloc: state.formBloc, autoValidate: _autoValidate),
-            );
-          } else if (e is ListFieldBloc) {
-            e.add(
-              AddFormBlocAndAutoValidateToListFieldBloc(
-                  formBloc: state.formBloc, autoValidate: _autoValidate),
-            );
-          } else if (e is GroupFieldBloc) {
-            e.add(
-              AddFormBlocAndAutoValidateToGroupFieldBloc(
-                  formBloc: state.formBloc, autoValidate: _autoValidate),
-            );
-          }
-        });
-
         final newState = stateSnapshot._copyWith(
           fieldBlocs: List<T>.from(stateSnapshot.fieldBlocs)
             ..add(event.fieldBloc),
@@ -136,6 +115,11 @@ class ListFieldBloc<T extends FieldBloc>
         yield newState;
 
         if (state.formBloc != null) {
+          _addFormBlocAndAutoValidateToFieldBlocs(
+            fieldBlocs: [event.fieldBloc],
+            formBloc: state.formBloc,
+          );
+
           state.formBloc?.add(RefreshFieldBlocsSubscription());
         }
       }
@@ -184,7 +168,38 @@ class ListFieldBloc<T extends FieldBloc>
       _autoValidate = event.autoValidate;
 
       yield state._copyWith(formBloc: event.formBloc);
+
+      _addFormBlocAndAutoValidateToFieldBlocs(
+        fieldBlocs: state.fieldBlocs,
+        formBloc: event.formBloc,
+      );
     }
+  }
+
+  void _addFormBlocAndAutoValidateToFieldBlocs({
+    @required List<FieldBloc> fieldBlocs,
+    @required FormBloc formBloc,
+  }) {
+    final allFieldBlocs = FormBlocUtils.getAllFieldBlocs(fieldBlocs);
+
+    allFieldBlocs.forEach((e) {
+      if (e is SingleFieldBloc) {
+        e.add(
+          AddFormBlocAndAutoValidateToFieldBloc(
+              formBloc: formBloc, autoValidate: _autoValidate),
+        );
+      } else if (e is ListFieldBloc) {
+        e.add(
+          AddFormBlocAndAutoValidateToListFieldBloc(
+              formBloc: formBloc, autoValidate: _autoValidate),
+        );
+      } else if (e is GroupFieldBloc) {
+        e.add(
+          AddFormBlocAndAutoValidateToGroupFieldBloc(
+              formBloc: formBloc, autoValidate: _autoValidate),
+        );
+      }
+    });
   }
 
   @override
