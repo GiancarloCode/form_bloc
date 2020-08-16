@@ -11,6 +11,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     @required this.multiSelectFieldBloc,
     @required this.itemBuilder,
     this.enableOnlyWhenFormBlocCanSubmit = false,
+    this.isLableActive = false,
     this.isEnabled = true,
     this.errorBuilder,
     this.padding,
@@ -35,6 +36,9 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.isLableActive}
+  final bool isLableActive;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
   final bool isEnabled;
@@ -115,25 +119,31 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
       itemCount: state.items.length,
       itemBuilder: (context, index) {
         final item = state.items[index];
-        return InputDecorator(
+
+        final onChanged = fieldBlocBuilderOnChange<bool>(
+          isEnabled: isEnabled,
+          nextFocusNode: nextFocusNode,
+          onChanged: (_) {
+            if (state.value.contains(item)) {
+              multiSelectFieldBloc.deselect(item);
+            } else {
+              multiSelectFieldBloc.select(item);
+            }
+          },
+        );
+
+        final checkbox = InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
-            prefixIcon: Checkbox(
-              checkColor: Style.getIconColor(
-                customColor: checkColor,
-                defaultColor: Theme.of(context).toggleableActiveColor,
-              ),
-              activeColor: activeColor,
-              value: state.value.contains(state.items[index]),
-              onChanged: fieldBlocBuilderOnChange<bool>(
-                isEnabled: isEnabled,
-                nextFocusNode: nextFocusNode,
-                onChanged: (_) {
-                  if (state.value.contains(item)) {
-                    multiSelectFieldBloc.deselect(item);
-                  } else {
-                    multiSelectFieldBloc.select(item);
-                  }
-                },
+            prefixIcon: AbsorbPointer(
+              absorbing: isLableActive,
+              child: Checkbox(
+                checkColor: Style.getIconColor(
+                  customColor: checkColor,
+                  defaultColor: Theme.of(context).toggleableActiveColor,
+                ),
+                activeColor: activeColor,
+                value: state.value.contains(state.items[index]),
+                onChanged: onChanged,
               ),
             ),
           ),
@@ -142,6 +152,15 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
             child: Text(itemBuilder(context, state.items.elementAt(index))),
           ),
         );
+
+        if (isLableActive && onChanged != null) {
+          return InkWell(
+            onTap: () => onChanged(null),
+            child: checkbox,
+          );
+        }
+
+        return checkbox;
       },
     );
   }
