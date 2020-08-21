@@ -40,13 +40,7 @@ class FieldBlocValidators {
   /// Returns [FieldBlocValidatorsErrors.email]
   /// if is not valid.
   static String email(String string) {
-    final emailRegExp =
-        RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
-    if (string == null || string.isEmpty || emailRegExp.hasMatch(string)) {
-      return null;
-    }
-
-    return FieldBlocValidatorsErrors.email;
+    return patternValidator(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', FieldBlocValidatorsErrors.email)
   }
 
   /// Check if the [string] has min 6 chars
@@ -89,6 +83,28 @@ class FieldBlocValidators {
         return null;
       }
       return FieldBlocValidatorsErrors.confirmPassword;
+    };
+  }
+  
+  /// Check if the `value` of the current [TextFieldBloc] matches [pattern]
+  ///
+  /// Returns a [Validator] `String Function(String string)`.
+  ///
+  /// This validator check if the `string` matches the [pattern]
+  /// if [string] is not null and not empty.
+  ///
+  /// Returns `null` if is valid.
+  ///
+  /// Returns [failMessage]
+  /// if is not valid.
+  static Validator<String> patternValidator(String pattern, {String failMessage = "Invalid input"}) {
+    final regExp = RegExp(pattern);
+    return (String value) {
+      if(value == null || value.isEmpty || regExp.hasMatch(value)) {
+        return null;
+      } else {
+        return failMessage;
+      }
     };
   }
 }
