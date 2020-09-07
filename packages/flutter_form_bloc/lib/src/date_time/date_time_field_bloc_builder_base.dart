@@ -235,16 +235,22 @@ class _DateTimeFieldBlocBuilderBaseState<T>
   }
 
   Future<TimeOfDay> _showTimePicker(BuildContext context) async {
+    TimeOfDay initialTime = widget.initialTime;
+
+    if (widget.dateTimeFieldBloc.state.value != null) {
+      if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
+        initialTime = widget.dateTimeFieldBloc.state.value as TimeOfDay;
+      } else {
+        initialTime = TimeOfDay.fromDateTime(
+          widget.dateTimeFieldBloc.state.value as DateTime,
+        );
+      }
+    }
+
     return await showTimePicker(
       context: context,
       useRootNavigator: widget.useRootNavigator,
-      initialTime: widget.type == DateTimeFieldBlocBuilderBaseType.time
-          ? widget.dateTimeFieldBloc.state.value ?? widget.initialTime
-          : widget.dateTimeFieldBloc.state.value == null
-              ? TimeOfDay.fromDateTime(
-                  widget.dateTimeFieldBloc.state.value ?? DateTime.now(),
-                )
-              : widget.initialTime,
+      initialTime: initialTime,
       builder: widget.builder,
     );
   }
