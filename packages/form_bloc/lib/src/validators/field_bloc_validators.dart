@@ -11,6 +11,20 @@ class FieldBlocValidatorsErrors {
       'Password Min 6 Chars - Validator Error';
 
   static const String confirmPassword = 'Confirm Password - Validator Error';
+
+  static const String additionalProperties = 'No additional attributes are allowed - Validator Error';
+  static const String anyOf =  'The data should be one of the specified ones - Validator Error';
+  static const String format = 'Incorrect format - Validator Error';
+  static const String type =   'Incorrect type - Validator Error';
+  static const String maxLength = 'More than the character - Validator Error';
+  static const String minLength = 'Less than the character - Validator Error';
+  static const String maxItems =  'Too many item - Validator Error';
+  static const String minItems =  'Too litter item - Validator Error';
+  static const String uniqueItems = 'There should be no duplicates - Validator Error';
+  static const String contains =  'A valid term should be included - Validator Error';
+  static const String unFinish =  'The content is not complete - Validator Error';
+  static const String other =  'Other - Validator Error';
+
 }
 
 class FieldBlocValidators {
