@@ -22,8 +22,9 @@ class UpdateFormBlocState<SuccessResponse, FailureResponse>
 
 class UpdateFormBlocStateIsValid extends FormBlocEvent {
   final bool isValid;
+  final int step;
 
-  UpdateFormBlocStateIsValid(this.isValid);
+  UpdateFormBlocStateIsValid({@required this.isValid, @required this.step});
 
   @override
   String toString() => '$runtimeType: { isValid: $isValid }';
@@ -52,41 +53,63 @@ class CancelSubmissionFormBloc extends FormBlocEvent {
   List<Object> get props => [];
 }
 
-class OnSubmittingFormBloc extends FormBlocEvent {
-  @override
-  List<Object> get props => [];
-}
-
 class DeleteFormBloc extends FormBlocEvent {
   @override
   List<Object> get props => [];
 }
 
 class AddFieldBloc extends FormBlocEvent {
-  final String path;
+  final int step;
   final FieldBloc fieldBloc;
 
-  AddFieldBloc({@required this.path, @required this.fieldBloc});
+  AddFieldBloc({@required this.step, @required this.fieldBloc});
 
   @override
-  List<Object> get props => [path, fieldBloc];
+  List<Object> get props => [step, fieldBloc];
 }
 
-/// {@macro form_bloc.path_definition}
+class AddFieldBlocs extends FormBlocEvent {
+  final int step;
+  final List<FieldBloc> fieldBlocs;
+
+  AddFieldBlocs({@required this.step, @required this.fieldBlocs});
+
+  @override
+  List<Object> get props => [step, fieldBlocs];
+}
+
 class RemoveFieldBloc extends FormBlocEvent {
-  final String path;
+  final FieldBloc fieldBloc;
 
-  RemoveFieldBloc({@required this.path});
+  RemoveFieldBloc({@required this.fieldBloc});
 
   @override
-  List<Object> get props => [path];
+  List<Object> get props => [fieldBloc];
 }
 
-class ClearFieldBlocList extends FormBlocEvent {
-  final String path;
+class RemoveFieldBlocs extends FormBlocEvent {
+  final List<FieldBloc> fieldBlocs;
 
-  ClearFieldBlocList({@required this.path});
+  RemoveFieldBlocs({@required this.fieldBlocs});
 
   @override
-  List<Object> get props => [path];
+  List<Object> get props => [fieldBlocs];
+}
+
+class RefreshFieldBlocsSubscription extends FormBlocEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class PreviousStepFormBlocEvent extends FormBlocEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateCurrentStepFormBlocEvent extends FormBlocEvent {
+  final int step;
+
+  UpdateCurrentStepFormBlocEvent(this.step);
+  @override
+  List<Object> get props => [step];
 }

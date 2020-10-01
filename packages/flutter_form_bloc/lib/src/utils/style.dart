@@ -30,13 +30,17 @@ class Style {
     @required BuildContext context,
     @required FieldBlocState fieldBlocState,
     @required FieldBlocErrorBuilder errorBuilder,
+    @required FieldBloc fieldBloc,
   }) {
     if (fieldBlocState.canShowError) {
       if (errorBuilder != null) {
         return errorBuilder(context, fieldBlocState.error);
       } else {
         return FieldBlocBuilder.defaultErrorBuilder(
-            context, fieldBlocState.error);
+          context,
+          fieldBlocState.error,
+          fieldBloc,
+        );
       }
     } else {
       return null;
@@ -48,14 +52,14 @@ class Style {
     @required bool isEnabled,
   }) =>
       isEnabled
-          ? Theme.of(context).textTheme.subhead
+          ? Theme.of(context).textTheme.subtitle1
           : Theme.of(context)
               .textTheme
-              .subhead
+              .subtitle1
               .copyWith(color: Theme.of(context).disabledColor);
 
   /// Returns `EdgeInsets.all(8.0)`.
-  static EdgeInsets defaultPadding = const EdgeInsets.all(8.0);
+  static EdgeInsets defaultPadding = const EdgeInsets.symmetric(vertical: 8.0);
 
   static EdgeInsets getGroupFieldBlocContentPadding({
     @required bool isVisible,

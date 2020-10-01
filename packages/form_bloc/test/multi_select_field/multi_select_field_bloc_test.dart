@@ -8,20 +8,20 @@ void main() {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
         final validators = [
-          FieldBlocValidators.requiredMultiSelectFieldBloc,
-          (List<bool> value) => 'error'
+          FieldBlocValidators.required,
+          (List<bool> value) => 'error',
         ];
 
-        final fieldBloc = MultiSelectFieldBloc<bool>(
+        final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
           name: 'name',
           initialValue: [],
           validators: validators,
           suggestions: suggestions,
         );
 
-        final state1 = MultiSelectFieldBlocState<bool>(
+        final state1 = MultiSelectFieldBlocState<bool, dynamic>(
           value: [],
-          error: FieldBlocValidatorsErrors.requiredMultiSelectFieldBloc,
+          error: FieldBlocValidatorsErrors.required,
           isInitial: true,
           suggestions: suggestions,
           isValidated: true,
@@ -36,7 +36,7 @@ void main() {
         );
 
         final expectedStates = [
-          state1,
+          // state1,
           state2,
         ];
         expect(
@@ -51,13 +51,12 @@ void main() {
     test('initial state.', () {
       MultiSelectFieldBloc fieldBloc;
       MultiSelectFieldBlocState initialState;
-      List<MultiSelectFieldBlocState> expectedStates;
 
-      fieldBloc = MultiSelectFieldBloc<bool>(
+      fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
       );
 
-      initialState = MultiSelectFieldBlocState<bool>(
+      initialState = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -68,28 +67,22 @@ void main() {
         items: [],
       );
 
-      expectedStates = [initialState];
-
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
 
       fieldBloc.close();
 
-      fieldBloc = MultiSelectFieldBloc<bool>(
+      fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
+        initialValue: [true],
         validators: [(value) => 'error'],
         items: [true, false],
       );
 
-      initialState = MultiSelectFieldBlocState<bool>(
-        value: [],
+      initialState = MultiSelectFieldBlocState<bool, dynamic>(
+        value: [true],
         error: 'error',
         isInitial: true,
         suggestions: null,
@@ -99,26 +92,19 @@ void main() {
         items: [true, false],
       );
 
-      expectedStates = [initialState];
-
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
     });
     test('if the initialValue is null, it will be an empty list', () {
       MultiSelectFieldBloc fieldBloc;
       MultiSelectFieldBlocState initialState;
-      List<MultiSelectFieldBlocState> expectedStates;
 
-      fieldBloc = MultiSelectFieldBloc<bool>(name: 'name', initialValue: null);
+      fieldBloc =
+          MultiSelectFieldBloc<bool, dynamic>(name: 'name', initialValue: null);
 
-      initialState = MultiSelectFieldBlocState<bool>(
+      initialState = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -129,25 +115,18 @@ void main() {
         items: [],
       );
 
-      expectedStates = [initialState];
-
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
     });
 
     test('updateItems method and UpdateFieldBlocItems event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
+      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool>(
+      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -161,11 +140,11 @@ void main() {
         items: Optional.of([true]),
       );
       final state3 = state2.copyWith(
-        items: Optional.absent(),
+        items: Optional.of([]),
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
       ];
@@ -179,12 +158,12 @@ void main() {
     });
 
     test('addItem method and  AddFieldBlocItem event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
+      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
         items: [true],
       );
 
-      final state1 = MultiSelectFieldBlocState<bool>(
+      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -198,14 +177,14 @@ void main() {
         items: Optional.of([true, false]),
       );
       final state3 = state2.copyWith(
-        items: Optional.absent(),
+        items: Optional.of([]),
       );
       final state4 = state3.copyWith(
         items: Optional.of([true]),
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
         state4,
@@ -221,12 +200,12 @@ void main() {
     });
 
     test('removeItem method and RemoveFieldBlocItem event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
+      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
         items: [true, false],
       );
 
-      final state1 = MultiSelectFieldBlocState<bool>(
+      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -242,15 +221,11 @@ void main() {
       final state3 = state2.copyWith(
         items: Optional.of([]),
       );
-      final state4 = state3.copyWith(
-        items: Optional.absent(),
-      );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
-        state4,
       ];
 
       expect(
@@ -260,15 +235,14 @@ void main() {
 
       fieldBloc.removeItem(true);
       fieldBloc.removeItem(false);
-      fieldBloc.updateItems(null);
     });
 
     test('updateValue method.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
+      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool>(
+      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -290,7 +264,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
         state4,
@@ -306,11 +280,11 @@ void main() {
       fieldBloc.updateValue(null);
     });
     test('updateInitialValue method.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
+      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool>(
+      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -333,7 +307,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
         state4,
@@ -349,11 +323,11 @@ void main() {
       fieldBloc.updateInitialValue(null);
     });
     test('select method SelectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool>(
+      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool>(
+      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -383,7 +357,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
         state4,
@@ -404,10 +378,10 @@ void main() {
     });
 
     test('deselect method DeselectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc =
-          MultiSelectFieldBloc<bool>(name: 'name', initialValue: [true, false]);
+      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
+          name: 'name', initialValue: [true, false]);
 
-      final state1 = MultiSelectFieldBlocState<bool>(
+      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
         value: [true, false],
         error: null,
         isInitial: true,
@@ -436,7 +410,7 @@ void main() {
       );
 
       final expectedStates = [
-        state1,
+        // state1,
         state2,
         state3,
         state4,
@@ -457,6 +431,17 @@ void main() {
       fieldBloc.deselect(null);
       fieldBloc.deselect(null);
       fieldBloc.deselect(false);
+    });
+
+    test('extraData added to extraData in state', () async {
+      final expectedExtraData = 0;
+
+      final fieldBloc = MultiSelectFieldBloc<bool, int>(extraData: 0);
+
+      expect(
+        fieldBloc.state.extraData,
+        expectedExtraData,
+      );
     });
   });
 }

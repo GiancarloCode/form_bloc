@@ -1,4 +1,86 @@
-void main() {}
+import 'package:form_bloc/form_bloc.dart';
+import 'package:test/test.dart';
+
+class FormBlocEmpty extends FormBloc<String, String> {
+  @override
+  void onSubmitting() {}
+}
+
+void main() {
+  group('FormBloc', () {
+    group('AddFieldBloc', () {
+      test('fieldBloc was added to form bloc', () async {
+        final text = TextFieldBloc<Object>();
+        final formBloc = FormBlocEmpty();
+
+        formBloc.addFieldBloc(fieldBloc: text);
+
+        final state = await formBloc.first;
+
+        expect(
+          state.contains(text),
+          isTrue,
+        );
+      });
+    });
+
+    group('AddFieldBlocs', () {
+      test('fieldBlocs was added to form bloc', () async {
+        final text = TextFieldBloc<Object>();
+        final boolean = BooleanFieldBloc<Object>();
+
+        final formBloc = FormBlocEmpty();
+
+        formBloc.addFieldBlocs(fieldBlocs: [text, boolean]);
+
+        formBloc.listen(print);
+
+        final state = await formBloc.first;
+
+        expect(
+          state.contains(text) && state.contains(boolean),
+          isTrue,
+        );
+      });
+    });
+
+    group('RemoveFieldBloc', () {
+      test('fieldBloc was removed from form bloc', () async {
+        final text = TextFieldBloc<Object>();
+        final formBloc = FormBlocEmpty();
+
+        formBloc.addFieldBloc(fieldBloc: text);
+        formBloc.removeFieldBloc(fieldBloc: text);
+
+        final state = await formBloc.skip(1).first;
+
+        expect(
+          state.contains(text),
+          isFalse,
+        );
+      });
+    });
+
+    group('RemoveFieldBlocs', () {
+      test('fieldBlocs was removed from form bloc', () async {
+        final text = TextFieldBloc<Object>();
+        final boolean = BooleanFieldBloc<Object>();
+
+        final formBloc = FormBlocEmpty();
+
+        formBloc.addFieldBlocs(fieldBlocs: [text, boolean]);
+        formBloc.removeFieldBlocs(fieldBlocs: [text, boolean]);
+
+        final state = await formBloc.skip(1).first;
+
+        expect(
+          !state.contains(text) && !state.contains(boolean),
+          isTrue,
+        );
+      });
+    });
+  });
+}
 
 // TODO: Rewrite all tests
 // import 'package:bloc/bloc.dart';

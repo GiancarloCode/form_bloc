@@ -1,6 +1,6 @@
 part of 'field_bloc.dart';
 
-abstract class FieldBlocState<Value, Suggestion> extends Equatable {
+abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   /// The current value of this state.
   final Value value;
 
@@ -30,8 +30,23 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
   /// of the [FieldBloc].
   final bool isValidating;
 
-  /// The current state of the [FormBloc] that contains this `FieldBloc`.
-  final FormBlocState formBlocState;
+  /// The current  [FormBloc] that contains this `FieldBloc`.
+  final FormBloc formBloc;
+
+  /// Transform [value] in a JSON value.
+  /// By default returns [value], but you can
+  /// set in the constructor of the `FieldBloc`
+  ///
+  /// This method is called when you use [FormBlocState.toJson]
+  Object toJson() => value == null ? null : _toJson(value);
+
+  /// Implementation of [toJson]
+  final dynamic Function(Value value) _toJson;
+
+  /// Extra data that contains the data
+  /// you added when you created the field bloc
+  /// or use [SingleFieldBloc.updateExtraData].
+  final ExtraData extraData;
 
   FieldBlocState({
     @required this.value,
@@ -40,12 +55,13 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
     @required this.suggestions,
     @required this.isValidated,
     @required this.isValidating,
-    @required FormBlocState formBlocState,
+    @required this.formBloc,
     @required this.name,
+    @required dynamic Function(Value value) toJson,
+    @required this.extraData,
   })  : assert(isInitial != null),
         assert(isValidated != null),
-        this.formBlocState =
-            formBlocState ?? FormBlocLoaded<dynamic, dynamic>(true);
+        _toJson = toJson ?? ((value) => value);
 
   /// Indicates if this state
   /// not has error (which means that the error is not `null`)
@@ -75,32 +91,35 @@ abstract class FieldBlocState<Value, Suggestion> extends Equatable {
 
   /// Returns a copy of the current state by changing
   /// the values that are passed as parameters.
-  FieldBlocState<Value, Suggestion> copyWith({
+  FieldBlocState<Value, Suggestion, ExtraData> copyWith({
     Optional<Value> value,
     Optional<String> error,
     bool isInitial,
     Optional<Suggestions<Suggestion>> suggestions,
     bool isValidated,
     bool isValidating,
-    FormBlocState formBlocState,
+    FormBloc formBloc,
+    Optional<ExtraData> extraData,
   });
 
   @override
-  String toString() {
+  String toString() => _toStringWith();
+
+  String _toStringWith([String extra]) {
     var _toString = '';
-    if (name != null) {
-      _toString += '${name}';
-    } else {
-      _toString += '${runtimeType}';
-    }
-    _toString += ' {';
-    _toString += ' value: ${value},';
-    _toString += ' error: "${error}",';
-    _toString += ' isInitial: $isInitial,';
-    _toString += ' isValidated: ${isValidated},';
-    _toString += ' isValidating: ${isValidating},';
-    _toString += ' formBlocState: ${formBlocState}';
-    _toString += ' }';
+
+    _toString += '${runtimeType} {';
+    _toString += '\n  name: ${name}';
+    _toString += ',\n  value: ${value}';
+    _toString += ',\n  error: ${error}';
+    _toString += ',\n  isInitial: $isInitial';
+    _toString += ',\n  isValidated: ${isValidated}';
+    _toString += ',\n  isValidating: ${isValidating}';
+    _toString += ',\n  isValid: ${isValid}';
+    _toString += ',\n  extraData: ${extraData}';
+    _toString += extra ?? '';
+    _toString += ',\n  formBloc: ${formBloc}';
+    _toString += '\n}';
 
     return _toString;
   }

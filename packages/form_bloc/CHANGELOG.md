@@ -1,3 +1,79 @@
+# 0.19.1
+* Fix add `FormBloc` of items in `ListFieldBloc`.
+
+# 0.19.0
+## Breaking changes
+* Updated to `bloc: ^6.0.0`.
+* Fix `onError` of `FormBlocObserver`.
+
+# 0.18.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.0`
+
+# 0.17.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.0`
+
+# 0.16.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.0`
+
+# 0.15.0
+## Breaking changes
+* Updated to `bloc: ^5.0.1`.
+* Change `Bloc.addError` to `Bloc.addFieldError`.
+* Change `FormBlocDelegate` to `FormBlocObserver`.
+
+# 0.14.0
+* Updated to `bloc: ^4.0.0`
+
+# 0.13.1
+* Fixed pedantic version.
+
+# 0.13.0
+* Now the value of all field blocs are updated when call `updateValue` and `updateInitialValue` when the `FormBlocState` is `FormBlocSubmitting`.
+
+# 0.12.0
+## Breaking changes
+* Removed `isRequired` parameter in all field blocs.
+
+# 0.11.1
+* Deprecated `isRequired` parameter in all field blocs, in form_bloc `^0.12.0` will be removed, if you want a field to be required, please use the validator `FieldBlocValidators.required`.
+
+# 0.11.0
+## Breaking changes
+* Add support for forms with steps.
+  * Use `AddFieldBloc({int step, List<FieldBloc> fieldBlocs})`.
+* All `SingleFieldBloc`s now have `ExtraData` type.
+* Changes `FieldBlocList` to `ListFieldBloc`.
+* Add `GroupFieldBloc` as base class for create typed groups of field blocs.
+* Add `toJson` method to `FormBlocState`.
+* Remove `FormBlocState.getFieldBlocFromPath`.
+* Add `valueOf` method to `FormBlocState`.
+* Add `fieldBlocOf` method to `FormBlocState`.
+* Remove `onReload` of `FormBloc`, now when you call `FormBloc.reload`, `onLoading` will be called.
+* Add `onValueChanges` StreamSubscription to `SingleFieldBloc`.
+* Add `FormBlocUpdatingFields` state.
+* Add `isRequired` parameter to `FieldBloc`, and the error is `FieldBlocValidatorsError.required`, so the follow validators are removed:
+  * `FieldBlocValidators.requiredInputFieldBloc`
+  * `FieldBlocValidators.requiredBooleanFieldBloc`
+  * `FieldBlocValidators.requiredTextFieldBloc`
+  * `FieldBlocValidators.requiredSelectFieldBloc`
+  * `FieldBlocValidators.requiredMultiSelectFieldBloc`
+* Add `FormBlocUpdatingFields` state.
+* Add `progress` property to `FormBlocLoading` and `FormBlocDeleting`.
+* Change ` Stream<State> onSubmitting()` to `void onSubmitting()`.
+* Change ` Stream<State> onLoading()` to `void onLoading()`.
+* Change ` Stream<State> onDeleting()` to `void onDeleting()`.
+* Add methods for emit new states:
+  * emitSuccess
+  * emitFailure
+  * emitSubmitting
+  * emitLoading
+  * emitLoadFailed
+  * emitLoaded
+  * emitSubmissionCancelled
+  * emitDeleteFailed
+  * emitDeleteSuccessful
+  * emitUpdatingFields
+
 # 0.10.4
 * Fixed minor bug.
 
@@ -33,7 +109,7 @@
   * `GroupFieldBloc`.
   * `FieldBlocList`.
 * Documentation Updates.
-  
+
 
 
 

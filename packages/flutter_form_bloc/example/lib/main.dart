@@ -1,29 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_bloc_example/bloc_delegate.dart';
-import 'package:flutter_form_bloc_example/forms/complex_async_prefilled_form.dart';
-import 'package:flutter_form_bloc_example/forms/complex_login_form.dart';
-import 'package:flutter_form_bloc_example/forms/crud_form.dart';
-import 'package:flutter_form_bloc_example/forms/dynamic_fields_form.dart';
-import 'package:flutter_form_bloc_example/forms/field_bloc_async_validation_form.dart';
-import 'package:flutter_form_bloc_example/forms/form_fields_example_form.dart';
-import 'package:flutter_form_bloc_example/forms/manually_set_field_bloc_error_form.dart';
-import 'package:flutter_form_bloc_example/forms/not_auto_validation_form.dart';
-import 'package:flutter_form_bloc_example/forms/progress_form.dart';
-import 'package:flutter_form_bloc_example/forms/simple_async_prefilled_form.dart';
-import 'package:flutter_form_bloc_example/forms/login_form.dart';
-import 'package:flutter_form_bloc_example/forms/simple_register_form.dart';
-import 'package:flutter_form_bloc_example/styles/themes.dart';
-import 'package:flutter_form_bloc_example/widgets/widgets.dart';
-import 'package:form_bloc/form_bloc.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  BlocSupervisor.delegate = MyBlocDelegate();
-
-  // FormBlocDelegate.notifyOnFieldBlocTransition = true;
-  // FormBlocDelegate.notifyOnFormBlocTransition = true;
-
   runApp(App());
 }
 
@@ -34,140 +12,285 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: Themes.formTheme,
-      initialRoute: 'home',
-      routes: {
-        'home': (context) => HomeScreen(),
-        'success': (context) => SuccessScreen(),
-      },
+      home: AllFieldsForm(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class AllFieldsFormBloc extends FormBloc<String, String> {
+  final text1 = TextFieldBloc();
+
+  final boolean1 = BooleanFieldBloc();
+
+  final boolean2 = BooleanFieldBloc();
+
+  final select1 = SelectFieldBloc(
+    items: ['Option 1', 'Option 2'],
+  );
+
+  final select2 = SelectFieldBloc(
+    items: ['Option 1', 'Option 2'],
+  );
+
+  final multiSelect1 = MultiSelectFieldBloc<String, dynamic>(
+    items: [
+      'Option 1',
+      'Option 2',
+    ],
+  );
+
+  final date1 = InputFieldBloc<DateTime, Object>();
+
+  final dateAndTime1 = InputFieldBloc<DateTime, Object>();
+
+  final time1 = InputFieldBloc<TimeOfDay, Object>();
+
+  AllFieldsFormBloc() {
+    addFieldBlocs(fieldBlocs: [
+      text1,
+      boolean1,
+      boolean2,
+      select1,
+      select2,
+      multiSelect1,
+      date1,
+      dateAndTime1,
+      time1,
+    ]);
+  }
+
+  void addErrors() {
+    text1.addFieldError('Awesome Error!');
+    boolean1.addFieldError('Awesome Error!');
+    boolean2.addFieldError('Awesome Error!');
+    select1.addFieldError('Awesome Error!');
+    select2.addFieldError('Awesome Error!');
+    multiSelect1.addFieldError('Awesome Error!');
+    date1.addFieldError('Awesome Error!');
+    dateAndTime1.addFieldError('Awesome Error!');
+    time1.addFieldError('Awesome Error!');
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Form BLoC Example'),
-        elevation: 2,
-      ),
-      body: ListView.separated(
-        separatorBuilder: (_, __) => Divider(height: 1),
-        itemCount: Form.forms.length,
-        itemBuilder: (context, index) => ListItem(index, Form.forms[index]),
-      ),
-    );
+  void onSubmitting() async {
+    try {
+      await Future<void>.delayed(Duration(milliseconds: 500));
+
+      emitSuccess(canSubmitAgain: true);
+    } catch (e) {
+      emitFailure();
+    }
   }
 }
 
-class ListItem extends StatelessWidget {
-  final int index;
-  final Form form;
-  const ListItem(this.index, this.form, {Key key}) : super(key: key);
-
+class AllFieldsForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        height: 28,
-        child: CircleAvatar(
-          backgroundColor: Theme.of(context).iconTheme.color,
-          child: Text(
-            '${index + 1}',
-            style: TextStyle(
-              color: Theme.of(context).scaffoldBackgroundColor,
+    return BlocProvider(
+      create: (context) => AllFieldsFormBloc(),
+      child: Builder(
+        builder: (context) {
+          final formBloc = BlocProvider.of<AllFieldsFormBloc>(context);
+
+          return Theme(
+            data: Theme.of(context).copyWith(
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
             ),
+            child: Scaffold(
+              appBar: AppBar(title: Text('Built-in Widgets')),
+              floatingActionButton: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  FloatingActionButton.extended(
+                    heroTag: null,
+                    onPressed: formBloc.addErrors,
+                    icon: Icon(Icons.error_outline),
+                    label: Text('ADD ERRORS'),
+                  ),
+                  SizedBox(height: 12),
+                  FloatingActionButton.extended(
+                    heroTag: null,
+                    onPressed: formBloc.submit,
+                    icon: Icon(Icons.send),
+                    label: Text('SUBMIT'),
+                  ),
+                ],
+              ),
+              body: FormBlocListener<AllFieldsFormBloc, String, String>(
+                onSubmitting: (context, state) {
+                  LoadingDialog.show(context);
+                },
+                onSuccess: (context, state) {
+                  LoadingDialog.hide(context);
+
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => SuccessScreen()));
+                },
+                onFailure: (context, state) {
+                  LoadingDialog.hide(context);
+
+                  Scaffold.of(context).showSnackBar(
+                      SnackBar(content: Text(state.failureResponse)));
+                },
+                child: SingleChildScrollView(
+                  physics: ClampingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: <Widget>[
+                        TextFieldBlocBuilder(
+                          textFieldBloc: formBloc.text1,
+                          decoration: InputDecoration(
+                            labelText: 'TextFieldBlocBuilder',
+                            prefixIcon: Icon(Icons.text_fields),
+                          ),
+                        ),
+                        DropdownFieldBlocBuilder<String>(
+                          selectFieldBloc: formBloc.select1,
+                          decoration: InputDecoration(
+                            labelText: 'DropdownFieldBlocBuilder',
+                            prefixIcon: Icon(Icons.sentiment_satisfied),
+                          ),
+                          itemBuilder: (context, value) => value,
+                        ),
+                        RadioButtonGroupFieldBlocBuilder<String>(
+                          selectFieldBloc: formBloc.select2,
+                          decoration: InputDecoration(
+                            labelText: 'RadioButtonGroupFieldBlocBuilder',
+                            prefixIcon: SizedBox(),
+                          ),
+                          itemBuilder: (context, item) => item,
+                        ),
+                        CheckboxGroupFieldBlocBuilder<String>(
+                          multiSelectFieldBloc: formBloc.multiSelect1,
+                          itemBuilder: (context, item) => item,
+                          decoration: InputDecoration(
+                            labelText: 'CheckboxGroupFieldBlocBuilder',
+                            prefixIcon: SizedBox(),
+                          ),
+                        ),
+                        DateTimeFieldBlocBuilder(
+                          dateTimeFieldBloc: formBloc.date1,
+                          format: DateFormat('dd-mm-yyyy'),
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                          decoration: InputDecoration(
+                            labelText: 'DateTimeFieldBlocBuilder',
+                            prefixIcon: Icon(Icons.calendar_today),
+                            helperText: 'Date',
+                          ),
+                        ),
+                        DateTimeFieldBlocBuilder(
+                          dateTimeFieldBloc: formBloc.dateAndTime1,
+                          canSelectTime: true,
+                          format: DateFormat('dd-mm-yyyy  hh:mm'),
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                          decoration: InputDecoration(
+                            labelText: 'DateTimeFieldBlocBuilder',
+                            prefixIcon: Icon(Icons.date_range),
+                            helperText: 'Date and Time',
+                          ),
+                        ),
+                        TimeFieldBlocBuilder(
+                          timeFieldBloc: formBloc.time1,
+                          format: DateFormat('hh:mm a'),
+                          initialTime: TimeOfDay.now(),
+                          decoration: InputDecoration(
+                            labelText: 'TimeFieldBlocBuilder',
+                            prefixIcon: Icon(Icons.access_time),
+                          ),
+                        ),
+                        SwitchFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean2,
+                          body: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text('CheckboxFieldBlocBuilder'),
+                          ),
+                        ),
+                        CheckboxFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean1,
+                          body: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text('CheckboxFieldBlocBuilder'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class LoadingDialog extends StatelessWidget {
+  static void show(BuildContext context, {Key key}) => showDialog<void>(
+        context: context,
+        useRootNavigator: false,
+        barrierDismissible: false,
+        builder: (_) => LoadingDialog(key: key),
+      ).then((_) => FocusScope.of(context).requestFocus(FocusNode()));
+
+  static void hide(BuildContext context) => Navigator.pop(context);
+
+  LoadingDialog({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Center(
+        child: Card(
+          child: Container(
+            width: 80,
+            height: 80,
+            padding: EdgeInsets.all(12.0),
+            child: CircularProgressIndicator(),
           ),
         ),
       ),
-      isThreeLine: true,
-      title: Text(form.title),
-      subtitle: Text(
-        form.description,
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onTap: () => Navigator.of(context)
-          .push<void>(MaterialPageRoute(builder: (_) => form.widget)),
     );
   }
 }
 
-class Form {
-  final String title;
-  final String description;
-  final Widget widget;
+class SuccessScreen extends StatelessWidget {
+  SuccessScreen({Key key}) : super(key: key);
 
-  Form(this.title, this.description, this.widget);
-
-  static List<Form> forms = [
-    Form(
-      'Form with dynamic fields',
-      'A form with dynamic fields',
-      DynamicFieldsForm(),
-    ),
-    Form(
-      'Form with progress',
-      'Used for forms with file fields like images.',
-      ProgressForm(),
-    ),
-    Form(
-      'Form fields with async validators',
-      'Username and Email Availability with an Asynchronous Validator while typing.',
-      FieldBlocAsyncValidationForm(),
-    ),
-    Form(
-      'Simple login',
-      'Stateless, validators, text fields, and success response.',
-      LoginForm(),
-    ),
-    Form(
-      'Complex login',
-      'Text field with used emails suggestions (delete on long press), dropdown field, focus nodes, and multiple responses.',
-      ComplexLoginForm(),
-    ),
-    Form(
-      'Simple register',
-      'Focus nodes, complex validators, text fields, check box field, and success response.',
-      SimpleRegisterForm(),
-    ),
-    Form(
-      'Form Fields Example',
-      'TextField, Dropdown, Checkbox, RadioButtonGroup, CheckboxGroup',
-      FormFieldsExampleForm(),
-    ),
-    Form(
-      'Not Auto Validation Example',
-      'Form without auto validation.',
-      NotAutoValidationForm(),
-    ),
-    Form(
-      'Manually set field error',
-      'Add error to the FieldBloc based on backend response.',
-      ManuallySetFieldBlocErrorForm(),
-    ),
-    Form(
-      'Simple Async prefilled form',
-      'Prefilled form with async data like Shared Preferences.',
-      SimpleAsyncPrefilledForm(),
-    ),
-    Form(
-      'Complex Async prefilled form',
-      'Prefilled form with async data (like API fetch), and retry when fail to load.',
-      ComplexAsyncPrefilledForm(),
-    ),
-    Form(
-      'CRUD not prefilled',
-      'CRUD not prefilled',
-      CrudForm(),
-    ),
-    Form(
-      'CRUD prefilled',
-      'CRUD prefilled',
-      CrudForm(
-        name: 'Giancarlo',
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.tag_faces, size: 100),
+            SizedBox(height: 10),
+            Text(
+              'Success',
+              style: TextStyle(fontSize: 54, color: Colors.black),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10),
+            RaisedButton.icon(
+              onPressed: () => Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => AllFieldsForm())),
+              icon: Icon(Icons.replay),
+              label: Text('AGAIN'),
+            ),
+          ],
+        ),
       ),
-    ),
-  ];
+    );
+  }
 }

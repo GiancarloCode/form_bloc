@@ -8,20 +8,20 @@ void main() {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
         final validators = [
-          FieldBlocValidators.requiredInputFieldBloc,
+          FieldBlocValidators.required,
           (bool value) => value ? 'error' : null,
         ];
 
-        final fieldBloc = InputFieldBloc<bool>(
+        final fieldBloc = InputFieldBloc<bool, dynamic>(
           name: 'name',
           initialValue: null,
           validators: validators,
           suggestions: suggestions,
         );
 
-        final state1 = InputFieldBlocState<bool>(
+        final state1 = InputFieldBlocState<bool, dynamic>(
           value: null,
-          error: FieldBlocValidatorsErrors.requiredInputFieldBloc,
+          error: FieldBlocValidatorsErrors.required,
           isInitial: true,
           suggestions: suggestions,
           isValidated: true,
@@ -35,7 +35,7 @@ void main() {
         );
 
         final expectedStates = [
-          state1,
+          // state1,
           state2,
         ];
         expect(
@@ -50,13 +50,12 @@ void main() {
     test('initial state.', () {
       InputFieldBloc fieldBloc;
       InputFieldBlocState initialState;
-      List<InputFieldBlocState> expectedStates;
 
-      fieldBloc = InputFieldBloc<bool>(
+      fieldBloc = InputFieldBloc<bool, dynamic>(
         name: 'name',
       );
 
-      initialState = InputFieldBlocState<bool>(
+      initialState = InputFieldBlocState<bool, dynamic>(
         value: null,
         error: null,
         isInitial: true,
@@ -66,27 +65,21 @@ void main() {
         name: 'name',
       );
 
-      expectedStates = [initialState];
-
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
-      );
-
-      expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
       );
 
       fieldBloc.close();
 
-      fieldBloc = InputFieldBloc<bool>(
+      fieldBloc = InputFieldBloc<bool, dynamic>(
         name: 'name',
+        initialValue: true,
         validators: [(value) => 'error'],
       );
 
-      initialState = InputFieldBlocState<bool>(
-        value: null,
+      initialState = InputFieldBlocState<bool, dynamic>(
+        value: true,
         error: 'error',
         isInitial: true,
         suggestions: null,
@@ -95,16 +88,47 @@ void main() {
         name: 'name',
       );
 
-      expectedStates = [initialState];
-
       expect(
-        fieldBloc.initialState,
+        fieldBloc.state,
         initialState,
+      );
+    });
+
+    test('If toJson is null, return value', () async {
+      final expectedValue = 0;
+
+      final fieldBloc = InputFieldBloc<int, dynamic>(
+        initialValue: 0,
       );
 
       expect(
-        fieldBloc,
-        emitsInOrder(expectedStates),
+        fieldBloc.state.toJson(),
+        expectedValue,
+      );
+    });
+
+    test('toJson is added to the state', () async {
+      final expectedValue = '0';
+
+      final fieldBloc = InputFieldBloc<int, dynamic>(
+        initialValue: 0,
+        toJson: (v) => v.toString(),
+      );
+
+      expect(
+        fieldBloc.state.toJson(),
+        expectedValue,
+      );
+    });
+
+    test('extraData added to extraData in state', () async {
+      final expectedExtraData = 0;
+
+      final fieldBloc = InputFieldBloc<int, int>(extraData: 0);
+
+      expect(
+        fieldBloc.state.extraData,
+        expectedExtraData,
       );
     });
   });

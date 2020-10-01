@@ -1,8 +1,10 @@
 part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for `bool` type.
-class BooleanFieldBloc
-    extends SingleFieldBloc<bool, bool, BooleanFieldBlocState> {
+class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
+    BooleanFieldBlocState<ExtraData>, ExtraData> {
+  /// ## BooleanFieldBloc<ExtraData>
+  ///
   /// ### Properties:
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
@@ -31,13 +33,15 @@ class BooleanFieldBloc
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
+  /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   BooleanFieldBloc({
-    @required String name,
+    String name,
     bool initialValue = false,
     List<Validator<bool>> validators,
     List<AsyncValidator<bool>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<bool> suggestions,
+    ExtraData extraData,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue ?? false,
@@ -46,18 +50,33 @@ class BooleanFieldBloc
           asyncValidatorDebounceTime,
           suggestions,
           name,
+          (value) => value,
+          extraData,
+          BooleanFieldBlocState(
+            value: initialValue ?? false,
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue ?? false,
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue ?? false,
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue ?? false,
+            ),
+            name: FieldBlocUtils.generateName(name),
+            toJson: (value) => value,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  BooleanFieldBlocState get initialState => BooleanFieldBlocState(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-      );
 
   /// Set the `value` to `false` of the current state.
   ///

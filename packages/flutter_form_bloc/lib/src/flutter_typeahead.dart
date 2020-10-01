@@ -1,4 +1,4 @@
-/* 
+/*
 BSD 2-Clause License
 
 Copyright (c) 2018, AbdulRahmanAlHamali
@@ -262,8 +262,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
-import 'package:keyboard_utils/keyboard_listener.dart';
-import 'package:keyboard_utils/keyboard_utils.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:rxdart/rxdart.dart';
 
 typedef FutureOr<List<T>> SuggestionsCallback<T>(String pattern);
@@ -621,9 +620,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   // The rate at which the suggestion box will resize when the user is scrolling
   final Duration _resizeOnScrollRefreshRate = const Duration(milliseconds: 500);
 
-  // Keyboard detection
-  KeyboardUtils _keyboardVisibility = new KeyboardUtils();
-  int _keyboardVisibilityId;
+  StreamSubscription<bool> _keyboardSubscription;
 
   PublishSubject _hideSuggestionsController;
 
@@ -641,11 +638,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     // }
     this._suggestionsBox.widgetMounted = false;
     WidgetsBinding.instance.removeObserver(this);
-    _keyboardVisibility.unsubscribeListener(
-        subscribingId: _keyboardVisibilityId);
-    if (_keyboardVisibility.canCallDispose()) {
-      _keyboardVisibility.dispose();
-    }
+    _keyboardSubscription.cancel();
+
     _effectiveFocusNode.removeListener(_focusNodeListener);
     _focusNode?.dispose();
     _resizeOnScrollTimer?.cancel();
@@ -676,12 +670,14 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     this._suggestionsBox =
         _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-    this._keyboardVisibilityId = _keyboardVisibility.add(
-        listener: KeyboardListener(willHideKeyboard: () {
-      // Your code here
-    }, willShowKeyboard: (double keyboardHeight) {
-      // Your code here
-    }));
+
+    _keyboardSubscription = KeyboardVisibility.onChange.listen((bool visible) {
+      setState(() {
+        if (widget.hideSuggestionsOnKeyboardHide && !visible) {
+          _effectiveFocusNode.unfocus();
+        }
+      });
+    });
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode.hasFocus) {

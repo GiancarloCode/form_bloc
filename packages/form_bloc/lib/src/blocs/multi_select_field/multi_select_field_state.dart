@@ -1,11 +1,7 @@
-import 'package:meta/meta.dart';
-import 'package:quiver/core.dart';
+part of '../field/field_bloc.dart';
 
-import '../form/form_bloc.dart';
-import '../field/field_bloc.dart';
-
-class MultiSelectFieldBlocState<Value>
-    extends FieldBlocState<List<Value>, Value> {
+class MultiSelectFieldBlocState<Value, ExtraData>
+    extends FieldBlocState<List<Value>, Value, ExtraData> {
   final List<Value> items;
 
   MultiSelectFieldBlocState({
@@ -15,9 +11,11 @@ class MultiSelectFieldBlocState<Value>
     @required Suggestions<Value> suggestions,
     @required bool isValidated,
     @required bool isValidating,
-    FormBlocState formBlocState,
+    FormBloc formBloc,
     @required String name,
     @required this.items,
+    dynamic Function(List<Value> value) toJson,
+    ExtraData extraData,
   }) : super(
           value: value,
           error: error,
@@ -25,20 +23,23 @@ class MultiSelectFieldBlocState<Value>
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
-          formBlocState: formBlocState,
+          formBloc: formBloc,
           name: name,
+          toJson: toJson,
+          extraData: extraData,
         );
 
   @override
-  MultiSelectFieldBlocState<Value> copyWith({
+  MultiSelectFieldBlocState<Value, ExtraData> copyWith({
     Optional<List<Value>> value,
     Optional<String> error,
     bool isInitial,
     Optional<Suggestions<Value>> suggestions,
     bool isValidated,
     bool isValidating,
-    FormBlocState formBlocState,
+    FormBloc formBloc,
     Optional<List<Value>> items,
+    Optional<ExtraData> extraData,
   }) {
     return MultiSelectFieldBlocState(
       value: value == null ? this.value : value.orNull,
@@ -47,32 +48,16 @@ class MultiSelectFieldBlocState<Value>
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBlocState: formBlocState ?? this.formBlocState,
+      formBloc: formBloc ?? this.formBloc,
       name: name,
       items: items == null ? this.items : items.orNull,
+      toJson: _toJson,
+      extraData: extraData == null ? this.extraData : extraData.orNull,
     );
   }
 
   @override
-  String toString() {
-    var _toString = '';
-    if (name != null) {
-      _toString += '${name}';
-    } else {
-      _toString += '${runtimeType}';
-    }
-    _toString += ' {';
-    _toString += ' value: ${value},';
-    _toString += ' error: "${error}",';
-    _toString += ' isInitial: $isInitial,';
-    _toString += ' isValidated: ${isValidated},';
-    _toString += ' isValidating: ${isValidating},';
-    _toString += ' formBlocState: ${formBlocState},';
-    _toString += ' items: $items,';
-    _toString += ' }';
-
-    return _toString;
-  }
+  String toString() => _toStringWith(',\n  items: $items');
 
   @override
   List<Object> get props => [
@@ -82,7 +67,8 @@ class MultiSelectFieldBlocState<Value>
         suggestions,
         isValidated,
         isValidating,
-        formBlocState,
+        extraData,
+        formBloc,
         items,
       ];
 }

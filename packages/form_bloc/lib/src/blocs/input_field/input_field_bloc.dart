@@ -1,8 +1,10 @@
 part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for any type, for example `DateTime` or `File`.
-class InputFieldBloc<Value>
-    extends SingleFieldBloc<Value, Value, InputFieldBlocState<Value>> {
+class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
+    InputFieldBlocState<Value, ExtraData>, ExtraData> {
+  /// ## InputFieldBloc<Value, ExtraData>
+  ///
   /// ### Properties:
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
@@ -30,13 +32,19 @@ class InputFieldBloc<Value>
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
+  /// * [toJson] Transform [value] in a JSON value.
+  /// By default returns [value].
+  /// This method is called when you use [FormBlocState.toJson]
+  /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   InputFieldBloc({
-    @required String name,
+    String name,
     Value initialValue,
     List<Validator<Value>> validators,
     List<AsyncValidator<Value>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value> suggestions,
+    dynamic Function(Value value) toJson,
+    ExtraData extraData,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue,
@@ -45,16 +53,31 @@ class InputFieldBloc<Value>
           asyncValidatorDebounceTime,
           suggestions,
           name,
+          toJson,
+          extraData,
+          InputFieldBlocState(
+            value: initialValue,
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue,
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue,
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue,
+            ),
+            name: FieldBlocUtils.generateName(name),
+            toJson: toJson,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  InputFieldBlocState<Value> get initialState => InputFieldBlocState<Value>(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-      );
 }

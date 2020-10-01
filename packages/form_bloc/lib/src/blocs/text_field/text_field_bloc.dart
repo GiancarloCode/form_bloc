@@ -4,8 +4,10 @@ part of '../field/field_bloc.dart';
 /// it is also used to obtain `int` and `double` values
 /// ​​of texts thanks to the methods
 /// [valueToInt] and [valueToDouble].
-class TextFieldBloc
-    extends SingleFieldBloc<String, String, TextFieldBlocState> {
+class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
+    TextFieldBlocState<ExtraData>, ExtraData> {
+  /// ## TextFieldBloc<ExtraData>
+  ///
   /// ### Properties:
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
@@ -34,13 +36,15 @@ class TextFieldBloc
   /// It is used to suggest values, usually from an API,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
+  /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   TextFieldBloc({
-    @required String name,
+    String name,
     String initialValue = '',
     List<Validator<String>> validators,
     List<AsyncValidator<String>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<String> suggestions,
+    ExtraData extraData,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue ?? '',
@@ -49,18 +53,33 @@ class TextFieldBloc
           asyncValidatorDebounceTime,
           suggestions,
           name,
+          (value) => value,
+          extraData,
+          TextFieldBlocState(
+            value: initialValue ?? '',
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue ?? '',
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue ?? '',
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue ?? '',
+            ),
+            name: FieldBlocUtils.generateName(name),
+            toJson: (value) => value,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  TextFieldBlocState get initialState => TextFieldBlocState(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-      );
 
   /// Return the parsed `value` to `int` of the current state.
   ///

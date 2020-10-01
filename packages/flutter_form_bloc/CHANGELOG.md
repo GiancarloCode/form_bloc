@@ -1,3 +1,90 @@
+# 0.19.0
+  ## Breaking changes
+  * Updated to `form_bloc: ^0.18.0`.
+  * Updated to `flutter_bloc: ^6.0.0`.
+
+# 0.18.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.1`.
+
+# 0.17.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.1`.
+
+# 0.16.0
+Bad version, you should use `>=0.19.0` or `<= 0.15.1`.
+
+# 0.15.1
+  * Fix widgets in web platform.
+
+# 0.15.0
+  ## Breaking changes
+  * Updated to `form_bloc: ^0.15.0`.
+  * Updated to `flutter_bloc: ^0.15.1`.
+
+# 0.14.0
+* Updated to `form_bloc: ^0.14.0`.
+* Updated to `flutter_bloc: ^0.4.0`.
+
+# 0.13.1
+* Updated to `form_bloc: ^0.13.1`.
+
+# 0.13.0+1
+* Fixed pub health suggestions
+
+# 0.13.0
+* Changed `keyboard_utils` to `flutter_keyboard_visibility`.
+* `FormBlocListener` now is compatible with `MultiBlocListener`.
+* Added `FocusNode` and `NextFocusNode` to:
+  * `DateTimeFieldBlocBuilder`
+  * `TimeFieldBlocBuilder`
+
+# 0.12.3
+* Fixed `pickerBuilder` in `DateTimeFieldBlocBuilder`.
+
+# 0.12.2
+* Fixed Intl version.
+
+# 0.12.1
+* Fixed minor bug in Stepper [54](https://github.com/GiancarloCode/form_bloc/issues/54).
+
+# 0.12.0+1
+* Fixed changelog.
+
+# 0.12.0
+* ## Breaking changes
+  * Updated to `form_bloc: ^0.12.0`.
+
+* Added properties to `TextFieldBlocBuilder`:
+  * obscureTextTrueIcon
+  * obscureTextFalseIcon
+  * clearTextIcon
+  * asyncValidatingIcon
+
+# 0.11.2
+* Added `clearIcon` to:
+  * `DateTimeFieldBlocBuilder`
+  * `TimeFieldBlocBuilder`
+
+# 0.11.1
+* Fixed content padding of decoration in:
+  * `DropdownFieldBlocBuilder`
+  * `DateTimeFieldBlocBuilder`
+  * `TimeFieldBlocBuilder`
+
+# 0.11.0+1
+* Fixed pub health issues
+
+# 0.11.0
+## Breaking changes
+
+* Updated to `form_bloc: ^0.11.0`.
+* Added `StepperFormBlocBuilder`.
+* Added `DateTimeFieldBlocBuilder`.
+* Added `TimeFieldBlocBuilder`.
+* Added `CanShowFieldBlocBuilder`.
+* All widgets now are animated by default if the `FieldBloc` is added or removed from the `FormBloc`.
+* Documentation Updates.
+
+
 # 0.10.6
 * Fixed bug of size on first rendered of `DropdownFieldBlocBuilder`.
 
@@ -23,7 +110,7 @@
     * scrollPhysics
     * textAlignVertical
     * toolbarOptions
-* Added `controlAffinity` property to `CheckboxFieldBlocBuilder`.  
+* Added `controlAffinity` property to `CheckboxFieldBlocBuilder`.
 * Documentation Updates.
 
 # 0.10.2

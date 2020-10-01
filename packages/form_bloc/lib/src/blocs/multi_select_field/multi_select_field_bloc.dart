@@ -2,10 +2,13 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used to select multiple items
 /// from multiple items.
-class MultiSelectFieldBloc<Value> extends SingleFieldBloc<List<Value>, Value,
-    MultiSelectFieldBlocState<Value>> {
-  final List<Value> _items;
-
+class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
+    List<Value>,
+    Value,
+    MultiSelectFieldBlocState<Value, ExtraData>,
+    ExtraData> {
+  /// ## MultiSelectFieldBloc<Value, ExtraData>
+  ///
   /// ### Properties:
   ///
   /// * [name] : It is the string that identifies the fieldBloc,
@@ -35,16 +38,21 @@ class MultiSelectFieldBloc<Value> extends SingleFieldBloc<List<Value>, Value,
   /// and any of those suggestions can be used to update
   /// the value using [updateValue].
   /// * [items] : The list of items that can be selected to update the value.
+  /// * [toJson] Transform [value] in a JSON value.
+  /// By default returns [value].
+  /// This method is called when you use [FormBlocState.toJson]
+  /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   MultiSelectFieldBloc({
-    @required String name,
+    String name,
     List<Value> initialValue = const [],
     List<Validator<List<Value>>> validators,
     List<AsyncValidator<List<Value>>> asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value> suggestions,
     List<Value> items = const [],
+    dynamic Function(List<Value> value) toJson,
+    ExtraData extraData,
   })  : assert(asyncValidatorDebounceTime != null),
-        _items = items ?? const [],
         super(
           initialValue ?? const [],
           validators,
@@ -52,20 +60,34 @@ class MultiSelectFieldBloc<Value> extends SingleFieldBloc<List<Value>, Value,
           asyncValidatorDebounceTime,
           suggestions,
           name,
+          toJson,
+          extraData,
+          MultiSelectFieldBlocState(
+            value: initialValue ?? const [],
+            error: FieldBlocUtils.getInitialStateError(
+              validators: validators,
+              value: initialValue ?? const [],
+            ),
+            isInitial: true,
+            suggestions: suggestions,
+            isValidated: FieldBlocUtils.getInitialIsValidated(
+              FieldBlocUtils.getInitialStateIsValidating(
+                asyncValidators: asyncValidators,
+                validators: validators,
+                value: initialValue ?? const [],
+              ),
+            ),
+            isValidating: FieldBlocUtils.getInitialStateIsValidating(
+              asyncValidators: asyncValidators,
+              validators: validators,
+              value: initialValue ?? const [],
+            ),
+            name: FieldBlocUtils.generateName(name),
+            items: SingleFieldBloc._itemsWithoutDuplicates(items ?? []),
+            toJson: toJson,
+            extraData: extraData,
+          ),
         );
-
-  @override
-  MultiSelectFieldBlocState<Value> get initialState =>
-      MultiSelectFieldBlocState(
-        value: _initialValue,
-        error: _getInitialStateError,
-        isInitial: true,
-        suggestions: _suggestions,
-        isValidated: _isValidated(_getInitialStateIsValidating),
-        isValidating: _getInitialStateIsValidating,
-        name: _name,
-        items: SingleFieldBloc._itemsWithoutDuplicates(_items),
-      );
 
   /// Set [items] to the `items` of the current state.
   ///
@@ -124,14 +146,16 @@ class MultiSelectFieldBloc<Value> extends SingleFieldBloc<List<Value>, Value,
       add(DeselectMultiSelectFieldBlocValue(valueToDeselect));
 
   @override
-  Stream<MultiSelectFieldBlocState<Value>> _mapCustomEventToState(
+  Stream<MultiSelectFieldBlocState<Value, ExtraData>> _mapCustomEventToState(
     FieldBlocEvent event,
   ) async* {
     if (event is UpdateFieldBlocItems<Value>) {
+      var items = event.items ?? [];
+      items = SingleFieldBloc._itemsWithoutDuplicates(items);
+
       yield state.copyWith(
-        items: Optional.fromNullable(
-          SingleFieldBloc._itemsWithoutDuplicates(event.items),
-        ),
+        items: Optional.fromNullable(items),
+        value: items.contains(value) ? null : Optional.of([]),
       );
     } else if (event is AddFieldBlocItem<Value>) {
       var items = state.items ?? [];
@@ -145,12 +169,12 @@ class MultiSelectFieldBloc<Value> extends SingleFieldBloc<List<Value>, Value,
     } else if (event is RemoveFieldBlocItem<Value>) {
       var items = state.items;
       if (items != null && items.isNotEmpty) {
+        items = SingleFieldBloc._itemsWithoutDuplicates(
+          List<Value>.from(items)..remove(event.item),
+        );
         yield state.copyWith(
-          items: Optional.fromNullable(
-            SingleFieldBloc._itemsWithoutDuplicates(
-              List<Value>.from(items)..remove(event.item),
-            ),
-          ),
+          items: Optional.fromNullable(items),
+          value: items.contains(value) ? null : Optional.of([]),
         );
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
