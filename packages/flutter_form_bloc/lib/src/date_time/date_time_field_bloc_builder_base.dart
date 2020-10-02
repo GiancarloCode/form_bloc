@@ -192,10 +192,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
-                  style: Style.getDefaultTextStyle(
-                    context: context,
-                    isEnabled: isEnabled,
-                  ),
+                  style: widget.decoration.labelStyle,
                 );
               }
 
