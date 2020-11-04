@@ -13,32 +13,33 @@ enum DateTimeFieldBlocBuilderBaseType {
 
 /// A material design date picker.
 class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
-  const DateTimeFieldBlocBuilderBase({
-    Key key,
-    @required this.dateTimeFieldBloc,
-    @required this.format,
-    @required this.type,
-    this.enableOnlyWhenFormBlocCanSubmit = false,
-    this.isEnabled = true,
-    this.errorBuilder,
-    this.padding,
-    this.decoration = const InputDecoration(),
-    @required this.initialDate,
-    @required this.firstDate,
-    @required this.lastDate,
-    this.selectableDayPredicate,
-    this.locale,
-    this.textDirection,
-    this.builder,
-    this.useRootNavigator = false,
-    this.routeSettings,
-    @required this.initialTime,
-    @required this.animateWhenCanShow,
-    this.showClearIcon = true,
-    this.clearIcon,
-    this.nextFocusNode,
-    this.focusNode,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
+  const DateTimeFieldBlocBuilderBase(
+      {Key key,
+      @required this.dateTimeFieldBloc,
+      @required this.format,
+      @required this.type,
+      this.enableOnlyWhenFormBlocCanSubmit = false,
+      this.isEnabled = true,
+      this.errorBuilder,
+      this.padding,
+      this.decoration = const InputDecoration(),
+      @required this.initialDate,
+      @required this.firstDate,
+      @required this.lastDate,
+      this.selectableDayPredicate,
+      this.locale,
+      this.textDirection,
+      this.builder,
+      this.useRootNavigator = false,
+      this.routeSettings,
+      @required this.initialTime,
+      @required this.animateWhenCanShow,
+      this.showClearIcon = true,
+      this.clearIcon,
+      this.nextFocusNode,
+      this.focusNode,
+      this.style})
+      : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
         super(key: key);
@@ -67,6 +68,8 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
+
+  final TextStyle style;
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
@@ -180,7 +183,15 @@ class _DateTimeFieldBlocBuilderBaseState<T>
               if (state.value == null && widget.decoration.hintText != null) {
                 child = Text(
                   widget.decoration.hintText,
-                  style: widget.decoration.hintStyle,
+                  style: isEnabled
+                      ? widget.style
+                      : widget.style != null
+                          ? widget.style
+                              .copyWith(color: Theme.of(context).disabledColor)
+                          : Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              .copyWith(color: Theme.of(context).disabledColor),
                   overflow: TextOverflow.ellipsis,
                   maxLines: widget.decoration.hintMaxLines,
                 );
@@ -192,7 +203,15 @@ class _DateTimeFieldBlocBuilderBaseState<T>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
-                  style: widget.decoration.labelStyle,
+                  style: isEnabled
+                      ? widget.style
+                      : widget.style != null
+                          ? widget.style
+                              .copyWith(color: Theme.of(context).disabledColor)
+                          : Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              .copyWith(color: Theme.of(context).disabledColor),
                 );
               }
 

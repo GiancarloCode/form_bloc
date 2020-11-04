@@ -7,32 +7,33 @@ import 'package:intl/intl.dart' show DateFormat;
 export 'package:intl/intl.dart' show DateFormat;
 
 class DateTimeFieldBlocBuilder extends StatelessWidget {
-  const DateTimeFieldBlocBuilder({
-    Key key,
-    @required this.dateTimeFieldBloc,
-    @required this.format,
-    this.canSelectTime = false,
-    this.enableOnlyWhenFormBlocCanSubmit = false,
-    this.isEnabled = true,
-    this.errorBuilder,
-    this.padding,
-    this.decoration = const InputDecoration(),
-    @required this.initialDate,
-    @required this.firstDate,
-    @required this.lastDate,
-    this.initialTime,
-    this.selectableDayPredicate,
-    this.locale,
-    this.textDirection,
-    this.pickerBuilder,
-    this.useRootNavigator = false,
-    this.routeSettings,
-    this.animateWhenCanShow = true,
-    this.showClearIcon = true,
-    this.clearIcon,
-    this.nextFocusNode,
-    this.focusNode,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
+  const DateTimeFieldBlocBuilder(
+      {Key key,
+      @required this.dateTimeFieldBloc,
+      @required this.format,
+      this.canSelectTime = false,
+      this.enableOnlyWhenFormBlocCanSubmit = false,
+      this.isEnabled = true,
+      this.errorBuilder,
+      this.padding,
+      this.decoration = const InputDecoration(),
+      @required this.initialDate,
+      @required this.firstDate,
+      @required this.lastDate,
+      this.initialTime,
+      this.selectableDayPredicate,
+      this.locale,
+      this.textDirection,
+      this.pickerBuilder,
+      this.useRootNavigator = false,
+      this.routeSettings,
+      this.animateWhenCanShow = true,
+      this.showClearIcon = true,
+      this.clearIcon,
+      this.nextFocusNode,
+      this.focusNode,
+      this.style})
+      : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
         assert(initialDate != null),
@@ -62,6 +63,8 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
+
+  final TextStyle style;
 
   final bool canSelectTime;
 
@@ -118,6 +121,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
       showClearIcon: showClearIcon,
       nextFocusNode: nextFocusNode,
       focusNode: focusNode,
+      style: style,
     );
   }
 }
