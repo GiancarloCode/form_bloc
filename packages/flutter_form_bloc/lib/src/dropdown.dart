@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import 'dart:async';
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
@@ -841,7 +842,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>>
         padding: _kMenuItemPadding.resolve(textDirection),
         selectedIndex: _selectedIndex ?? 0,
         elevation: widget.elevation,
-        theme: Theme.of(context, shadowThemeOnly: true),
+        theme: Theme.of(context),
         style: _textStyle,
         barrierLabel:
             MaterialLocalizations.of(context).modalBarrierDismissLabel,
