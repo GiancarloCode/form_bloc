@@ -33,6 +33,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
     this.clearIcon,
     this.nextFocusNode,
     this.focusNode,
+    this.style,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -77,6 +78,9 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
   final TextAlign textAlign;
+  
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
+  final TextStyle style;
   
   final DateTime initialDate;
   final DateTime firstDate;
@@ -123,6 +127,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
       showClearIcon: showClearIcon,
       nextFocusNode: nextFocusNode,
       focusNode: focusNode,
+      style: style,
     );
   }
 }
