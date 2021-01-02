@@ -23,6 +23,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
     this.initialTime,
     this.selectableDayPredicate,
     this.locale,
+    this.textAlign = TextAlign.start,
     this.textDirection,
     this.pickerBuilder,
     this.useRootNavigator = false,
@@ -74,6 +75,9 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
   final FocusNode focusNode;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
+  final TextAlign textAlign;
+  
   final DateTime initialDate;
   final DateTime firstDate;
   final DateTime lastDate;
@@ -113,6 +117,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
       selectableDayPredicate: selectableDayPredicate,
       useRootNavigator: useRootNavigator,
       textDirection: textDirection,
+      textAlign: textAlign,
       animateWhenCanShow: animateWhenCanShow,
       clearIcon: clearIcon,
       showClearIcon: showClearIcon,
