@@ -39,6 +39,7 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
     this.clearIcon,
     this.nextFocusNode,
     this.focusNode,
+    this.style,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         assert(decoration != null),
@@ -80,6 +81,9 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
   final TextAlign textAlign;
+  
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
+  final TextStyle style;
   
   final bool showClearIcon;
 
@@ -184,7 +188,15 @@ class _DateTimeFieldBlocBuilderBaseState<T>
               if (state.value == null && widget.decoration.hintText != null) {
                 child = Text(
                   widget.decoration.hintText,
-                  style: widget.decoration.hintStyle,
+                  style: isEnabled
+                      ? widget.style
+                      : widget.style != null
+                      ? widget.style
+                      .copyWith(color: Theme.of(context).disabledColor)
+                      : Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(color: Theme.of(context).disabledColor),
                   overflow: TextOverflow.ellipsis,
                   maxLines: widget.decoration.hintMaxLines,
                 );
@@ -197,10 +209,15 @@ class _DateTimeFieldBlocBuilderBaseState<T>
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
                   textAlign: widget.textAlign,
-                  style: Style.getDefaultTextStyle(
-                    context: context,
-                    isEnabled: isEnabled,
-                  ),
+                  style: isEnabled
+                      ? widget.style
+                      : widget.style != null
+                      ? widget.style
+                      .copyWith(color: Theme.of(context).disabledColor)
+                      : Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(color: Theme.of(context).disabledColor),
                 );
               }
 
