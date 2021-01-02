@@ -29,6 +29,7 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
     this.selectableDayPredicate,
     this.locale,
     this.textDirection,
+    this.textAlign,
     this.builder,
     this.useRootNavigator = false,
     this.routeSettings,
@@ -77,6 +78,9 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
   final FocusNode focusNode;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
+  final TextAlign textAlign;
+  
   final bool showClearIcon;
 
   final Icon clearIcon;
@@ -192,6 +196,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
+                  textAlign: widget.textAlign,
                   style: Style.getDefaultTextStyle(
                     context: context,
                     isEnabled: isEnabled,
