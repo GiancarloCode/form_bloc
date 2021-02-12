@@ -2,8 +2,8 @@
 
 | Package                                                                            | Pub                                                                                                    |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| [form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/form_bloc)                 | [![pub package](https://img.shields.io/pub/v/form_bloc.svg)](https://pub.dev/packages/form_bloc)                 |
-| [flutter_form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc)                 | [![pub package](https://img.shields.io/pub/v/flutter_form_bloc.svg)](https://pub.dev/packages/flutter_form_bloc)       
+| [form_bloc](https://github.com/beerstorm-net/form_bloc/tree/master/packages/form_bloc)                 | [![pub package](https://img.shields.io/pub/v/form_bloc.svg)](https://pub.dev/packages/form_bloc)                 |
+| [flutter_form_bloc](https://github.com/beerstorm-net/form_bloc/tree/master/packages/flutter_form_bloc)                 | [![pub package](https://img.shields.io/pub/v/flutter_form_bloc.svg)](https://pub.dev/packages/flutter_form_bloc)       
 
 
 Easy Form State Management using BLoC pattern. Separate the Form State and Business Logic from the User Interface.
