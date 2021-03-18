@@ -40,7 +40,7 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc,
+          fieldBloc.stream,
           emitsInOrder(expectedStates),
         );
 
@@ -126,7 +126,7 @@ void main() {
         state3,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -147,7 +147,7 @@ void main() {
       );
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(<SelectFieldBlocState>[expectedState]),
       );
 
@@ -187,7 +187,7 @@ void main() {
         state4,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -226,7 +226,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -247,7 +247,7 @@ void main() {
       );
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(<SelectFieldBlocState>[expectedState]),
       );
 

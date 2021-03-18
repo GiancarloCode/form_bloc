@@ -123,8 +123,11 @@ abstract class SingleFieldBloc<
   /// Returns the `value` of the current state.
   Value get value => state.value;
 
-  bool _isValidated(bool isValidating) =>
-      _autoValidate ? isValidating ? false : true : false;
+  bool _isValidated(bool isValidating) => _autoValidate
+      ? isValidating
+          ? false
+          : true
+      : false;
 
   @override
   Future<void> close() async {
@@ -159,7 +162,8 @@ abstract class SingleFieldBloc<
 
     final _onFinish = onFinish ?? (State p, State c, R r) {};
 
-    return distinct((p, c) => p.value == c.value)
+    return stream
+        .distinct((p, c) => p.value == c.value)
         .pairwise()
         .doOnData((states) => _onStart(states.first, states.last))
         .debounceTime(debounceTime)
@@ -499,7 +503,8 @@ abstract class SingleFieldBloc<
     if (event.fieldBlocs != null && event.fieldBlocs.isNotEmpty) {
       _revalidateFieldBlocsSubscription = Rx.combineLatest<dynamic, void>(
         event.fieldBlocs.whereType<SingleFieldBloc>().toList().map(
-              (state) => state.map<dynamic>((state) => state.value).distinct(),
+              (state) =>
+                  state.stream.map<dynamic>((state) => state.value).distinct(),
             ),
         (_) => null,
       ).listen(

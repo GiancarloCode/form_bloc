@@ -18,7 +18,7 @@ void main() {
         );
 
         expect(
-          list,
+          list.stream,
           emitsInOrder(<ListFieldBlocState>[expected]),
         );
 
@@ -41,7 +41,7 @@ void main() {
         );
 
         expect(
-          list,
+          list.stream,
           emitsInOrder(<ListFieldBlocState>[expected]),
         );
 
@@ -62,7 +62,7 @@ void main() {
         );
 
         expect(
-          list,
+          list.stream,
           emitsInOrder(<ListFieldBlocState>[expected]),
         );
 

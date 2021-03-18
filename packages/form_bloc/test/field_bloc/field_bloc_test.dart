@@ -98,7 +98,7 @@ void main() {
           state5,
         ];
         expect(
-          fieldBloc,
+          fieldBloc.stream,
           emitsInOrder(expectedStates),
         );
 
@@ -151,7 +151,7 @@ void main() {
           state3,
         ];
         expect(
-          fieldBloc,
+          fieldBloc.stream,
           emitsInOrder(expectedStates),
         );
 
@@ -256,7 +256,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -298,7 +298,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -351,7 +351,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -389,7 +389,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -447,7 +447,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -495,7 +495,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -535,7 +535,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -582,7 +582,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -641,7 +641,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
       fieldBloc.updateValue(2);
@@ -713,7 +713,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -765,7 +765,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -828,7 +828,7 @@ void main() {
         state7,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -898,7 +898,7 @@ void main() {
         state7,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -935,7 +935,7 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -965,7 +965,7 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -979,15 +979,15 @@ void main() {
       );
       final suggestions = (String pattern) async => [1];
 
-      final state1 = InputFieldBlocState<int, dynamic>(
-        value: null,
-        error: null,
-        isInitial: true,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        name: 'fieldName',
-      );
+      // final state1 = InputFieldBlocState<int, dynamic>(
+      //   value: null,
+      //   error: null,
+      //   isInitial: true,
+      //   suggestions: null,
+      //   isValidated: true,
+      //   isValidating: false,
+      //   name: 'fieldName',
+      // );
       final state2 = InputFieldBlocState<int, dynamic>(
         value: 2,
         error: null,
@@ -1003,7 +1003,7 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -1069,7 +1069,7 @@ void main() {
         state6,
       ];
       expect(
-        fieldBloc1,
+        fieldBloc1.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -1130,7 +1130,7 @@ void main() {
         state4,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -1178,7 +1178,7 @@ void main() {
         state5,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -1229,7 +1229,7 @@ void main() {
         state5,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -1283,7 +1283,7 @@ void main() {
         state5,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -1355,7 +1355,7 @@ void main() {
       final fieldBloc = InputFieldBloc<int, int>();
 
       expect(
-        fieldBloc.map((state) => state.extraData),
+        fieldBloc.stream.map((state) => state.extraData),
         emitsInOrder(expected),
       );
 
