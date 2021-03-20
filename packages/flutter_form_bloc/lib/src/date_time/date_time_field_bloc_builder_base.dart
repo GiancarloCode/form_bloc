@@ -166,7 +166,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
         builder: (_, __) {
           return BlocBuilder<InputFieldBloc<T, Object>,
               InputFieldBlocState<T, Object>>(
-            cubit: widget.dateTimeFieldBloc,
+            bloc: widget.dateTimeFieldBloc,
             builder: (context, state) {
               final isEnabled = fieldBlocIsEnabled(
                 isEnabled: this.widget.isEnabled,

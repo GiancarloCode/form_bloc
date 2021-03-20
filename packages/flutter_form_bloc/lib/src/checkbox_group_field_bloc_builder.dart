@@ -69,7 +69,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
       builder: (_, __) {
         return BlocBuilder<MultiSelectFieldBloc<Value, dynamic>,
             MultiSelectFieldBlocState<Value, dynamic>>(
-          cubit: multiSelectFieldBloc,
+          bloc: multiSelectFieldBloc,
           builder: (context, state) {
             final isEnabled = fieldBlocIsEnabled(
               isEnabled: this.isEnabled,

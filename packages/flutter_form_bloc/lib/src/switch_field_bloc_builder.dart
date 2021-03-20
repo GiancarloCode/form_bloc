@@ -2,9 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
-import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 
 /// A material design switch
 class SwitchFieldBlocBuilder extends StatelessWidget {
@@ -137,7 +137,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
       animate: animateWhenCanShow,
       builder: (_, __) {
         return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
-          cubit: booleanFieldBloc,
+          bloc: booleanFieldBloc,
           builder: (context, state) {
             final isEnabled = fieldBlocIsEnabled(
               isEnabled: this.isEnabled,

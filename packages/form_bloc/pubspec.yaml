@@ -11,7 +11,7 @@ dependencies:
   bloc: ^7.0.0
   bloc_test: ^8.0.0
   rxdart: ^0.26.0
-  equatable: ^1.2.0
+  equatable: ^2.0.0
   quiver: ^3.0.0
   pedantic: ^1.11.0
   collection: ^1.15.0

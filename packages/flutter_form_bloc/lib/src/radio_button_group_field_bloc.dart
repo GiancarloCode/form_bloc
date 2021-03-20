@@ -67,7 +67,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
       builder: (_, __) {
         return BlocBuilder<SelectFieldBloc<Value, dynamic>,
             SelectFieldBlocState<Value, dynamic>>(
-          cubit: selectFieldBloc,
+          bloc: selectFieldBloc,
           builder: (context, state) {
             final isEnabled = fieldBlocIsEnabled(
               isEnabled: this.isEnabled,

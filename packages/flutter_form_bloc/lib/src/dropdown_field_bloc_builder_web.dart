@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/dropdown.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:flutter/scheduler.dart';
 
 class DropdownFieldBlocBuilderWeb<Value> extends StatefulWidget {
   DropdownFieldBlocBuilderWeb({
@@ -123,7 +123,7 @@ class _DropdownFieldBlocBuilderWebState<Value>
       focusNode: _effectiveFocusNode,
       child: BlocBuilder<SelectFieldBloc<Value, dynamic>,
           SelectFieldBlocState<Value, dynamic>>(
-        cubit: widget.selectFieldBloc,
+        bloc: widget.selectFieldBloc,
         builder: (context, fieldState) {
           final isEnabled = fieldBlocIsEnabled(
             isEnabled: widget.isEnabled,

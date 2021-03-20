@@ -50,7 +50,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
 
     final formBloc = await Rx.merge([
       Stream.value(bloc.state),
-      bloc,
+      bloc.stream,
     ])
         .firstWhere((state) => state.formBloc != null)
         .timeout(Duration(milliseconds: 10), onTimeout: () => null);
@@ -68,14 +68,14 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     try {
       await Rx.merge([
         Stream.value(bloc.state),
-        bloc,
+        bloc.stream,
       ]).firstWhere((state) => state.formBloc != null);
 
       final formBloc = (widget.fieldBloc as dynamic).state.formBloc as Bloc;
 
       await Rx.merge([
         Stream.value(formBloc.state),
-        formBloc,
+        formBloc.stream,
       ]).firstWhere(
           (formBlocState) => formBlocState.contains(widget.fieldBloc));
 
@@ -118,13 +118,13 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     }
 
     return BlocBuilder(
-      cubit: _fieldBloc,
+      bloc: _fieldBloc,
       buildWhen: (p, c) => p.formBloc != c.formBloc,
       builder: (context, state) {
         Widget child;
         if (state.formBloc != null) {
           child = BlocListener(
-            cubit: state.formBloc as Bloc,
+            bloc: state.formBloc as Bloc,
             listenWhen: (p, c) =>
                 p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
             listener: (context, formBlocState) {
@@ -145,7 +145,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
               }
             },
             child: BlocBuilder(
-              cubit: state.formBloc as Bloc,
+              bloc: state.formBloc as Bloc,
               buildWhen: (p, c) =>
                   p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
               builder: (context, state) {

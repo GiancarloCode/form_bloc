@@ -258,10 +258,10 @@ library flutter_typeahead;
 import 'dart:async';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -653,6 +653,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     super.dispose();
   }
 
+  var keyboardVisibilityController = KeyboardVisibilityController();
   @override
   void initState() {
     super.initState();
@@ -671,7 +672,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
 
-    _keyboardSubscription = KeyboardVisibility.onChange.listen((bool visible) {
+    _keyboardSubscription =
+        keyboardVisibilityController.onChange.listen((bool visible) {
       setState(() {
         if (widget.hideSuggestionsOnKeyboardHide && !visible) {
           _effectiveFocusNode.unfocus();
