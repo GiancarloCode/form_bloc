@@ -64,7 +64,7 @@ class LoginForm extends StatelessWidget {
       create: (context) => LoginFormBloc(),
       child: Builder(
         builder: (context) {
-          final loginFormBloc = context.bloc<LoginFormBloc>();
+          final loginFormBloc = context.read<LoginFormBloc>();
 
           return Scaffold(
             resizeToAvoidBottomInset: false,

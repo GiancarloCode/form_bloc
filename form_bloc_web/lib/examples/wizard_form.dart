@@ -152,6 +152,7 @@ class _WizardFormState extends State<WizardForm> {
                     LoadingDialog.hide(context);
                   },
                   child: StepperFormBlocBuilder<WizardFormBloc>(
+                    formBloc: context.read<WizardFormBloc>(),
                     type: _type,
                     physics: ClampingScrollPhysics(),
                     stepsBuilder: (formBloc) {

@@ -60,7 +60,7 @@ class SerializedForm extends StatelessWidget {
       create: (context) => SerializedFormBloc(),
       child: Builder(
         builder: (context) {
-          final formBloc = context.bloc<SerializedFormBloc>();
+          final formBloc = context.read<SerializedFormBloc>();
 
           return Theme(
             data: Theme.of(context).copyWith(
