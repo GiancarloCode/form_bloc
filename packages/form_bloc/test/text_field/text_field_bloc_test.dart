@@ -9,7 +9,7 @@ void main() {
         final suggestions = (String pattern) async => ['1'];
         final validators = [
           FieldBlocValidators.required,
-          (String value) => 'error',
+          (String? value) => 'error',
         ];
 
         final fieldBloc = TextFieldBloc<dynamic>(

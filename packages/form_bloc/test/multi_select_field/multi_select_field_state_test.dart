@@ -7,8 +7,8 @@ void main() {
     test('copyWith.', () {
       final suggestions = (String pattern) async => [1];
 
-      final state = MultiSelectFieldBlocState<int, dynamic>(
-        value: null,
+      final state = MultiSelectFieldBlocState<int?, dynamic>(
+        value: [],
         error: null,
         isInitial: false,
         suggestions: null,
@@ -26,7 +26,7 @@ void main() {
         items: Optional.of([1]),
       );
       final stateCopy2 = stateCopy1.copyWith(
-        value: Optional.fromNullable(null),
+        value: Optional.fromNullable([]),
         error: Optional.fromNullable(null),
         isInitial: false,
         suggestions: Optional.fromNullable(null),

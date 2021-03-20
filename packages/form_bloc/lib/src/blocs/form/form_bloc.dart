@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_bloc/form_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -30,13 +29,13 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       _areAllFieldsValidSubscription = {};
 
   /// See [_setupFormBlocStateSubscription()].
-  StreamSubscription<FormBlocState> _formBlocStateSubscription;
+  StreamSubscription<FormBlocState>? _formBlocStateSubscription;
 
   /// Subscription to the state of the submission
   /// for know if the current state is [FormBlocSubmitting].
   ///
   /// See: [_onSubmitFormBloc].
-  StreamSubscription<bool> _onSubmittingSubscription;
+  StreamSubscription<bool>? _onSubmittingSubscription;
 
   /// Flag for prevent submit when is Validating before call [onSubmitting].
   ///
@@ -46,19 +45,18 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// Indicates if the [_fieldBlocs] must be autoValidated.
   final bool _autoValidate;
 
-  final _setupAreAllFieldsValidSubscriptionSubject =
+  final BehaviorSubject<Map<int, Map<String, FieldBloc>>>
+      _setupAreAllFieldsValidSubscriptionSubject =
       BehaviorSubject<Map<int, Map<String, FieldBloc>>>();
 
-  StreamSubscription<Map<int, Map<String, FieldBloc>>>
+  late StreamSubscription<Map<int, Map<String, FieldBloc>>>
       _setupAreAllFieldsValidSubscriptionSubscription;
 
   FormBloc(
       {bool isLoading = false,
       bool autoValidate = true,
       bool isEditing = false})
-      : assert(isLoading != null),
-        assert(autoValidate != null),
-        _autoValidate = autoValidate,
+      : _autoValidate = autoValidate,
         super(isLoading
             ? FormBlocLoading(
                 isEditing: isEditing,
@@ -85,15 +83,14 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   bool _isFieldStateValid(FieldBlocState state) => state.isValid;
 
-  void _updateFormState(
-          {@required bool areAllFieldsValid, @required int step}) =>
+  void _updateFormState({required bool areAllFieldsValid, required int step}) =>
       add(UpdateFormBlocStateIsValid(isValid: areAllFieldsValid, step: step));
 
   @override
   Future<void> close() async {
     _isClosed = true;
 
-    _areAllFieldsValidSubscription?.values?.forEach((e) => e.cancel());
+    _areAllFieldsValidSubscription.values.forEach((e) => e.cancel());
     unawaited(_formBlocStateSubscription?.cancel());
     unawaited(_onSubmittingSubscription?.cancel());
 
@@ -110,17 +107,16 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// `fieldBloc` in [FieldBlocs] to update [FormBlocState._isValidByStep]
   /// when any `fieldBloc` changes it state.
   void _setupAreAllFieldsValidSubscription({
-    @required Map<int, Map<String, FieldBloc>> fieldBlocs,
+    required Map<int, Map<String, FieldBloc>> fieldBlocs,
   }) {
-    _areAllFieldsValidSubscription?.values?.forEach((e) => e.cancel());
+    _areAllFieldsValidSubscription.values.forEach((e) => e.cancel());
 
-    final singleFieldBlocsMap = fieldBlocs?.map(
-          (key, fieldBlocOfStep) => MapEntry(
-            key,
-            FormBlocUtils.getAllSingleFieldBlocs(fieldBlocOfStep.values),
-          ),
-        ) ??
-        {};
+    final singleFieldBlocsMap = fieldBlocs.map(
+      (key, fieldBlocOfStep) => MapEntry(
+        key,
+        FormBlocUtils.getAllSingleFieldBlocs(fieldBlocOfStep.values),
+      ),
+    );
     singleFieldBlocsMap.forEach(
       (key, singleFieldBlocs) {
         _areAllFieldsValidSubscription[key] =
@@ -199,7 +195,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// You must call it with `await` keyword
   Future<void> _callInBlocContext(void Function() callback) async {
     try {
-      await callback();
+      callback();
     } catch (exception, stackTrace) {
       onError(exception, stackTrace);
     }
@@ -250,8 +246,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   void delete() => add(DeleteFormBloc());
 
   /// Update the form bloc state.
-  void _updateState(FormBlocState<SuccessResponse, FailureResponse> state) {
-    if (!_isClosed) {
+  void _updateState(FormBlocState<SuccessResponse, FailureResponse>? state) {
+    if (!_isClosed && state != null) {
       add(UpdateFormBlocState<SuccessResponse, FailureResponse>(state));
     }
   }
@@ -263,13 +259,13 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   /// Adds [fieldBloc] to the [FormBloc].
   ///
   /// You can set [step] of this fields, by default is `0`.
-  void addFieldBloc({int step = 0, @required FieldBloc fieldBloc}) =>
+  void addFieldBloc({int step = 0, required FieldBloc fieldBloc}) =>
       add(AddFieldBloc(step: step, fieldBloc: fieldBloc));
 
   /// Adds [fieldBlocs] to the [FormBloc].
   ///
   /// You can set [step] of this fields, by default is `0`.
-  void addFieldBlocs({int step = 0, @required List<FieldBloc> fieldBlocs}) =>
+  void addFieldBlocs({int step = 0, required List<FieldBloc> fieldBlocs}) =>
       add(AddFieldBlocs(step: step, fieldBlocs: fieldBlocs));
 
   void previousStep() => add(PreviousStepFormBlocEvent());
@@ -279,11 +275,11 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   void updateCurrentStep(int step) => add(UpdateCurrentStepFormBlocEvent(step));
 
   /// Removes a [FieldBloc] from the [FormBloc]
-  void removeFieldBloc({@required FieldBloc fieldBloc}) =>
+  void removeFieldBloc({required FieldBloc fieldBloc}) =>
       add(RemoveFieldBloc(fieldBloc: fieldBloc));
 
   /// Removes a [FieldBlocs] from the [FormBloc]
-  void removeFieldBlocs({@required List<FieldBloc> fieldBlocs}) =>
+  void removeFieldBlocs({required List<FieldBloc> fieldBlocs}) =>
       add(RemoveFieldBlocs(fieldBlocs: fieldBlocs));
 
   // ===========================================================================
@@ -305,7 +301,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   /// Update the state of the form bloc
   /// to [FormBlocLoadFailed].
-  void emitLoadFailed({FailureResponse failureResponse}) async {
+  void emitLoadFailed({FailureResponse? failureResponse}) async {
     await _awaitNewState;
 
     _updateState(
@@ -325,7 +321,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   /// Update the state of the form bloc
   /// to [FormBlocSubmitting].
-  void emitSubmitting({double progress}) async {
+  void emitSubmitting({double? progress}) async {
     await _awaitNewState;
 
     _updateState(
@@ -338,9 +334,9 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   ///
   /// If [FormBlocState.currentStep] not is the last step, [canSubmitAgain] ever will be `true`, in other cases by default is `false`.
   void emitSuccess({
-    SuccessResponse successResponse,
-    bool canSubmitAgain,
-    bool isEditing,
+    SuccessResponse? successResponse,
+    bool? canSubmitAgain,
+    bool? isEditing,
   }) async {
     await _awaitNewState;
 
@@ -355,7 +351,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   /// Update the state of the form bloc
   /// to [FormBlocFailure].
-  void emitFailure({FailureResponse failureResponse}) async {
+  void emitFailure({FailureResponse? failureResponse}) async {
     await _awaitNewState;
 
     _updateState(
@@ -375,7 +371,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   /// Update the state of the form bloc
   /// to [FormBlocDeleteFailed].
-  void emitDeleteFailed({FailureResponse failureResponse}) async {
+  void emitDeleteFailed({FailureResponse? failureResponse}) async {
     await _awaitNewState;
 
     _updateState(
@@ -385,7 +381,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   /// Update the state of the form bloc
   /// to [FormBlocDeleteSuccessful].
-  void emitDeleteSuccessful({SuccessResponse successResponse}) async {
+  void emitDeleteSuccessful({SuccessResponse? successResponse}) async {
     await _awaitNewState;
 
     _updateState(
@@ -395,7 +391,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
   /// Update the state of the form bloc
   /// to [FormUpdatingFields].
-  void emitUpdatingFields({double progress}) async {
+  void emitUpdatingFields({double? progress}) async {
     await _awaitNewState;
 
     _updateState(
@@ -416,127 +412,129 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
       _onSubmitFormBloc() async* {
     // TODO: Check when is the last step, but not can submit again, and then go to previous step and try to submit again.
+    if (state != null) {
+      final stateSnapshot = state;
 
-    final stateSnapshot = state;
+      final notValidStep = stateSnapshot.notValidStep;
 
-    final notValidStep = stateSnapshot.notValidStep;
+      if (stateSnapshot.isLastStep &&
+          notValidStep != null &&
+          notValidStep != stateSnapshot.lastStep) {
+        // go to the first step invalid
 
-    if (stateSnapshot.isLastStep &&
-        notValidStep != null &&
-        notValidStep != stateSnapshot.lastStep) {
-      // go to the first step invalid
-
-      yield FormBlocSubmissionFailed(
-        stateSnapshot._isValidByStep,
-        isEditing: stateSnapshot.isEditing,
-        fieldBlocs: stateSnapshot._fieldBlocs,
-        currentStep: state.currentStep,
-      );
-      yield stateSnapshot.toLoaded();
-      yield stateSnapshot._copyWith(currentStep: notValidStep);
-    } else if (stateSnapshot.canSubmit && _canSubmit) {
-      _canSubmit = false;
-      unawaited(_onSubmittingSubscription?.cancel());
-      // get field blocs of the current step and validate
-      final currentFieldBlocs = stateSnapshot?._fieldBlocs?.isEmpty ?? true
-          ? <FieldBloc>[]
-          : stateSnapshot?._fieldBlocs[stateSnapshot.currentStep]?.values ?? [];
-
-      final allSingleFieldBlocs =
-          FormBlocUtils.getAllSingleFieldBlocs(currentFieldBlocs);
-
-      if (allSingleFieldBlocs.isEmpty) {
-        final newState = stateSnapshot.toSubmitting(progress: 0.0);
-        _updateState(newState);
-        _onSubmittingSubscription =
-            stream.map((state) => state == newState).listen(
-          (isStateUpdated) {
-            if (isStateUpdated) {
-              _canSubmit = true;
-              _callInBlocContext(onSubmitting);
-
-              _onSubmittingSubscription.cancel();
-            }
-          },
+        yield FormBlocSubmissionFailed(
+          stateSnapshot._isValidByStep,
+          isEditing: stateSnapshot.isEditing,
+          fieldBlocs: stateSnapshot._fieldBlocs,
+          currentStep: state.currentStep,
         );
-      } else {
-        allSingleFieldBlocs.forEach(
-          (fieldBloc) {
-            if (!_isFieldStateValid(fieldBloc.state)) {
-              fieldBloc.add(ValidateFieldBloc(true));
-            }
-          },
-        );
+        yield stateSnapshot.toLoaded();
+        yield stateSnapshot._copyWith(currentStep: notValidStep);
+      } else if (stateSnapshot.canSubmit && _canSubmit) {
+        _canSubmit = false;
+        unawaited(_onSubmittingSubscription?.cancel());
+        // get field blocs of the current step and validate
+        final currentFieldBlocs = stateSnapshot._fieldBlocs?.isEmpty ?? true
+            ? <FieldBloc>[]
+            : stateSnapshot._fieldBlocs![stateSnapshot.currentStep]?.values ??
+                [];
 
-        final validatedFieldBlocs = List<
-            SingleFieldBloc<
-                dynamic,
-                dynamic,
-                FieldBlocState<dynamic, dynamic, dynamic>,
-                dynamic>>.from(allSingleFieldBlocs)
-          ..retainWhere((element) => element.state.isValidated);
+        final allSingleFieldBlocs =
+            FormBlocUtils.getAllSingleFieldBlocs(currentFieldBlocs);
 
-        final notValidatedFieldBlocs = List<
-            SingleFieldBloc<
-                dynamic,
-                dynamic,
-                FieldBlocState<dynamic, dynamic, dynamic>,
-                dynamic>>.from(allSingleFieldBlocs)
-          ..retainWhere((element) => !element.state.isValidated);
+        if (allSingleFieldBlocs.isEmpty) {
+          final newState = stateSnapshot.toSubmitting(progress: 0.0);
+          _updateState(newState);
+          _onSubmittingSubscription =
+              stream.map((state) => state == newState).listen(
+            (isStateUpdated) {
+              if (isStateUpdated) {
+                _canSubmit = true;
+                _callInBlocContext(onSubmitting);
 
-        _onSubmittingSubscription = Rx.combineLatest<FieldBlocState, bool>(
-          notValidatedFieldBlocs.isEmpty
-              ? <Stream<FieldBlocState>>[
-                  BehaviorSubject<
-                          FieldBlocState<dynamic, dynamic, dynamic>>.seeded(
-                      validatedFieldBlocs.first.state)
-                ]
-              : notValidatedFieldBlocs.map((e) => e.stream).toList(),
-          (states) => states.every((state) => state.isValidated),
-        ).listen(
-          (areValidated) async {
-            if (areValidated) {
-              unawaited(_onSubmittingSubscription?.cancel());
-
-              if (_areFieldStatesValid(allSingleFieldBlocs
-                  .map((fieldBloc) => fieldBloc.state)
-                  .toList())) {
-                final newIsValidByStep =
-                    Map<int, bool>.from(state._isValidByStep)
-                      ..[state.currentStep] = true;
-
-                final newState =
-                    state._copyWith(isValidByStep: newIsValidByStep);
-
-                _updateState(newState);
-                _updateState(newState.toSubmitting(progress: 0.0));
-                final isStateUpdated = (await stream.firstWhere(
-                      (state) => state == newState.toSubmitting(progress: 0.0),
-                      orElse: () => null,
-                    )) !=
-                    null;
-                if (isStateUpdated) {
-                  _canSubmit = true;
-                  await _callInBlocContext(onSubmitting);
-                }
-              } else {
-                final stateSnapshot = state;
-
-                final newIsValidByStep =
-                    Map<int, bool>.from(stateSnapshot._isValidByStep)
-                      ..[stateSnapshot.currentStep] = false;
-
-                _updateState(FormBlocSubmissionFailed(
-                  newIsValidByStep,
-                  isEditing: stateSnapshot.isEditing,
-                  fieldBlocs: stateSnapshot._fieldBlocs,
-                  currentStep: state.currentStep,
-                ));
-                _updateState(stateSnapshot.toLoaded());
+                _onSubmittingSubscription!.cancel();
               }
-            }
-          },
-        );
+            },
+          );
+        } else {
+          allSingleFieldBlocs.forEach(
+            (fieldBloc) {
+              if (!_isFieldStateValid(fieldBloc.state)) {
+                fieldBloc.add(ValidateFieldBloc(true));
+              }
+            },
+          );
+
+          final validatedFieldBlocs = List<
+              SingleFieldBloc<
+                  dynamic,
+                  dynamic,
+                  FieldBlocState<dynamic, dynamic, dynamic>,
+                  dynamic>>.from(allSingleFieldBlocs)
+            ..retainWhere((element) => element.state.isValidated);
+
+          final notValidatedFieldBlocs = List<
+              SingleFieldBloc<
+                  dynamic,
+                  dynamic,
+                  FieldBlocState<dynamic, dynamic, dynamic>,
+                  dynamic>>.from(allSingleFieldBlocs)
+            ..retainWhere((element) => !element.state.isValidated);
+
+          _onSubmittingSubscription = Rx.combineLatest<FieldBlocState, bool>(
+            notValidatedFieldBlocs.isEmpty
+                ? <Stream<FieldBlocState>>[
+                    BehaviorSubject<
+                            FieldBlocState<dynamic, dynamic, dynamic>>.seeded(
+                        validatedFieldBlocs.first.state)
+                  ]
+                : notValidatedFieldBlocs.map((e) => e.stream).toList(),
+            (states) => states.every((state) => state.isValidated),
+          ).listen(
+            (areValidated) async {
+              if (areValidated) {
+                unawaited(_onSubmittingSubscription?.cancel());
+
+                if (_areFieldStatesValid(allSingleFieldBlocs
+                    .map((fieldBloc) => fieldBloc.state)
+                    .toList())) {
+                  final newIsValidByStep =
+                      Map<int, bool>.from(state._isValidByStep!)
+                        ..[state.currentStep] = true;
+
+                  final newState =
+                      state._copyWith(isValidByStep: newIsValidByStep);
+
+                  _updateState(newState);
+                  _updateState(newState.toSubmitting(progress: 0.0));
+                  final isStateUpdated = (await stream.firstWhere(
+                        (state) =>
+                            state == newState.toSubmitting(progress: 0.0),
+                      )) !=
+                      null;
+                  if (isStateUpdated) {
+                    _canSubmit = true;
+                    await _callInBlocContext(onSubmitting);
+                  }
+                } else {
+                  final stateSnapshot = state;
+
+                  final newIsValidByStep =
+                      Map<int, bool>.from(stateSnapshot._isValidByStep!)
+                        ..[stateSnapshot.currentStep] = false;
+
+                  _updateState(FormBlocSubmissionFailed(
+                    newIsValidByStep,
+                    isEditing: stateSnapshot.isEditing,
+                    fieldBlocs: stateSnapshot._fieldBlocs,
+                    currentStep: state.currentStep,
+                  ));
+                  _updateState(stateSnapshot.toLoaded());
+                }
+              }
+            },
+          );
+        }
       }
     }
   }
@@ -557,14 +555,15 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
       _onClearFormBloc() async* {
     final allSingleFieldBlocs =
-        FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs().values);
+        FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs()!.values);
 
     allSingleFieldBlocs.forEach((fieldBloc) => fieldBloc.clear());
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
       _onCancelSubmissionFormBloc() async* {
-    final stateSnapshot = state;
+    final FormBlocState<SuccessResponse, FailureResponse>? stateSnapshot =
+        state;
     if (stateSnapshot is FormBlocSubmitting<SuccessResponse, FailureResponse> &&
         !stateSnapshot.isCanceling) {
       final newState = FormBlocSubmitting<SuccessResponse, FailureResponse>(
@@ -602,15 +601,15 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       _onRefreshFieldBlocsSubscription(
     RefreshFieldBlocsSubscription event,
   ) async* {
-    _setupAreAllFieldsValidSubscriptionSubject.add(state._fieldBlocs);
+    _setupAreAllFieldsValidSubscriptionSubject.add(state._fieldBlocs!);
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>>
       _onPreviousStep() async* {
-    final stateSnapshot = state;
+    final FormBlocState<SuccessResponse, FailureResponse> stateSnapshot = state;
     final newCurrentStep = stateSnapshot.currentStep - 1;
     if (newCurrentStep >= 0 &&
-        stateSnapshot._fieldBlocs.keys.contains(newCurrentStep)) {
+        stateSnapshot._fieldBlocs!.keys.contains(newCurrentStep)) {
       yield stateSnapshot._copyWith(currentStep: newCurrentStep);
     }
   }
@@ -620,7 +619,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           UpdateCurrentStepFormBlocEvent event) async* {
     final stateSnapshot = state;
 
-    if (stateSnapshot._fieldBlocs.containsKey(event.step)) {
+    if (stateSnapshot._fieldBlocs!.containsKey(event.step)) {
       yield stateSnapshot._copyWith(currentStep: event.step);
     }
   }
@@ -630,77 +629,75 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     final fieldBloc = event.fieldBloc;
     final step = event.step;
 
-    if (fieldBloc != null && step != null) {
-      _allFieldBlocsUsed.add(fieldBloc);
+    _allFieldBlocsUsed.add(fieldBloc);
 
-      FormBlocUtils.getAllFieldBlocs([fieldBloc]).forEach((e) {
-        if (e is SingleFieldBloc) {
-          e.add(
-            AddFormBlocAndAutoValidateToFieldBloc(
-                formBloc: this, autoValidate: _autoValidate),
-          );
-        } else if (e is ListFieldBloc) {
-          e.add(
-            AddFormBlocAndAutoValidateToListFieldBloc(
-                formBloc: this, autoValidate: _autoValidate),
-          );
-        } else if (e is GroupFieldBloc) {
-          e.add(
-            AddFormBlocAndAutoValidateToGroupFieldBloc(
-                formBloc: this, autoValidate: _autoValidate),
-          );
-        }
-      });
-
-      final stateSnapshot = state;
-
-      final newFieldBlocs = <int, Map<String, FieldBloc>>{};
-
-      stateSnapshot._fieldBlocs?.forEach((key, value) {
-        newFieldBlocs[key] = Map<String, FieldBloc>.from(value);
-      });
-
-      if (!newFieldBlocs.containsKey(step)) {
-        newFieldBlocs[step] = {};
+    FormBlocUtils.getAllFieldBlocs([fieldBloc]).forEach((e) {
+      if (e is SingleFieldBloc) {
+        e.add(
+          AddFormBlocAndAutoValidateToFieldBloc(
+              formBloc: this, autoValidate: _autoValidate),
+        );
+      } else if (e is ListFieldBloc) {
+        e.add(
+          AddFormBlocAndAutoValidateToListFieldBloc(
+              formBloc: this, autoValidate: _autoValidate),
+        );
+      } else if (e is GroupFieldBloc) {
+        e.add(
+          AddFormBlocAndAutoValidateToGroupFieldBloc(
+              formBloc: this, autoValidate: _autoValidate),
+        );
       }
+    });
 
-      newFieldBlocs[step][(fieldBloc as dynamic).state.name as String] =
-          fieldBloc;
+    final stateSnapshot = state;
 
-      final allSingleFieldBlocs =
-          FormBlocUtils.getAllSingleFieldBlocs([fieldBloc]);
+    final newFieldBlocs = <int, Map<String, FieldBloc>>{};
 
-      final allSingleFieldBlocsStates = allSingleFieldBlocs.map((e) => e.state);
+    stateSnapshot._fieldBlocs?.forEach((key, value) {
+      newFieldBlocs[key] = Map<String, FieldBloc>.from(value);
+    });
 
-      final newIsValidByStep =
-          Map<int, bool>.from(stateSnapshot?._isValidByStep ?? <int, bool>{});
-
-      newIsValidByStep[step] =
-          _areFieldStatesValid(allSingleFieldBlocsStates.toList());
-
-      final newState = stateSnapshot._copyWith(
-        fieldBlocs: newFieldBlocs,
-        isValidByStep: newIsValidByStep,
-      );
-
-      _setupAreAllFieldsValidSubscriptionSubject.add(newFieldBlocs);
-
-      yield newState;
-
-      await Rx.merge([
-        Stream.value(state),
-        stream,
-      ]).firstWhere((state) => state == newState);
+    if (!newFieldBlocs.containsKey(step)) {
+      newFieldBlocs[step] = {};
     }
+
+    newFieldBlocs[step]![(fieldBloc as dynamic).state.name as String] =
+        fieldBloc;
+
+    final allSingleFieldBlocs =
+        FormBlocUtils.getAllSingleFieldBlocs([fieldBloc]);
+
+    final allSingleFieldBlocsStates = allSingleFieldBlocs.map((e) => e.state);
+
+    final newIsValidByStep =
+        Map<int, bool>.from(stateSnapshot._isValidByStep ?? <int, bool>{});
+
+    newIsValidByStep[step] =
+        _areFieldStatesValid(allSingleFieldBlocsStates.toList());
+
+    final newState = stateSnapshot._copyWith(
+      fieldBlocs: newFieldBlocs,
+      isValidByStep: newIsValidByStep,
+    );
+
+    _setupAreAllFieldsValidSubscriptionSubject.add(newFieldBlocs);
+
+    yield newState;
+
+    await Rx.merge([
+      Stream.value(state),
+      stream,
+    ]).firstWhere((state) => state == newState);
   }
 
   Stream<FormBlocState<SuccessResponse, FailureResponse>> _onRemoveFieldBloc(
       RemoveFieldBloc event) async* {
     final fieldBloc = event.fieldBloc;
 
-    if (fieldBloc != null) {
+    if (state != null) {
       final stateSnapshot = state;
-      final name = (fieldBloc as dynamic).state.name as String;
+      final name = (fieldBloc as dynamic).state.name as String?;
 
       final newFieldBlocs = <int, Map<String, FieldBloc>>{};
 
@@ -708,23 +705,24 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         newFieldBlocs[key] = Map<String, FieldBloc>.from(value);
       });
 
-      int step;
+      int? step;
 
       for (var key in newFieldBlocs.keys) {
-        if (newFieldBlocs[key].containsKey(name)) {
+        if (newFieldBlocs[key]!.containsKey(name)) {
           step = key;
           break;
         }
       }
 
       if (step != null) {
-        newFieldBlocs[step].remove((fieldBloc as dynamic).state.name as String);
+        newFieldBlocs[step]!
+            .remove((fieldBloc as dynamic).state.name as String?);
 
         final newIsValidByStep =
-            Map<int, bool>.from(stateSnapshot?._isValidByStep ?? <int, bool>{});
+            Map<int, bool>.from(stateSnapshot._isValidByStep ?? <int, bool>{});
 
         final allSingleFieldBlocs =
-            FormBlocUtils.getAllSingleFieldBlocs(newFieldBlocs[step].values);
+            FormBlocUtils.getAllSingleFieldBlocs(newFieldBlocs[step]!.values);
 
         final allSingleFieldBlocsStates =
             allSingleFieldBlocs.map((e) => e.state);
@@ -755,8 +753,9 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       RemoveFieldBlocs event) async* {
     final fieldBlocs = event.fieldBlocs;
 
-    if (fieldBlocs != null && fieldBlocs.isNotEmpty) {
-      final stateSnapshot = state;
+    if (fieldBlocs.isNotEmpty && state != null) {
+      final FormBlocState<SuccessResponse, FailureResponse> stateSnapshot =
+          state;
 
       final newFieldBlocs = <int, Map<String, FieldBloc>>{};
 
@@ -765,16 +764,16 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       });
 
       final newIsValidByStep =
-          Map<int, bool>.from(stateSnapshot?._isValidByStep ?? <int, bool>{});
+          Map<int, bool>.from(stateSnapshot._isValidByStep ?? <int, bool>{});
 
       final stepsUpdated = <int>{};
 
       for (var fieldBloc in fieldBlocs) {
-        final name = (fieldBloc as dynamic).state.name as String;
-        int step;
+        final name = (fieldBloc as dynamic).state.name as String?;
+        int? step;
 
         for (var key in newFieldBlocs.keys) {
-          if (newFieldBlocs[key].containsKey(name)) {
+          if (newFieldBlocs[key]!.containsKey(name)) {
             step = key;
             break;
           }
@@ -783,14 +782,14 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         if (step != null) {
           stepsUpdated.add(step);
 
-          newFieldBlocs[step]
-              .remove((fieldBloc as dynamic).state.name as String);
+          newFieldBlocs[step]!
+              .remove((fieldBloc as dynamic).state.name as String?);
         }
       }
 
       stepsUpdated.forEach((step) {
         final allSingleFieldBlocs =
-            FormBlocUtils.getAllSingleFieldBlocs(newFieldBlocs[step].values);
+            FormBlocUtils.getAllSingleFieldBlocs(newFieldBlocs[step]!.values);
 
         final allSingleFieldBlocsStates =
             allSingleFieldBlocs.map((e) => e.state);
@@ -820,7 +819,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     final fieldBlocs = event.fieldBlocs;
     final step = event.step;
 
-    if (fieldBlocs != null && fieldBlocs.isNotEmpty && step != null) {
+    if (fieldBlocs.isNotEmpty) {
       _allFieldBlocsUsed.addAll(fieldBlocs);
 
       final stateSnapshot = state;
@@ -862,17 +861,17 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           newFieldBlocs[step] = {};
         }
 
-        newFieldBlocs[step][(fieldBloc as dynamic).state.name as String] =
+        newFieldBlocs[step]![(fieldBloc as dynamic).state.name as String] =
             fieldBloc;
       });
 
       final allSingleFieldBlocs =
-          FormBlocUtils.getAllSingleFieldBlocs(newFieldBlocs[step].values);
+          FormBlocUtils.getAllSingleFieldBlocs(newFieldBlocs[step]!.values);
 
       final allSingleFieldBlocsStates = allSingleFieldBlocs.map((e) => e.state);
 
       final newIsValidByStep =
-          Map<int, bool>.from(stateSnapshot?._isValidByStep ?? <int, bool>{});
+          Map<int, bool>.from(stateSnapshot._isValidByStep ?? <int, bool>{});
 
       newIsValidByStep[step] =
           _areFieldStatesValid(allSingleFieldBlocsStates.toList());

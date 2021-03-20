@@ -24,7 +24,7 @@ class UpdateFormBlocStateIsValid extends FormBlocEvent {
   final bool isValid;
   final int step;
 
-  UpdateFormBlocStateIsValid({@required this.isValid, @required this.step});
+  UpdateFormBlocStateIsValid({required this.isValid, required this.step});
 
   @override
   String toString() => '$runtimeType: { isValid: $isValid }';
@@ -62,7 +62,7 @@ class AddFieldBloc extends FormBlocEvent {
   final int step;
   final FieldBloc fieldBloc;
 
-  AddFieldBloc({@required this.step, @required this.fieldBloc});
+  AddFieldBloc({required this.step, required this.fieldBloc});
 
   @override
   List<Object> get props => [step, fieldBloc];
@@ -72,7 +72,7 @@ class AddFieldBlocs extends FormBlocEvent {
   final int step;
   final List<FieldBloc> fieldBlocs;
 
-  AddFieldBlocs({@required this.step, @required this.fieldBlocs});
+  AddFieldBlocs({required this.step, required this.fieldBlocs});
 
   @override
   List<Object> get props => [step, fieldBlocs];
@@ -81,7 +81,7 @@ class AddFieldBlocs extends FormBlocEvent {
 class RemoveFieldBloc extends FormBlocEvent {
   final FieldBloc fieldBloc;
 
-  RemoveFieldBloc({@required this.fieldBloc});
+  RemoveFieldBloc({required this.fieldBloc});
 
   @override
   List<Object> get props => [fieldBloc];
@@ -90,7 +90,7 @@ class RemoveFieldBloc extends FormBlocEvent {
 class RemoveFieldBlocs extends FormBlocEvent {
   final List<FieldBloc> fieldBlocs;
 
-  RemoveFieldBlocs({@required this.fieldBlocs});
+  RemoveFieldBlocs({required this.fieldBlocs});
 
   @override
   List<Object> get props => [fieldBlocs];

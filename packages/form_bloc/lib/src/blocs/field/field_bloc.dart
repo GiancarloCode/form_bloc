@@ -32,12 +32,12 @@ part 'field_state.dart';
 /// Signature for the [Validator] function which takes [value]
 /// and should returns a `String` error, and if doesn't have error
 /// should return `null`.
-typedef Validator<Value> = String Function(Value value);
+typedef Validator<Value> = String? Function(Value? value);
 
 /// Signature for the [AsyncValidator] function which takes [value]
 /// and should returns a `String` error, and if doesn't have error
 /// should return `null`.
-typedef AsyncValidator<Value> = Future<String> Function(Value value);
+typedef AsyncValidator<Value> = Future<String?> Function(Value value);
 
 /// Signature for the [Suggestions] function which takes [pattern]
 /// and should returns a `Future` with a `List<Value>`.
@@ -68,13 +68,13 @@ abstract class FieldBloc {
 abstract class SingleFieldBloc<
     Value,
     Suggestion,
-    State extends FieldBlocState<Value, Suggestion, ExtraData>,
+    State extends FieldBlocState<Value, Suggestion?, ExtraData?>,
     ExtraData> extends Bloc<FieldBlocEvent, State> with FieldBloc {
   final Value _initialValue;
 
   bool _autoValidate = true;
 
-  List<Validator<Value>> _validators;
+  List<Validator<Value?>> _validators;
 
   List<AsyncValidator<Value>> _asyncValidators;
 
@@ -88,25 +88,25 @@ abstract class SingleFieldBloc<
   final ExtraData _extraData;
   */
 
-  final PublishSubject<Value> _asyncValidatorsSubject = PublishSubject();
-  StreamSubscription<UpdateFieldBlocStateError> _asyncValidatorsSubscription;
+  final PublishSubject<Value?> _asyncValidatorsSubject = PublishSubject();
+  late StreamSubscription<UpdateFieldBlocStateError>
+      _asyncValidatorsSubscription;
   final PublishSubject<Suggestion> _selectedSuggestionSubject =
       PublishSubject();
 
-  StreamSubscription<void> _revalidateFieldBlocsSubscription;
+  StreamSubscription<void>? _revalidateFieldBlocsSubscription;
 
   SingleFieldBloc(
     this._initialValue,
-    List<Validator<Value>> validators,
-    List<AsyncValidator<Value>> asyncValidators,
+    List<Validator<Value?>>? validators,
+    List<AsyncValidator<Value>>? asyncValidators,
     this._asyncValidatorDebounceTime,
-    Suggestions<Suggestion> suggestions,
-    String name,
-    dynamic Function(Value value) toJson,
+    Suggestions<Suggestion>? suggestions,
+    String? name,
+    dynamic Function(Value value)? toJson,
     ExtraData extraData,
     State initialState,
-  )   : assert(_asyncValidatorDebounceTime != null),
-        _validators = validators ?? [],
+  )   : _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
         super(initialState) {
     FormBlocObserver.overrideDelegateOfBlocSupervisor();
@@ -121,7 +121,7 @@ abstract class SingleFieldBloc<
       _selectedSuggestionSubject.stream;
 
   /// Returns the `value` of the current state.
-  Value get value => state.value;
+  Value? get value => state.value;
 
   bool _isValidated(bool isValidating) => _autoValidate
       ? isValidating
@@ -151,13 +151,10 @@ abstract class SingleFieldBloc<
   /// therefore it will only receive elements of the last change.
   StreamSubscription<dynamic> onValueChanges<R>({
     Duration debounceTime = const Duration(),
-    void Function(State previous, State current) onStart,
-    @required Stream<R> Function(State previous, State current) onData,
-    void Function(State previous, State current, R result) onFinish,
+    void Function(State previous, State current)? onStart,
+    required Stream<R> Function(State previous, State current) onData,
+    void Function(State previous, State current, R result)? onFinish,
   }) {
-    assert(debounceTime != null, 'debounceTime can\'t be null');
-    assert(onData != null, 'onData function is required');
-
     final _onStart = onStart ?? (_, __) {};
 
     final _onFinish = onFinish ?? (State p, State c, R r) {};
@@ -182,7 +179,7 @@ abstract class SingleFieldBloc<
   /// of the current state.
   ///
   /// {@macro form_bloc.field_bloc.update_value}
-  void updateInitialValue(Value value) =>
+  void updateInitialValue(Value? value) =>
       add(UpdateFieldBlocInitialValue(value));
 
   /// Set the `value` to `null` of the current state.
@@ -213,7 +210,7 @@ abstract class SingleFieldBloc<
       add(UpdateAsyncValidators(asyncValidators));
 
   /// Updates the `suggestions` of the current state.
-  void updateSuggestions(Suggestions<Suggestion> suggestions) =>
+  void updateSuggestions(Suggestions<Suggestion>? suggestions) =>
       add(UpdateSuggestions(suggestions));
 
   /// Create a subscription to the state of each `fieldBloc` in [FieldBlocs],
@@ -235,9 +232,8 @@ abstract class SingleFieldBloc<
   ///
   /// It is useful when you want to add errors that
   /// you have obtained when submitting the `FormBloc`.
-  void addFieldError(String error, {bool isPermanent = false}) =>
-      add(AddFieldBlocError(
-          value: value, error: error, isPermanent: isPermanent ?? false));
+  void addFieldError(String error, {bool isPermanent = false}) => add(
+      AddFieldBlocError(value: value, error: error, isPermanent: isPermanent));
 
   /// Updates the `extraData` of the current state.
   void updateExtraData(ExtraData extraData) =>
@@ -296,9 +292,9 @@ abstract class SingleFieldBloc<
   /// or [forceValidation] is `true`.
   ///
   /// Else returns the error of the current state.
-  String _getError(Value value,
+  String? _getError(Value? value,
       {bool isInitialState = false, bool forceValidation = false}) {
-    String error;
+    String? error;
 
     if (forceValidation || _autoValidate) {
       final hasValidators = _validators != null;
@@ -320,8 +316,8 @@ abstract class SingleFieldBloc<
   ///
   /// Returns a `bool` indicating if is validating.
   bool _getAsyncValidatorsError({
-    @required Value value,
-    @required String error,
+    required Value? value,
+    required String? error,
     bool forceValidation = false,
   }) {
     final hasError = error != null;
@@ -343,7 +339,7 @@ abstract class SingleFieldBloc<
   }
 
   /// Returns the error of the [_initialValue].
-  String get _getInitialStateError =>
+  String? get _getInitialStateError =>
       _getError(_initialValue, isInitialState: true);
 
   /// Returns the `isValidating` of the `initialState`.
@@ -360,7 +356,7 @@ abstract class SingleFieldBloc<
     return isValidating;
   }
 
-  bool _canUpdateValue({@required Value value, @required bool isInitialValue}) {
+  bool _canUpdateValue({required Value? value, required bool isInitialValue}) {
     final stateSnapshot = state;
 
     if (stateSnapshot.value == value && stateSnapshot.isValidated) {
@@ -410,7 +406,7 @@ abstract class SingleFieldBloc<
     }
   }
 
-  Stream<State> _onAddValidators(AddValidators<Value> event) async* {
+  Stream<State> _onAddValidators(AddValidators<Value?> event) async* {
     yield* _addValidators(event.validators);
   }
 
@@ -431,7 +427,7 @@ abstract class SingleFieldBloc<
     }
   }
 
-  Stream<State> _onUpdateValidators(UpdateValidators<Value> event) async* {
+  Stream<State> _onUpdateValidators(UpdateValidators<Value?> event) async* {
     if (event.validators != null) {
       _validators = event.validators;
 
@@ -567,26 +563,26 @@ abstract class SingleFieldBloc<
   ///
   /// This method removes duplicate values.
   /// {@endtemplate}
-  static List<Value> _itemsWithoutDuplicates<Value>(List<Value> items) =>
-      items != null ? LinkedHashSet<Value>.from(items).toList() : null;
+  static List<Value> _itemsWithoutDuplicates<Value>(List<Value>? items) =>
+      items != null ? LinkedHashSet<Value>.from(items).toList() : [];
 
   void _setUpAsyncValidatorsSubscription() {
     _asyncValidatorsSubscription = _asyncValidatorsSubject
         .debounceTime(_asyncValidatorDebounceTime)
         .switchMap(
-          (value) => ((Value value) async {
-            String error;
+          ((value) => ((Value value) async {
+                String? error;
 
-            if (error == null && _asyncValidators != null) {
-              for (var asyncValidator in _asyncValidators) {
-                error = await asyncValidator(value);
-                if (error != null) break;
-              }
-            }
-            return UpdateFieldBlocStateError(error: error, value: value);
-          }).call(value).asStream(),
+                if (error == null && _asyncValidators != null) {
+                  for (var asyncValidator in _asyncValidators) {
+                    error = await asyncValidator(value);
+                    if (error != null) break;
+                  }
+                }
+                return UpdateFieldBlocStateError(error: error, value: value);
+              }).call(value!).asStream()),
         )
-        .listen(add);
+        .listen(add as void Function(dynamic)?);
 
     if (_getInitialStateIsValidating) {
       _getAsyncValidatorsError(
@@ -594,7 +590,7 @@ abstract class SingleFieldBloc<
     }
   }
 
-  Stream<State> _addValidators(List<Validator<Value>> validators,
+  Stream<State> _addValidators(List<Validator<Value?>> validators,
       [bool forceValidation = false]) async* {
     if (validators != null) {
       _validators.addAll(validators);

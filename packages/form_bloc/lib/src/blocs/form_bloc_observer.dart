@@ -52,7 +52,7 @@ class FormBlocObserver extends BlocObserver {
   FormBlocObserver() : _oldBlocObserver = Bloc.observer;
 
   @override
-  void onEvent(Bloc bloc, Object event) {
+  void onEvent(Bloc bloc, Object? event) {
     var notify = true;
 
     if ((bloc is SingleFieldBloc ||

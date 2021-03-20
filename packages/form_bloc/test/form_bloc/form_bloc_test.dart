@@ -353,7 +353,7 @@ void main() {
 //     //     name: null,
 //     //   );
 //     //   final state2 = initialState.copyWith(
-//     //     value: Optional.of(1),
+//     //     value: 1,
 //     //     isInitial: false,
 //     //   );
 

@@ -2,8 +2,8 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used to select one item
 /// from multiple items.
-class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
-    SelectFieldBlocState<Value, ExtraData>, ExtraData> {
+class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
+    SelectFieldBlocState<Value, ExtraData>, ExtraData?> {
   /// ## SelectFieldBloc<Value, ExtraData>
   ///
   /// ### Properties:
@@ -39,17 +39,16 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
   /// This method is called when you use [FormBlocState.toJson]
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   SelectFieldBloc({
-    String name,
-    Value initialValue,
-    List<Validator<Value>> validators,
-    List<AsyncValidator<Value>> asyncValidators,
+    String? name,
+    Value? initialValue,
+    List<Validator<Value?>>? validators,
+    List<AsyncValidator<Value?>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
-    Suggestions<Value> suggestions,
-    List<Value> items,
-    dynamic Function(Value value) toJson,
-    ExtraData extraData,
-  })  : assert(asyncValidatorDebounceTime != null),
-        super(
+    Suggestions<Value>? suggestions,
+    List<Value>? items,
+    dynamic Function(Value? value)? toJson,
+    ExtraData? extraData,
+  }) : super(
           initialValue,
           validators,
           asyncValidators,
@@ -90,7 +89,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
   /// If you want to add or remove elements to `items`
   /// of the current state,
   /// use [addItem] or [removeItem].
-  void updateItems(List<Value> items) => add(UpdateFieldBlocItems(items));
+  void updateItems(List<Value>? items) => add(UpdateFieldBlocItems(items));
 
   /// Add [item] to the current `items`
   /// of the current state.

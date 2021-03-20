@@ -6,7 +6,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
     List<Value>,
     Value,
     MultiSelectFieldBlocState<Value, ExtraData>,
-    ExtraData> {
+    ExtraData?> {
   /// ## MultiSelectFieldBloc<Value, ExtraData>
   ///
   /// ### Properties:
@@ -43,15 +43,15 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// This method is called when you use [FormBlocState.toJson]
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   MultiSelectFieldBloc({
-    String name,
-    List<Value> initialValue = const [],
-    List<Validator<List<Value>>> validators,
-    List<AsyncValidator<List<Value>>> asyncValidators,
+    String? name,
+    List<Value>? initialValue = const [],
+    List<Validator<List<Value>?>>? validators,
+    List<AsyncValidator<List<Value>>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
-    Suggestions<Value> suggestions,
-    List<Value> items = const [],
-    dynamic Function(List<Value> value) toJson,
-    ExtraData extraData,
+    Suggestions<Value>? suggestions,
+    List<Value>? items = const [],
+    dynamic Function(List<Value>? value)? toJson,
+    ExtraData? extraData,
   })  : assert(asyncValidatorDebounceTime != null),
         super(
           initialValue ?? const [],
@@ -83,7 +83,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
               value: initialValue ?? const [],
             ),
             name: FieldBlocUtils.generateName(name),
-            items: SingleFieldBloc._itemsWithoutDuplicates(items ?? []),
+            items: SingleFieldBloc._itemsWithoutDuplicates(items),
             toJson: toJson,
             extraData: extraData,
           ),
@@ -94,7 +94,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// If you want to add or remove elements to `items`
   /// of the current state,
   /// use [addItem] or [removeItem].
-  void updateItems(List<Value> items) => add(UpdateFieldBlocItems(items));
+  void updateItems(List<Value>? items) => add(UpdateFieldBlocItems(items));
 
   /// Add [item] to the current `items`
   /// of the current state.
@@ -115,7 +115,8 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void updateValue(List<Value> value) => add(UpdateFieldBlocValue(value ?? []));
+  void updateValue(List<Value>? value) =>
+      add(UpdateFieldBlocValue(value ?? []));
 
   /// Set [value] to the `value` and set `isInitial` to `true`
   /// of the current state.
@@ -126,7 +127,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void updateInitialValue(List<Value> value) =>
+  void updateInitialValue(List<Value>? value) =>
       add(UpdateFieldBlocInitialValue(value ?? []));
 
   /// Add [valueToSelect] to the `value` of the current state.
@@ -178,9 +179,9 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
         );
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
-      var newValue = state.value ?? [];
+      var newValue = state.value;
       newValue = SingleFieldBloc._itemsWithoutDuplicates(
-        List<Value>.from(newValue)..add(event.valueToSelect),
+        List<Value>.from(newValue ?? <Value>[])..add(event.valueToSelect),
       );
       if (_canUpdateValue(value: newValue, isInitialValue: false)) {
         final error = _getError(newValue);
@@ -197,8 +198,9 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
         );
       }
     } else if (event is DeselectMultiSelectFieldBlocValue<Value>) {
-      var newValue = state.value;
-      newValue = List<Value>.from(newValue)..remove(event.valueToDeselect);
+      List<Value>? newValue = state.value;
+      newValue = List<Value>.from(newValue ?? <Value>[])
+        ..remove(event.valueToDeselect);
       if (_canUpdateValue(value: newValue, isInitialValue: false)) {
         final error = _getError(newValue);
 

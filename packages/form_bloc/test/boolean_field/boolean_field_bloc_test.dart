@@ -7,7 +7,7 @@ void main() {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
         final suggestions = (String pattern) async => [true];
-        final validators = [(bool value) => value ? 'error' : null];
+        final validators = [(bool? value) => value! ? 'error' : null];
 
         final fieldBloc = BooleanFieldBloc<dynamic>(
           name: 'name',
@@ -74,14 +74,14 @@ void main() {
           validators: [FieldBlocValidators.required, (value) => 'error'],
         );
 
-        initialState = BooleanFieldBlocState<dynamic>(
+        initialState = BooleanFieldBlocState<dynamic?>(
           value: true,
           error: 'error',
           isInitial: true,
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          name: null,
+          name: 'name',
         );
 
         expect(
@@ -95,14 +95,14 @@ void main() {
 
         fieldBloc = BooleanFieldBloc<dynamic>(name: 'name', initialValue: null);
 
-        initialState = BooleanFieldBlocState<dynamic>(
+        initialState = BooleanFieldBlocState<dynamic?>(
           value: false,
           error: null,
           isInitial: true,
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          name: null,
+          name: 'name',
         );
 
         expect(
@@ -124,7 +124,7 @@ void main() {
           suggestions: null,
           isValidated: true,
           isValidating: false,
-          name: null,
+          name: 'name',
         );
         final state2 = state1.copyWith(
           value: Optional.of(false),
@@ -141,7 +141,7 @@ void main() {
         );
 
         fieldBloc.clear();
-      });
+      }, timeout: Timeout(Duration(minutes: 1)));
     });
 
     test('toJson return value', () async {

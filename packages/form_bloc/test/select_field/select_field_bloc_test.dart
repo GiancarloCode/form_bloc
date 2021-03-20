@@ -9,12 +9,12 @@ void main() {
         final suggestions = (String pattern) async => [true];
         final validators = [
           FieldBlocValidators.required,
-          (bool value) => value ? 'error' : null,
+          (bool? value) => value ?? false ? 'error' : null,
         ];
 
         final fieldBloc = SelectFieldBloc<bool, dynamic>(
           name: 'name',
-          initialValue: null,
+          initialValue: false,
           validators: validators,
           suggestions: suggestions,
         );
