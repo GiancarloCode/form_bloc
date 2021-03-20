@@ -1,15 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:form_bloc/form_bloc.dart';
 
-typedef DefaultFieldBlocErrorBuilder = String Function(
+typedef DefaultFieldBlocErrorBuilder = String? Function(
   BuildContext context,
-  String error,
+  String? error,
   FieldBloc fieldBloc,
 );
 
 class FieldBlocBuilder {
   static DefaultFieldBlocErrorBuilder defaultErrorBuilder =
-      (BuildContext context, String error, FieldBloc fieldBloc) {
+      (BuildContext context, String? error, FieldBloc fieldBloc) {
     switch (error) {
       case FieldBlocValidatorsErrors.required:
         if (fieldBloc is MultiSelectFieldBloc || fieldBloc is SelectFieldBloc) {

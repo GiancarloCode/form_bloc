@@ -7,9 +7,9 @@ import 'package:form_bloc/form_bloc.dart';
 /// A material design checkboxes.
 class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   const CheckboxGroupFieldBlocBuilder({
-    Key key,
-    @required this.multiSelectFieldBloc,
-    @required this.itemBuilder,
+    Key? key,
+    required this.multiSelectFieldBloc,
+    required this.itemBuilder,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.errorBuilder,
@@ -19,16 +19,13 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.activeColor,
     this.nextFocusNode,
     this.animateWhenCanShow = true,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final MultiSelectFieldBloc<Value, Object> multiSelectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
   final FieldBlocStringItemBuilder<Value> itemBuilder;
@@ -40,19 +37,19 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   final bool isEnabled;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxColor}
-  final Color checkColor;
+  final Color? checkColor;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxActiveColor}
-  final Color activeColor;
+  final Color? activeColor;
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
@@ -78,7 +75,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
             );
 
             return DefaultFieldBlocBuilderPadding(
-              padding: padding,
+              padding: padding as EdgeInsets?,
               child: Stack(
                 children: <Widget>[
                   InputDecorator(
@@ -112,9 +109,9 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      itemCount: state.items.length,
+      itemCount: state.items!.length,
       itemBuilder: (context, index) {
-        final item = state.items[index];
+        final item = state.items![index];
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Checkbox(
@@ -123,12 +120,12 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
                 defaultColor: Theme.of(context).toggleableActiveColor,
               ),
               activeColor: activeColor,
-              value: state.value.contains(state.items[index]),
-              onChanged: fieldBlocBuilderOnChange<bool>(
+              value: state.value!.contains(state.items![index]),
+              onChanged: fieldBlocBuilderOnChange<bool?>(
                 isEnabled: isEnabled,
                 nextFocusNode: nextFocusNode,
                 onChanged: (_) {
-                  if (state.value.contains(item)) {
+                  if (state.value!.contains(item)) {
                     multiSelectFieldBloc.deselect(item);
                   } else {
                     multiSelectFieldBloc.select(item);
@@ -139,7 +136,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
           ),
           child: DefaultFieldBlocBuilderTextStyle(
             isEnabled: isEnabled,
-            child: Text(itemBuilder(context, state.items.elementAt(index))),
+            child: Text(itemBuilder(context, state.items!.elementAt(index))),
           ),
         );
       },

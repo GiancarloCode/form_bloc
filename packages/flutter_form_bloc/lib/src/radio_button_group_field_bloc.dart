@@ -7,9 +7,9 @@ import 'package:form_bloc/form_bloc.dart';
 /// A material design radio buttons.
 class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   const RadioButtonGroupFieldBlocBuilder({
-    Key key,
-    @required this.selectFieldBloc,
-    @required this.itemBuilder,
+    Key? key,
+    required this.selectFieldBloc,
+    required this.itemBuilder,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.errorBuilder,
@@ -31,7 +31,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   final FieldBlocStringItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
@@ -40,7 +40,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   final bool isEnabled;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// if `true` the radio button selected can
   ///  be deselect by tapping.
@@ -50,7 +50,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   final InputDecoration decoration;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
@@ -76,7 +76,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
             );
 
             return DefaultFieldBlocBuilderPadding(
-              padding: padding,
+              padding: padding as EdgeInsets?,
               child: Stack(
                 children: <Widget>[
                   InputDecorator(
@@ -107,7 +107,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   Widget _buildRadioButtons(
       SelectFieldBlocState<Value, dynamic> state, bool isEnable) {
-    final onChanged = fieldBlocBuilderOnChange<Value>(
+    final onChanged = fieldBlocBuilderOnChange<Value?>(
       isEnabled: isEnabled,
       nextFocusNode: nextFocusNode,
       onChanged: selectFieldBloc.updateValue,
@@ -116,23 +116,23 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      itemCount: state.items.length,
+      itemCount: state.items!.length,
       itemBuilder: (context, index) {
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Stack(
               children: <Widget>[
                 Radio<Value>(
-                  value: state.items.elementAt(index),
+                  value: state.items!.elementAt(index),
                   groupValue: state.value,
                   onChanged: onChanged,
                 ),
-                if (canDeselect && state.items.elementAt(index) == state.value)
+                if (canDeselect && state.items!.elementAt(index) == state.value)
                   Theme(
                     data: Theme.of(context).copyWith(
                       unselectedWidgetColor: Colors.transparent,
                     ),
-                    child: Radio<Value>(
+                    child: Radio<Value?>(
                       value: null,
                       groupValue: state.value,
                       onChanged: onChanged,
@@ -143,7 +143,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
           ),
           child: DefaultFieldBlocBuilderTextStyle(
             isEnabled: isEnabled,
-            child: Text(itemBuilder(context, state.items.elementAt(index))),
+            child: Text(itemBuilder(context, state.items!.elementAt(index))),
           ),
         );
       },

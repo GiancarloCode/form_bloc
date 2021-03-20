@@ -7,10 +7,10 @@ import 'package:form_bloc/form_bloc.dart';
 typedef FieldBlocStringItemBuilder<Value> = String Function(
     BuildContext context, Value value);
 
-ValueChanged<T> fieldBlocBuilderOnChange<T>({
-  @required bool isEnabled,
-  @required FocusNode nextFocusNode,
-  @required void Function(T value) onChanged,
+ValueChanged<T>? fieldBlocBuilderOnChange<T>({
+  required bool isEnabled,
+  required FocusNode? nextFocusNode,
+  required void Function(T value) onChanged,
 }) {
   if (isEnabled) {
     return (T value) {
@@ -24,20 +24,20 @@ ValueChanged<T> fieldBlocBuilderOnChange<T>({
 }
 
 bool fieldBlocIsEnabled({
-  @required bool isEnabled,
-  @required bool enableOnlyWhenFormBlocCanSubmit,
-  @required FieldBlocState fieldBlocState,
+  required bool isEnabled,
+  required bool enableOnlyWhenFormBlocCanSubmit,
+  required FieldBlocState fieldBlocState,
 }) {
   return isEnabled
       ? enableOnlyWhenFormBlocCanSubmit
-          ? fieldBlocState?.formBloc?.state?.canSubmit ?? true
+          ? fieldBlocState.formBloc?.state.canSubmit ?? true
           : true
       : false;
 }
 
 Widget widgetBasedOnPlatform({
-  @required Widget mobile,
-  @required Widget other,
+  required Widget mobile,
+  required Widget other,
 }) {
   if (kIsWeb) {
     return other;

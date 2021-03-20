@@ -10,9 +10,9 @@ import 'package:form_bloc/form_bloc.dart';
 /// A material design dropdown.
 class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   DropdownFieldBlocBuilder({
-    Key key,
-    @required this.selectFieldBloc,
-    @required this.itemBuilder,
+    Key? key,
+    required this.selectFieldBloc,
+    required this.itemBuilder,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.padding,
@@ -35,7 +35,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   final SelectFieldBloc<Value, Object> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
   /// This function takes the `context` and the `value`
@@ -58,13 +58,13 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   final int millisecondsForShowDropdownItemsWhenKeyboardIsOpen;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.decoration}
   /// The decoration to show around the field.
@@ -72,7 +72,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   final InputDecoration decoration;
 
   /// How the text in the decoration should be aligned horizontally.
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
 
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
