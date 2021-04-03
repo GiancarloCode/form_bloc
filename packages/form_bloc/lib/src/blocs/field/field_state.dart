@@ -78,14 +78,14 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   /// Used for not show the error when [isInitial] is `false`.
   /// Which mean that [value] was updated
   /// after be instantiate by the [FieldBloc] and has an error.
-  bool get canShowError => (isInitial) && hasError;
+  bool get canShowError => !isInitial && hasError;
 
   /// Indicates if this state is validating and is not initial.
   ///
   /// Used for not show the is validating when [isInitial] is `false`.
   /// Which mean that [value] was updated
   /// after be instantiate by the [FieldBloc] and is validating.
-  bool get canShowIsValidating => (isInitial) && isValidating;
+  bool get canShowIsValidating => !isInitial && isValidating;
 
   /// Returns a copy of the current state by changing
   /// the values that are passed as parameters.
