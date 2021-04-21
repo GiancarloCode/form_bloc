@@ -113,7 +113,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
 
   /// Returns `true` if the [FormBloc]
   /// contains [fieldBloc]
-  bool contains(FieldBloc fieldBloc) {
+  bool contains(FieldBloc? fieldBloc) {
     if (fieldBloc == null) {
       return false;
     }
@@ -257,7 +257,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
 
   static Map<int, Map<String, dynamic>> _initFieldBlocsStatesByStepMap(
       Map<int, Map<String, FieldBloc>>? fieldBlocs) {
-    final Map<int, Map<String, dynamic>> map = <int, Map<String, dynamic>>{};
+    final map = <int, Map<String, dynamic>>{};
 
     fieldBlocs?.forEach((key, value) {
       map[key] = FormBlocUtils.fieldBlocsToFieldBlocsStates(value);
@@ -647,7 +647,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
     _toString += ',\n  isValid(): ${isValid()}';
     _toString += _allStepsToJson();
     _toString += ',\n  toJson(): ${toJson()}';
-    _toString += ',\n  fieldBlocs: ${_fieldBlocs}';
+    _toString += ',\n  fieldBlocs: $_fieldBlocs';
     _toString += '\n}';
     return _toString;
   }

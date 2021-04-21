@@ -297,13 +297,9 @@ abstract class SingleFieldBloc<
     String? error;
 
     if (forceValidation || _autoValidate) {
-      final hasValidators = _validators != null;
-
-      if (hasValidators) {
-        for (var validator in _validators) {
-          error = validator(value);
-          if (error != null) return error;
-        }
+      for (var validator in _validators) {
+        error = validator(value);
+        if (error != null) return error;
       }
     } else if (!isInitialState) {
       error = state.error;
@@ -322,13 +318,10 @@ abstract class SingleFieldBloc<
   }) {
     final hasError = error != null;
 
-    final hasAsyncValidators = _asyncValidators != null;
-
     bool isValidating;
 
     isValidating = (_autoValidate || forceValidation) &&
         !hasError &&
-        hasAsyncValidators &&
         _asyncValidators.isNotEmpty;
 
     if (isValidating) {
@@ -346,12 +339,8 @@ abstract class SingleFieldBloc<
   bool get _getInitialStateIsValidating {
     final hasInitialStateError = _getInitialStateError != null;
 
-    final hasAsyncValidators = _asyncValidators != null;
-
-    var isValidating = _autoValidate &&
-        !hasInitialStateError &&
-        hasAsyncValidators &&
-        _asyncValidators.isNotEmpty;
+    var isValidating =
+        _autoValidate && !hasInitialStateError && _asyncValidators.isNotEmpty;
 
     return isValidating;
   }
@@ -411,55 +400,49 @@ abstract class SingleFieldBloc<
   }
 
   Stream<State> _onAddAsyncValidators(AddAsyncValidators<Value> event) async* {
-    if (event.asyncValidators != null) {
-      _asyncValidators.addAll(event.asyncValidators);
+    _asyncValidators.addAll(event.asyncValidators);
 
-      final error = _getError(state.value);
+    final error = _getError(state.value);
 
-      final isValidating =
-          _getAsyncValidatorsError(value: state.value, error: error);
+    final isValidating =
+        _getAsyncValidatorsError(value: state.value, error: error);
 
-      yield state.copyWith(
-        error: Optional.fromNullable(error),
-        isValidated: _isValidated(isValidating),
-        isValidating: isValidating,
-      ) as State;
-    }
+    yield state.copyWith(
+      error: Optional.fromNullable(error),
+      isValidated: _isValidated(isValidating),
+      isValidating: isValidating,
+    ) as State;
   }
 
   Stream<State> _onUpdateValidators(UpdateValidators<Value?> event) async* {
-    if (event.validators != null) {
-      _validators = event.validators;
+    _validators = event.validators;
 
-      final error = _getError(state.value);
+    final error = _getError(state.value);
 
-      final isValidating =
-          _getAsyncValidatorsError(value: state.value, error: error);
+    final isValidating =
+        _getAsyncValidatorsError(value: state.value, error: error);
 
-      yield state.copyWith(
-        error: Optional.fromNullable(error),
-        isValidated: _isValidated(isValidating),
-        isValidating: isValidating,
-      ) as State;
-    }
+    yield state.copyWith(
+      error: Optional.fromNullable(error),
+      isValidated: _isValidated(isValidating),
+      isValidating: isValidating,
+    ) as State;
   }
 
   Stream<State> _onUpdateAsyncValidators(
       UpdateAsyncValidators<Value> event) async* {
-    if (event.asyncValidators != null) {
-      _asyncValidators = event.asyncValidators;
+    _asyncValidators = event.asyncValidators;
 
-      final error = _getError(state.value);
+    final error = _getError(state.value);
 
-      final isValidating =
-          _getAsyncValidatorsError(value: state.value, error: error);
+    final isValidating =
+        _getAsyncValidatorsError(value: state.value, error: error);
 
-      yield state.copyWith(
-        error: Optional.fromNullable(error),
-        isValidated: _isValidated(isValidating),
-        isValidating: isValidating,
-      ) as State;
-    }
+    yield state.copyWith(
+      error: Optional.fromNullable(error),
+      isValidated: _isValidated(isValidating),
+      isValidating: isValidating,
+    ) as State;
   }
 
   Stream<State> _onUpdateSuggestions(
@@ -496,7 +479,7 @@ abstract class SingleFieldBloc<
 
   Stream<State> _onSubscribeToFieldBlocs(SubscribeToFieldBlocs event) async* {
     unawaited(_revalidateFieldBlocsSubscription?.cancel());
-    if (event.fieldBlocs != null && event.fieldBlocs.isNotEmpty) {
+    if (event.fieldBlocs.isNotEmpty) {
       _revalidateFieldBlocsSubscription = Rx.combineLatest<dynamic, void>(
         event.fieldBlocs.whereType<SingleFieldBloc>().toList().map(
               (state) =>
@@ -528,7 +511,7 @@ abstract class SingleFieldBloc<
         [(value) => value == event.value ? event.error : null],
         true,
       );
-    } else if (event.error != null) {
+    } else {
       yield state.copyWith(
         isValidated: false,
         isInitial: false,
@@ -573,7 +556,7 @@ abstract class SingleFieldBloc<
           ((value) => ((Value value) async {
                 String? error;
 
-                if (error == null && _asyncValidators != null) {
+                if (error == null) {
                   for (var asyncValidator in _asyncValidators) {
                     error = await asyncValidator(value);
                     if (error != null) break;
@@ -592,11 +575,9 @@ abstract class SingleFieldBloc<
 
   Stream<State> _addValidators(List<Validator<Value?>> validators,
       [bool forceValidation = false]) async* {
-    if (validators != null) {
-      _validators.addAll(validators);
-      if (_autoValidate || forceValidation) {
-        yield* _validateFieldBloc(false);
-      }
+    _validators.addAll(validators);
+    if (_autoValidate || forceValidation) {
+      yield* _validateFieldBloc(false);
     }
   }
 

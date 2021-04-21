@@ -52,8 +52,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
     List<Value>? items = const [],
     dynamic Function(List<Value>? value)? toJson,
     ExtraData? extraData,
-  })  : assert(asyncValidatorDebounceTime != null),
-        super(
+  }) : super(
           initialValue ?? const [],
           validators,
           asyncValidators,
@@ -198,7 +197,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
         );
       }
     } else if (event is DeselectMultiSelectFieldBlocValue<Value>) {
-      List<Value>? newValue = state.value;
+      var newValue = state.value;
       newValue = List<Value>.from(newValue ?? <Value>[])
         ..remove(event.valueToDeselect);
       if (_canUpdateValue(value: newValue, isInitialValue: false)) {

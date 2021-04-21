@@ -81,7 +81,7 @@ void main() {
 
     group('email:', () {
       group('not valid:', () {
-        var emails = [
+        var emails = <String?>[
           ' ',
           'example',
           'example@',
@@ -121,7 +121,7 @@ void main() {
 
     group('passwordMin6Chars:', () {
       group('not valid:', () {
-        var passwords = [
+        var passwords = <String?>[
           '1',
           '12345',
         ];

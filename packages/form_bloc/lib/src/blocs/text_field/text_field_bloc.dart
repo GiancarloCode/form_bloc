@@ -45,8 +45,7 @@ class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<String>? suggestions,
     ExtraData? extraData,
-  })  : assert(asyncValidatorDebounceTime != null),
-        super(
+  }) : super(
           initialValue ?? '',
           validators,
           asyncValidators,

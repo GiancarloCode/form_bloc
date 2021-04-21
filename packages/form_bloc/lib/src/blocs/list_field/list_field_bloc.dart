@@ -45,9 +45,7 @@ class ListFieldBlocState<T extends FieldBloc> extends Equatable {
   final FormBloc? formBloc;
 
   ListFieldBlocState(
-      {required this.name,
-      required this.fieldBlocs,
-      required this.formBloc});
+      {required this.name, required this.fieldBlocs, required this.formBloc});
 
   ListFieldBlocState<T> _copyWith({
     List<T>? fieldBlocs,
@@ -105,7 +103,7 @@ class ListFieldBloc<T extends FieldBloc>
   Stream<ListFieldBlocState<T>> mapEventToState(
       ListFieldBlocEvent event) async* {
     if (event is AddFieldBlocToListFieldBloc<T>) {
-      final ListFieldBlocState<T> stateSnapshot = state;
+      final stateSnapshot = state;
       if (event.fieldBloc != null) {
         final newState = stateSnapshot._copyWith(
           fieldBlocs: List<T>.from(stateSnapshot.fieldBlocs)
@@ -124,10 +122,9 @@ class ListFieldBloc<T extends FieldBloc>
         }
       }
     } else if (event is RemoveFieldBlocAtFromListFieldBloc) {
-      final ListFieldBlocState<T> stateSnapshot = state;
+      final stateSnapshot = state;
 
-      if (event.index != null &&
-          (stateSnapshot.fieldBlocs.length > event.index)) {
+      if ((stateSnapshot.fieldBlocs.length > event.index)) {
         final newFieldBlocs = List<T>.from(stateSnapshot.fieldBlocs);
 
         /// closes all fieldBlocs
@@ -139,31 +136,29 @@ class ListFieldBloc<T extends FieldBloc>
         state.formBloc?.add(RefreshFieldBlocsSubscription());
       }
     } else if (event is RemoveWhereFieldBlocFromListFieldBloc<T>) {
-      final ListFieldBlocState<T> stateSnapshot = state;
+      final stateSnapshot = state;
 
-      if (event.test != null) {
-        final newFieldBlocs = List<T>.from(stateSnapshot.fieldBlocs);
+      final newFieldBlocs = List<T>.from(stateSnapshot.fieldBlocs);
 
-        final fieldBlocsRemoved = <T>[];
+      final fieldBlocsRemoved = <T>[];
 
-        newFieldBlocs.removeWhere((e) {
-          if (event.test(e)) {
-            fieldBlocsRemoved.add(e);
-            return true;
-          }
-          return false;
-        });
+      newFieldBlocs.removeWhere((e) {
+        if (event.test(e)) {
+          fieldBlocsRemoved.add(e);
+          return true;
+        }
+        return false;
+      });
 
-        /// closes all fieldBlocs
-        FormBlocUtils.getAllFieldBlocs(fieldBlocsRemoved)
-            .forEach((dynamic fieldBloc) => fieldBloc.close);
+      /// closes all fieldBlocs
+      FormBlocUtils.getAllFieldBlocs(fieldBlocsRemoved)
+          .forEach((dynamic fieldBloc) => fieldBloc.close);
 
-        final ListFieldBlocState<T> newState = state._copyWith(fieldBlocs: newFieldBlocs);
+      final newState = state._copyWith(fieldBlocs: newFieldBlocs);
 
-        yield newState;
+      yield newState;
 
-        state.formBloc?.add(RefreshFieldBlocsSubscription());
-      }
+      state.formBloc?.add(RefreshFieldBlocsSubscription());
     } else if (event is AddFormBlocAndAutoValidateToListFieldBloc) {
       _autoValidate = event.autoValidate;
 

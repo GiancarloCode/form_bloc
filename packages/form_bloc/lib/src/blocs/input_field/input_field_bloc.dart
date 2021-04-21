@@ -45,8 +45,7 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
     Suggestions<Value>? suggestions,
     dynamic Function(Value? value)? toJson,
     ExtraData? extraData,
-  })  : assert(asyncValidatorDebounceTime != null),
-        super(
+  }) : super(
           initialValue,
           validators,
           asyncValidators,

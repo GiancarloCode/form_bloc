@@ -106,15 +106,15 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   String _toStringWith([String? extra]) {
     var _toString = '';
 
-    _toString += '${runtimeType} {';
-    _toString += '\n  name: ${name}';
-    _toString += ',\n  value: ${value}';
-    _toString += ',\n  error: ${error}';
+    _toString += '$runtimeType {';
+    _toString += '\n  name: $name';
+    _toString += ',\n  value: $value';
+    _toString += ',\n  error: $error';
     _toString += ',\n  isInitial: $isInitial';
-    _toString += ',\n  isValidated: ${isValidated}';
-    _toString += ',\n  isValidating: ${isValidating}';
-    _toString += ',\n  isValid: ${isValid}';
-    _toString += ',\n  extraData: ${extraData}';
+    _toString += ',\n  isValidated: $isValidated';
+    _toString += ',\n  isValidating: $isValidating';
+    _toString += ',\n  isValid: $isValid';
+    _toString += ',\n  extraData: $extraData';
     _toString += extra ?? '';
     _toString += ',\n  formBloc: $formBloc';
     _toString += '\n}';
