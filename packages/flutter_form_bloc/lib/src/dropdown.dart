@@ -499,7 +499,7 @@ class DropdownMenuItem<T> extends StatelessWidget {
     this.value,
     required this.text,
     required this.style,
-  })  :super(key: key);
+  }) : super(key: key);
 
   /// The widget below this widget in the tree.
   ///
@@ -540,8 +540,7 @@ class DropdownButtonHideUnderline extends InheritedWidget {
   const DropdownButtonHideUnderline({
     Key? key,
     required Widget child,
-  })  :
-        super(key: key, child: child);
+  }) : super(key: key, child: child);
 
   /// Returns whether the underline of [DropdownButton] widgets should
   /// be hidden.

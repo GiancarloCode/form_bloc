@@ -9,7 +9,6 @@ environment:
 dependencies:
   meta: ^1.3.0
   bloc: ^7.0.0
-  bloc_test: ^8.0.0
   rxdart: ^0.26.0
   equatable: ^2.0.0
   quiver: ^3.0.0
@@ -19,3 +18,5 @@ dependencies:
 dev_dependencies:
   test: ^1.16.8
   mockito: ^5.0.2
+  bloc_test: ^8.0.0
+

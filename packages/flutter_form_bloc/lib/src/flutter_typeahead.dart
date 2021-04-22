@@ -581,11 +581,7 @@ class TypeAheadField<T> extends StatefulWidget {
     required this.removeSuggestionOnLongPress,
     this.showSuggestionsWhenIsEmpty = false,
     this.onTap,
-  })  :
-        assert(
-            animationStart >= 0.0 &&
-            animationStart <= 1.0),
-
+  })  : assert(animationStart >= 0.0 && animationStart <= 1.0),
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
         super(key: key);
@@ -1813,9 +1809,8 @@ class _SuggestionsBox {
       double textBoxAbsY) {
     // unsafe area, ie: iPhone X 'home button'
     // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
-    double unsafeAreaHeight = keyboardHeight == 0
-        ? rootMediaQuery.data.padding.bottom
-        : 0;
+    double unsafeAreaHeight =
+        keyboardHeight == 0 ? rootMediaQuery.data.padding.bottom : 0;
 
     return windowHeight -
         keyboardHeight -
