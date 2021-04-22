@@ -40,7 +40,6 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
     this.focusNode,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
-        assert(decoration != null),
         super(key: key);
 
   final DateTimeFieldBlocBuilderBaseType type;
@@ -57,10 +56,10 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
-  final bool enableOnlyWhenFormBlocCanSubmit;
+  final bool? enableOnlyWhenFormBlocCanSubmit;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
-  final bool isEnabled;
+  final bool? isEnabled;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry? padding;
@@ -141,7 +140,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     }
     if (result != null) {
       fieldBlocBuilderOnChange<T>(
-        isEnabled: widget.isEnabled,
+        isEnabled: widget.isEnabled ?? true,
         nextFocusNode: widget.nextFocusNode,
         onChanged: (value) {
           widget.dateTimeFieldBloc.updateValue(value);
@@ -154,10 +153,6 @@ class _DateTimeFieldBlocBuilderBaseState<T>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.dateTimeFieldBloc == null) {
-      return SizedBox();
-    }
-
     return Focus(
       focusNode: _effectiveFocusNode,
       child: CanShowFieldBlocBuilder(
@@ -169,7 +164,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
             bloc: widget.dateTimeFieldBloc,
             builder: (context, state) {
               final isEnabled = fieldBlocIsEnabled(
-                isEnabled: this.widget.isEnabled,
+                isEnabled: this.widget.isEnabled ?? true,
                 enableOnlyWhenFormBlocCanSubmit:
                     widget.enableOnlyWhenFormBlocCanSubmit,
                 fieldBlocState: state,
@@ -253,7 +248,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
   }
 
   DateTime? _combine(DateTime date, TimeOfDay? time) {
-    if (date != null && time != null) {
+    if (time != null) {
       return DateTime(date.year, date.month, date.day, time.hour, time.minute);
     }
     return null;

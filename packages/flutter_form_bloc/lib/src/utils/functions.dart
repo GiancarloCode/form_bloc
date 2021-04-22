@@ -25,11 +25,11 @@ ValueChanged<T>? fieldBlocBuilderOnChange<T>({
 
 bool fieldBlocIsEnabled({
   required bool isEnabled,
-  required bool enableOnlyWhenFormBlocCanSubmit,
+  bool? enableOnlyWhenFormBlocCanSubmit,
   required FieldBlocState fieldBlocState,
 }) {
   return isEnabled
-      ? enableOnlyWhenFormBlocCanSubmit
+      ? (enableOnlyWhenFormBlocCanSubmit ?? false)
           ? fieldBlocState.formBloc?.state.canSubmit ?? true
           : true
       : false;

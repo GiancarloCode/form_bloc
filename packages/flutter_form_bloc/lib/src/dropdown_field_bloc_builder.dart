@@ -24,12 +24,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.focusNode,
     this.textAlign,
     this.animateWhenCanShow = true,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        assert(showEmptyItem != null),
-        assert(millisecondsForShowDropdownItemsWhenKeyboardIsOpen != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final SelectFieldBloc<Value, Object> selectFieldBloc;
@@ -79,10 +74,6 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (selectFieldBloc == null) {
-      return SizedBox();
-    }
-
     return CanShowFieldBlocBuilder(
       fieldBloc: selectFieldBloc,
       animate: animateWhenCanShow,

@@ -28,11 +28,7 @@ class TimeFieldBlocBuilder extends StatelessWidget {
     this.clearIcon,
     this.nextFocusNode,
     this.focusNode,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        assert(initialTime != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final InputFieldBloc<TimeOfDay, Object> timeFieldBloc;

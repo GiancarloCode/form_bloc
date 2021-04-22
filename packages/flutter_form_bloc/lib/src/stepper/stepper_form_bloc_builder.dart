@@ -22,9 +22,7 @@ class FormBlocStep {
     required this.content,
     this.state = StepState.indexed,
     this.isActive,
-  })  : assert(title != null),
-        assert(content != null),
-        assert(state != null);
+  });
 
   /// The title of the step that typically describes it.
   final Widget title;

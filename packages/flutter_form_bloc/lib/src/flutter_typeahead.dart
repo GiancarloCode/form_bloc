@@ -581,18 +581,11 @@ class TypeAheadField<T> extends StatefulWidget {
     required this.removeSuggestionOnLongPress,
     this.showSuggestionsWhenIsEmpty = false,
     this.onTap,
-  })  : assert(itemBuilder != null),
-        assert(removeSuggestionOnLongPress != null),
-        assert(onSuggestionSelected != null),
-        assert(animationStart != null &&
+  })  :
+        assert(
             animationStart >= 0.0 &&
             animationStart <= 1.0),
-        assert(animationDuration != null),
-        assert(debounceDuration != null),
-        assert(textFieldConfiguration != null),
-        assert(suggestionsBoxDecoration != null),
-        assert(suggestionsBoxVerticalOffset != null),
-        assert(showSuggestionsWhenIsEmpty != null),
+
         assert(
             direction == AxisDirection.down || direction == AxisDirection.up),
         super(key: key);
@@ -1053,7 +1046,6 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
           }
 
           if (error != null ||
-              suggestions == null ||
               suggestions.isEmpty ||
               ListEquality<dynamic>().equals(_suggestions, suggestions)) {
             setState(() {
@@ -1339,9 +1331,7 @@ class SuggestionsBoxDecoration {
       this.hasScrollbar = true,
       this.borderRadius,
       this.shadowColor = const Color(0xFF000000),
-      this.constraints})
-      : assert(shadowColor != null),
-        assert(elevation != null);
+      this.constraints});
 }
 
 /// Supply an instance of this class to the [TypeAhead.textFieldConfiguration]
@@ -1823,7 +1813,7 @@ class _SuggestionsBox {
       double textBoxAbsY) {
     // unsafe area, ie: iPhone X 'home button'
     // keyboardHeight includes unsafeAreaHeight, if keyboard is showing, set to 0
-    double unsafeAreaHeight = keyboardHeight == 0 && rootMediaQuery != null
+    double unsafeAreaHeight = keyboardHeight == 0
         ? rootMediaQuery.data.padding.bottom
         : 0;
 

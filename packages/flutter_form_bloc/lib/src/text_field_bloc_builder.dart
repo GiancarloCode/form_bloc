@@ -147,37 +147,14 @@ class TextFieldBlocBuilder extends StatefulWidget {
         ),
       ),
     ),
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(obscureTextTrueIcon != null),
-        assert(obscureTextFalseIcon != null),
-        assert(clearTextIcon != null),
-        assert(asyncValidatingIcon != null),
-        assert(isEnabled != null),
-        assert(suggestionsAnimationDuration != null),
-        assert(removeSuggestionOnLongPress != null),
-        assert(debounceSuggestionDuration != null),
-        assert(getImmediateSuggestions != null),
-        assert(textAlign != null),
-        assert(autofocus != null),
-        assert(autocorrect != null),
-        assert(hideOnEmptySuggestions != null),
-        assert(hideOnSuggestionsError != null),
-        assert(hideOnLoadingSuggestions != null),
-        assert(keepSuggestionsOnLoading != null),
-        assert(showSuggestionsWhenIsEmpty != null),
-        assert(autocorrect != null),
-        assert(maxLengthEnforced != null),
-        assert(scrollPadding != null),
-        assert(dragStartBehavior != null),
-        assert(maxLines == null || maxLines > 0),
+  })  : assert(maxLines > 0),
         assert(minLines == null || minLines > 0),
         assert(
-          (maxLines == null) || (minLines == null) || (maxLines >= minLines),
+          (minLines == null) || (maxLines >= minLines),
           'minLines can\'t be greater than maxLines',
         ),
-        assert(expands != null),
         assert(
-          !expands || (maxLines == null && minLines == null),
+          !expands || (minLines == null),
           'minLines and maxLines must be null when expands is true.',
         ),
         assert(maxLength == null ||
@@ -760,10 +737,6 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.textFieldBloc == null) {
-      return SizedBox();
-    }
-
     return CanShowFieldBlocBuilder(
       fieldBloc: widget.textFieldBloc,
       animate: widget.animateWhenCanShow,
@@ -794,7 +767,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   InputDecoration _buildDecoration(TextFieldBlocState state) {
     InputDecoration decoration = widget.decoration;
     if (widget.suffixButton != null) {
-      switch (widget.suffixButton) {
+      switch (widget.suffixButton!) {
         case SuffixButton.obscureText:
           if (widget.obscureText == null) {
             decoration = decoration.copyWith(

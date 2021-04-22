@@ -23,12 +23,7 @@ class DropdownFieldBlocBuilderWeb<Value> extends StatefulWidget {
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        assert(showEmptyItem != null),
-        assert(millisecondsForShowDropdownItemsWhenKeyboardIsOpen != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final SelectFieldBloc<Value, Object> selectFieldBloc;
@@ -115,10 +110,6 @@ class _DropdownFieldBlocBuilderWebState<Value>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.selectFieldBloc == null) {
-      return Container();
-    }
-
     return Focus(
       focusNode: _effectiveFocusNode,
       child: BlocBuilder<SelectFieldBloc<Value?, dynamic>,

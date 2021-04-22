@@ -33,11 +33,6 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
     this.nextFocusNode,
     this.focusNode,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        assert(initialDate != null),
-        assert(firstDate != null),
-        assert(lastDate != null),
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -52,7 +47,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
   final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
-  final bool enableOnlyWhenFormBlocCanSubmit;
+  final bool? enableOnlyWhenFormBlocCanSubmit;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
   final bool isEnabled;

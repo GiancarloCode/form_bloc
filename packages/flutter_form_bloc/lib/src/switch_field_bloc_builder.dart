@@ -32,11 +32,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
     this.focusNode,
     this.autofocus = false,
     this.animateWhenCanShow = true,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(controlAffinity != null),
-        assert(isEnabled != null),
-        assert(body != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final BooleanFieldBloc booleanFieldBloc;
@@ -128,10 +124,6 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (booleanFieldBloc == null) {
-      return SizedBox();
-    }
-
     return CanShowFieldBlocBuilder(
       fieldBloc: booleanFieldBloc,
       animate: animateWhenCanShow,

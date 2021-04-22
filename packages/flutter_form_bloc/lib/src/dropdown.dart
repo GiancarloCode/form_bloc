@@ -277,7 +277,6 @@ class _DropdownMenuRouteLayout<T> extends SingleChildLayoutDelegate {
       }
       return true;
     }());
-    assert(textDirection != null);
     late double left;
     switch (textDirection) {
       case TextDirection.rtl:
@@ -328,7 +327,7 @@ class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>> {
     this.theme,
     required this.style,
     this.barrierLabel,
-  }) : assert(style != null);
+  });
 
   final List<DropdownMenuItem<T>>? items;
   final EdgeInsetsGeometry? padding;
@@ -500,9 +499,7 @@ class DropdownMenuItem<T> extends StatelessWidget {
     this.value,
     required this.text,
     required this.style,
-  })  : assert(text != null),
-        assert(style != null),
-        super(key: key);
+  })  :super(key: key);
 
   /// The widget below this widget in the tree.
   ///
@@ -543,7 +540,7 @@ class DropdownButtonHideUnderline extends InheritedWidget {
   const DropdownButtonHideUnderline({
     Key? key,
     required Widget child,
-  })  : assert(child != null),
+  })  :
         super(key: key, child: child);
 
   /// Returns whether the underline of [DropdownButton] widgets should
@@ -654,10 +651,6 @@ class DropdownButton<T> extends StatefulWidget {
                     .where((DropdownMenuItem<T> item) => item.value == value)
                     .length ==
                 1),
-        assert(elevation != null),
-        assert(iconSize != null),
-        assert(isDense != null),
-        assert(callOnPressed != null),
         super(key: key);
 
   /// TODO: Improve documentation

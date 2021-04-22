@@ -56,10 +56,6 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (multiSelectFieldBloc == null) {
-      return SizedBox();
-    }
-
     return CanShowFieldBlocBuilder(
       fieldBloc: multiSelectFieldBloc,
       animate: animateWhenCanShow,
