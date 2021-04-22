@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_bloc/form_bloc.dart';
@@ -41,7 +39,8 @@ Widget widgetBasedOnPlatform({
 }) {
   if (kIsWeb) {
     return other;
-  } else if (Platform.isAndroid || Platform.isIOS) {
+  } else if (defaultTargetPlatform == TargetPlatform.android ||
+      defaultTargetPlatform == TargetPlatform.iOS) {
     return mobile;
   } else {
     return other;
