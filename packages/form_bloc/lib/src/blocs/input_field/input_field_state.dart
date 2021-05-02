@@ -1,19 +1,19 @@
 part of '../field/field_bloc.dart';
 
 class InputFieldBlocState<Value, ExtraData>
-    extends FieldBlocState<Value, Value, ExtraData> {
+    extends FieldBlocState<Value?, Value, ExtraData?> {
   InputFieldBlocState({
-    @required Value value,
-    @required String error,
-    @required bool isInitial,
-    @required Suggestions<Value> suggestions,
-    @required bool isValidated,
-    @required bool isValidating,
-    FormBloc formBloc,
-    @required String name,
+    required Value? value,
+    required String? error,
+    required bool isInitial,
+    required Suggestions<Value>? suggestions,
+    required bool isValidated,
+    required bool isValidating,
+    FormBloc? formBloc,
+    String? name,
     List additionalProps = const <dynamic>[],
-    dynamic Function(Value value) toJson,
-    ExtraData extraData,
+    dynamic Function(Value? value)? toJson,
+    ExtraData? extraData,
   }) : super(
           value: value,
           error: error,
@@ -28,16 +28,15 @@ class InputFieldBlocState<Value, ExtraData>
         );
 
   @override
-  InputFieldBlocState<Value, ExtraData> copyWith({
-    Optional<Value> value,
-    Optional<String> error,
-    bool isInitial,
-    Optional<Suggestions<Value>> suggestions,
-    bool isValidated,
-    bool isValidating,
-    FormBloc formBloc,
-    Optional<ExtraData> extraData,
-  }) {
+  FieldBlocState<Value?, Value, ExtraData?> copyWith(
+      {Optional<Value?>? value,
+      Optional<String>? error,
+      bool? isInitial,
+      Optional<Suggestions<Value>>? suggestions,
+      bool? isValidated,
+      bool? isValidating,
+      FormBloc? formBloc,
+      Optional<ExtraData?>? extraData}) {
     return InputFieldBlocState(
       value: value == null ? this.value : value.orNull,
       error: error == null ? this.error : error.orNull,
@@ -53,7 +52,7 @@ class InputFieldBlocState<Value, ExtraData>
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         value,
         error,
         isInitial,

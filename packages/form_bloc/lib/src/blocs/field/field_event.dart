@@ -11,11 +11,11 @@ class UpdateFieldBlocValue<Value> extends FieldBlocEvent {
   String toString() => '$runtimeType { value: $value }';
 
   @override
-  List<Object> get props => [value];
+  List<Object?> get props => [value];
 }
 
 class UpdateFieldBlocInitialValue<Value> extends FieldBlocEvent {
-  final Value value;
+  final Value? value;
 
   UpdateFieldBlocInitialValue(this.value);
 
@@ -23,7 +23,7 @@ class UpdateFieldBlocInitialValue<Value> extends FieldBlocEvent {
   String toString() => '$runtimeType { value: $value }';
 
   @override
-  List<Object> get props => [value];
+  List<Object?> get props => [value];
 }
 
 class AddValidators<Value> extends FieldBlocEvent {
@@ -72,7 +72,7 @@ class ValidateFieldBloc extends FieldBlocEvent {
 }
 
 class UpdateSuggestions<Suggestion> extends FieldBlocEvent {
-  final Suggestions<Suggestion> suggestions;
+  final Suggestions<Suggestion>? suggestions;
 
   UpdateSuggestions(this.suggestions);
 
@@ -80,7 +80,7 @@ class UpdateSuggestions<Suggestion> extends FieldBlocEvent {
   String toString() => '$runtimeType { suggestions: $suggestions }';
 
   @override
-  List<Object> get props => [suggestions];
+  List<Object?> get props => [suggestions];
 }
 
 class SelectSuggestion<Suggestion> extends FieldBlocEvent {
@@ -92,11 +92,11 @@ class SelectSuggestion<Suggestion> extends FieldBlocEvent {
   String toString() => '$runtimeType { suggestion: $suggestion }';
 
   @override
-  List<Object> get props => [suggestion];
+  List<Object?> get props => [suggestion];
 }
 
 class UpdateFieldBlocItems<Value> extends FieldBlocEvent {
-  final List<Value> items;
+  final List<Value>? items;
 
   UpdateFieldBlocItems(this.items);
 
@@ -104,7 +104,7 @@ class UpdateFieldBlocItems<Value> extends FieldBlocEvent {
   String toString() => '$runtimeType { items: $items }';
 
   @override
-  List<Object> get props => [items];
+  List<Object?> get props => [items];
 }
 
 class AddFieldBlocItem<Value> extends FieldBlocEvent {
@@ -116,7 +116,7 @@ class AddFieldBlocItem<Value> extends FieldBlocEvent {
   String toString() => '$runtimeType { item: $item }';
 
   @override
-  List<Object> get props => [item];
+  List<Object?> get props => [item];
 }
 
 class RemoveFieldBlocItem<Value> extends FieldBlocEvent {
@@ -128,7 +128,7 @@ class RemoveFieldBlocItem<Value> extends FieldBlocEvent {
   String toString() => '$runtimeType { item: $item }';
 
   @override
-  List<Object> get props => [item];
+  List<Object?> get props => [item];
 }
 
 class SelectMultiSelectFieldBlocValue<Value> extends FieldBlocEvent {
@@ -140,7 +140,7 @@ class SelectMultiSelectFieldBlocValue<Value> extends FieldBlocEvent {
   String toString() => '$runtimeType { valueToSelect: $valueToSelect }';
 
   @override
-  List<Object> get props => [valueToSelect];
+  List<Object?> get props => [valueToSelect];
 }
 
 class DeselectMultiSelectFieldBlocValue<Value> extends FieldBlocEvent {
@@ -152,7 +152,7 @@ class DeselectMultiSelectFieldBlocValue<Value> extends FieldBlocEvent {
   String toString() => '$runtimeType { valueToDeselect: $valueToDeselect }';
 
   @override
-  List<Object> get props => [valueToDeselect];
+  List<Object?> get props => [valueToDeselect];
 }
 
 class ResetFieldBlocStateIsValidated extends FieldBlocEvent {
@@ -161,19 +161,19 @@ class ResetFieldBlocStateIsValidated extends FieldBlocEvent {
 }
 
 class UpdateFieldBlocStateError<Value> extends FieldBlocEvent {
-  final String error;
+  final String? error;
   final Value value;
 
   UpdateFieldBlocStateError({
-    @required this.error,
-    @required this.value,
+    required this.error,
+    required this.value,
   });
 
   @override
   String toString() => '$runtimeType { error: $error, value: $value }';
 
   @override
-  List<Object> get props => [error, value];
+  List<Object?> get props => [error, value];
 }
 
 class SubscribeToFieldBlocs extends FieldBlocEvent {
@@ -227,9 +227,9 @@ class AddFieldBlocError<Value> extends FieldBlocEvent {
   final bool isPermanent;
 
   AddFieldBlocError({
-    @required this.error,
-    @required this.value,
-    @required this.isPermanent,
+    required this.error,
+    required this.value,
+    required this.isPermanent,
   });
 
   @override
@@ -237,7 +237,7 @@ class AddFieldBlocError<Value> extends FieldBlocEvent {
       '$runtimeType { value: $value, error: $error, $isPermanent: isPermanent }';
 
   @override
-  List<Object> get props => [value, error, isPermanent];
+  List<Object?> get props => [value, error, isPermanent];
 }
 
 class UpdateFieldBlocExtraData<ExtraData> extends FieldBlocEvent {
@@ -246,15 +246,15 @@ class UpdateFieldBlocExtraData<ExtraData> extends FieldBlocEvent {
   UpdateFieldBlocExtraData(this.extraData);
 
   @override
-  List<Object> get props => [extraData];
+  List<Object?> get props => [extraData];
 }
 
 class AddFormBlocAndAutoValidateToFieldBloc extends FieldBlocEvent {
-  final FormBloc<dynamic, dynamic> formBloc;
+  final FormBloc<dynamic, dynamic>? formBloc;
   final bool autoValidate;
   AddFormBlocAndAutoValidateToFieldBloc(
-      {@required this.formBloc, @required this.autoValidate});
+      {required this.formBloc, required this.autoValidate});
 
   @override
-  List<Object> get props => [formBloc, autoValidate];
+  List<Object?> get props => [formBloc, autoValidate];
 }

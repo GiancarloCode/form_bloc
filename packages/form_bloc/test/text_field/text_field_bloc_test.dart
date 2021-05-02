@@ -9,7 +9,7 @@ void main() {
         final suggestions = (String pattern) async => ['1'];
         final validators = [
           FieldBlocValidators.required,
-          (String value) => 'error',
+          (String? value) => 'error',
         ];
 
         final fieldBloc = TextFieldBloc<dynamic>(
@@ -39,7 +39,7 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc,
+          fieldBloc.stream,
           emitsInOrder(expectedStates),
         );
 
@@ -119,7 +119,7 @@ void main() {
         state2,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 

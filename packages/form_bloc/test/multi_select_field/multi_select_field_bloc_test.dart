@@ -9,7 +9,7 @@ void main() {
         final suggestions = (String pattern) async => [true];
         final validators = [
           FieldBlocValidators.required,
-          (List<bool> value) => 'error',
+          (List<bool>? value) => 'error',
         ];
 
         final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
@@ -40,7 +40,7 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc,
+          fieldBloc.stream,
           emitsInOrder(expectedStates),
         );
 
@@ -149,7 +149,7 @@ void main() {
         state3,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -190,7 +190,7 @@ void main() {
         state4,
       ];
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -229,7 +229,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -271,7 +271,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -314,7 +314,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -323,11 +323,11 @@ void main() {
       fieldBloc.updateInitialValue(null);
     });
     test('select method SelectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
+      final fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+      final state1 = MultiSelectFieldBlocState<bool?, dynamic>(
         value: [],
         error: null,
         isInitial: true,
@@ -366,7 +366,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 
@@ -378,10 +378,10 @@ void main() {
     });
 
     test('deselect method DeselectMultiSelectFieldBlocValue event.', () {
-      final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
+      final fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(
           name: 'name', initialValue: [true, false]);
 
-      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+      final state1 = MultiSelectFieldBlocState<bool?, dynamic>(
         value: [true, false],
         error: null,
         isInitial: true,
@@ -419,7 +419,7 @@ void main() {
       ];
 
       expect(
-        fieldBloc,
+        fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
 

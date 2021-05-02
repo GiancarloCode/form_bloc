@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/dropdown.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:flutter/scheduler.dart';
 
 class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
   DropdownFieldBlocBuilderMobile({
-    Key key,
-    @required this.selectFieldBloc,
-    @required this.itemBuilder,
+    Key? key,
+    required this.selectFieldBloc,
+    required this.itemBuilder,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.padding,
@@ -26,18 +26,13 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        assert(showEmptyItem != null),
-        assert(millisecondsForShowDropdownItemsWhenKeyboardIsOpen != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final SelectFieldBloc<Value, Object> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
   final FieldBlocStringItemBuilder<Value> itemBuilder;
@@ -57,19 +52,19 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
   final int millisecondsForShowDropdownItemsWhenKeyboardIsOpen;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
 
   /// How the text in the decoration should be aligned horizontally.
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
 
   @override
   _DropdownFieldBlocBuilderMobileState<Value> createState() =>
@@ -77,30 +72,31 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
 }
 
 class _DropdownFieldBlocBuilderMobileState<Value>
-    extends State<DropdownFieldBlocBuilderMobile<Value>>
+    extends State<DropdownFieldBlocBuilderMobile<Value?>>
     with WidgetsBindingObserver {
   final PublishSubject<void> _onPressedController = PublishSubject();
 
-  PublishSubject<double> _dropdownHeightController = PublishSubject();
+  PublishSubject<double?> _dropdownHeightController = PublishSubject();
 
-  double _dropdownHeight = 0;
+  double? _dropdownHeight = 0;
 
-  StreamSubscription<bool> _keyboardSubscription;
+  late StreamSubscription<bool> _keyboardSubscription;
 
-  bool _isKeyboardVisible;
+  bool? _isKeyboardVisible;
 
   FocusNode _focusNode = FocusNode();
 
   bool _focusedAfterKeyboardClosing = false;
+  var keyboardVisibilityController = KeyboardVisibilityController();
 
   @override
   void initState() {
     super.initState();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    SchedulerBinding.instance!.addPostFrameCallback((_) => setState(() {}));
 
     _dropdownHeightController.listen((height) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
         if (mounted) {
           setState(() {
             _dropdownHeight = height;
@@ -111,9 +107,10 @@ class _DropdownFieldBlocBuilderMobileState<Value>
 
     _effectiveFocusNode.addListener(_onFocusRequest);
 
-    _isKeyboardVisible = KeyboardVisibility.isVisible;
+    _isKeyboardVisible = keyboardVisibilityController.isVisible;
 
-    _keyboardSubscription = KeyboardVisibility.onChange.listen((bool visible) {
+    _keyboardSubscription =
+        keyboardVisibilityController.onChange.listen((bool visible) {
       setState(() {
         _isKeyboardVisible = visible;
         print(_isKeyboardVisible);
@@ -137,15 +134,11 @@ class _DropdownFieldBlocBuilderMobileState<Value>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.selectFieldBloc == null) {
-      return Container();
-    }
-
     return Focus(
       focusNode: _effectiveFocusNode,
-      child: BlocBuilder<SelectFieldBloc<Value, dynamic>,
-          SelectFieldBlocState<Value, dynamic>>(
-        cubit: widget.selectFieldBloc,
+      child: BlocBuilder<SelectFieldBloc<Value?, dynamic>,
+          SelectFieldBlocState<Value?, dynamic>>(
+        bloc: widget.selectFieldBloc,
         builder: (context, fieldState) {
           final isEnabled = fieldBlocIsEnabled(
             isEnabled: widget.isEnabled,
@@ -159,7 +152,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
               ? widget.itemBuilder(context, fieldState.value)
               : '';
           return DefaultFieldBlocBuilderPadding(
-            padding: widget.padding,
+            padding: widget.padding as EdgeInsets?,
             child: Stack(
               fit: StackFit.passthrough,
               children: <Widget>[
@@ -182,9 +175,9 @@ class _DropdownFieldBlocBuilderMobileState<Value>
                           FocusScope.of(context).requestFocus(FocusNode());
                         },
                       ),
-                      items: fieldState.items.isEmpty
+                      items: fieldState.items!.isEmpty
                           ? null
-                          : _buildItems(fieldState.items),
+                          : _buildItems(fieldState.items!),
                     ),
                   ),
                 ),
@@ -197,7 +190,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
                     builder: (context) {
                       final height = InputDecorator.containerOf(context)
                           ?.constraints
-                          ?.maxHeight;
+                          .maxHeight;
 
                       if (height == null ||
                           height != _dropdownHeight ||
@@ -207,7 +200,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
                       if (fieldState.value == null &&
                           decoration.hintText != null) {
                         return Text(
-                          decoration.hintText,
+                          decoration.hintText!,
                           style: decoration.hintStyle,
                           overflow: TextOverflow.ellipsis,
                           textAlign: widget.textAlign,
@@ -251,9 +244,9 @@ class _DropdownFieldBlocBuilderMobileState<Value>
   }
 
   List<DropdownMenuItem<Value>> _buildItems(
-    Iterable<Value> items,
+    Iterable<Value?> items,
   ) {
-    final style = Theme.of(context).textTheme.subtitle1.copyWith(
+    final style = Theme.of(context).textTheme.subtitle1!.copyWith(
           color: ThemeData.estimateBrightnessForColor(
                       Theme.of(context).canvasColor) ==
                   Brightness.dark
@@ -264,7 +257,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
     List<DropdownMenuItem<Value>> menuItems;
 
     menuItems = items.map<DropdownMenuItem<Value>>(
-      (Value value) {
+      (Value? value) {
         return DropdownMenuItem<Value>(
           value: value,
           text: widget.itemBuilder(context, value),
@@ -287,8 +280,8 @@ class _DropdownFieldBlocBuilderMobileState<Value>
   }
 
   void _onDropdownPressed() async {
-    if (widget.selectFieldBloc.state.items.isNotEmpty) {
-      if (_isKeyboardVisible) {
+    if (widget.selectFieldBloc.state.items!.isNotEmpty) {
+      if (_isKeyboardVisible!) {
         _effectiveFocusNode.requestFocus();
         await Future<void>.delayed(Duration(
             milliseconds:
@@ -309,7 +302,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
   }
 
   InputDecoration _buildDecoration(BuildContext context,
-      SelectFieldBlocState<Value, dynamic> state, bool isEnabled) {
+      SelectFieldBlocState<Value?, dynamic>? state, bool isEnabled) {
     InputDecoration decoration = widget.decoration;
 
     if (decoration.suffixIcon == null) {

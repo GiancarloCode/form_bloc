@@ -9,7 +9,7 @@ void main() {
         final suggestions = (String pattern) async => [true];
         final validators = [
           FieldBlocValidators.required,
-          (bool value) => value ? 'error' : null,
+          (bool? value) => value! ? 'error' : null,
         ];
 
         final fieldBloc = InputFieldBloc<bool, dynamic>(
@@ -19,7 +19,7 @@ void main() {
           suggestions: suggestions,
         );
 
-        final state1 = InputFieldBlocState<bool, dynamic>(
+        final state1 = InputFieldBlocState<bool?, dynamic>(
           value: null,
           error: FieldBlocValidatorsErrors.required,
           isInitial: true,
@@ -39,7 +39,7 @@ void main() {
           state2,
         ];
         expect(
-          fieldBloc,
+          fieldBloc.stream,
           emitsInOrder(expectedStates),
         );
 
@@ -55,7 +55,7 @@ void main() {
         name: 'name',
       );
 
-      initialState = InputFieldBlocState<bool, dynamic>(
+      initialState = InputFieldBlocState<bool?, dynamic>(
         value: null,
         error: null,
         isInitial: true,
@@ -78,7 +78,7 @@ void main() {
         validators: [(value) => 'error'],
       );
 
-      initialState = InputFieldBlocState<bool, dynamic>(
+      initialState = InputFieldBlocState<bool?, dynamic>(
         value: true,
         error: 'error',
         isInitial: true,

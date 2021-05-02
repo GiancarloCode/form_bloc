@@ -5,7 +5,7 @@ part of '../field/field_bloc.dart';
 /// ​​of texts thanks to the methods
 /// [valueToInt] and [valueToDouble].
 class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
-    TextFieldBlocState<ExtraData>, ExtraData> {
+    TextFieldBlocState<ExtraData>, ExtraData?> {
   /// ## TextFieldBloc<ExtraData>
   ///
   /// ### Properties:
@@ -38,15 +38,14 @@ class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
   /// the value using [updateValue].
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   TextFieldBloc({
-    String name,
-    String initialValue = '',
-    List<Validator<String>> validators,
-    List<AsyncValidator<String>> asyncValidators,
+    String? name,
+    String? initialValue = '',
+    List<Validator<String?>>? validators,
+    List<AsyncValidator<String>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
-    Suggestions<String> suggestions,
-    ExtraData extraData,
-  })  : assert(asyncValidatorDebounceTime != null),
-        super(
+    Suggestions<String>? suggestions,
+    ExtraData? extraData,
+  }) : super(
           initialValue ?? '',
           validators,
           asyncValidators,
@@ -85,13 +84,13 @@ class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
   ///
   /// if the `value` is an `int` returns the parsed `value`,
   /// else returns `null`.
-  int get valueToInt => state.valueToInt;
+  int? get valueToInt => state.valueToInt;
 
   /// Return the parsed `value` to `double` of the current state.
   ///
   /// if the `value` is a `double` returns the parsed `value`,
   /// else returns `null`.
-  double get valueToDouble => state.valueToDouble;
+  double? get valueToDouble => state.valueToDouble;
 
   /// Set the `value` to `''` of the current state.
   ///

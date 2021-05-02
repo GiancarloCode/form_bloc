@@ -1,19 +1,19 @@
 part of '../field/field_bloc.dart';
 
 class BooleanFieldBlocState<ExtraData>
-    extends FieldBlocState<bool, bool, ExtraData> {
+    extends FieldBlocState<bool, bool, ExtraData?> {
   BooleanFieldBlocState({
-    @required bool value,
-    @required String error,
-    @required bool isInitial,
-    @required Suggestions<bool> suggestions,
-    @required bool isValidated,
-    @required bool isValidating,
-    FormBloc formBloc,
-    @required String name,
+    required bool? value,
+    required String? error,
+    required bool isInitial,
+    required Suggestions<bool>? suggestions,
+    required bool isValidated,
+    required bool isValidating,
+    FormBloc? formBloc,
+    String? name,
     List additionalProps = const <dynamic>[],
-    dynamic Function(bool value) toJson,
-    ExtraData extraData,
+    dynamic Function(bool? value)? toJson,
+    ExtraData? extraData,
   }) : super(
           value: value,
           error: error,
@@ -28,18 +28,17 @@ class BooleanFieldBlocState<ExtraData>
         );
 
   @override
-  BooleanFieldBlocState<ExtraData> copyWith({
-    Optional<bool> value,
-    Optional<String> error,
-    bool isInitial,
-    Optional<Suggestions<bool>> suggestions,
-    bool isValidated,
-    bool isValidating,
-    FormBloc formBloc,
-    Optional<ExtraData> extraData,
-  }) {
+  FieldBlocState<bool, bool, ExtraData?> copyWith(
+      {Optional<bool?>? value,
+      Optional<String>? error,
+      bool? isInitial,
+      Optional<Suggestions<bool>>? suggestions,
+      bool? isValidated,
+      bool? isValidating,
+      FormBloc? formBloc,
+      Optional<ExtraData?>? extraData}) {
     return BooleanFieldBlocState(
-      value: value == null ? this.value : value.orNull ?? this.value,
+      value: value == null ? this.value : value.orNull,
       error: error == null ? this.error : error.orNull,
       isInitial: isInitial ?? this.isInitial,
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
@@ -53,7 +52,7 @@ class BooleanFieldBlocState<ExtraData>
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         value,
         error,
         isInitial,

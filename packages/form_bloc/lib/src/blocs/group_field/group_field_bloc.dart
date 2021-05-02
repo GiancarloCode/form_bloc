@@ -3,23 +3,23 @@ part of '../field/field_bloc.dart';
 abstract class GroupFieldBlocEvent extends Equatable {}
 
 class AddFormBlocAndAutoValidateToGroupFieldBloc extends GroupFieldBlocEvent {
-  final FormBloc<dynamic, dynamic> formBloc;
+  final FormBloc<dynamic, dynamic>? formBloc;
   final bool autoValidate;
   AddFormBlocAndAutoValidateToGroupFieldBloc(
-      {@required this.formBloc, @required this.autoValidate});
+      {required this.formBloc, required this.autoValidate});
 
   @override
-  List<Object> get props => [formBloc, autoValidate];
+  List<Object?> get props => [formBloc, autoValidate];
 }
 
 class GroupFieldBlocState extends Equatable {
   final String name;
   final Map<String, FieldBloc> _fieldBlocs;
-  final FormBloc formBloc;
+  final FormBloc? formBloc;
 
   GroupFieldBlocState({
-    @required this.name,
-    List<FieldBloc> fieldBlocs,
+    required this.name,
+    required List<FieldBloc> fieldBlocs,
     this.formBloc,
   }) :
         //ignore: prefer_for_elements_to_map_fromiterable
@@ -34,7 +34,7 @@ class GroupFieldBlocState extends Equatable {
         );
 
   GroupFieldBlocState _copyWith({
-    FormBloc formBloc,
+    FormBloc? formBloc,
   }) {
     return GroupFieldBlocState(
       name: name,
@@ -44,14 +44,14 @@ class GroupFieldBlocState extends Equatable {
   }
 
   @override
-  List<Object> get props => [name, _fieldBlocs, formBloc];
+  List<Object?> get props => [name, _fieldBlocs, formBloc];
 }
 
 class GroupFieldBloc extends Bloc<GroupFieldBlocEvent, GroupFieldBlocState>
     with FieldBloc {
-  GroupFieldBloc(List<FieldBloc> fieldBlocs, {String name})
+  GroupFieldBloc(List<FieldBloc> fieldBlocs, {String? name})
       : super(GroupFieldBlocState(
-            name: name ?? Uuid().v1(), fieldBlocs: fieldBlocs ?? []));
+            name: name ?? Uuid().v1(), fieldBlocs: fieldBlocs));
 
   @override
   Stream<GroupFieldBlocState> mapEventToState(

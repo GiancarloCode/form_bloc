@@ -15,7 +15,7 @@ void main() {
 
         formBloc.addFieldBloc(fieldBloc: text);
 
-        final state = await formBloc.first;
+        final state = await formBloc.stream.first;
 
         expect(
           state.contains(text),
@@ -33,9 +33,9 @@ void main() {
 
         formBloc.addFieldBlocs(fieldBlocs: [text, boolean]);
 
-        formBloc.listen(print);
+        formBloc.stream.listen(print);
 
-        final state = await formBloc.first;
+        final state = await formBloc.stream.first;
 
         expect(
           state.contains(text) && state.contains(boolean),
@@ -52,7 +52,7 @@ void main() {
         formBloc.addFieldBloc(fieldBloc: text);
         formBloc.removeFieldBloc(fieldBloc: text);
 
-        final state = await formBloc.skip(1).first;
+        final state = await formBloc.stream.skip(1).first;
 
         expect(
           state.contains(text),
@@ -71,7 +71,7 @@ void main() {
         formBloc.addFieldBlocs(fieldBlocs: [text, boolean]);
         formBloc.removeFieldBlocs(fieldBlocs: [text, boolean]);
 
-        final state = await formBloc.skip(1).first;
+        final state = await formBloc.stream.skip(1).first;
 
         expect(
           !state.contains(text) && !state.contains(boolean),
@@ -353,7 +353,7 @@ void main() {
 //     //     name: null,
 //     //   );
 //     //   final state2 = initialState.copyWith(
-//     //     value: Optional.of(1),
+//     //     value: 1,
 //     //     isInitial: false,
 //     //   );
 

@@ -6,9 +6,9 @@ class DefaultFieldBlocBuilderTextStyle extends StatelessWidget {
   final Widget child;
 
   const DefaultFieldBlocBuilderTextStyle({
-    Key key,
-    @required this.isEnabled,
-    @required this.child,
+    Key? key,
+    required this.isEnabled,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -17,20 +17,20 @@ class DefaultFieldBlocBuilderTextStyle extends StatelessWidget {
       style: Style.getDefaultTextStyle(
         context: context,
         isEnabled: isEnabled,
-      ),
+      )!,
       child: child,
     );
   }
 }
 
 class DefaultFieldBlocBuilderPadding extends StatelessWidget {
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
   final Widget child;
 
   const DefaultFieldBlocBuilderPadding({
-    Key key,
-    @required this.padding,
-    @required this.child,
+    Key? key,
+    required this.padding,
+    required this.child,
   }) : super(key: key);
 
   @override

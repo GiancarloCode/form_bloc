@@ -8,18 +8,18 @@ export 'package:intl/intl.dart' show DateFormat;
 
 class DateTimeFieldBlocBuilder extends StatelessWidget {
   const DateTimeFieldBlocBuilder({
-    Key key,
-    @required this.dateTimeFieldBloc,
-    @required this.format,
+    Key? key,
+    required this.dateTimeFieldBloc,
+    required this.format,
     this.canSelectTime = false,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.errorBuilder,
     this.padding,
     this.decoration = const InputDecoration(),
-    @required this.initialDate,
-    @required this.firstDate,
-    @required this.lastDate,
+    required this.initialDate,
+    required this.firstDate,
+    required this.lastDate,
     this.initialTime,
     this.selectableDayPredicate,
     this.locale,
@@ -33,11 +33,6 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
     this.nextFocusNode,
     this.focusNode,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        assert(initialDate != null),
-        assert(firstDate != null),
-        assert(lastDate != null),
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -49,16 +44,16 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
   final DateFormat format;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
-  final bool enableOnlyWhenFormBlocCanSubmit;
+  final bool? enableOnlyWhenFormBlocCanSubmit;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
   final bool isEnabled;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
@@ -69,26 +64,26 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
   final bool animateWhenCanShow;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   final DateTime initialDate;
   final DateTime firstDate;
   final DateTime lastDate;
-  final SelectableDayPredicate selectableDayPredicate;
+  final SelectableDayPredicate? selectableDayPredicate;
   final DatePickerMode initialDatePickerMode = DatePickerMode.day;
-  final Locale locale;
-  final TextDirection textDirection;
-  final TransitionBuilder pickerBuilder;
+  final Locale? locale;
+  final TextDirection? textDirection;
+  final TransitionBuilder? pickerBuilder;
   final bool useRootNavigator;
-  final RouteSettings routeSettings;
-  final TimeOfDay initialTime;
+  final RouteSettings? routeSettings;
+  final TimeOfDay? initialTime;
 
   final bool showClearIcon;
 
-  final Icon clearIcon;
+  final Icon? clearIcon;
 
   @override
   Widget build(BuildContext context) {

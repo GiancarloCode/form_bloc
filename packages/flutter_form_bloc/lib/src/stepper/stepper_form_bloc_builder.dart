@@ -17,14 +17,12 @@ class FormBlocStep {
   ///
   /// The [title], [content], and [state] arguments must not be null.
   const FormBlocStep({
-    @required this.title,
+    required this.title,
     this.subtitle,
-    @required this.content,
+    required this.content,
     this.state = StepState.indexed,
     this.isActive,
-  })  : assert(title != null),
-        assert(content != null),
-        assert(state != null);
+  });
 
   /// The title of the step that typically describes it.
   final Widget title;
@@ -33,7 +31,7 @@ class FormBlocStep {
   /// font size. It typically gives more details that complement the title.
   ///
   /// If null, the subtitle is not shown.
-  final Widget subtitle;
+  final Widget? subtitle;
 
   /// The content of the step that appears below the [title] and [subtitle].
   ///
@@ -50,14 +48,14 @@ class FormBlocStep {
   /// of the form bloc
   ///
   ///  The flag only influences styling.
-  final bool isActive;
+  final bool? isActive;
 }
 
 class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
   const StepperFormBlocBuilder({
-    Key key,
+    Key? key,
     this.formBloc,
-    @required this.stepsBuilder,
+    required this.stepsBuilder,
     this.physics,
     this.type = StepperType.vertical,
     this.onStepTapped,
@@ -66,12 +64,12 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
     this.controlsBuilder,
   }) : super(key: key);
 
-  final T formBloc;
+  final T? formBloc;
 
   /// The steps of the stepper whose titles, subtitles, icons always get shown.
   ///
   /// The length of [stepsBuilder] must not change.
-  final List<FormBlocStep> Function(T formBloc) stepsBuilder;
+  final List<FormBlocStep> Function(T? formBloc) stepsBuilder;
 
   /// How the stepper's scroll view should respond to user input.
   ///
@@ -80,7 +78,7 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
   ///
   /// If the stepper is contained within another scrollable it
   /// can be helpful to set this property to [ClampingScrollPhysics].
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   /// The type of stepper that determines the layout. In the case of
   /// [StepperType.horizontal], the content of the current step is displayed
@@ -90,17 +88,17 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
 
   /// The callback called when a step is tapped, with its index passed as
   /// an argument.
-  final void Function(FormBloc formBloc, int step) onStepTapped;
+  final void Function(FormBloc? formBloc, int step)? onStepTapped;
 
   /// The callback called when the 'continue' button is tapped.
   ///
   /// If null, the 'continue' button will call [FormBloc.submit]
-  final void Function(FormBloc formBloc) onStepContinue;
+  final void Function(FormBloc? formBloc)? onStepContinue;
 
   /// The callback called when the 'cancel' button is tapped.
   ///
   /// If null, the 'cancel' button will call [FormBloc.previousStep]
-  final void Function(FormBloc formBloc) onStepCancel;
+  final void Function(FormBloc? formBloc)? onStepCancel;
 
   /// The callback for creating custom controls.
   ///
@@ -155,17 +153,17 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
     VoidCallback onStepContinue,
     VoidCallback onStepCancel,
     int step,
-    FormBloc formBloc,
-  ) controlsBuilder;
+    FormBloc? formBloc,
+  )? controlsBuilder;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<T, FormBlocState>(
-      cubit: formBloc,
+      bloc: formBloc,
       buildWhen: (p, c) =>
           p.numberOfSteps != c.numberOfSteps || p.currentStep != c.currentStep,
       builder: (context, state) {
-        final formBloc = this.formBloc ?? context.bloc<T>();
+        final formBloc = this.formBloc ?? context.read<T>();
 
         final formBlocSteps = stepsBuilder(formBloc);
         return Stepper(
@@ -173,13 +171,13 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
           currentStep: state.currentStep,
           onStepCancel: onStepCancel == null
               ? (state.isFirstStep ? null : formBloc.previousStep)
-              : () => onStepCancel(formBloc),
+              : () => onStepCancel!(formBloc),
           onStepContinue: onStepContinue == null
               ? formBloc.submit
-              : () => onStepContinue(formBloc),
+              : () => onStepContinue!(formBloc),
           onStepTapped: onStepTapped == null
               ? null
-              : (step) => onStepTapped(formBloc, step),
+              : (step) => onStepTapped!(formBloc, step),
           physics: physics,
           type: type,
           steps: [
@@ -194,8 +192,8 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
           controlsBuilder: controlsBuilder == null
               ? null
               : (context, step, onStepContinue, onStepCancel) =>
-                  controlsBuilder(
-                      context, onStepContinue, onStepCancel, step, formBloc),
+                  controlsBuilder!(
+                      context, onStepContinue!, onStepCancel!, step, formBloc),
         );
       },
     );

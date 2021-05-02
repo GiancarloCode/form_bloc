@@ -19,7 +19,7 @@ class FormBlocListener<
   /// [BlocListener] that reacts to the state changes of the FormBloc.
   /// {@macro bloclistener}
   FormBlocListener({
-    Key key,
+    Key? key,
     this.formBloc,
     this.child,
     this.onLoading,
@@ -36,7 +36,7 @@ class FormBlocListener<
   }) : super(
           key: key,
           child: child,
-          cubit: formBloc,
+          bloc: formBloc,
           listenWhen: (previousState, state) =>
               previousState.runtimeType != state.runtimeType,
           listener: (context, state) {
@@ -92,73 +92,73 @@ class FormBlocListener<
   final FormBlocListenerCallback<
       form_bloc.FormBlocLoading<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onLoading;
+      ErrorResponse>? onLoading;
 
   /// {@macro form_bloc.form_state.FormBlocLoaded}
   final FormBlocListenerCallback<
       form_bloc.FormBlocLoaded<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onLoaded;
+      ErrorResponse>? onLoaded;
 
   /// {@macro form_bloc.form_state.FormBlocLoadFailed}
   final FormBlocListenerCallback<
       form_bloc.FormBlocLoadFailed<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onLoadFailed;
+      ErrorResponse>? onLoadFailed;
 
   /// {@macro form_bloc.form_state.FormBlocSubmitting}
   final FormBlocListenerCallback<
       form_bloc.FormBlocSubmitting<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onSubmitting;
+      ErrorResponse>? onSubmitting;
 
   /// {@macro form_bloc.form_state.FormBlocSuccess}
   final FormBlocListenerCallback<
       form_bloc.FormBlocSuccess<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onSuccess;
+      ErrorResponse>? onSuccess;
 
   /// {@macro form_bloc.form_state.FormBlocFailure}
   final FormBlocListenerCallback<
       form_bloc.FormBlocFailure<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onFailure;
+      ErrorResponse>? onFailure;
 
   /// {@macro form_bloc.form_state.FormBlocSubmissionCancelled}
   final FormBlocListenerCallback<
       form_bloc.FormBlocSubmissionCancelled<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onSubmissionCancelled;
+      ErrorResponse>? onSubmissionCancelled;
 
   /// {@macro form_bloc.form_state.FormBlocSubmissionFailed}
   final FormBlocListenerCallback<
       form_bloc.FormBlocSubmissionFailed<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onSubmissionFailed;
+      ErrorResponse>? onSubmissionFailed;
 
   /// {@macro form_bloc.form_state.FormBlocSubmissionFailed}
   final FormBlocListenerCallback<
       form_bloc.FormBlocDeleting<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onDeleting;
+      ErrorResponse>? onDeleting;
 
   /// {@macro form_bloc.form_state.FormBlocSubmissionFailed}
   final FormBlocListenerCallback<
       form_bloc.FormBlocDeleteFailed<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onDeleteFailed;
+      ErrorResponse>? onDeleteFailed;
 
   /// {@macro form_bloc.form_state.FormBlocSubmissionFailed}
   final FormBlocListenerCallback<
       form_bloc.FormBlocDeleteSuccessful<SuccessResponse, ErrorResponse>,
       SuccessResponse,
-      ErrorResponse> onDeleteSuccessful;
+      ErrorResponse>? onDeleteSuccessful;
 
   /// If the [formBloc] parameter is omitted, [FormBlocListener]
   /// will automatically perform a lookup using
   /// [BlocProvider].of<[FormBloc]> and the current [BuildContext].
-  final FormBloc formBloc;
+  final FormBloc? formBloc;
 
   /// The [Widget] which will be rendered as a descendant of the [BlocListener].
-  final Widget child;
+  final Widget? child;
 }

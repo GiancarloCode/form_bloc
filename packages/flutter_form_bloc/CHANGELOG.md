@@ -1,3 +1,6 @@
+# 0.20.0
+  ## Breaking changes
+  *  null safety migration 
 # 0.19.0
   ## Breaking changes
   * Updated to `form_bloc: ^0.18.0`.

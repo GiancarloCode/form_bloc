@@ -7,15 +7,15 @@ import '../flutter_form_bloc.dart';
 
 class CanShowFieldBlocBuilder extends StatefulWidget {
   const CanShowFieldBlocBuilder({
-    Key key,
-    @required this.fieldBloc,
-    @required this.builder,
+    Key? key,
+    required this.fieldBloc,
+    required this.builder,
     this.animate = true,
   }) : super(key: key);
 
   final FieldBloc fieldBloc;
   final bool animate;
-  final Widget Function(BuildContext context, bool canShow) builder;
+  final Widget Function(BuildContext context, bool? canShow) builder;
 
   @override
   _CanShowFieldBlocBuilderState createState() =>
@@ -24,12 +24,12 @@ class CanShowFieldBlocBuilder extends StatefulWidget {
 
 class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     with TickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _sizeAnimation;
+  late AnimationController _controller;
+  late Animation<double> _sizeAnimation;
 
-  bool _showOnFirstFrame;
+  bool? _showOnFirstFrame;
 
-  StreamSubscription _formBlocSubscription;
+  StreamSubscription? _formBlocSubscription;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     if ((widget.fieldBloc as Bloc).state.formBloc != null) {
       _showOnFirstFrame = ((widget.fieldBloc as dynamic).state.formBloc as Bloc)
           .state
-          .contains(widget.fieldBloc) as bool;
+          .contains(widget.fieldBloc) as bool?;
       _initAnimation();
     } else {
       _init();
@@ -50,7 +50,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
 
     final formBloc = await Rx.merge([
       Stream.value(bloc.state),
-      bloc,
+      bloc.stream,
     ])
         .firstWhere((state) => state.formBloc != null)
         .timeout(Duration(milliseconds: 10), onTimeout: () => null);
@@ -61,29 +61,29 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     } else {
       _showOnFirstFrame = ((widget.fieldBloc as dynamic).state.formBloc as Bloc)
           .state
-          .contains(widget.fieldBloc) as bool;
+          .contains(widget.fieldBloc) as bool?;
     }
     _initAnimation();
     setState(() {});
     try {
       await Rx.merge([
         Stream.value(bloc.state),
-        bloc,
+        bloc.stream,
       ]).firstWhere((state) => state.formBloc != null);
 
       final formBloc = (widget.fieldBloc as dynamic).state.formBloc as Bloc;
 
       await Rx.merge([
         Stream.value(formBloc.state),
-        formBloc,
+        formBloc.stream,
       ]).firstWhere(
           (formBlocState) => formBlocState.contains(widget.fieldBloc));
 
       if (widget.animate) {
-        if (_showOnFirstFrame) {
-          _controller.reverse();
+        if (_showOnFirstFrame!) {
+          await _controller.reverse();
         } else {
-          _controller.forward();
+          await _controller.forward();
         }
       }
     } catch (e) {
@@ -95,8 +95,8 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
 
-    final begin = _showOnFirstFrame ? 1.0 : 0.0;
-    final end = _showOnFirstFrame ? 0.0 : 1.0;
+    final begin = _showOnFirstFrame! ? 1.0 : 0.0;
+    final end = _showOnFirstFrame! ? 0.0 : 1.0;
 
     _sizeAnimation = Tween<double>(begin: begin, end: end).animate(_controller);
   }
@@ -118,25 +118,25 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     }
 
     return BlocBuilder(
-      cubit: _fieldBloc,
-      buildWhen: (p, c) => p.formBloc != c.formBloc,
-      builder: (context, state) {
+      bloc: _fieldBloc,
+      buildWhen: (dynamic p, dynamic c) => p.formBloc != c.formBloc,
+      builder: (context, dynamic state) {
         Widget child;
         if (state.formBloc != null) {
           child = BlocListener(
-            cubit: state.formBloc as Bloc,
-            listenWhen: (p, c) =>
+            bloc: state.formBloc as Bloc?,
+            listenWhen: (dynamic p, dynamic c) =>
                 p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
-            listener: (context, formBlocState) {
+            listener: (context, dynamic formBlocState) {
               if (widget.animate) {
                 if (formBlocState.contains(widget.fieldBloc)) {
-                  if (_showOnFirstFrame) {
+                  if (_showOnFirstFrame!) {
                     _controller.reverse();
                   } else {
                     _controller.forward();
                   }
                 } else {
-                  if (_showOnFirstFrame) {
+                  if (_showOnFirstFrame!) {
                     _controller.forward();
                   } else {
                     _controller.reverse();
@@ -145,10 +145,10 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
               }
             },
             child: BlocBuilder(
-              cubit: state.formBloc as Bloc,
-              buildWhen: (p, c) =>
+              bloc: state.formBloc as Bloc?,
+              buildWhen: (dynamic p, dynamic c) =>
                   p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
-              builder: (context, state) {
+              builder: (context, dynamic state) {
                 return widget.builder(
                     context, state.contains(widget.fieldBloc));
               },

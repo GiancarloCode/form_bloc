@@ -52,7 +52,7 @@ class FormBlocObserver extends BlocObserver {
   FormBlocObserver() : _oldBlocObserver = Bloc.observer;
 
   @override
-  void onEvent(Bloc bloc, Object event) {
+  void onEvent(Bloc bloc, Object? event) {
     var notify = true;
 
     if ((bloc is SingleFieldBloc ||
@@ -71,7 +71,7 @@ class FormBlocObserver extends BlocObserver {
   }
 
   @override
-  void onChange(Cubit cubit, Change change) {
+  void onChange(BlocBase cubit, Change change) {
     var notify = true;
 
     if ((cubit is SingleFieldBloc ||
@@ -109,7 +109,7 @@ class FormBlocObserver extends BlocObserver {
   }
 
   @override
-  void onError(Cubit cubit, Object error, StackTrace stacktrace) {
+  void onError(BlocBase cubit, Object error, StackTrace stacktrace) {
     var notify = true;
 
     if ((cubit is SingleFieldBloc ||

@@ -2,16 +2,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
-import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 
 /// A material design switch
 class SwitchFieldBlocBuilder extends StatelessWidget {
   const SwitchFieldBlocBuilder({
-    Key key,
-    @required this.booleanFieldBloc,
-    @required this.body,
+    Key? key,
+    required this.booleanFieldBloc,
+    required this.body,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.errorBuilder,
@@ -32,11 +32,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
     this.focusNode,
     this.autofocus = false,
     this.animateWhenCanShow = true,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(controlAffinity != null),
-        assert(isEnabled != null),
-        assert(body != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final BooleanFieldBloc booleanFieldBloc;
@@ -45,7 +41,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   final FieldBlocBuilderControlAffinity controlAffinity;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
@@ -54,50 +50,50 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   final bool isEnabled;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxBody}
   final Widget body;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxColor}
-  final Color checkColor;
+  final Color? checkColor;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxActiveColor}
-  final Color activeColor;
+  final Color? activeColor;
 
   /// The color to use on the track when this switch is on.
   ///
   /// Defaults to [ThemeData.toggleableActiveColor] with the opacity set at 50%.
   ///
   /// Ignored if this switch is created with [Switch.adaptive].
-  final Color activeTrackColor;
+  final Color? activeTrackColor;
 
   /// The color to use on the thumb when this switch is off.
   ///
   /// Defaults to the colors described in the Material design specification.
   ///
   /// Ignored if this switch is created with [Switch.adaptive].
-  final Color inactiveThumbColor;
+  final Color? inactiveThumbColor;
 
   /// The color to use on the track when this switch is off.
   ///
   /// Defaults to the colors described in the Material design specification.
   ///
   /// Ignored if this switch is created with [Switch.adaptive].
-  final Color inactiveTrackColor;
+  final Color? inactiveTrackColor;
 
   /// An image to use on the thumb of this switch when the switch is on.
   ///
   /// Ignored if this switch is created with [Switch.adaptive].
-  final ImageProvider activeThumbImage;
+  final ImageProvider? activeThumbImage;
 
   /// An image to use on the thumb of this switch when the switch is off.
   ///
   /// Ignored if this switch is created with [Switch.adaptive].
-  final ImageProvider inactiveThumbImage;
+  final ImageProvider? inactiveThumbImage;
 
   /// Configures the minimum size of the tap target.
   ///
@@ -106,19 +102,19 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   /// See also:
   ///
   ///  * [MaterialTapTargetSize], for a description of how this affects tap targets.
-  final MaterialTapTargetSize materialTapTargetSize;
+  final MaterialTapTargetSize? materialTapTargetSize;
 
   /// {@macro flutter.cupertino.switch.dragStartBehavior}
   final DragStartBehavior dragStartBehavior;
 
   /// The color for the button's [Material] when it has the input focus.
-  final Color focusColor;
+  final Color? focusColor;
 
   /// The color for the button's [Material] when a pointer is hovering over it.
-  final Color hoverColor;
+  final Color? hoverColor;
 
   /// {@macro flutter.widgets.Focus.focusNode}
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   /// {@macro flutter.widgets.Focus.autofocus}
   final bool autofocus;
@@ -128,16 +124,12 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (booleanFieldBloc == null) {
-      return SizedBox();
-    }
-
     return CanShowFieldBlocBuilder(
       fieldBloc: booleanFieldBloc,
       animate: animateWhenCanShow,
       builder: (_, __) {
         return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
-          cubit: booleanFieldBloc,
+          bloc: booleanFieldBloc,
           builder: (context, state) {
             final isEnabled = fieldBlocIsEnabled(
               isEnabled: this.isEnabled,
@@ -146,7 +138,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
             );
 
             return DefaultFieldBlocBuilderPadding(
-              padding: padding,
+              padding: padding as EdgeInsets?,
               child: InputDecorator(
                 decoration: Style.inputDecorationWithoutBorder.copyWith(
                   contentPadding: EdgeInsets.all(0),
@@ -181,9 +173,9 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   }
 
   Switch _buildSwitch(
-      {@required BuildContext context, @required BooleanFieldBlocState state}) {
+      {required BuildContext context, required BooleanFieldBlocState state}) {
     return Switch(
-      value: state.value,
+      value: state.value!,
       onChanged: fieldBlocBuilderOnChange<bool>(
         isEnabled: isEnabled,
         nextFocusNode: nextFocusNode,

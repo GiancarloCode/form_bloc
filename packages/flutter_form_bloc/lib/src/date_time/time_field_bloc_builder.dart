@@ -8,10 +8,10 @@ export 'package:intl/intl.dart' show DateFormat;
 
 class TimeFieldBlocBuilder extends StatelessWidget {
   const TimeFieldBlocBuilder({
-    Key key,
-    @required this.timeFieldBloc,
-    @required this.format,
-    @required this.initialTime,
+    Key? key,
+    required this.timeFieldBloc,
+    required this.format,
+    required this.initialTime,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.errorBuilder,
@@ -28,11 +28,7 @@ class TimeFieldBlocBuilder extends StatelessWidget {
     this.clearIcon,
     this.nextFocusNode,
     this.focusNode,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        assert(decoration != null),
-        assert(initialTime != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final InputFieldBloc<TimeOfDay, Object> timeFieldBloc;
@@ -43,7 +39,7 @@ class TimeFieldBlocBuilder extends StatelessWidget {
   final DateFormat format;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
@@ -52,7 +48,7 @@ class TimeFieldBlocBuilder extends StatelessWidget {
   final bool isEnabled;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
@@ -61,23 +57,23 @@ class TimeFieldBlocBuilder extends StatelessWidget {
   final bool animateWhenCanShow;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
-  final SelectableDayPredicate selectableDayPredicate;
+  final SelectableDayPredicate? selectableDayPredicate;
   final DatePickerMode initialDatePickerMode = DatePickerMode.day;
-  final Locale locale;
-  final TextDirection textDirection;
-  final TransitionBuilder pickerBuilder;
+  final Locale? locale;
+  final TextDirection? textDirection;
+  final TransitionBuilder? pickerBuilder;
   final bool useRootNavigator;
-  final RouteSettings routeSettings;
+  final RouteSettings? routeSettings;
   final TimeOfDay initialTime;
 
   final bool showClearIcon;
 
-  final Icon clearIcon;
+  final Icon? clearIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +89,7 @@ class TimeFieldBlocBuilder extends StatelessWidget {
       initialDate: null,
       firstDate: null,
       lastDate: null,
-      initialTime: initialTime ?? TimeOfDay.now(),
+      initialTime: initialTime,
       builder: pickerBuilder,
       locale: locale,
       routeSettings: routeSettings,

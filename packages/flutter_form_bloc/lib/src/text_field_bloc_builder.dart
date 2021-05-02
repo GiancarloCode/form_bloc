@@ -3,18 +3,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
-import 'package:flutter/widgets.dart';
-
-export 'package:flutter/widgets.dart' show EditableText;
 
 export 'package:flutter/services.dart'
     show TextInputType, TextInputAction, TextCapitalization;
-
+export 'package:flutter/widgets.dart' show EditableText;
 export 'package:flutter_form_bloc/src/flutter_typeahead.dart'
     show SuggestionsBoxDecoration;
 
@@ -76,8 +74,8 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///  * [maxLength], which discusses the precise meaning of "number of
   ///    characters" and how it may differ from the intuitive meaning.
   const TextFieldBlocBuilder({
-    Key key,
-    @required this.textFieldBloc,
+    Key? key,
+    required this.textFieldBloc,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.errorBuilder,
@@ -86,7 +84,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.removeSuggestionOnLongPress = false,
     this.focusNode,
     this.decoration = const InputDecoration(),
-    TextInputType keyboardType,
+    TextInputType? keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
     this.style,
@@ -102,7 +100,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.minLines,
     this.expands = false,
     this.maxLength,
-    this.maxLengthEnforced = true,
+    this.maxLengthEnforced = MaxLengthEnforcement.enforced,
     this.onChanged,
     this.onEditingComplete,
     this.onSubmitted,
@@ -149,37 +147,14 @@ class TextFieldBlocBuilder extends StatefulWidget {
         ),
       ),
     ),
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(obscureTextTrueIcon != null),
-        assert(obscureTextFalseIcon != null),
-        assert(clearTextIcon != null),
-        assert(asyncValidatingIcon != null),
-        assert(isEnabled != null),
-        assert(suggestionsAnimationDuration != null),
-        assert(removeSuggestionOnLongPress != null),
-        assert(debounceSuggestionDuration != null),
-        assert(getImmediateSuggestions != null),
-        assert(textAlign != null),
-        assert(autofocus != null),
-        assert(autocorrect != null),
-        assert(hideOnEmptySuggestions != null),
-        assert(hideOnSuggestionsError != null),
-        assert(hideOnLoadingSuggestions != null),
-        assert(keepSuggestionsOnLoading != null),
-        assert(showSuggestionsWhenIsEmpty != null),
-        assert(autocorrect != null),
-        assert(maxLengthEnforced != null),
-        assert(scrollPadding != null),
-        assert(dragStartBehavior != null),
-        assert(maxLines == null || maxLines > 0),
+  })  : assert(maxLines > 0),
         assert(minLines == null || minLines > 0),
         assert(
-          (maxLines == null) || (minLines == null) || (maxLines >= minLines),
+          (minLines == null) || (maxLines >= minLines),
           'minLines can\'t be greater than maxLines',
         ),
-        assert(expands != null),
         assert(
-          !expands || (maxLines == null && minLines == null),
+          !expands || (minLines == null),
           'minLines and maxLines must be null when expands is true.',
         ),
         assert(maxLength == null ||
@@ -200,7 +175,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// and must return a String error to display in the widget when
   /// has an error. By default is [defaultErrorBuilder].
   /// {@endtemplate}
-  final FieldBlocErrorBuilder errorBuilder;
+  final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   /// If `true`, this widget will be enabled only
@@ -218,13 +193,13 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// {@template flutter_form_bloc.FieldBlocBuilder.padding}
   /// The amount of space by which to inset the child.
   /// {@endtemplate}
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
   /// When change the value of the `FieldBloc`, this will call
   /// `nextFocusNode.requestFocus()`.
   /// {@endtemplate}
-  final FocusNode nextFocusNode;
+  final FocusNode? nextFocusNode;
 
   /// The suffix button with a default behavior:
   ///
@@ -234,7 +209,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// [SuffixButton.clearText] : Show an "X" icon,
   /// and when is pressed, clear the text.
-  final SuffixButton suffixButton;
+  final SuffixButton? suffixButton;
 
   /// if `true` when do a long press in a suggestion, it will be removed
   /// and will be added to [TextFieldBloc.selectedSuggestion] stream.
@@ -243,7 +218,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// The decoration of the material sheet that contains the suggestions.
   ///
   /// If `null`, default decoration with an elevation of 4.0 is used
-  final SuggestionsBoxDecoration suggestionsBoxDecoration;
+  final SuggestionsBoxDecoration? suggestionsBoxDecoration;
 
   /// The time for show and hide the suggestions box.
   /// By default is 700 milliseconds.
@@ -262,7 +237,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// The style to use for the suggestion text.
   ///
   /// If `null`, defaults to the `subhead` text style from the current [Theme].
-  final TextStyle suggestionTextStyle;
+  final TextStyle? suggestionTextStyle;
 
   /// The duration to wait after the user stops typing before calling
   /// [TextFieldBlocState.suggestions].
@@ -302,7 +277,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// ```
   ///
   /// If not specified, a [CircularProgressIndicator](https://docs.flutter.io/flutter/material/CircularProgressIndicator-class.html) is shown
-  final WidgetBuilder loadingSuggestionsBuilder;
+  final WidgetBuilder? loadingSuggestionsBuilder;
 
   /// Called when [TextFieldBlocState.suggestions] returns an empty array.
   ///
@@ -316,7 +291,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// ```
   ///
   /// If not specified, a simple text is shown
-  final WidgetBuilder suggestionsNotFoundBuilder;
+  final WidgetBuilder? suggestionsNotFoundBuilder;
 
   /// Called when [TextFieldBlocState.suggestions] throws an exception.
   ///
@@ -330,7 +305,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// ```
   ///
   /// If not specified, the error is shown in [ThemeData.errorColor](https://docs.flutter.io/flutter/material/ThemeData/errorColor.html)
-  final ErrorBuilder suggestionsErrorBuilder;
+  final ErrorBuilder? suggestionsErrorBuilder;
 
   /// If set to false, the suggestions box will show a circular
   /// progress indicator when retrieving suggestions.
@@ -387,7 +362,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// This widget builds an [EditableText] and will ensure that the keyboard is
   /// showing when it is tapped by calling [EditableTextState.requestKeyboard()].
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   /// The decoration to show around the text field.
   ///
@@ -399,7 +374,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   final InputDecoration decoration;
 
   /// {@macro flutter.widgets.editableText.obscureText}
-  final bool obscureText;
+  final bool? obscureText;
 
   /// {@macro flutter.widgets.editableText.keyboardType}
   final TextInputType keyboardType;
@@ -408,7 +383,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// Defaults to [TextInputAction.newline] if [keyboardType] is
   /// [TextInputType.multiline] and [TextInputAction.done] otherwise.
-  final TextInputAction textInputAction;
+  final TextInputAction? textInputAction;
 
   /// {@macro flutter.widgets.editableText.textCapitalization}
   final TextCapitalization textCapitalization;
@@ -418,19 +393,19 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// This text style is also used as the base style for the [decoration].
   ///
   /// If null, defaults to the `subhead` text style from the current [Theme].
-  final TextStyle style;
+  final TextStyle? style;
 
   /// {@macro flutter.widgets.editableText.strutStyle}
-  final StrutStyle strutStyle;
+  final StrutStyle? strutStyle;
 
   /// {@macro flutter.widgets.editableText.textAlign}
   final TextAlign textAlign;
 
   /// {@macro flutter.material.inputDecorator.textAlignVertical}
-  final TextAlignVertical textAlignVertical;
+  final TextAlignVertical? textAlignVertical;
 
   /// {@macro flutter.widgets.editableText.textDirection}
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
 
   /// {@macro flutter.widgets.editableText.autofocus}
   final bool autofocus;
@@ -442,13 +417,13 @@ class TextFieldBlocBuilder extends StatefulWidget {
   final int maxLines;
 
   /// {@macro flutter.widgets.editableText.minLines}
-  final int minLines;
+  final int? minLines;
 
   /// {@macro flutter.widgets.editableText.expands}
   final bool expands;
 
   /// {@macro flutter.widgets.editableText.showCursor}
-  final bool showCursor;
+  final bool? showCursor;
 
   /// If [maxLength] is set to this value, only the "current input length"
   /// part of the character counter is shown.
@@ -505,15 +480,37 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   ///  * [LengthLimitingTextInputFormatter] for more information on how it
   ///    counts characters, and how it may differ from the intuitive meaning.
-  final int maxLength;
+  final int? maxLength;
 
-  /// If true, prevents the field from allowing more than [maxLength]
-  /// characters.
+  /// {@template flutter.services.textFormatter.maxLengthEnforcement}
+  /// ### [MaxLengthEnforcement.enforced] versus
+  /// [MaxLengthEnforcement.truncateAfterCompositionEnds]
   ///
-  /// If [maxLength] is set, [maxLengthEnforced] indicates whether or not to
-  /// enforce the limit, or merely provide a character counter and warning when
-  /// [maxLength] is exceeded.
-  final bool maxLengthEnforced;
+  /// Both [MaxLengthEnforcement.enforced] and
+  /// [MaxLengthEnforcement.truncateAfterCompositionEnds] make sure the final
+  /// length of the text does not exceed the max length specified. The difference
+  /// is that [MaxLengthEnforcement.enforced] truncates all text while
+  /// [MaxLengthEnforcement.truncateAfterCompositionEnds] allows composing text to
+  /// exceed the limit. Allowing this "placeholder" composing text to exceed the
+  /// limit may provide a better user experience on some platforms for entering
+  /// ideographic characters (e.g. CJK characters) via composing on phonetic
+  /// keyboards.
+  ///
+  /// Some input methods (Gboard on Android for example) initiate text composition
+  /// even for Latin characters, in which case the best experience may be to
+  /// truncate those composing characters with [MaxLengthEnforcement.enforced].
+  ///
+  /// In fields that strictly support only a small subset of characters, such as
+  /// verification code fields, [MaxLengthEnforcement.enforced] may provide the
+  /// best experience.
+  /// {@endtemplate}
+  ///
+  /// See also:
+  ///
+  ///  * [TextField.maxLengthEnforcement] which is used in conjunction with
+  ///  [TextField.maxLength] to limit the length of user input. [TextField] also
+  ///  provides a character counter to provide visual feedback.
+  final MaxLengthEnforcement maxLengthEnforced;
 
   /// {@macro flutter.widgets.editableText.onChanged}
   ///
@@ -523,34 +520,34 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///    runs and can validate and change ("format") the input value.
   ///  * [onEditingComplete], [onSubmitted], [onSelectionChanged]:
   ///    which are more specialized input change notifications.
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onEditingComplete}
-  final VoidCallback onEditingComplete;
+  final VoidCallback? onEditingComplete;
 
   /// {@macro flutter.widgets.editableText.onSubmitted}
-  final ValueChanged<String> onSubmitted;
+  final ValueChanged<String>? onSubmitted;
 
   /// {@macro flutter.widgets.editableText.inputFormatters}
-  final List<TextInputFormatter> inputFormatters;
+  final List<TextInputFormatter>? inputFormatters;
 
   /// {@macro flutter.widgets.editableText.cursorWidth}
   final double cursorWidth;
 
   /// {@macro flutter.widgets.editableText.cursorRadius}
-  final Radius cursorRadius;
+  final Radius? cursorRadius;
 
   /// The color to use when painting the cursor.
   ///
   /// Defaults to the theme's `cursorColor` when null.
-  final Color cursorColor;
+  final Color? cursorColor;
 
   /// The appearance of the keyboard.
   ///
   /// This setting is only honored on iOS devices.
   ///
   /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
-  final Brightness keyboardAppearance;
+  final Brightness? keyboardAppearance;
 
   /// {@macro flutter.widgets.editableText.scrollPadding}
   final EdgeInsets scrollPadding;
@@ -566,7 +563,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// If not set, select all and paste will default to be enabled. Copy and cut
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
-  final ToolbarOptions toolbarOptions;
+  final ToolbarOptions? toolbarOptions;
 
   /// {@macro flutter.services.textInput.enableSuggestions}
   final bool enableSuggestions;
@@ -592,7 +589,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// To listen to arbitrary pointer events without competing with the
   /// text field's internal gesture detector, use a [Listener].
-  final GestureTapCallback onTap;
+  final GestureTapCallback? onTap;
 
   /// Callback that generates a custom [InputDecorator.counter] widget.
   ///
@@ -621,13 +618,13 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// }
   /// ```
   /// {@end-tool}
-  final InputCounterWidgetBuilder buildCounter;
+  final InputCounterWidgetBuilder? buildCounter;
 
   /// {@macro flutter.widgets.editableText.scrollPhysics}
-  final ScrollPhysics scrollPhysics;
+  final ScrollPhysics? scrollPhysics;
 
   /// {@macro flutter.widgets.editableText.scrollController}
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   /// Set to `true` if you want animate size/fade, when the
@@ -676,18 +673,17 @@ class TextFieldBlocBuilder extends StatefulWidget {
 }
 
 class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
-  TextEditingController _controller;
-  bool _obscureText;
-  VoidCallback _controllerListener;
-  FocusNode _focusNode;
+  late TextEditingController _controller;
+  bool? _obscureText;
+  late VoidCallback _controllerListener;
+  FocusNode? _focusNode;
 
   @override
   void initState() {
     super.initState();
 
     _controllerListener = _textControllerListener;
-    _controller =
-        TextEditingController(text: widget.textFieldBloc?.state?.value);
+    _controller = TextEditingController(text: widget.textFieldBloc.state.value);
 
     _controller.addListener(_controllerListener);
 
@@ -719,14 +715,14 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   void _onSubmitted(String value) {
     if (widget.nextFocusNode != null) {
-      widget.nextFocusNode.requestFocus();
+      widget.nextFocusNode!.requestFocus();
     }
     if (widget.onSubmitted != null) {
-      widget.onSubmitted(value);
+      widget.onSubmitted!(value);
     }
   }
 
-  void _fixControllerTextValue(String value) async {
+  void _fixControllerTextValue(String? value) async {
     _controller
       ..text = value ?? ''
       ..selection = TextSelection.collapsed(offset: _controller.text.length);
@@ -737,20 +733,16 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         TextSelection.collapsed(offset: _controller.text.length);
   }
 
-  FocusNode get _effectiveFocusNode => widget.focusNode ?? _focusNode;
+  FocusNode? get _effectiveFocusNode => widget.focusNode ?? _focusNode;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.textFieldBloc == null) {
-      return SizedBox();
-    }
-
     return CanShowFieldBlocBuilder(
       fieldBloc: widget.textFieldBloc,
       animate: widget.animateWhenCanShow,
       builder: (_, __) {
         return BlocBuilder<TextFieldBloc, TextFieldBlocState>(
-          cubit: widget.textFieldBloc,
+          bloc: widget.textFieldBloc,
           builder: (context, state) {
             final isEnabled = fieldBlocIsEnabled(
               isEnabled: widget.isEnabled,
@@ -763,7 +755,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               _fixControllerTextValue(state.value);
             }
             return DefaultFieldBlocBuilderPadding(
-              padding: widget.padding,
+              padding: widget.padding as EdgeInsets?,
               child: _buildTextField(state: state, isEnabled: isEnabled),
             );
           },
@@ -775,18 +767,18 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   InputDecoration _buildDecoration(TextFieldBlocState state) {
     InputDecoration decoration = widget.decoration;
     if (widget.suffixButton != null) {
-      switch (widget.suffixButton) {
+      switch (widget.suffixButton!) {
         case SuffixButton.obscureText:
           if (widget.obscureText == null) {
             decoration = decoration.copyWith(
               suffixIcon: InkWell(
                   borderRadius: BorderRadius.circular(25),
-                  child: _obscureText
+                  child: _obscureText!
                       ? widget.obscureTextTrueIcon
                       : widget.obscureTextFalseIcon,
                   onTap: () {
                     setState(() {
-                      _obscureText = !_obscureText;
+                      _obscureText = !_obscureText!;
                     });
                   }),
             );
@@ -825,7 +817,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   }
 
   Widget _buildTextField(
-      {@required TextFieldBlocState state, @required bool isEnabled}) {
+      {required TextFieldBlocState state, required bool isEnabled}) {
     return widgetBasedOnPlatform(
       mobile: TypeAheadField<String>(
         textFieldConfiguration: TextFieldConfiguration<String>(
@@ -834,16 +826,18 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction != null
               ? widget.textInputAction
-              : widget.nextFocusNode != null ? TextInputAction.next : null,
+              : widget.nextFocusNode != null
+                  ? TextInputAction.next
+                  : null,
           textCapitalization: widget.textCapitalization,
           style: isEnabled
               ? widget.style
               : widget.style != null
-                  ? widget.style
+                  ? widget.style!
                       .copyWith(color: Theme.of(context).disabledColor)
                   : Theme.of(context)
                       .textTheme
-                      .subtitle1
+                      .subtitle1!
                       .copyWith(color: Theme.of(context).disabledColor),
           textAlign: widget.textAlign,
           textDirection: widget.textDirection,
@@ -853,11 +847,11 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
           minLines: widget.minLines,
           maxLines: widget.maxLines,
           maxLength: widget.maxLength,
-          maxLengthEnforced: widget.maxLengthEnforced,
+          maxLengthEnforcement: widget.maxLengthEnforced,
           onChanged: (value) {
             widget.textFieldBloc.updateValue(value);
             if (widget.onChanged != null) {
-              widget.onChanged(value);
+              widget.onChanged!(value);
             }
           },
           onEditingComplete: widget.onEditingComplete,
@@ -910,7 +904,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
                 child: Text(
                   'No Items Found!',
                   style: widget.suggestionTextStyle ??
-                      Theme.of(context).textTheme.subtitle1.copyWith(
+                      Theme.of(context).textTheme.subtitle1!.copyWith(
                             color: ThemeData.estimateBrightnessForColor(
                                         Theme.of(context).canvasColor) ==
                                     Brightness.dark
@@ -937,7 +931,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
             child: Text(
               suggestion,
               style: widget.suggestionTextStyle ??
-                  Theme.of(context).textTheme.subtitle1.copyWith(
+                  Theme.of(context).textTheme.subtitle1!.copyWith(
                         color: ThemeData.estimateBrightnessForColor(
                                     Theme.of(context).canvasColor) ==
                                 Brightness.dark
@@ -972,29 +966,31 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction != null
             ? widget.textInputAction
-            : widget.nextFocusNode != null ? TextInputAction.next : null,
+            : widget.nextFocusNode != null
+                ? TextInputAction.next
+                : null,
         textCapitalization: widget.textCapitalization,
         style: isEnabled
             ? widget.style
             : widget.style != null
-                ? widget.style.copyWith(color: Theme.of(context).disabledColor)
+                ? widget.style!.copyWith(color: Theme.of(context).disabledColor)
                 : Theme.of(context)
                     .textTheme
-                    .subtitle1
+                    .subtitle1!
                     .copyWith(color: Theme.of(context).disabledColor),
         textAlign: widget.textAlign,
         textDirection: widget.textDirection,
         autofocus: widget.autofocus,
-        obscureText: _obscureText,
+        obscureText: _obscureText!,
         autocorrect: widget.autocorrect,
         minLines: widget.minLines,
         maxLines: widget.maxLines,
         maxLength: widget.maxLength,
-        maxLengthEnforced: widget.maxLengthEnforced,
+        maxLengthEnforcement: widget.maxLengthEnforced,
         onChanged: (value) {
           widget.textFieldBloc.updateValue(value);
           if (widget.onChanged != null) {
-            widget.onChanged(value);
+            widget.onChanged!(value);
           }
         },
         onEditingComplete: widget.onEditingComplete,

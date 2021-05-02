@@ -2,7 +2,7 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for `bool` type.
 class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
-    BooleanFieldBlocState<ExtraData>, ExtraData> {
+    BooleanFieldBlocState<ExtraData>, ExtraData?> {
   /// ## BooleanFieldBloc<ExtraData>
   ///
   /// ### Properties:
@@ -35,15 +35,14 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
   /// the value using [updateValue].
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   BooleanFieldBloc({
-    String name,
-    bool initialValue = false,
-    List<Validator<bool>> validators,
-    List<AsyncValidator<bool>> asyncValidators,
+    String? name,
+    bool? initialValue = false,
+    List<Validator<bool?>>? validators,
+    List<AsyncValidator<bool>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
-    Suggestions<bool> suggestions,
-    ExtraData extraData,
-  })  : assert(asyncValidatorDebounceTime != null),
-        super(
+    Suggestions<bool>? suggestions,
+    ExtraData? extraData,
+  }) : super(
           initialValue ?? false,
           validators,
           asyncValidators,

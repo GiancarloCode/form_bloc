@@ -1,19 +1,19 @@
 part of '../field/field_bloc.dart';
 
 class TextFieldBlocState<ExtraData>
-    extends FieldBlocState<String, String, ExtraData> {
+    extends FieldBlocState<String, String, ExtraData?> {
   TextFieldBlocState({
-    @required String value,
-    @required String error,
-    @required bool isInitial,
-    @required Suggestions<String> suggestions,
-    @required bool isValidated,
-    @required bool isValidating,
-    FormBloc formBloc,
-    @required String name,
+    required String? value,
+    required String? error,
+    required bool isInitial,
+    required Suggestions<String>? suggestions,
+    required bool isValidated,
+    required bool isValidating,
+    FormBloc? formBloc,
+    String? name,
     List additionalProps = const <dynamic>[],
-    dynamic Function(String value) toJson,
-    ExtraData extraData,
+    dynamic Function(String? value)? toJson,
+    ExtraData? extraData,
   }) : super(
           value: value,
           error: error,
@@ -30,24 +30,23 @@ class TextFieldBlocState<ExtraData>
   /// Parse the [value] to [int].
   /// if the value is an [int] returns an [int],
   /// else returns `null`.
-  int get valueToInt => int.tryParse(value);
+  int? get valueToInt => int.tryParse(value ?? '');
 
   /// Parse the [value] to [double].
   /// if the value is a [double] returns a [double],
   /// else returns `null`.
-  double get valueToDouble => double.tryParse(value);
+  double? get valueToDouble => double.tryParse(value ?? '');
 
   @override
-  TextFieldBlocState<ExtraData> copyWith({
-    Optional<String> value,
-    Optional<String> error,
-    bool isInitial,
-    Optional<Suggestions<String>> suggestions,
-    bool isValidated,
-    bool isValidating,
-    FormBloc formBloc,
-    Optional<ExtraData> extraData,
-  }) {
+  FieldBlocState<String, String, ExtraData?> copyWith(
+      {Optional<String?>? value,
+      Optional<String>? error,
+      bool? isInitial,
+      Optional<Suggestions<String>>? suggestions,
+      bool? isValidated,
+      bool? isValidating,
+      FormBloc? formBloc,
+      Optional<ExtraData?>? extraData}) {
     return TextFieldBlocState(
       value: value == null ? this.value : value.orNull,
       error: error == null ? this.error : error.orNull,
@@ -63,7 +62,7 @@ class TextFieldBlocState<ExtraData>
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         value,
         error,
         isInitial,

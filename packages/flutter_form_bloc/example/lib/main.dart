@@ -132,8 +132,7 @@ class AllFieldsForm extends StatelessWidget {
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
-
-                  Scaffold.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.failureResponse)));
                 },
                 child: SingleChildScrollView(
@@ -282,7 +281,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => AllFieldsForm())),
               icon: Icon(Icons.replay),

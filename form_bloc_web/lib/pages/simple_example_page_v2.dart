@@ -268,14 +268,14 @@ class LoginForm extends StatelessWidget {
 ''',
         ),
         TutorialText.sub('''
-If you want to access a form bloc from the child you will use a `Builder` to get a new `context` and then you can use `context.bloc<LoginFormBloc>()` to get the form bloc.        
+If you want to access a form bloc from the child you will use a `Builder` to get a new `context` and then you can use `context.read<LoginFormBloc>()` to get the form bloc.        
 '''),
         CodeCard.main(
           nestedPath: _formBlocWidgetBuildName,
           code: '''
       child: Builder(
         builder: (context) {
-          final loginFormBloc = context.bloc<LoginFormBloc>();
+          final loginFormBloc = context.read<LoginFormBloc>();
           
           return
         },

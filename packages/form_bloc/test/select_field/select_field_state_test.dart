@@ -7,7 +7,7 @@ void main() {
     test('copyWith.', () {
       final suggestions = (String pattern) async => [1];
 
-      final state = SelectFieldBlocState<int, dynamic>(
+      final state = SelectFieldBlocState<int?, dynamic>(
         value: null,
         error: null,
         isInitial: false,
