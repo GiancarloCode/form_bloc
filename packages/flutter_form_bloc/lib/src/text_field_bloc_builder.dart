@@ -137,6 +137,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.obscureTextTrueIcon = const Icon(Icons.visibility),
     this.obscureTextFalseIcon = const Icon(Icons.visibility_off),
     this.clearTextIcon = const Icon(Icons.clear),
+    this.autofillHints,
     this.asyncValidatingIcon = const SizedBox(
       height: 24,
       width: 24,
@@ -667,6 +668,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// )
   /// ```
   final Widget asyncValidatingIcon;
+  final Iterable<String>? autofillHints;
 
   @override
   _TextFieldBlocBuilderState createState() => _TextFieldBlocBuilderState();
@@ -822,6 +824,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
       mobile: TypeAheadField<String>(
         textFieldConfiguration: TextFieldConfiguration<String>(
           controller: _controller,
+          autofillHints: widget.autofillHints,
           decoration: _buildDecoration(state),
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction != null

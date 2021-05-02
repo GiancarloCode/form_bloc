@@ -811,6 +811,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       child: TextField(
         focusNode: this._effectiveFocusNode,
         controller: this._effectiveController,
+        autofillHints: widget.textFieldConfiguration.autofillHints,
         decoration: widget.textFieldConfiguration.decoration,
         style: widget.textFieldConfiguration.style,
         textAlign: widget.textFieldConfiguration.textAlign,
@@ -1547,10 +1548,12 @@ class TextFieldConfiguration<T> {
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
   final ToolbarOptions? toolbarOptions;
+  final Iterable<String>? autofillHints;
 
   /// Creates a TextFieldConfiguration
   const TextFieldConfiguration({
     this.decoration = const InputDecoration(),
+    this.autofillHints,
     this.style,
     this.controller,
     this.onChanged,

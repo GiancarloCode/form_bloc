@@ -1,3 +1,7 @@
+# 0.20.0
+## Breaking changes
+* Null safety migration
+* Updated to `bloc: ^7.0.0`.
 # 0.19.1
 * Fix add `FormBloc` of items in `ListFieldBloc`.
 

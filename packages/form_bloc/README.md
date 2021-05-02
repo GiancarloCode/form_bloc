@@ -94,3 +94,4 @@ To create beautiful forms in Flutter using `form_bloc` check out [flutter_form_b
 ## Maintainers
 
 - [GiancarloCode](https://github.com/GiancarloCode)
+- [AhmedWahdan](https://github.com/WahdanZ)

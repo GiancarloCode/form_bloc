@@ -1,6 +1,8 @@
 # 0.20.0
+  * support for autofillHints in TextFieldBlocBuilder
   ## Breaking changes
-  *  null safety migration 
+  *  Null safety migration 
+  *  Updated to `form_bloc: ^0.20.0`.
 # 0.19.0
   ## Breaking changes
   * Updated to `form_bloc: ^0.18.0`.

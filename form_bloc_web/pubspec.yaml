@@ -12,11 +12,7 @@ dependencies:
   #   path: ../packages/form_bloc
   # flutter_form_bloc:
   #   path: ../packages/flutter_form_bloc
-  flutter_form_bloc:
-    git:
-      url: https://github.com/WahdanZ/form_bloc
-      ref: ns-mirgrate
-      path: packages/flutter_form_bloc
+  flutter_form_bloc: ^0.20.0
   flutter_gradients: ^1.0.0+3
   flutter_syntax_view: ^3.2.2
   flash: ^1.5.0
