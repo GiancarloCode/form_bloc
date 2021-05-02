@@ -92,6 +92,10 @@ class LoginForm extends StatelessWidget {
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.email,
                       keyboardType: TextInputType.emailAddress,
+                      autofillHints: [
+                        AutofillHints.username,
+                        AutofillHints.email
+                      ],
                       decoration: InputDecoration(
                         labelText: 'Email',
                         prefixIcon: Icon(Icons.email),
@@ -100,6 +104,7 @@ class LoginForm extends StatelessWidget {
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.password,
                       suffixButton: SuffixButton.obscureText,
+                      autofillHints: [AutofillHints.password],
                       decoration: InputDecoration(
                         labelText: 'Password',
                         prefixIcon: Icon(Icons.lock),

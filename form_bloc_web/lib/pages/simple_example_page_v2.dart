@@ -449,6 +449,7 @@ To use them you simply have to assign a field bloc.
                     ),
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.password,
+                      autofillHints: [AutofillHints.password],
                       suffixButton: SuffixButton.obscureText,
                       decoration: InputDecoration(
                         labelText: 'Password',

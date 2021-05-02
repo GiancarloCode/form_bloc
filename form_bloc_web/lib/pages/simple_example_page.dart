@@ -446,6 +446,7 @@ To use them you simply have to assign a field bloc.
                   children: <Widget>[
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.email,
+                      autofillHints: [AutofillHints.username,AutofillHints.email],
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -454,6 +455,7 @@ To use them you simply have to assign a field bloc.
                     ),
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.password,
+                      autofillHints: [AutofillHints.password],
                       suffixButton: SuffixButton.obscureText,
                       decoration: InputDecoration(
                         labelText: 'Password',
