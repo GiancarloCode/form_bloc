@@ -96,6 +96,7 @@ class ValidationBasedOnOtherFieldForm extends StatelessWidget {
                   children: <Widget>[
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.password,
+                      autofillHints: [AutofillHints.password],
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Password',
