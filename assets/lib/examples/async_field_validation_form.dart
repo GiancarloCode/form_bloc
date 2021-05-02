@@ -68,7 +68,7 @@ class AsyncFieldValidationForm extends StatelessWidget {
       create: (context) => AsyncFieldValidationFormBloc(),
       child: Builder(
         builder: (context) {
-          final formBloc = context.bloc<AsyncFieldValidationFormBloc>();
+          final formBloc = context.read<AsyncFieldValidationFormBloc>();
 
           return Scaffold(
             resizeToAvoidBottomInset: false,

@@ -169,7 +169,7 @@ class ListFieldsForm extends StatelessWidget {
       create: (context) => ListFieldFormBloc(),
       child: Builder(
         builder: (context) {
-          final formBloc = context.bloc<ListFieldFormBloc>();
+          final formBloc = context.read<ListFieldFormBloc>();
 
           return Theme(
             data: Theme.of(context).copyWith(
@@ -218,7 +218,7 @@ class ListFieldsForm extends StatelessWidget {
                       ),
                       BlocBuilder<ListFieldBloc<MemberFieldBloc>,
                           ListFieldBlocState<MemberFieldBloc>>(
-                        cubit: formBloc.members,
+                        bloc: formBloc.members,
                         builder: (context, state) {
                           if (state.fieldBlocs.isNotEmpty) {
                             return ListView.builder(
@@ -311,7 +311,7 @@ class MemberCard extends StatelessWidget {
             ),
             BlocBuilder<ListFieldBloc<TextFieldBloc>,
                 ListFieldBlocState<TextFieldBloc>>(
-              cubit: memberField.hobbies,
+              bloc: memberField.hobbies,
               builder: (context, state) {
                 if (state.fieldBlocs.isNotEmpty) {
                   return ListView.builder(

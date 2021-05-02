@@ -113,7 +113,7 @@ class SubmissionProgressForm extends StatelessWidget {
       create: (context) => SubmissionProgressFormBloc(),
       child: Builder(
         builder: (context) {
-          final formBloc = context.bloc<SubmissionProgressFormBloc>();
+          final formBloc = context.read<SubmissionProgressFormBloc>();
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
@@ -139,7 +139,9 @@ class SubmissionProgressForm extends StatelessWidget {
                           child: LiquidLinearProgressIndicatorWithText(
                             percent: state is FormBlocSubmitting
                                 ? state.progress
-                                : state is FormBlocSuccess ? 1.0 : 0.0,
+                                : state is FormBlocSuccess
+                                    ? 1.0
+                                    : 0.0,
                           ),
                         );
                       },
@@ -166,7 +168,7 @@ class SubmissionProgressForm extends StatelessWidget {
 class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final formBloc = context.bloc<SubmissionProgressFormBloc>();
+    final formBloc = context.read<SubmissionProgressFormBloc>();
 
     return BlocBuilder<SubmissionProgressFormBloc, FormBlocState>(
       builder: (context, state) {

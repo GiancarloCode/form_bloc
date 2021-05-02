@@ -68,7 +68,7 @@ class ValidationBasedOnOtherFieldForm extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final loginFormBloc =
-              context.bloc<ValidationBasedOnOtherFieldFormBloc>();
+              context.read<ValidationBasedOnOtherFieldFormBloc>();
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
