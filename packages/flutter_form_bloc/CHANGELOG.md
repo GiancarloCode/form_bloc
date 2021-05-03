@@ -1,3 +1,6 @@
+# 0.20.1
+- fix make extra-data nullable
+- fix dropdown issue
 # 0.20.0
   * support for autofillHints in TextFieldBlocBuilder
   ## Breaking changes

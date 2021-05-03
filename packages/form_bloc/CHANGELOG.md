@@ -1,3 +1,5 @@
+# 0.20.1
+- code improvements 
 # 0.20.0
 ## Breaking changes
 * Null safety migration
