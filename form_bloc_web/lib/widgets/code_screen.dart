@@ -12,24 +12,24 @@ class CodeScreen extends StatefulWidget {
     this.extraDependencies,
   });
 
-  final String codePath;
+  final String? codePath;
 
-  final String extraDependencies;
+  final String? extraDependencies;
 
   @override
   CodeScreenState createState() => CodeScreenState();
 }
 
 class CodeScreenState extends State<CodeScreen> {
-  String _code;
+  String? _code;
 
   @override
   void didChangeDependencies() {
-    DefaultAssetBundle.of(context).loadString(widget.codePath).catchError((_) {
+    DefaultAssetBundle.of(context).loadString(widget.codePath!).catchError((_) {
       setState(() {
         _code = 'Example code not found';
       });
-    }).then<void>((String code) {
+    }).then<void>((String? code) {
       if (mounted) {
         setState(() {
           _code = code ?? 'Example code not found';

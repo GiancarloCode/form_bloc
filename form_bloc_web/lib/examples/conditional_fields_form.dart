@@ -4,7 +4,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class ConditionalFieldsFormBloc extends FormBloc<String, String> {
 
     showSecretField.onValueChanges(
       onData: (previous, current) async* {
-        if (current.value) {
+        if (current.value!) {
           addFieldBlocs(fieldBlocs: [secretField]);
         } else {
           removeFieldBlocs(fieldBlocs: [secretField]);
@@ -65,7 +65,7 @@ class ConditionalFieldsFormBloc extends FormBloc<String, String> {
         } else if (current.value == 'Yes') {
           addFieldBlocs(fieldBlocs: [
             showSecretField,
-            if (showSecretField.value) secretField,
+            if (showSecretField.value!) secretField,
           ]);
         }
       },
@@ -131,7 +131,7 @@ class ConditionalFieldsForm extends StatelessWidget {
                   LoadingDialog.hide(context);
 
                   Scaffold.of(context).showSnackBar(
-                      SnackBar(content: Text(state.failureResponse)));
+                      SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
                   physics: ClampingScrollPhysics(),
@@ -141,7 +141,7 @@ class ConditionalFieldsForm extends StatelessWidget {
                       children: <Widget>[
                         RadioButtonGroupFieldBlocBuilder(
                           selectFieldBloc: formBloc.doYouLikeFormBloc,
-                          itemBuilder: (context, value) => value,
+                          itemBuilder: (context, dynamic value) => value,
                           decoration: InputDecoration(
                             labelText: 'Do you like form bloc?',
                             prefixIcon: SizedBox(),
@@ -150,7 +150,7 @@ class ConditionalFieldsForm extends StatelessWidget {
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.whyNotYouLikeFormBloc,
                           keyboardType: TextInputType.multiline,
-                          maxLines: null,
+                          maxLines: 1,
                           decoration: InputDecoration(
                             labelText: 'Why?',
                             prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
@@ -194,7 +194,7 @@ class ConditionalFieldsForm extends StatelessWidget {
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -203,7 +203,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +224,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

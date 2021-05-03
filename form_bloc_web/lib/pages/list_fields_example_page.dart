@@ -3,7 +3,7 @@ import 'package:form_bloc_web/examples/list_fields_form.dart';
 import 'package:form_bloc_web/widgets/widgets.dart';
 
 class ListFieldsExamplePage extends StatelessWidget {
-  const ListFieldsExamplePage({Key key}) : super(key: key);
+  const ListFieldsExamplePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

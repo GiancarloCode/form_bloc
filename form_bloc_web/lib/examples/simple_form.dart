@@ -4,7 +4,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class LoginFormBloc extends FormBloc<String, String> {
 
     await Future<void>.delayed(Duration(seconds: 1));
 
-    if (showSuccessResponse.value) {
+    if (showSuccessResponse.value!) {
       emitSuccess();
     } else {
       emitFailure(failureResponse: 'This is an awesome error!');
@@ -83,48 +83,49 @@ class LoginForm extends StatelessWidget {
                 LoadingDialog.hide(context);
 
                 Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text(state.failureResponse)));
+                    SnackBar(content: Text(state.failureResponse!)));
               },
               child: SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
-                child: Column(
-                  children: <Widget>[
-                    TextFieldBlocBuilder(
-                      textFieldBloc: loginFormBloc.email,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: [
-                        AutofillHints.username,
-                        AutofillHints.email
-                      ],
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email),
-                      ),
-                    ),
-                    TextFieldBlocBuilder(
-                      textFieldBloc: loginFormBloc.password,
-                      suffixButton: SuffixButton.obscureText,
-                      autofillHints: [AutofillHints.password],
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 250,
-                      child: CheckboxFieldBlocBuilder(
-                        booleanFieldBloc: loginFormBloc.showSuccessResponse,
-                        body: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text('Show success response'),
+                child: AutofillGroup(
+                  child: Column(
+                    children: <Widget>[
+                      TextFieldBlocBuilder(
+                        textFieldBloc: loginFormBloc.email,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: [
+                          AutofillHints.username,
+                        ],
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: Icon(Icons.email),
                         ),
                       ),
-                    ),
-                    RaisedButton(
-                      onPressed: loginFormBloc.submit,
-                      child: Text('LOGIN'),
-                    ),
-                  ],
+                      TextFieldBlocBuilder(
+                        textFieldBloc: loginFormBloc.password,
+                        suffixButton: SuffixButton.obscureText,
+                        autofillHints: [AutofillHints.password],
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          prefixIcon: Icon(Icons.lock),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 250,
+                        child: CheckboxFieldBlocBuilder(
+                          booleanFieldBloc: loginFormBloc.showSuccessResponse,
+                          body: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text('Show success response'),
+                          ),
+                        ),
+                      ),
+                      RaisedButton(
+                        onPressed: loginFormBloc.submit,
+                        child: Text('LOGIN'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -136,7 +137,7 @@ class LoginForm extends StatelessWidget {
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -145,7 +146,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +167,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:form_bloc_web/widgets/app_scaffold.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +121,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildText(String text, {String url}) {
+  Widget _buildText(String text, {String? url}) {
     return GestureDetector(
       child: Text(
         text,
@@ -133,7 +133,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       onTap: () async {
-        if (await canLaunch(url)) {
+        if (await canLaunch(url!)) {
           await launch(url);
         }
       },

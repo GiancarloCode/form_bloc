@@ -3,8 +3,8 @@ import 'package:form_bloc_web/constants/style.dart';
 
 class GradientRaisedButton extends StatelessWidget {
   const GradientRaisedButton({
-    Key key,
-    @required this.onPressed,
+    Key? key,
+    required this.onPressed,
     this.height,
     this.width,
     this.gradient,
@@ -14,14 +14,14 @@ class GradientRaisedButton extends StatelessWidget {
     this.elevation,
   }) : super(key: key);
 
-  final VoidCallback onPressed;
-  final double height;
-  final double width;
-  final Gradient gradient;
-  final Widget child;
-  final BorderRadius borderRadius;
-  final EdgeInsets padding;
-  final double elevation;
+  final VoidCallback? onPressed;
+  final double? height;
+  final double? width;
+  final Gradient? gradient;
+  final Widget? child;
+  final BorderRadius? borderRadius;
+  final EdgeInsets? padding;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context) {

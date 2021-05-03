@@ -3,7 +3,7 @@ import 'package:form_bloc_web/examples/simple_form.dart';
 import 'package:form_bloc_web/widgets/widgets.dart';
 
 class SimpleExamplePage extends StatelessWidget {
-  const SimpleExamplePage({Key key}) : super(key: key);
+  const SimpleExamplePage({Key? key}) : super(key: key);
 
   final String _formBlocName = 'LoginFormBloc';
   final String _formBlocWidgetBuildName = 'LoginForm > build';

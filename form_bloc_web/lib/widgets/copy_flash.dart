@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:form_bloc_web/constants/style.dart';
 
 void showCopyFlash({
-  @required BuildContext context,
-  @required EdgeInsets margin,
+  required BuildContext context,
+  required EdgeInsets margin,
 }) =>
     showFlash(
       context: context,

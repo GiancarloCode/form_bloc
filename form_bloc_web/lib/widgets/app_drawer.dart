@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../routes.dart';
 
 class AppDrawer extends StatefulWidget {
-  const AppDrawer({@required this.permanentlyDisplay, Key key})
+  const AppDrawer({required this.permanentlyDisplay, Key? key})
       : super(key: key);
 
   final bool permanentlyDisplay;
@@ -18,8 +18,8 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> with RouteAware {
-  String _selectedRoute;
-  AppRouteObserver _routeObserver;
+  String? _selectedRoute;
+  late AppRouteObserver _routeObserver;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _routeObserver.subscribe(this, ModalRoute.of(context));
+    _routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute<dynamic>);
   }
 
   @override
@@ -135,8 +135,8 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
   }
 
   Widget _buildDrawerItem({
-    @required String title,
-    @required String routeName,
+    required String title,
+    required String routeName,
   }) {
     return DrawerItem(
       title: title,
@@ -256,25 +256,25 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
 
   void _updateSelectedRoute() {
     setState(() {
-      _selectedRoute = ModalRoute.of(context).settings.name;
+      _selectedRoute = ModalRoute.of(context)!.settings.name;
     });
   }
 }
 
 class DrawerItem extends StatefulWidget {
   DrawerItem({
-    Key key,
-    @required this.title,
-    @required this.routeName,
-    @required String selectedRoute,
-    @required this.permanentlyDisplay,
+    Key? key,
+    required this.title,
+    required this.routeName,
+    required String? selectedRoute,
+    required this.permanentlyDisplay,
     this.iconData,
   })  : isCurrentRoute = routeName == selectedRoute,
         super(key: key);
 
   final String title;
   final String routeName;
-  final IconData iconData;
+  final IconData? iconData;
   final bool isCurrentRoute;
   final bool permanentlyDisplay;
 

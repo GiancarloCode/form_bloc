@@ -3,7 +3,7 @@ import 'package:form_bloc_web/examples/validation_based_on_other_field.dart';
 import 'package:form_bloc_web/widgets/widgets.dart';
 
 class ValidationBasedOnOtherFieldExamplePage extends StatelessWidget {
-  const ValidationBasedOnOtherFieldExamplePage({Key key}) : super(key: key);
+  const ValidationBasedOnOtherFieldExamplePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

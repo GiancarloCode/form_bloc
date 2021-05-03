@@ -4,7 +4,7 @@ import 'package:form_bloc_web/constants/style.dart';
 import 'package:form_bloc_web/widgets/gradient_button.dart';
 
 class TutorialStepperScreen extends StatefulWidget {
-  TutorialStepperScreen({Key key, @required this.steps}) : super(key: key);
+  TutorialStepperScreen({Key? key, required this.steps}) : super(key: key);
 
   final List<TutorialStep> steps;
 
@@ -36,7 +36,7 @@ class _TutorialStepperScreenState extends State<TutorialStepperScreen> {
                 style: TextStyle(fontSize: 20),
               ),
             ),
-            subtitle: step.subtitle != null ? Text(step.subtitle) : null,
+            subtitle: step.subtitle != null ? Text(step.subtitle!) : null,
             content: Column(children: [...step.children]),
             isActive: i == currentStep,
             state: i < currentStep ? StepState.complete : StepState.indexed),
@@ -95,12 +95,12 @@ class _TutorialStepperScreenState extends State<TutorialStepperScreen> {
 
 class TutorialStep {
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final List<Widget> children;
 
   TutorialStep({
-    @required this.title,
+    required this.title,
     this.subtitle,
-    @required this.children,
+    required this.children,
   });
 }

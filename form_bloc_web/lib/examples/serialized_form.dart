@@ -6,7 +6,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class SerializedFormBloc extends FormBloc<String, String> {
 
   final birthDate = InputFieldBloc<DateTime, Object>(
     name: 'birthDate',
-    toJson: (value) => value.toUtc().toIso8601String(),
+    toJson: (value) => value!.toUtc().toIso8601String(),
   );
 
   SerializedFormBloc() {
@@ -80,7 +80,7 @@ class SerializedForm extends StatelessWidget {
               body: FormBlocListener<SerializedFormBloc, String, String>(
                 onSuccess: (context, state) {
                   Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text(state.successResponse),
+                    content: Text(state.successResponse!),
                     duration: Duration(seconds: 2),
                   ));
                 },
@@ -132,7 +132,7 @@ class SerializedForm extends StatelessWidget {
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -141,7 +141,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +162,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

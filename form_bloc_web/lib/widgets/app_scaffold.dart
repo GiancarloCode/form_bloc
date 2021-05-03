@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:form_bloc_web/constants/style.dart';
 import 'package:form_bloc_web/widgets/app_drawer.dart';
-import 'package:form_bloc_web/widgets/particle_background.dart';
 
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
-    Key key,
+    Key? key,
     this.showParticlesBackground = false,
-    @required this.appBar,
-    @required this.body,
+    required this.appBar,
+    required this.body,
   }) : super(key: key);
 
   final bool showParticlesBackground;
@@ -19,7 +18,12 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        if (showParticlesBackground) ParticleBackground(),
+        if (showParticlesBackground)
+          Container(
+            decoration: BoxDecoration(
+              gradient: scaffoldBodyGradient,
+            ),
+          ),
         Row(
           children: [
             if (!displayMobileLayout(context))

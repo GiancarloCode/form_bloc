@@ -4,15 +4,15 @@ import 'package:flutter_syntax_view/flutter_syntax_view.dart';
 import 'package:form_bloc_web/widgets/widgets.dart';
 
 class CodeCard extends StatelessWidget {
-  final String code;
-  final String fileName;
+  final String? code;
+  final String? fileName;
   final bool showCopyButton;
-  final EdgeInsets padding;
-  final double bottomPaddingCopyMessage;
+  final EdgeInsets? padding;
+  final double? bottomPaddingCopyMessage;
 
   CodeCard({
-    Key key,
-    @required this.code,
+    Key? key,
+    required this.code,
     this.fileName,
     this.showCopyButton = true,
     this.padding,
@@ -39,7 +39,7 @@ class CodeCard extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Text(
-                    fileName,
+                    fileName!,
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
@@ -65,7 +65,7 @@ class CodeCard extends StatelessWidget {
                       style: const TextStyle(fontSize: 18.0),
                       children: <TextSpan>[
                         DartSyntaxHighlighter(SyntaxTheme.gravityLight())
-                            .format(code.substring(0, code.length - 1)),
+                            .format(code!.substring(0, code!.length - 1)),
                       ],
                     ),
                   ),
@@ -109,9 +109,9 @@ class CodeCard extends StatelessWidget {
   }
 
   factory CodeCard.pubspec({
-    String extraDependencies,
-    EdgeInsets padding,
-    double bottomPaddingCopyMessage,
+    String? extraDependencies,
+    EdgeInsets? padding,
+    double? bottomPaddingCopyMessage,
   }) =>
       CodeCard(
         code: '''
@@ -125,10 +125,10 @@ dependencies:
       );
 
   factory CodeCard.main({
-    @required String code,
+    required String? code,
     showCopyButton = true,
-    String nestedPath,
-    EdgeInsets padding,
+    String? nestedPath,
+    EdgeInsets? padding,
   }) =>
       CodeCard(
         code: code,

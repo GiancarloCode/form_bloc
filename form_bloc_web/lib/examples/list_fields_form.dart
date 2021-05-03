@@ -6,7 +6,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class ListFieldFormBloc extends FormBloc<String, String> {
   }
 
   void removeHobbyFromMember(
-      {@required int memberIndex, @required int hobbyIndex}) {
+      {required int memberIndex, required int hobbyIndex}) {
     members.value[memberIndex].hobbies.removeFieldBlocAt(hobbyIndex);
   }
 
@@ -94,25 +94,25 @@ class MemberFieldBloc extends GroupFieldBloc {
   final ListFieldBloc<TextFieldBloc> hobbies;
 
   MemberFieldBloc({
-    @required this.firstName,
-    @required this.lastName,
-    @required this.hobbies,
-    String name,
+    required this.firstName,
+    required this.lastName,
+    required this.hobbies,
+    String? name,
   }) : super([firstName, lastName, hobbies], name: name);
 }
 
 class Club {
-  String clubName;
-  List<Member> members;
+  String? clubName;
+  List<Member>? members;
 
   Club({this.clubName, this.members});
 
   Club.fromJson(Map<String, dynamic> json) {
     clubName = json['clubName'];
     if (json['members'] != null) {
-      members = List<Member>();
+      members = <Member>[];
       json['members'].forEach((v) {
-        members.add(Member.fromJson(v));
+        members!.add(Member.fromJson(v));
       });
     }
   }
@@ -121,7 +121,7 @@ class Club {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['clubName'] = this.clubName;
     if (this.members != null) {
-      data['members'] = this.members.map((v) => v.toJson()).toList();
+      data['members'] = this.members!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -134,9 +134,9 @@ class Club {
 }
 
 class Member {
-  String firstName;
-  String lastName;
-  List<String> hobbies;
+  String? firstName;
+  String? lastName;
+  List<String?>? hobbies;
 
   Member({this.firstName, this.lastName, this.hobbies});
 
@@ -195,7 +195,7 @@ class ListFieldsForm extends StatelessWidget {
 
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: SingleChildScrollView(
-                        child: Text(state.successResponse)),
+                        child: Text(state.successResponse!)),
                     duration: Duration(milliseconds: 1500),
                   ));
                 },
@@ -203,7 +203,7 @@ class ListFieldsForm extends StatelessWidget {
                   LoadingDialog.hide(context);
 
                   Scaffold.of(context).showSnackBar(
-                      SnackBar(content: Text(state.failureResponse)));
+                      SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
                   physics: ClampingScrollPhysics(),
@@ -265,11 +265,11 @@ class MemberCard extends StatelessWidget {
   final VoidCallback onAddHobby;
 
   const MemberCard({
-    Key key,
-    @required this.memberIndex,
-    @required this.memberField,
-    @required this.onRemoveMember,
-    @required this.onAddHobby,
+    Key? key,
+    required this.memberIndex,
+    required this.memberField,
+    required this.onRemoveMember,
+    required this.onAddHobby,
   }) : super(key: key);
 
   @override
@@ -359,7 +359,7 @@ class MemberCard extends StatelessWidget {
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -368,7 +368,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -389,7 +389,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
