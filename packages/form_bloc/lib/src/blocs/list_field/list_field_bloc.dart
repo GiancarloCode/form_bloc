@@ -3,7 +3,7 @@ part of '../field/field_bloc.dart';
 abstract class ListFieldBlocEvent extends Equatable {}
 
 class AddFieldBlocToListFieldBloc<T> extends ListFieldBlocEvent {
-  final T fieldBloc;
+  final T? fieldBloc;
 
   AddFieldBlocToListFieldBloc(this.fieldBloc);
 
@@ -107,14 +107,14 @@ class ListFieldBloc<T extends FieldBloc>
       if (event.fieldBloc != null) {
         final newState = stateSnapshot._copyWith(
           fieldBlocs: List<T>.from(stateSnapshot.fieldBlocs)
-            ..add(event.fieldBloc),
+            ..add(event.fieldBloc!),
         );
 
         yield newState;
 
         if (state.formBloc != null) {
           _addFormBlocAndAutoValidateToFieldBlocs(
-            fieldBlocs: [event.fieldBloc],
+            fieldBlocs: [event.fieldBloc!],
             formBloc: state.formBloc,
           );
 
