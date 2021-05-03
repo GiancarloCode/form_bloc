@@ -36,7 +36,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
         super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final InputFieldBloc<DateTime, Object> dateTimeFieldBloc;
+  final InputFieldBloc<DateTime, dynamic> dateTimeFieldBloc;
 
   /// For representing the date as a string e.g.
   /// `DateFormat("EEEE, MMMM d, yyyy 'at' h:mma")`

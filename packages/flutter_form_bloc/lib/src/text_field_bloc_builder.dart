@@ -169,7 +169,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// The `fieldBloc` for rebuild the widget
   /// when its state changes.
   /// {@endtemplate}
-  final TextFieldBloc<Object> textFieldBloc;
+  final TextFieldBloc<dynamic> textFieldBloc;
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   /// This function take the `context` and the [FieldBlocState.error]

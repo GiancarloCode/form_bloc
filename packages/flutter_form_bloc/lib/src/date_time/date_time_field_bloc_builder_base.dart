@@ -45,7 +45,7 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   final DateTimeFieldBlocBuilderBaseType type;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final InputFieldBloc<T, Object> dateTimeFieldBloc;
+  final InputFieldBloc<T, dynamic> dateTimeFieldBloc;
 
   /// For representing the date as a string e.g.
   /// `DateFormat("EEEE, MMMM d, yyyy 'at' h:mma")`
@@ -159,8 +159,8 @@ class _DateTimeFieldBlocBuilderBaseState<T>
         fieldBloc: widget.dateTimeFieldBloc,
         animate: widget.animateWhenCanShow,
         builder: (_, __) {
-          return BlocBuilder<InputFieldBloc<T?, Object>,
-              InputFieldBlocState<T?, Object>>(
+          return BlocBuilder<InputFieldBloc<T?, dynamic>,
+              InputFieldBlocState<T?, dynamic>>(
             bloc: widget.dateTimeFieldBloc,
             builder: (context, state) {
               final isEnabled = fieldBlocIsEnabled(
@@ -270,7 +270,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
   }
 
   InputDecoration _buildDecoration(BuildContext context,
-      InputFieldBlocState<T?, Object>? state, bool isEnabled) {
+      InputFieldBlocState<T?, dynamic>? state, bool isEnabled) {
     InputDecoration decoration = this.widget.decoration;
 
     decoration = decoration.copyWith(

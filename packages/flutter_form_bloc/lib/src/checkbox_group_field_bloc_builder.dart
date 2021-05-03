@@ -22,7 +22,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final MultiSelectFieldBloc<Value, Object> multiSelectFieldBloc;
+  final MultiSelectFieldBloc<Value, dynamic> multiSelectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;

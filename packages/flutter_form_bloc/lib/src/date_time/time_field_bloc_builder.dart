@@ -31,7 +31,7 @@ class TimeFieldBlocBuilder extends StatelessWidget {
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final InputFieldBloc<TimeOfDay, Object> timeFieldBloc;
+  final InputFieldBloc<TimeOfDay, dynamic> timeFieldBloc;
 
   /// For representing the date as a string e.g.
   /// `DateFormat('hh:mm')`

@@ -23,7 +23,7 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final BooleanFieldBloc<Object> booleanFieldBloc;
+  final BooleanFieldBloc<dynamic> booleanFieldBloc;
 
   /// {@template flutter_form_bloc.FieldBlocBuilderControlAffinity}
   // Where to place the control in widgets
