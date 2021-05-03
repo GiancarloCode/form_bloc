@@ -8,9 +8,9 @@ const RESOURCES = {
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "manifest.json": "c45571e2d84148a6242f43f0b88a4ee1",
-"main.dart.js": "35adf045dfed232b673e51fbc8f3467d",
-"assets/NOTICES": "d7f826d975c91730ad594f48ab970543",
-"assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
+"main.dart.js": "50b4c9d48ad510f1f7d357699ae7fbc9",
+"assets/NOTICES": "a772fac73e77edeb9778dcc2bf1f6097",
+"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
 "assets/lib/examples/validation_based_on_other_field.dart": "eade8bc4f1adac71e9b26f208ca8d0ea",
 "assets/lib/examples/wizard_form.dart": "67034146e61f09018e2d9a6ceef02986",
 "assets/lib/examples/crud_from.dart": "d41d8cd98f00b204e9800998ecf8427e",
@@ -27,8 +27,8 @@ const RESOURCES = {
 "assets/assets/fonts/JosefinSans-Bold.ttf": "0fce6d85ecbbf3d97e0d848824454600",
 "assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
 "assets/FontManifest.json": "e29a5c628bcef6b31938f69af8236b09",
-"index.html": "9b78d7a37abc2c8c151549751629a9dc",
-"/": "9b78d7a37abc2c8c151549751629a9dc"
+"index.html": "0bac27638cced34796db105e987405ce",
+"/": "0bac27638cced34796db105e987405ce"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -46,7 +46,7 @@ self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
-        CORE.map((value) => new Request(value, {'cache': 'reload'})));
+        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
     })
   );
 });
