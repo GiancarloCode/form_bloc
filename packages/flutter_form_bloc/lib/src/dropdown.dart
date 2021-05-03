@@ -118,7 +118,7 @@ class _DropdownMenu<T> extends StatefulWidget {
     this.route,
   }) : super(key: key);
 
-  final _DropdownRoute<T>? route;
+  final _DropdownRoute<T?>? route;
   final EdgeInsets? padding;
 
   @override
@@ -161,7 +161,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
     assert(debugCheckHasMaterialLocalizations(context));
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
-    final _DropdownRoute<T> route = widget.route!;
+    final _DropdownRoute<T?> route = widget.route!;
     final double unit = 0.5 / (route.items!.length + 1.5);
     final List<Widget> children = <Widget>[];
     for (int itemIndex = 0; itemIndex < route.items!.length; ++itemIndex) {
@@ -188,10 +188,14 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
             padding: widget.padding,
             child: route.items![itemIndex],
           ),
-          onTap: () => Navigator.pop(
-            context,
-            _DropdownRouteResult<T?>(route.items![itemIndex].value),
-          ),
+          onTap: () {
+            try {
+              Navigator.pop(context,
+                  _DropdownRouteResult<T?>(route.items![itemIndex].value));
+            } catch (e) {
+              print(e);
+            }
+          },
         ),
       ));
     }
@@ -683,7 +687,7 @@ class DropdownButton<T> extends StatefulWidget {
   /// then the dropdown button will be disabled, i.e. its arrow will be
   /// displayed in grey and it will not respond to input. A disabled button
   /// will display the [disabledHint] widget if it is non-null.
-  final ValueChanged<T>? onChanged;
+  final ValueChanged<T?>? onChanged;
 
   /// The z-coordinate at which to place the menu when open.
   ///
@@ -746,7 +750,7 @@ class DropdownButton<T> extends StatefulWidget {
 class _DropdownButtonState<T> extends State<DropdownButton<T>>
     with WidgetsBindingObserver {
   int? _selectedIndex;
-  _DropdownRoute<T>? _dropdownRoute;
+  _DropdownRoute<T?>? _dropdownRoute;
   late StreamSubscription<void> callOnPressedSubscription;
 
   @override
@@ -827,7 +831,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>>
     // before:
     // assert(_dropdownRoute == null);
     if (_dropdownRoute == null) {
-      _dropdownRoute = _DropdownRoute<T>(
+      _dropdownRoute = _DropdownRoute<T?>(
         items: widget.items,
         buttonRect: menuMargin.resolve(textDirection).inflateRect(itemRect),
         padding: _kMenuItemPadding.resolve(textDirection),
@@ -840,7 +844,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>>
       );
 
       Navigator.push(context, _dropdownRoute!)
-          .then<void>((_DropdownRouteResult<T>? newValue) {
+          .then<void>((_DropdownRouteResult<T?>? newValue) {
         _dropdownRoute = null;
         if (!mounted || newValue == null) return;
         if (widget.onChanged != null) widget.onChanged!(newValue.result);

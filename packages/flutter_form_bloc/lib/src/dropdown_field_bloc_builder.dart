@@ -27,7 +27,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final SelectFieldBloc<Value, Object> selectFieldBloc;
+  final SelectFieldBloc<Value, dynamic> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;

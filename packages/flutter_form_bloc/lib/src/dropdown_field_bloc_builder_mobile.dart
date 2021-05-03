@@ -29,7 +29,7 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final SelectFieldBloc<Value, Object> selectFieldBloc;
+  final SelectFieldBloc<Value, dynamic> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;
@@ -72,7 +72,7 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
 }
 
 class _DropdownFieldBlocBuilderMobileState<Value>
-    extends State<DropdownFieldBlocBuilderMobile<Value?>>
+    extends State<DropdownFieldBlocBuilderMobile<Value>>
     with WidgetsBindingObserver {
   final PublishSubject<void> _onPressedController = PublishSubject();
 
@@ -136,8 +136,8 @@ class _DropdownFieldBlocBuilderMobileState<Value>
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _effectiveFocusNode,
-      child: BlocBuilder<SelectFieldBloc<Value?, dynamic>,
-          SelectFieldBlocState<Value?, dynamic>>(
+      child: BlocBuilder<SelectFieldBloc<Value, dynamic>,
+          SelectFieldBlocState<Value, dynamic>>(
         bloc: widget.selectFieldBloc,
         builder: (context, fieldState) {
           final isEnabled = fieldBlocIsEnabled(
@@ -149,7 +149,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
 
           final decoration = _buildDecoration(context, fieldState, isEnabled);
           String text = fieldState.value != null
-              ? widget.itemBuilder(context, fieldState.value)
+              ? widget.itemBuilder(context, fieldState.value!)
               : '';
           return DefaultFieldBlocBuilderPadding(
             padding: widget.padding as EdgeInsets?,
@@ -163,11 +163,11 @@ class _DropdownFieldBlocBuilderMobileState<Value>
                       callOnPressed: _onPressedController.stream,
                       value: fieldState.value,
                       disabledHint: fieldState.value != null
-                          ? widget.itemBuilder(context, fieldState.value)
+                          ? widget.itemBuilder(context, fieldState.value!)
                           : widget.decoration.hintText != null
                               ? widget.decoration.hintText
                               : null,
-                      onChanged: fieldBlocBuilderOnChange<Value>(
+                      onChanged: fieldBlocBuilderOnChange<Value?>(
                         isEnabled: isEnabled,
                         nextFocusNode: widget.nextFocusNode,
                         onChanged: (value) {
@@ -244,7 +244,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
   }
 
   List<DropdownMenuItem<Value>> _buildItems(
-    Iterable<Value?> items,
+    Iterable<Value> items,
   ) {
     final style = Theme.of(context).textTheme.subtitle1!.copyWith(
           color: ThemeData.estimateBrightnessForColor(
@@ -257,7 +257,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
     List<DropdownMenuItem<Value>> menuItems;
 
     menuItems = items.map<DropdownMenuItem<Value>>(
-      (Value? value) {
+      (Value value) {
         return DropdownMenuItem<Value>(
           value: value,
           text: widget.itemBuilder(context, value),
@@ -302,7 +302,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
   }
 
   InputDecoration _buildDecoration(BuildContext context,
-      SelectFieldBlocState<Value?, dynamic>? state, bool isEnabled) {
+      SelectFieldBlocState<Value, dynamic>? state, bool isEnabled) {
     InputDecoration decoration = widget.decoration;
 
     if (decoration.suffixIcon == null) {
