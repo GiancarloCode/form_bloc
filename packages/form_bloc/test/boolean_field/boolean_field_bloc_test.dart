@@ -74,7 +74,7 @@ void main() {
           validators: [FieldBlocValidators.required, (value) => 'error'],
         );
 
-        initialState = BooleanFieldBlocState<dynamic?>(
+        initialState = BooleanFieldBlocState<dynamic>(
           value: true,
           error: 'error',
           isInitial: true,
@@ -95,7 +95,7 @@ void main() {
 
         fieldBloc = BooleanFieldBloc<dynamic>(name: 'name', initialValue: null);
 
-        initialState = BooleanFieldBlocState<dynamic?>(
+        initialState = BooleanFieldBlocState<dynamic>(
           value: false,
           error: null,
           isInitial: true,

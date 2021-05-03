@@ -22,7 +22,7 @@ class FieldBlocValidators {
   ///
   /// Returns [FieldBlocValidatorsErrors.required]
   /// if is not valid.
-  static String? required(dynamic? value) {
+  static String? required(dynamic value) {
     if (value == null ||
         value == false ||
         ((value is Iterable || value is String || value is Map) &&

@@ -5,7 +5,7 @@ part of '../field/field_bloc.dart';
 /// ​​of texts thanks to the methods
 /// [valueToInt] and [valueToDouble].
 class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
-    TextFieldBlocState<ExtraData>, ExtraData?> {
+    TextFieldBlocState<ExtraData?>, ExtraData?> {
   /// ## TextFieldBloc<ExtraData>
   ///
   /// ### Properties:
