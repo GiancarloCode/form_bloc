@@ -4,7 +4,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +32,14 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
     );
   }
 
-  static String _min4Char(String username) {
-    if (username.length < 4) {
+  static String? _min4Char(String? username) {
+    if (username!.length < 4) {
       return 'The username must have at least 4 characters';
     }
     return null;
   }
 
-  Future<String> _checkUsername(String username) async {
+  Future<String?> _checkUsername(String username) async {
     await Future.delayed(Duration(milliseconds: 500));
     if (username.toLowerCase() != 'flutter dev') {
       return 'That username is already taken';
@@ -88,7 +88,7 @@ class AsyncFieldValidationForm extends StatelessWidget {
                 LoadingDialog.hide(context);
 
                 Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text(state.failureResponse)));
+                    SnackBar(content: Text(state.failureResponse!)));
               },
               child: SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
@@ -123,7 +123,7 @@ class AsyncFieldValidationForm extends StatelessWidget {
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -132,7 +132,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +153,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

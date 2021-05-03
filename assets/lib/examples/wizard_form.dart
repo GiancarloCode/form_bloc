@@ -4,7 +4,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class WizardFormBloc extends FormBloc<String, String> {
     validators: [FieldBlocValidators.required],
   );
 
-  final email = TextFieldBloc(
+  final email = TextFieldBloc<String>(
     validators: [
       FieldBlocValidators.required,
       FieldBlocValidators.email,
@@ -157,7 +157,7 @@ class _WizardFormState extends State<WizardForm> {
                     physics: ClampingScrollPhysics(),
                     stepsBuilder: (formBloc) {
                       return [
-                        _accountStep(formBloc),
+                        _accountStep(formBloc!),
                         _personalStep(formBloc),
                         _socialStep(formBloc),
                       ];
@@ -289,7 +289,7 @@ class _WizardFormState extends State<WizardForm> {
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -298,7 +298,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +319,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

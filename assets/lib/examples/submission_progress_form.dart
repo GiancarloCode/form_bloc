@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +87,11 @@ class FakeUpload {
 
   void _initUpload() async {
     int milliseconds = 400;
-    while (_subject.value < 1) {
+    while (_subject.value! < 1) {
       await Future.delayed(Duration(milliseconds: milliseconds));
 
       if (!_isCancelled) {
-        _subject.add(_subject.value + 0.2);
+        _subject.add(_subject.value! + 0.2);
         milliseconds += 400;
       } else {
         break;
@@ -206,8 +206,8 @@ class LiquidLinearProgressIndicatorWithText extends ImplicitlyAnimatedWidget {
   final double percent;
 
   LiquidLinearProgressIndicatorWithText({
-    Key key,
-    @required this.percent,
+    Key? key,
+    required this.percent,
     Duration duration = const Duration(milliseconds: 300),
     Curve curve = Curves.linear,
   }) : super(duration: duration, curve: curve, key: key);
@@ -219,12 +219,12 @@ class LiquidLinearProgressIndicatorWithText extends ImplicitlyAnimatedWidget {
 
 class _LiquidLinearProgressIndicatorWithTextState
     extends AnimatedWidgetBaseState<LiquidLinearProgressIndicatorWithText> {
-  Tween _tween;
+  Tween? _tween;
 
   @override
   Widget build(BuildContext context) {
     return LiquidLinearProgressIndicator(
-      value: _tween.evaluate(animation),
+      value: _tween!.evaluate(animation),
       valueColor:
           AlwaysStoppedAnimation(Theme.of(context).primaryColor.withAlpha(150)),
       backgroundColor: Colors.white,
@@ -232,20 +232,20 @@ class _LiquidLinearProgressIndicatorWithTextState
       borderWidth: 0,
       borderRadius: 0,
       center: Text(
-        '${(_tween.evaluate(animation) * 100).ceil().toString()}%',
+        '${(_tween!.evaluate(animation) * 100).ceil().toString()}%',
         style: TextStyle(color: Colors.black87, fontSize: 16),
       ),
     );
   }
 
   @override
-  void forEachTween(TweenVisitor visitor) {
+  void forEachTween(visitor) {
     _tween = visitor(_tween, (widget.percent), (value) => Tween(begin: value));
   }
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -254,7 +254,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +275,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
