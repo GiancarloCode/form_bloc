@@ -148,11 +148,11 @@ class TextFieldBlocBuilder extends StatefulWidget {
         ),
       ),
     ),
-  })  : assert(maxLines > 0),
+  })  : assert(maxLines == null || maxLines > 0),
         assert(minLines == null || minLines > 0),
         assert(
-          (minLines == null) || (maxLines >= minLines),
-          'minLines can\'t be greater than maxLines',
+          (maxLines == null) || (minLines == null) || (maxLines >= minLines),
+          "minLines can't be greater than maxLines",
         ),
         assert(
           !expands || (minLines == null),
@@ -415,7 +415,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   final bool autocorrect;
 
   /// {@macro flutter.widgets.editableText.maxLines}
-  final int maxLines;
+  final int? maxLines;
 
   /// {@macro flutter.widgets.editableText.minLines}
   final int? minLines;

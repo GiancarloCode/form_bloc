@@ -1413,7 +1413,7 @@ class TextFieldConfiguration<T> {
   /// The maximum number of lines for the text to span, wrapping if necessary.
   ///
   /// Same as [TextField.maxLines](https://docs.flutter.io/flutter/material/TextField/maxLines.html)
-  final int maxLines;
+  final int? maxLines;
 
   /// The maximum number of characters (Unicode scalar values) to allow in the
   /// text field.
