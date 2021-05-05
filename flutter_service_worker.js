@@ -27,8 +27,8 @@ const RESOURCES = {
 "assets/assets/fonts/JosefinSans-Bold.ttf": "0fce6d85ecbbf3d97e0d848824454600",
 "assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
 "assets/FontManifest.json": "e29a5c628bcef6b31938f69af8236b09",
-"index.html": "2528cd8a1089a67a3985c92ab39d0b1c",
-"/": "2528cd8a1089a67a3985c92ab39d0b1c"
+"index.html": "90d41868f564f81bf8b4aa5b00b765fc",
+"/": "90d41868f564f81bf8b4aa5b00b765fc"
 };
 
 // The application shell files that are downloaded before a service worker can
