@@ -39,6 +39,23 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
     }
   }
 
+  bool isInitial([int? step]) {
+    if (step == null) {
+      return _fieldBlocsStates.values
+          .cast<FieldBlocState>()
+          .every((state) => state.isInitial);
+    }
+
+    if (!_fieldBlocsStatesByStepMap.containsKey(step)) {
+      return false;
+    }
+
+    return _fieldBlocsStatesByStepMap[step]!
+        .values
+        .cast<FieldBlocState>()
+        .every((state) => state.isInitial);
+  }
+
   /// It is usually used in forms that are used as CRUD,
   /// so when it is true it means that you can
   /// perform the update operation.
