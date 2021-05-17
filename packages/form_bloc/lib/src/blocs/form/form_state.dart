@@ -18,24 +18,42 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   /// Indicates if each [FieldBloc] in [FormBloc._fieldBlocs] is valid.
   final Map<int, bool>? _isValidByStep;
 
-  bool? isValid([int? step]) {
-    if (_isValidByStep == null) {
+  bool isValid([int? step]) {
+    final __isValidByStep = _isValidByStep;
+    if (__isValidByStep == null) {
       return true;
     }
 
     if (step == null) {
-      if (_isValidByStep!.isEmpty) {
+      if (__isValidByStep.isEmpty) {
         return true;
       } else {
-        return _isValidByStep!.values.every((e) => e);
+        return __isValidByStep.values.every((e) => e);
       }
     } else {
-      if (_isValidByStep!.containsKey(step)) {
-        return _isValidByStep![step];
+      if (__isValidByStep.containsKey(step)) {
+        return __isValidByStep[step]!;
       } else {
         return false;
       }
     }
+  }
+
+  bool isInitial([int? step]) {
+    if (step == null) {
+      return _fieldBlocsStates.values
+          .cast<FieldBlocState>()
+          .every((state) => state.isInitial);
+    }
+
+    if (!_fieldBlocsStatesByStepMap.containsKey(step)) {
+      return false;
+    }
+
+    return _fieldBlocsStatesByStepMap[step]!
+        .values
+        .cast<FieldBlocState>()
+        .every((state) => state.isInitial);
   }
 
   /// It is usually used in forms that are used as CRUD,
@@ -242,7 +260,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
     required this.isEditing,
     Map<int, Map<String, FieldBloc>>? fieldBlocs,
     required this.currentStep,
-  })   : _isValidByStep = isValidByStep,
+  })  : _isValidByStep = isValidByStep,
         _fieldBlocs = fieldBlocs,
         _fieldBlocsStates = _initFieldBlocsStates(fieldBlocs),
         _fieldBlocsStatesByStepMap = _initFieldBlocsStatesByStepMap(fieldBlocs);
@@ -679,7 +697,7 @@ class FormBlocLoading<SuccessResponse, FailureResponse>
     Map<int, Map<String, FieldBloc>>? fieldBlocs,
     int? currentStep,
     required double progress,
-  })   : progress = (progress) < 0.0
+  })  : progress = (progress) < 0.0
             ? 0.0
             : progress > 1.0
                 ? 1.0
@@ -1000,7 +1018,7 @@ class FormBlocDeleting<SuccessResponse, FailureResponse>
     Map<int, Map<String, FieldBloc>>? fieldBlocs,
     int? currentStep,
     required double deletingProgress,
-  })   : progress = (deletingProgress) < 0.0
+  })  : progress = (deletingProgress) < 0.0
             ? 0.0
             : deletingProgress > 1.0
                 ? 1.0
@@ -1135,7 +1153,7 @@ class FormBlocUpdatingFields<SuccessResponse, FailureResponse>
     Map<int, Map<String, FieldBloc>>? fieldBlocs,
     int? currentStep,
     required double progress,
-  })   : progress = (progress) < 0.0
+  })  : progress = (progress) < 0.0
             ? 0.0
             : progress > 1.0
                 ? 1.0
