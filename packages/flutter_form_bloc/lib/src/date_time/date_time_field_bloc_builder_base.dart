@@ -38,6 +38,8 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
     this.clearIcon,
     this.nextFocusNode,
     this.focusNode,
+    this.style,
+    this.textAlign = TextAlign.start,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         super(key: key);
@@ -75,6 +77,12 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
   final FocusNode? focusNode;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
+  final TextAlign textAlign;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
+  final TextStyle? style;
 
   final bool showClearIcon;
 
@@ -175,7 +183,12 @@ class _DateTimeFieldBlocBuilderBaseState<T>
               if (state.value == null && widget.decoration.hintText != null) {
                 child = Text(
                   widget.decoration.hintText!,
-                  style: widget.decoration.hintStyle,
+                  style: widget.style == null
+                      ? widget.decoration.hintStyle
+                      : isEnabled
+                          ? widget.style
+                          : widget.style!
+                              .copyWith(color: Theme.of(context).disabledColor),
                   overflow: TextOverflow.ellipsis,
                   maxLines: widget.decoration.hintMaxLines,
                 );
@@ -187,10 +200,16 @@ class _DateTimeFieldBlocBuilderBaseState<T>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
-                  style: Style.getDefaultTextStyle(
-                    context: context,
-                    isEnabled: isEnabled,
-                  ),
+                  textAlign: widget.textAlign,
+                  style: widget.style == null
+                      ? Style.getDefaultTextStyle(
+                          context: context,
+                          isEnabled: isEnabled,
+                        )
+                      : isEnabled
+                          ? widget.style
+                          : widget.style!
+                              .copyWith(color: Theme.of(context).disabledColor),
                 );
               }
 

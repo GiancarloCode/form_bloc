@@ -56,8 +56,8 @@ class Style {
           ? Theme.of(context).textTheme.subtitle1
           : Theme.of(context)
               .textTheme
-              .subtitle1!
-              .copyWith(color: Theme.of(context).disabledColor);
+              .subtitle1
+              ?.copyWith(color: Theme.of(context).disabledColor);
 
   /// Returns `EdgeInsets.all(8.0)`.
   static EdgeInsets defaultPadding = const EdgeInsets.symmetric(vertical: 8.0);
