@@ -249,19 +249,24 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     );
   }
 
+  TimeOfDay _initialTime() {
+    if (widget.dateTimeFieldBloc.state.value == null) {
+      return widget.initialTime;
+    }
+    if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
+      return widget.dateTimeFieldBloc.state.value as TimeOfDay? ??
+          widget.initialTime;
+    }
+    return TimeOfDay.fromDateTime(
+      widget.dateTimeFieldBloc.state.value as DateTime? ?? DateTime.now(),
+    );
+  }
+
   Future<TimeOfDay?> _showTimePicker(BuildContext context) async {
     return await showTimePicker(
       context: context,
       useRootNavigator: widget.useRootNavigator,
-      initialTime: widget.type == DateTimeFieldBlocBuilderBaseType.time
-          ? widget.dateTimeFieldBloc.state.value as TimeOfDay? ??
-              widget.initialTime
-          : widget.dateTimeFieldBloc.state.value == null
-              ? TimeOfDay.fromDateTime(
-                  widget.dateTimeFieldBloc.state.value as DateTime? ??
-                      DateTime.now(),
-                )
-              : widget.initialTime,
+      initialTime: _initialTime(),
       builder: widget.builder,
     );
   }
