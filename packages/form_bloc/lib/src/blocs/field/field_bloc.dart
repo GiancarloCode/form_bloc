@@ -68,7 +68,7 @@ abstract class FieldBloc {
 abstract class SingleFieldBloc<
     Value,
     Suggestion,
-    State extends FieldBlocState<Value, Suggestion?, ExtraData?>,
+    State extends FieldBlocState<Value, Suggestion, ExtraData?>,
     ExtraData> extends Bloc<FieldBlocEvent, State> with FieldBloc {
   final Value _initialValue;
 
