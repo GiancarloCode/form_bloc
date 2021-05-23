@@ -3,32 +3,32 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
+  "version.json": "ea8f43649ed4176fdcd6dbda02336ee7",
+"main.dart.js": "c7f99df553c88eefdb0210da6fc93d64",
+"index.html": "c83850c31f26dfd9b3811859627019ea",
+"/": "c83850c31f26dfd9b3811859627019ea",
+"assets/AssetManifest.json": "78baee8e9f24dd4ff06fced88c81b733",
+"assets/NOTICES": "c5a446e4722205819dea96c724d5d44e",
+"assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
 "assets/assets/fonts/JosefinSans-Bold.ttf": "0fce6d85ecbbf3d97e0d848824454600",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
-"assets/FontManifest.json": "e29a5c628bcef6b31938f69af8236b09",
+"assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
 "assets/lib/examples/async_field_validation_form.dart": "487225919f1715db1203f646d0cf9e41",
 "assets/lib/examples/serialized_form.dart": "03ab35e80be41d7221ab9a275c79a13c",
-"assets/lib/examples/wizard_form.dart": "67034146e61f09018e2d9a6ceef02986",
-"assets/lib/examples/simple_form.dart": "82919f789efe52df6ae79a6a5ea437d3",
-"assets/lib/examples/validation_based_on_other_field.dart": "eade8bc4f1adac71e9b26f208ca8d0ea",
-"assets/lib/examples/submission_progress_form.dart": "0bb55e3d5e5071588d00ec5ddefd864e",
-"assets/lib/examples/crud_from.dart": "d41d8cd98f00b204e9800998ecf8427e",
-"assets/lib/examples/list_fields_form.dart": "87f69eb63872f9a6e260132ad2cde1eb",
 "assets/lib/examples/submission_error_to_field_form.dart": "d197b67b427e2e4d4bb81bb2ceea4e73",
+"assets/lib/examples/validation_based_on_other_field.dart": "eade8bc4f1adac71e9b26f208ca8d0ea",
+"assets/lib/examples/list_fields_form.dart": "87f69eb63872f9a6e260132ad2cde1eb",
+"assets/lib/examples/wizard_form.dart": "67034146e61f09018e2d9a6ceef02986",
+"assets/lib/examples/submission_progress_form.dart": "0bb55e3d5e5071588d00ec5ddefd864e",
 "assets/lib/examples/loading_and_initializing_form.dart": "1d43ae9170105d796e2d7bbf856c21cc",
-"assets/lib/examples/all_fields_form.dart": "01dbbe2f222a6078197c9f8c2c62c38b",
 "assets/lib/examples/conditional_fields_form.dart": "3314b34c07e4403a619246802c51f345",
-"assets/AssetManifest.json": "78baee8e9f24dd4ff06fced88c81b733",
-"assets/NOTICES": "b6e33c85176c5a82954e9f1abea7c0e6",
+"assets/lib/examples/crud_from.dart": "d41d8cd98f00b204e9800998ecf8427e",
+"assets/lib/examples/simple_form.dart": "82919f789efe52df6ae79a6a5ea437d3",
+"assets/lib/examples/all_fields_form.dart": "01dbbe2f222a6078197c9f8c2c62c38b",
+"assets/FontManifest.json": "e29a5c628bcef6b31938f69af8236b09",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"version.json": "ea8f43649ed4176fdcd6dbda02336ee7",
 "manifest.json": "c45571e2d84148a6242f43f0b88a4ee1",
-"main.dart.js": "8dae70bb29bf5402567941e22bef721d",
-"index.html": "0c009f85706c4fe41e160409eeff770b",
-"/": "0c009f85706c4fe41e160409eeff770b"
+"favicon.png": "5dcef449791fa27946b3d35ad8803796"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -46,7 +46,7 @@ self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
-        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
+        CORE.map((value) => new Request(value, {'cache': 'reload'})));
     })
   );
 });
