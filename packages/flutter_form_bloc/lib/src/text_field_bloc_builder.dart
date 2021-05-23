@@ -820,151 +820,10 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   Widget _buildTextField(
       {required TextFieldBlocState state, required bool isEnabled}) {
-    return widgetBasedOnPlatform(
-      mobile: TypeAheadField<String>(
-        textFieldConfiguration: TextFieldConfiguration<String>(
-          controller: _controller,
-          autofillHints: widget.autofillHints,
-          decoration: _buildDecoration(state),
-          keyboardType: widget.keyboardType,
-          textInputAction: widget.textInputAction != null
-              ? widget.textInputAction
-              : widget.nextFocusNode != null
-                  ? TextInputAction.next
-                  : null,
-          textCapitalization: widget.textCapitalization,
-          style: isEnabled
-              ? widget.style
-              : widget.style != null
-                  ? widget.style!
-                      .copyWith(color: Theme.of(context).disabledColor)
-                  : Theme.of(context)
-                      .textTheme
-                      .subtitle1!
-                      .copyWith(color: Theme.of(context).disabledColor),
-          textAlign: widget.textAlign,
-          textDirection: widget.textDirection,
-          autofocus: widget.autofocus,
-          obscureText: _obscureText,
-          autocorrect: widget.autocorrect,
-          minLines: widget.minLines,
-          maxLines: widget.maxLines,
-          maxLength: widget.maxLength,
-          maxLengthEnforcement: widget.maxLengthEnforced,
-          onChanged: (value) {
-            widget.textFieldBloc.updateValue(value);
-            if (widget.onChanged != null) {
-              widget.onChanged!(value);
-            }
-          },
-          onEditingComplete: widget.onEditingComplete,
-          onSubmitted: _onSubmitted,
-          inputFormatters: widget.inputFormatters,
-          enabled: isEnabled,
-          cursorWidth: widget.cursorWidth,
-          cursorRadius: widget.cursorRadius,
-          cursorColor: widget.cursorColor,
-          keyboardAppearance: widget.keyboardAppearance,
-          scrollPadding: widget.scrollPadding,
-          focusNode: _effectiveFocusNode,
-          buildCounter: widget.buildCounter,
-          dragStartBehavior: widget.dragStartBehavior,
-          enableInteractiveSelection: widget.enableInteractiveSelection,
-          enableSuggestions: widget.enableSuggestions,
-          expands: widget.expands,
-          readOnly: widget.readOnly,
-          scrollController: widget.scrollController,
-          scrollPhysics: widget.scrollPhysics,
-          showCursor: widget.showCursor,
-          strutStyle: widget.strutStyle,
-          textAlignVertical: widget.textAlignVertical,
-          toolbarOptions: widget.toolbarOptions,
-        ),
-        onTap: widget.onTap,
-        hideOnLoading: widget.hideOnLoadingSuggestions,
-        hideOnEmpty: widget.hideOnEmptySuggestions,
-        hideOnError: widget.hideOnSuggestionsError,
-        errorBuilder: widget.suggestionsErrorBuilder,
-        loadingBuilder: widget.loadingSuggestionsBuilder ??
-            (context) {
-              return Container(
-                height: _kMenuItemHeight,
-                alignment: AlignmentDirectional.center,
-                child: Container(
-                  height: 36,
-                  width: 36,
-                  padding: EdgeInsets.all(4.0),
-                  child: CircularProgressIndicator(strokeWidth: 3),
-                ),
-              );
-            },
-        noItemsFoundBuilder: widget.suggestionsNotFoundBuilder ??
-            (context) {
-              return Container(
-                height: _kMenuItemHeight,
-                alignment: AlignmentDirectional.center,
-                padding: _kMenuItemPadding,
-                child: Text(
-                  'No Items Found!',
-                  style: widget.suggestionTextStyle ??
-                      Theme.of(context).textTheme.subtitle1!.copyWith(
-                            color: ThemeData.estimateBrightnessForColor(
-                                        Theme.of(context).canvasColor) ==
-                                    Brightness.dark
-                                ? Colors.white
-                                : Colors.grey[800],
-                          ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              );
-            },
-        keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
-        keepSuggestionsOnSuggestionSelected: false,
-        hideSuggestionsOnKeyboardHide: true,
-        showSuggestionsWhenIsEmpty: widget.showSuggestionsWhenIsEmpty,
-        getImmediateSuggestions: widget.getImmediateSuggestions,
-        debounceDuration: widget.debounceSuggestionDuration,
-        suggestionsCallback: state.suggestions,
-        itemBuilder: (context, suggestion) {
-          return Container(
-            height: _kMenuItemHeight,
-            alignment: AlignmentDirectional.centerStart,
-            padding: _kMenuItemPadding,
-            child: Text(
-              suggestion,
-              style: widget.suggestionTextStyle ??
-                  Theme.of(context).textTheme.subtitle1!.copyWith(
-                        color: ThemeData.estimateBrightnessForColor(
-                                    Theme.of(context).canvasColor) ==
-                                Brightness.dark
-                            ? Colors.white
-                            : Colors.grey[800],
-                      ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          );
-        },
-        onSuggestionSelected: (value) {
-          widget.textFieldBloc.updateValue(value);
-          _onSubmitted(value);
-        },
-        animationDuration: widget.suggestionsAnimationDuration,
-        removeSuggestionOnLongPress: widget.removeSuggestionOnLongPress,
-        suggestionsBoxDecoration: widget.suggestionsBoxDecoration ??
-            SuggestionsBoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Theme.of(context).canvasColor,
-            ),
-        onSuggestionRemoved: (suggestion) {
-          if (widget.removeSuggestionOnLongPress) {
-            widget.textFieldBloc.selectSuggestion(suggestion);
-          }
-        },
-      ),
-      other: TextField(
+    return TypeAheadField<String>(
+      textFieldConfiguration: TextFieldConfiguration<String>(
         controller: _controller,
+        autofillHints: widget.autofillHints,
         decoration: _buildDecoration(state),
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction != null
@@ -984,7 +843,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         textAlign: widget.textAlign,
         textDirection: widget.textDirection,
         autofocus: widget.autofocus,
-        obscureText: _obscureText!,
+        obscureText: _obscureText,
         autocorrect: widget.autocorrect,
         minLines: widget.minLines,
         maxLines: widget.maxLines,
@@ -1018,8 +877,89 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         strutStyle: widget.strutStyle,
         textAlignVertical: widget.textAlignVertical,
         toolbarOptions: widget.toolbarOptions,
-        onTap: widget.onTap,
       ),
+      onTap: widget.onTap,
+      hideOnLoading: widget.hideOnLoadingSuggestions,
+      hideOnEmpty: widget.hideOnEmptySuggestions,
+      hideOnError: widget.hideOnSuggestionsError,
+      errorBuilder: widget.suggestionsErrorBuilder,
+      loadingBuilder: widget.loadingSuggestionsBuilder ??
+          (context) {
+            return Container(
+              height: _kMenuItemHeight,
+              alignment: AlignmentDirectional.center,
+              child: Container(
+                height: 36,
+                width: 36,
+                padding: EdgeInsets.all(4.0),
+                child: CircularProgressIndicator(strokeWidth: 3),
+              ),
+            );
+          },
+      noItemsFoundBuilder: widget.suggestionsNotFoundBuilder ??
+          (context) {
+            return Container(
+              height: _kMenuItemHeight,
+              alignment: AlignmentDirectional.center,
+              padding: _kMenuItemPadding,
+              child: Text(
+                'No Items Found!',
+                style: widget.suggestionTextStyle ??
+                    Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: ThemeData.estimateBrightnessForColor(
+                                      Theme.of(context).canvasColor) ==
+                                  Brightness.dark
+                              ? Colors.white
+                              : Colors.grey[800],
+                        ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          },
+      keepSuggestionsOnLoading: widget.keepSuggestionsOnLoading,
+      keepSuggestionsOnSuggestionSelected: false,
+      hideSuggestionsOnKeyboardHide: true,
+      showSuggestionsWhenIsEmpty: widget.showSuggestionsWhenIsEmpty,
+      getImmediateSuggestions: widget.getImmediateSuggestions,
+      debounceDuration: widget.debounceSuggestionDuration,
+      suggestionsCallback: state.suggestions,
+      itemBuilder: (context, suggestion) {
+        return Container(
+          height: _kMenuItemHeight,
+          alignment: AlignmentDirectional.centerStart,
+          padding: _kMenuItemPadding,
+          child: Text(
+            suggestion,
+            style: widget.suggestionTextStyle ??
+                Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color: ThemeData.estimateBrightnessForColor(
+                                  Theme.of(context).canvasColor) ==
+                              Brightness.dark
+                          ? Colors.white
+                          : Colors.grey[800],
+                    ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      },
+      onSuggestionSelected: (value) {
+        widget.textFieldBloc.updateValue(value);
+        _onSubmitted(value);
+      },
+      animationDuration: widget.suggestionsAnimationDuration,
+      removeSuggestionOnLongPress: widget.removeSuggestionOnLongPress,
+      suggestionsBoxDecoration: widget.suggestionsBoxDecoration ??
+          SuggestionsBoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: Theme.of(context).canvasColor,
+          ),
+      onSuggestionRemoved: (suggestion) {
+        if (widget.removeSuggestionOnLongPress) {
+          widget.textFieldBloc.selectSuggestion(suggestion);
+        }
+      },
     );
   }
 }

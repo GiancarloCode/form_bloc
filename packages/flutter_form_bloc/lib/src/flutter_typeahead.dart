@@ -672,7 +672,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode!.hasFocus) {
-        this._suggestionsBox!.open();
+        this._suggestionsBox?.open();
       } else {
         _hideSuggestions();
       }
@@ -688,7 +688,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
         // in case we already missed the focus event
         if (this._effectiveFocusNode!.hasFocus) {
-          this._suggestionsBox!.open();
+          this._suggestionsBox?.open();
         }
 
         ScrollableState? scrollableState = Scrollable.of(context);
