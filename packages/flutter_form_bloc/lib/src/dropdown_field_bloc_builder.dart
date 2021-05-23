@@ -24,6 +24,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.focusNode,
     this.textAlign,
     this.animateWhenCanShow = true,
+    this.emptyItemLabel = '',
+    this.onChanged,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -72,6 +74,12 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// A label to display for an empty item
+  final String emptyItemLabel;
+
+  /// Called when the user selects an item.
+  final ValueChanged<Value?>? onChanged;
+
   @override
   Widget build(BuildContext context) {
     return CanShowFieldBlocBuilder(
@@ -94,6 +102,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
             padding: padding,
             showEmptyItem: showEmptyItem,
             textAlign: textAlign,
+            onChanged: onChanged,
+            emptyItemLabel: emptyItemLabel,
           ),
           other: DropdownFieldBlocBuilderWeb(
             selectFieldBloc: selectFieldBloc,
@@ -110,6 +120,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
             padding: padding,
             showEmptyItem: showEmptyItem,
             textAlign: textAlign,
+            onChanged: onChanged,
+            emptyItemLabel: emptyItemLabel,
           ),
         );
       },

@@ -26,6 +26,8 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
+    this.emptyItemLabel = '',
+    this.onChanged,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -66,6 +68,11 @@ class DropdownFieldBlocBuilderMobile<Value> extends StatefulWidget {
   /// How the text in the decoration should be aligned horizontally.
   final TextAlign? textAlign;
 
+  /// A label to display for an empty item
+  final String emptyItemLabel;
+
+  /// Called when the user selects an item.
+  final ValueChanged<Value?>? onChanged;
   @override
   _DropdownFieldBlocBuilderMobileState<Value> createState() =>
       _DropdownFieldBlocBuilderMobileState();
@@ -173,6 +180,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
                         onChanged: (value) {
                           widget.selectFieldBloc.updateValue(value);
                           FocusScope.of(context).requestFocus(FocusNode());
+                          widget.onChanged?.call(value);
                         },
                       ),
                       items: fieldState.items!.isEmpty
@@ -271,7 +279,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
         0,
         DropdownMenuItem<Value>(
           value: null,
-          text: '',
+          text: widget.emptyItemLabel,
           style: style,
         ),
       );
