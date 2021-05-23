@@ -1,3 +1,9 @@
+# 0.20.2
+- Update packages 
+- Add bool on form checking field blocs are initial
+- Fixing type error with updated suggestion function
+
+
 # 0.20.1
 - code improvements 
 # 0.20.0
