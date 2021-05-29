@@ -285,11 +285,14 @@ class _DateTimeFieldBlocBuilderBaseState<T>
       date = DateTime(1, 1, 1, time?.hour ?? 0, time?.minute ?? 0);
     }
     date = date ?? (value as DateTime?);
-
-    try {
-      return format.format(date!);
-    } catch (e) {
-      return date!.millisecondsSinceEpoch.toString();
+    if (date != null) {
+      try {
+        return format.format(date);
+      } catch (e) {
+        return date.millisecondsSinceEpoch.toString();
+      }
+    } else {
+      return '';
     }
   }
 
