@@ -161,22 +161,26 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
     assert(debugCheckHasMaterialLocalizations(context));
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
-    final _DropdownRoute<T?> route = widget.route!;
-    final double unit = 0.5 / (route.items!.length + 1.5);
+    final _DropdownRoute<T?>? route = widget.route;
+    final double unit = 0.5 / (route?.items?.length ?? 0 + 1.5);
     final List<Widget> children = <Widget>[];
-    for (int itemIndex = 0; itemIndex < route.items!.length; ++itemIndex) {
+    for (int itemIndex = 0;
+        itemIndex < (route?.items?.length ?? 0);
+        ++itemIndex) {
       CurvedAnimation opacity;
-      if (itemIndex == route.selectedIndex) {
+      //  if(route != null) {
+      if (itemIndex == route?.selectedIndex) {
         opacity = CurvedAnimation(
-            parent: route.animation!, curve: const Threshold(0.0));
+            parent: route!.animation!, curve: const Threshold(0.0));
       } else {
         final double start = (0.5 + (itemIndex + 1) * unit).clamp(0.0, 1.0);
         final double end = (start + 1.5 * unit).clamp(0.0, 1.0);
         opacity = CurvedAnimation(
-            parent: route.animation!, curve: Interval(start, end));
+            parent: route!.animation!, curve: Interval(start, end));
       }
+      //    }
 
-      final color = itemIndex == route.selectedIndex
+      final color = itemIndex == route?.selectedIndex
           ? Theme.of(context).highlightColor
           : null;
 
@@ -191,7 +195,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
           onTap: () {
             try {
               Navigator.pop(context,
-                  _DropdownRouteResult<T?>(route.items![itemIndex].value));
+                  _DropdownRouteResult<T?>(route.items?[itemIndex].value));
             } catch (e) {
               print(e);
             }
@@ -205,8 +209,8 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
       child: CustomPaint(
         painter: _DropdownMenuPainter(
           color: Theme.of(context).canvasColor,
-          elevation: route.elevation,
-          selectedIndex: route.selectedIndex,
+          elevation: route?.elevation,
+          selectedIndex: route?.selectedIndex,
           resize: _resize,
         ),
         child: Semantics(
@@ -216,7 +220,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
           label: localizations.popupMenuLabel,
           child: Material(
             type: MaterialType.transparency,
-            textStyle: route.style,
+            textStyle: route?.style,
             child: ScrollConfiguration(
               behavior: const _DropdownScrollBehavior(),
               child: Scrollbar(
@@ -321,7 +325,7 @@ class _DropdownRouteResult<T> {
   int get hashCode => result.hashCode;
 }
 
-class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>> {
+class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>?> {
   _DropdownRoute({
     this.items,
     this.padding,
@@ -750,7 +754,7 @@ class DropdownButton<T> extends StatefulWidget {
 class _DropdownButtonState<T> extends State<DropdownButton<T>>
     with WidgetsBindingObserver {
   int? _selectedIndex;
-  _DropdownRoute<T?>? _dropdownRoute;
+  dynamic _dropdownRoute;
   late StreamSubscription<void> callOnPressedSubscription;
 
   @override
@@ -843,12 +847,13 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>>
             MaterialLocalizations.of(context).modalBarrierDismissLabel,
       );
 
-      Navigator.push(context, _dropdownRoute!)
-          .then<void>((_DropdownRouteResult<T?>? newValue) {
-        _dropdownRoute = null;
-        if (!mounted || newValue == null) return;
-        if (widget.onChanged != null) widget.onChanged!(newValue.result);
-      });
+      if (_dropdownRoute != null) {
+        Navigator.push(context, _dropdownRoute!).then((dynamic newValue) {
+          _dropdownRoute = null;
+          if (!mounted || newValue == null) return;
+          if (widget.onChanged != null) widget.onChanged?.call(newValue.result);
+        });
+      }
     }
   }
 
