@@ -1,8 +1,11 @@
-# 0.20.2
+# 0.20.4
+- rollback to `meta: ^1.3.0`
+# 0.20.3
+- fix AsyncValidators issue
+#0.20.2
 - Update packages 
 - Add bool on form checking field blocs are initial
 - Fixing type error with updated suggestion function
-
 
 # 0.20.1
 - code improvements 

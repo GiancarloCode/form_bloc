@@ -1,3 +1,8 @@
+# 0.20.4
+-  Updated to `form_bloc: ^0.20.4`.
+# 0.20.3
+  - fix dropdown issue 
+  -  Updated to `form_bloc: ^0.20.3`.
 # 0.20.2
 - DateTimeFieldBlocBuilder enhancement 
   - Ability to add the text alignment.
