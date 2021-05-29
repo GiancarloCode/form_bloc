@@ -37,7 +37,7 @@ typedef Validator<Value> = String? Function(Value? value);
 /// Signature for the [AsyncValidator] function which takes [value]
 /// and should returns a `String` error, and if doesn't have error
 /// should return `null`.
-typedef AsyncValidator<Value> = Future<String?> Function(Value value);
+typedef AsyncValidator<Value> = Future<String?> Function(Value? value);
 
 /// Signature for the [Suggestions] function which takes [pattern]
 /// and should returns a `Future` with a `List<Value>`.
@@ -553,7 +553,7 @@ abstract class SingleFieldBloc<
     _asyncValidatorsSubscription = _asyncValidatorsSubject
         .debounceTime(_asyncValidatorDebounceTime)
         .switchMap(
-          ((value) => ((Value value) async {
+          ((value) => ((Value? value) async {
                 String? error;
 
                 if (error == null) {
@@ -563,7 +563,7 @@ abstract class SingleFieldBloc<
                   }
                 }
                 return UpdateFieldBlocStateError(error: error, value: value);
-              }).call(value!).asStream()),
+              }).call(value).asStream()),
         )
         .listen(add as void Function(dynamic)?);
 
