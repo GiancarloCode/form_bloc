@@ -150,10 +150,10 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
   /// {@end-tool}
   final Widget Function(
     BuildContext context,
-    VoidCallback onStepContinue,
-    VoidCallback onStepCancel,
+    VoidCallback? onStepContinue,
+    VoidCallback? onStepCancel,
     int step,
-    FormBloc? formBloc,
+    FormBloc formBloc,
   )? controlsBuilder;
 
   @override
@@ -171,13 +171,13 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
           currentStep: state.currentStep,
           onStepCancel: onStepCancel == null
               ? (state.isFirstStep ? null : formBloc.previousStep)
-              : () => onStepCancel!(formBloc),
+              : () => onStepCancel?.call(formBloc),
           onStepContinue: onStepContinue == null
               ? formBloc.submit
-              : () => onStepContinue!(formBloc),
+              : () => onStepContinue?.call(formBloc),
           onStepTapped: onStepTapped == null
               ? null
-              : (step) => onStepTapped!(formBloc, step),
+              : (step) => onStepTapped?.call(formBloc, step),
           physics: physics,
           type: type,
           steps: [
@@ -193,7 +193,7 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
               ? null
               : (context, step, onStepContinue, onStepCancel) =>
                   controlsBuilder!(
-                      context, onStepContinue!, onStepCancel!, step, formBloc),
+                      context, onStepContinue, onStepCancel, step, formBloc),
         );
       },
     );
