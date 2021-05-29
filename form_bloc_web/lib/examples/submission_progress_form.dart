@@ -87,11 +87,11 @@ class FakeUpload {
 
   void _initUpload() async {
     int milliseconds = 400;
-    while (_subject.value! < 1) {
+    while (_subject.value < 1) {
       await Future.delayed(Duration(milliseconds: milliseconds));
 
       if (!_isCancelled) {
-        _subject.add(_subject.value! + 0.2);
+        _subject.add(_subject.value + 0.2);
         milliseconds += 400;
       } else {
         break;
