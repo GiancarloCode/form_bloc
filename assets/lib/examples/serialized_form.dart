@@ -109,7 +109,7 @@ class SerializedForm extends StatelessWidget {
                         ),
                         DateTimeFieldBlocBuilder(
                           dateTimeFieldBloc: formBloc.birthDate,
-                          format: DateFormat('dd-mm-yyyy'),
+                          format: DateFormat('dd-MM-yyyy'),
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
