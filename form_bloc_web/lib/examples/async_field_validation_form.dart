@@ -39,9 +39,9 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
     return null;
   }
 
-  Future<String?> _checkUsername(String username) async {
+  Future<String?> _checkUsername(String? username) async {
     await Future.delayed(Duration(milliseconds: 500));
-    if (username.toLowerCase() != 'flutter dev') {
+    if (username?.toLowerCase() != 'flutter dev') {
       return 'That username is already taken';
     }
     return null;
