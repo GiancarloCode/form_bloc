@@ -180,7 +180,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
       }
       //    }
 
-      final color = itemIndex == route?.selectedIndex
+      final color = itemIndex == route.selectedIndex
           ? Theme.of(context).highlightColor
           : null;
 
