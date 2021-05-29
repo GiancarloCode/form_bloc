@@ -174,7 +174,7 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         DateTimeFieldBlocBuilder(
                           dateTimeFieldBloc: formBloc.date1,
-                          format: DateFormat('dd-mm-yyyy'),
+                          format: DateFormat('dd-MM-yyyy'),
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
@@ -187,7 +187,7 @@ class AllFieldsForm extends StatelessWidget {
                         DateTimeFieldBlocBuilder(
                           dateTimeFieldBloc: formBloc.dateAndTime1,
                           canSelectTime: true,
-                          format: DateFormat('dd-mm-yyyy  hh:mm'),
+                          format: DateFormat('dd-MM-yyyy  hh:mm'),
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
