@@ -945,8 +945,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         );
       },
       onSuggestionSelected: (value) {
-        widget.textFieldBloc.updateValue(value);
-        _onSubmitted(value);
+        widget.textFieldBloc.selectSuggestion(value);
       },
       animationDuration: widget.suggestionsAnimationDuration,
       removeSuggestionOnLongPress: widget.removeSuggestionOnLongPress,
