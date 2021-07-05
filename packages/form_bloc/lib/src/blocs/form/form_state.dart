@@ -41,8 +41,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
 
   bool isInitial([int? step]) {
     if (step == null) {
-      return _fieldBlocsStates.values
-          .cast<FieldBlocState>()
+      return FormBlocUtils.flattenFieldBlocsStateList(_fieldBlocsStates.values)
           .every((state) => state.isInitial);
     }
 
@@ -50,9 +49,8 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       return false;
     }
 
-    return _fieldBlocsStatesByStepMap[step]!
-        .values
-        .cast<FieldBlocState>()
+    return FormBlocUtils.flattenFieldBlocsStateList(
+            _fieldBlocsStatesByStepMap[step]!.values)
         .every((state) => state.isInitial);
   }
 
