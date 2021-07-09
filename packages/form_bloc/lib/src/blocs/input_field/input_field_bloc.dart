@@ -2,7 +2,7 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for any type, for example `DateTime` or `File`.
 class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
-    InputFieldBlocState<Value, ExtraData?>, ExtraData?> {
+    InputFieldBlocState<Value, ExtraData>, ExtraData?> {
   /// ## InputFieldBloc<Value, ExtraData>
   ///
   /// ### Properties:
