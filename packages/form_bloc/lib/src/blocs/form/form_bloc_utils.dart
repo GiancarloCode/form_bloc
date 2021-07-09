@@ -276,6 +276,22 @@ class FormBlocUtils {
     return list;
   }
 
+  static Iterable<FieldBlocState> flattenFieldBlocsStateList(
+      Iterable<dynamic> fieldBlocStateList) {
+    final list = <FieldBlocState>[];
+
+    fieldBlocStateList.forEach((dynamic fieldBlocState) {
+      if (fieldBlocState is FieldBlocState) {
+        list.add(fieldBlocState);
+      } else if (fieldBlocState is Map<String, dynamic>) {
+        list.addAll(flattenFieldBlocsStateList(fieldBlocState.values));
+      } else if (fieldBlocState is Iterable) {
+        list.addAll(flattenFieldBlocsStateList(fieldBlocState));
+      }
+    });
+    return list;
+  }
+
   /// Returns the corresponding [FieldBlocState] of the
   /// [FieldBlocState] that is on the path.
   /// if it does not exist, return `null`.
