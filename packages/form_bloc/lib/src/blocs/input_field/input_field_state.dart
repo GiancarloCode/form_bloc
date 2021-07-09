@@ -1,7 +1,7 @@
 part of '../field/field_bloc.dart';
 
 class InputFieldBlocState<Value, ExtraData>
-    extends FieldBlocState<Value?, Value, ExtraData?> {
+    extends FieldBlocState<Value, Value, ExtraData?> {
   InputFieldBlocState({
     required Value? value,
     required String? error,
@@ -28,7 +28,7 @@ class InputFieldBlocState<Value, ExtraData>
         );
 
   @override
-  FieldBlocState<Value?, Value, ExtraData?> copyWith(
+  FieldBlocState<Value, Value, ExtraData?> copyWith(
       {Optional<Value?>? value,
       Optional<String>? error,
       bool? isInitial,
