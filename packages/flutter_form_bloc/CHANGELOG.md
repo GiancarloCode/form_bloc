@@ -1,3 +1,7 @@
+# 0.20.6
+-  Updated to `form_bloc: ^0.20.6`.
+# 0.20.5
+- fix Warning: Operand of null-aware operation
 # 0.20.4
 -  Updated to `form_bloc: ^0.20.4`.
 # 0.20.3

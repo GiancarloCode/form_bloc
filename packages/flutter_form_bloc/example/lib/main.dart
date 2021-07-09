@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
@@ -38,6 +40,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       'Option 2',
     ],
   );
+  final file = InputFieldBloc<File, String>();
 
   final date1 = InputFieldBloc<DateTime, Object>();
 
@@ -220,6 +223,12 @@ class AllFieldsForm extends StatelessWidget {
                             child: Text('CheckboxFieldBlocBuilder'),
                           ),
                         ),
+                        BlocBuilder<InputFieldBloc<File, String>,
+                                InputFieldBlocState<File, String>>(
+                            bloc: formBloc.file,
+                            builder: (context, state) {
+                              return Container();
+                            })
                       ],
                     ),
                   ),

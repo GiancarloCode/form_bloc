@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-final pageTransitionTheme = PageTransitionsTheme(
-  builders: Map<TargetPlatform?, _InanimatePageTransitionsBuilder>.fromIterable(
-    TargetPlatform.values.toList(),
-    key: (dynamic k) => k,
-    value: (dynamic _) => const _InanimatePageTransitionsBuilder(),
-  ) as Map<TargetPlatform, PageTransitionsBuilder>?,
-);
+// final pageTransitionTheme = PageTransitionsTheme(
+//   builders: Map<TargetPlatform, _InanimatePageTransitionsBuilder>.fromIterable(
+//     TargetPlatform.values.toList(),
+//     key: (dynamic k) => k,
+//     value: (dynamic _) => const _InanimatePageTransitionsBuilder(),
+//   ) as Map<TargetPlatform, PageTransitionsBuilder>?,
+// );
 
 class _InanimatePageTransitionsBuilder extends PageTransitionsBuilder {
   const _InanimatePageTransitionsBuilder();

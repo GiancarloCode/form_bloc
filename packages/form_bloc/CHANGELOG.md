@@ -1,3 +1,10 @@
+# 0.20.6
+- fix InputFieldBloc ExtraData?
+- form bloc isInitial may throw error
+- version sync 
+# 0.20.5
+- fix InputFieldBloc ExtraData?
+- form bloc isInitial may throw error
 # 0.20.4
 - rollback to `meta: ^1.3.0`
 # 0.20.3
