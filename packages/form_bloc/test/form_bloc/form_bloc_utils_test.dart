@@ -15,6 +15,11 @@ class GroupFieldBlocImpl extends GroupFieldBloc {
   }
 }
 
+class FormBlocImpl extends FormBloc<dynamic, dynamic> {
+  @override
+  void onSubmitting() {}
+}
+
 void main() {
   group('FormBlocUtils:', () {
     group('getAllSingleFieldBlocs:', () {
@@ -780,6 +785,117 @@ void main() {
         ];
 
         print(FormBlocUtils.fieldBlocsStatesListToJsonList(fieldBlocList));
+      });
+    });
+
+    group('addFormBlocAndAutoValidateToFieldBlocs & removeFormBlocToFieldBlocs',
+        () {
+      test('SingleFieldBloc', () async {
+        final formBloc = FormBlocImpl();
+
+        final listFieldBloc = BooleanFieldBloc<dynamic>(name: '');
+
+        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<BooleanFieldBlocState<dynamic>>[
+            BooleanFieldBlocState<dynamic>(
+              name: '',
+              formBloc: formBloc,
+              value: false,
+              error: null,
+              isInitial: true,
+              suggestions: null,
+              isValidated: false,
+              isValidating: false,
+            ),
+          ]),
+        );
+
+        FormBlocUtils.removeFormBlocToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<BooleanFieldBlocState>[
+            BooleanFieldBlocState<dynamic>(
+              name: '',
+              formBloc: null,
+              value: false,
+              error: null,
+              isInitial: true,
+              suggestions: null,
+              isValidated: false,
+              isValidating: false,
+            ),
+          ]),
+        );
+      });
+
+      test('ListFieldBloc', () async {
+        final formBloc = FormBlocImpl();
+
+        final listFieldBloc = ListFieldBloc(name: '');
+
+        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<ListFieldBlocState>[
+            ListFieldBlocState(name: '', fieldBlocs: [], formBloc: formBloc),
+          ]),
+        );
+
+        FormBlocUtils.removeFormBlocToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<ListFieldBlocState>[
+            ListFieldBlocState(name: '', fieldBlocs: [], formBloc: null),
+          ]),
+        );
+      });
+
+      test('GroupFieldBloc', () async {
+        final formBloc = FormBlocImpl();
+
+        final listFieldBloc = GroupFieldBloc([], name: '');
+
+        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<GroupFieldBlocState>[
+            GroupFieldBlocState(name: '', fieldBlocs: [], formBloc: formBloc),
+          ]),
+        );
+
+        FormBlocUtils.removeFormBlocToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<GroupFieldBlocState>[
+            GroupFieldBlocState(name: '', fieldBlocs: [], formBloc: null),
+          ]),
+        );
       });
     });
   });

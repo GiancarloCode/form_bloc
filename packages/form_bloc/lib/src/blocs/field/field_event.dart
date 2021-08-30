@@ -258,3 +258,12 @@ class AddFormBlocAndAutoValidateToFieldBloc extends FieldBlocEvent {
   @override
   List<Object?> get props => [formBloc, autoValidate];
 }
+
+class RemoveFormBlocToFieldBloc extends FieldBlocEvent {
+  final FormBloc<dynamic, dynamic> formBloc;
+
+  RemoveFormBlocToFieldBloc({required this.formBloc});
+
+  @override
+  List<Object?> get props => [formBloc];
+}

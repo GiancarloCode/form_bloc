@@ -37,7 +37,7 @@ class MultiSelectFieldBlocState<Value, ExtraData>
       Optional<Suggestions<Value>>? suggestions,
       bool? isValidated,
       bool? isValidating,
-      FormBloc? formBloc,
+      Optional<FormBloc?>? formBloc,
       Optional<List<Value>>? items,
       Optional<ExtraData?>? extraData}) {
     return MultiSelectFieldBlocState(
@@ -47,7 +47,7 @@ class MultiSelectFieldBlocState<Value, ExtraData>
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc ?? this.formBloc,
+      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
       name: name,
       items: items == null ? this.items : items.orNull,
       toJson: _toJson,

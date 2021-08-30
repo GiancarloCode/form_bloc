@@ -96,7 +96,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
     Optional<Suggestions<Suggestion>>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    FormBloc? formBloc,
+    Optional<FormBloc?> formBloc,
     Optional<ExtraData>? extraData,
   });
 
