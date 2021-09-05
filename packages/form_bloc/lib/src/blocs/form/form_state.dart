@@ -213,8 +213,9 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   GroupFieldBloc? groupFieldBlocOf(String name) =>
       _fieldBlocOf<GroupFieldBloc>(name);
 
-  ListFieldBloc<T>? listFieldBlocOf<T extends FieldBloc>(String name) =>
-      _fieldBlocOf<ListFieldBloc<T>>(name);
+  ListFieldBloc<T, dynamic>? listFieldBlocOf<T extends FieldBloc>(
+          String name) =>
+      _fieldBlocOf<ListFieldBloc<T, dynamic>>(name);
 
   /// Returns `true` if the state is
   /// [FormBlocLoaded] or [FormBlocFailure] or
