@@ -21,7 +21,7 @@ class App extends StatelessWidget {
 class ListFieldFormBloc extends FormBloc<String, String> {
   final clubName = TextFieldBloc(name: 'clubName');
 
-  final members = ListFieldBloc<MemberFieldBloc>(name: 'members');
+  final members = ListFieldBloc<MemberFieldBloc, dynamic>(name: 'members');
 
   ListFieldFormBloc() {
     addFieldBlocs(
@@ -91,14 +91,14 @@ class ListFieldFormBloc extends FormBloc<String, String> {
 class MemberFieldBloc extends GroupFieldBloc {
   final TextFieldBloc firstName;
   final TextFieldBloc lastName;
-  final ListFieldBloc<TextFieldBloc> hobbies;
+  final ListFieldBloc<TextFieldBloc, dynamic> hobbies;
 
   MemberFieldBloc({
     required this.firstName,
     required this.lastName,
     required this.hobbies,
     String? name,
-  }) : super([firstName, lastName, hobbies], name: name);
+  }) : super(name: name, fieldBlocs: [firstName, lastName, hobbies]);
 }
 
 class Club {
@@ -216,8 +216,8 @@ class ListFieldsForm extends StatelessWidget {
                           prefixIcon: Icon(Icons.sentiment_satisfied),
                         ),
                       ),
-                      BlocBuilder<ListFieldBloc<MemberFieldBloc>,
-                          ListFieldBlocState<MemberFieldBloc>>(
+                      BlocBuilder<ListFieldBloc<MemberFieldBloc, dynamic>,
+                          ListFieldBlocState<MemberFieldBloc, dynamic>>(
                         bloc: formBloc.members,
                         builder: (context, state) {
                           if (state.fieldBlocs.isNotEmpty) {
@@ -309,8 +309,8 @@ class MemberCard extends StatelessWidget {
                 labelText: 'Last Name',
               ),
             ),
-            BlocBuilder<ListFieldBloc<TextFieldBloc>,
-                ListFieldBlocState<TextFieldBloc>>(
+            BlocBuilder<ListFieldBloc<TextFieldBloc, dynamic>,
+                ListFieldBlocState<TextFieldBloc, dynamic>>(
               bloc: memberField.hobbies,
               builder: (context, state) {
                 if (state.fieldBlocs.isNotEmpty) {

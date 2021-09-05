@@ -41,10 +41,25 @@ class UpdateExtraDataToListFieldBloc<ExtraData> extends ListFieldBlocEvent {
 class AddFormBlocAndAutoValidateToListFieldBloc extends ListFieldBlocEvent {
   final FormBloc<dynamic, dynamic>? formBloc;
   final bool autoValidate;
-  AddFormBlocAndAutoValidateToListFieldBloc({required this.formBloc, required this.autoValidate});
+
+  AddFormBlocAndAutoValidateToListFieldBloc({
+    required this.formBloc,
+    required this.autoValidate,
+  });
 
   @override
   List<Object?> get props => [formBloc, autoValidate];
+}
+
+class RemoveFormBlocToListFieldBloc extends ListFieldBlocEvent {
+  final FormBloc<dynamic, dynamic> formBloc;
+
+  RemoveFormBlocToListFieldBloc({
+    required this.formBloc,
+  });
+
+  @override
+  List<Object?> get props => [formBloc];
 }
 
 class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
@@ -62,14 +77,14 @@ class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
 
   ListFieldBlocState<T, ExtraData> _copyWith({
     List<T>? fieldBlocs,
-    FormBloc? formBloc,
+    Optional<FormBloc?>? formBloc,
     Optional<ExtraData>? extraData,
   }) {
     return ListFieldBlocState(
       name: name,
       fieldBlocs: fieldBlocs ?? this.fieldBlocs,
       extraData: extraData == null ? this.extraData : extraData.orNull,
-      formBloc: formBloc ?? this.formBloc,
+      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
     );
   }
 
@@ -90,7 +105,8 @@ class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
 }
 
 class ListFieldBloc<T extends FieldBloc, ExtraData>
-    extends Bloc<ListFieldBlocEvent, ListFieldBlocState<T, ExtraData>> with FieldBloc {
+    extends Bloc<ListFieldBlocEvent, ListFieldBlocState<T, ExtraData>>
+    with FieldBloc {
   bool _autoValidate = true;
 
   ListFieldBloc({
@@ -106,12 +122,15 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
 
   List<T> get value => state.fieldBlocs;
 
-  void addFieldBloc(T fieldBloc) => add(AddFieldBlocsToListFieldBloc<T>([fieldBloc]));
+  void addFieldBloc(T fieldBloc) =>
+      add(AddFieldBlocsToListFieldBloc<T>([fieldBloc]));
 
-  void addFieldBlocs(List<T> fieldBlocs) => add(AddFieldBlocsToListFieldBloc<T>(fieldBlocs));
+  void addFieldBlocs(List<T> fieldBlocs) =>
+      add(AddFieldBlocsToListFieldBloc<T>(fieldBlocs));
 
   /// Removes the [FieldBloc] in the [index].
-  void removeFieldBlocAt(int index) => add(RemoveFieldBlocAtFromListFieldBloc(index));
+  void removeFieldBlocAt(int index) =>
+      add(RemoveFieldBlocAtFromListFieldBloc(index));
 
   /// Removes all [FieldBloc]s that satisfy [test].
   void removeFieldBlocsWhere(bool Function(T element) test) =>
@@ -121,20 +140,23 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
       add(UpdateExtraDataToListFieldBloc<ExtraData>(extraData));
 
   @override
-  Stream<ListFieldBlocState<T, ExtraData>> mapEventToState(ListFieldBlocEvent event) async* {
+  Stream<ListFieldBlocState<T, ExtraData>> mapEventToState(
+      ListFieldBlocEvent event) async* {
     if (event is AddFieldBlocsToListFieldBloc<T>) {
       final stateSnapshot = state;
       if (event.fieldBlocs.isNotEmpty) {
         final newState = stateSnapshot._copyWith(
-          fieldBlocs: List<T>.from(stateSnapshot.fieldBlocs)..addAll(event.fieldBlocs),
+          fieldBlocs: List<T>.from(stateSnapshot.fieldBlocs)
+            ..addAll(event.fieldBlocs),
         );
 
         yield newState;
 
         if (state.formBloc != null) {
-          _addFormBlocAndAutoValidateToFieldBlocs(
+          FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
             fieldBlocs: event.fieldBlocs,
             formBloc: state.formBloc,
+            autoValidate: _autoValidate,
           );
 
           state.formBloc?.add(RefreshFieldBlocsSubscription());
@@ -146,9 +168,10 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
       if ((stateSnapshot.fieldBlocs.length > event.index)) {
         final newFieldBlocs = List<T>.from(stateSnapshot.fieldBlocs);
 
-        /// closes all fieldBlocs
-        FormBlocUtils.getAllFieldBlocs([newFieldBlocs.removeAt(event.index)])
-            .forEach((dynamic fieldBloc) => fieldBloc.close);
+        FormBlocUtils.removeFormBlocToFieldBlocs(
+          fieldBlocs: [newFieldBlocs.removeAt(event.index)],
+          formBloc: state.formBloc,
+        );
 
         yield state._copyWith(fieldBlocs: newFieldBlocs);
 
@@ -169,9 +192,10 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
         return false;
       });
 
-      /// closes all fieldBlocs
-      FormBlocUtils.getAllFieldBlocs(fieldBlocsRemoved)
-          .forEach((dynamic fieldBloc) => fieldBloc.close);
+      FormBlocUtils.removeFormBlocToFieldBlocs(
+        fieldBlocs: fieldBlocsRemoved,
+        formBloc: state.formBloc,
+      );
 
       final newState = state._copyWith(fieldBlocs: newFieldBlocs);
 
@@ -181,42 +205,26 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
     } else if (event is AddFormBlocAndAutoValidateToListFieldBloc) {
       _autoValidate = event.autoValidate;
 
-      yield state._copyWith(formBloc: event.formBloc);
+      yield state._copyWith(formBloc: Optional.fromNullable(event.formBloc));
 
-      _addFormBlocAndAutoValidateToFieldBlocs(
+      FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
         fieldBlocs: state.fieldBlocs,
         formBloc: event.formBloc,
+        autoValidate: _autoValidate,
       );
     } else if (event is UpdateExtraDataToListFieldBloc<ExtraData>) {
       yield state._copyWith(
         extraData: Optional.fromNullable(event.extraData),
       );
-    }
-  }
-
-  void _addFormBlocAndAutoValidateToFieldBlocs({
-    required List<FieldBloc> fieldBlocs,
-    required FormBloc? formBloc,
-  }) {
-    final allFieldBlocs = FormBlocUtils.getAllFieldBlocs(fieldBlocs);
-
-    allFieldBlocs.forEach((e) {
-      if (e is SingleFieldBloc) {
-        e.add(
-          AddFormBlocAndAutoValidateToFieldBloc(formBloc: formBloc, autoValidate: _autoValidate),
-        );
-      } else if (e is ListFieldBloc) {
-        e.add(
-          AddFormBlocAndAutoValidateToListFieldBloc(
-              formBloc: formBloc, autoValidate: _autoValidate),
-        );
-      } else if (e is GroupFieldBloc) {
-        e.add(
-          AddFormBlocAndAutoValidateToGroupFieldBloc(
-              formBloc: formBloc, autoValidate: _autoValidate),
-        );
+    } else if (event is RemoveFormBlocToListFieldBloc) {
+      if (state.formBloc == event.formBloc) {
+        yield state._copyWith(formBloc: Optional.absent());
       }
-    });
+      FormBlocUtils.removeFormBlocToFieldBlocs(
+        fieldBlocs: state.fieldBlocs,
+        formBloc: event.formBloc,
+      );
+    }
   }
 
   @override

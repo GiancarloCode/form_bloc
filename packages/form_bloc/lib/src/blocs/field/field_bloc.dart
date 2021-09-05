@@ -274,6 +274,8 @@ abstract class SingleFieldBloc<
       yield* _onUpdateFieldBlocExtraData(event);
     } else if (event is AddFormBlocAndAutoValidateToFieldBloc) {
       yield* _onAddFormBlocAndAutoValidateToFieldBloc(event);
+    } else if (event is RemoveFormBlocToFieldBloc) {
+      yield* _onRemoveFormBlocToFieldBloc(event);
     } else {
       yield* _mapCustomEventToState(event);
     }
@@ -535,10 +537,21 @@ abstract class SingleFieldBloc<
         error: Optional.absent(),
         isValidated: false,
         isValidating: false,
-        formBloc: event.formBloc,
+        formBloc: Optional.fromNullable(event.formBloc),
       ) as State;
     } else {
-      yield state.copyWith(formBloc: event.formBloc) as State;
+      yield state.copyWith(
+        formBloc: Optional.fromNullable(event.formBloc),
+      ) as State;
+    }
+  }
+
+  Stream<State> _onRemoveFormBlocToFieldBloc(
+      RemoveFormBlocToFieldBloc event) async* {
+    if (state.formBloc == event.formBloc) {
+      yield state.copyWith(
+        formBloc: Optional.absent(),
+      ) as State;
     }
   }
 

@@ -17,6 +17,11 @@ class GroupFieldBlocImpl extends GroupFieldBloc<FieldBloc, dynamic> {
   }
 }
 
+class FormBlocImpl extends FormBloc<dynamic, dynamic> {
+  @override
+  void onSubmitting() {}
+}
+
 void main() {
   group('FormBlocUtils:', () {
     group('getAllSingleFieldBlocs:', () {
@@ -84,10 +89,13 @@ void main() {
         extraData: null,
       );
 
-      final booleanFieldBloc1 = BooleanFieldBloc<dynamic>(name: 'booleanFieldBloc1');
-      final booleanFieldBloc2 = BooleanFieldBloc<dynamic>(name: 'booleanFieldBloc2');
+      final booleanFieldBloc1 =
+          BooleanFieldBloc<dynamic>(name: 'booleanFieldBloc1');
+      final booleanFieldBloc2 =
+          BooleanFieldBloc<dynamic>(name: 'booleanFieldBloc2');
 
-      final fieldBlocListWithSingleFieldBlocs1 = ListFieldBloc<FieldBloc, dynamic>(
+      final fieldBlocListWithSingleFieldBlocs1 =
+          ListFieldBloc<FieldBloc, dynamic>(
         name: 'fieldBlocListWithSingleFieldBlocs1',
         fieldBlocs: [
           booleanFieldBloc1,
@@ -95,14 +103,16 @@ void main() {
         ],
       );
 
-      final selectFieldBloc1 = SelectFieldBloc<String, dynamic>(name: 'selectFieldBloc1');
+      final selectFieldBloc1 =
+          SelectFieldBloc<String, dynamic>(name: 'selectFieldBloc1');
       final multiSelectFieldBloc1 =
           MultiSelectFieldBloc<String, dynamic>(name: 'multiSelectFieldBloc1');
 
       final multiSelectFieldBloc3 =
           MultiSelectFieldBloc<String, dynamic>(name: 'booleanFieldBloc3');
       final textFieldBloc9 = TextFieldBloc<dynamic>(name: 'textFieldBloc9');
-      final inputFieldBloc1 = InputFieldBloc<int, dynamic>(name: 'inputFieldBloc1');
+      final inputFieldBloc1 =
+          InputFieldBloc<int, dynamic>(name: 'inputFieldBloc1');
 
       final groupFieldBlocWithAll1 = GroupFieldBlocImpl(
         name: 'groupFieldBlocWithAll1',
@@ -212,7 +222,8 @@ void main() {
           booleanFieldBloc2,
         ];
 
-        final singleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
+        final singleFieldBlocs =
+            FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
 
         expect(
           singleFieldBlocs,
@@ -221,14 +232,16 @@ void main() {
       });
 
       test('Empty FieldBlocList', () {
-        final fieldBlocList21 = ListFieldBloc<FieldBloc, dynamic>(name: 'list21');
+        final fieldBlocList21 =
+            ListFieldBloc<FieldBloc, dynamic>(name: 'list21');
 
         final fieldBlocs = <FieldBloc>[
           fieldBlocList21,
         ];
         final expectedSingleFieldBlocs = <SingleFieldBloc>[];
 
-        final singleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
+        final singleFieldBlocs =
+            FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
 
         expect(
           singleFieldBlocs,
@@ -255,7 +268,8 @@ void main() {
           multiSelectFieldBloc3
         ];
 
-        final singleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
+        final singleFieldBlocs =
+            FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
 
         expect(
           singleFieldBlocs,
@@ -278,7 +292,8 @@ void main() {
           booleanFieldBloc2,
         ];
 
-        final singleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
+        final singleFieldBlocs =
+            FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
 
         expect(
           singleFieldBlocs,
@@ -295,7 +310,8 @@ void main() {
           textFieldBloc4,
         ];
 
-        final singleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
+        final singleFieldBlocs =
+            FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
 
         expect(
           singleFieldBlocs,
@@ -319,7 +335,8 @@ void main() {
           textFieldBloc4,
         ];
 
-        final singleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
+        final singleFieldBlocs =
+            FormBlocUtils.getAllSingleFieldBlocs(fieldBlocs);
 
         expect(
           singleFieldBlocs,
@@ -329,13 +346,15 @@ void main() {
     });
 
     final booleanFieldBloc1 = BooleanFieldBloc<dynamic>(name: 'boolean1');
-    final textFieldBloc1 = TextFieldBloc<dynamic>(name: 'textFieldBloc1', initialValue: 'text1');
+    final textFieldBloc1 =
+        TextFieldBloc<dynamic>(name: 'textFieldBloc1', initialValue: 'text1');
 
     final booleanFieldBloc2 = BooleanFieldBloc<dynamic>(name: 'boolean2');
-    final textFieldBloc2 = TextFieldBloc<dynamic>(name: 'textFieldBloc2', initialValue: 'text2');
+    final textFieldBloc2 =
+        TextFieldBloc<dynamic>(name: 'textFieldBloc2', initialValue: 'text2');
 
-    final groupFieldBloc1 =
-        GroupFieldBlocImpl(name: 'group1', fieldBlocs: [booleanFieldBloc1], extraData: null);
+    final groupFieldBloc1 = GroupFieldBlocImpl(
+        name: 'group1', fieldBlocs: [booleanFieldBloc1], extraData: null);
 
     final fieldBlocList1 = ListFieldBloc<FieldBloc, dynamic>(
         name: 'list1', fieldBlocs: [booleanFieldBloc1, textFieldBloc1]);
@@ -346,14 +365,14 @@ void main() {
     final fieldBlocList3 = ListFieldBloc<FieldBloc, dynamic>(
         name: 'list3', fieldBlocs: [fieldBlocList1, fieldBlocList2]);
 
-    final groupFieldBloc2 =
-        GroupFieldBlocImpl(name: 'group2', fieldBlocs: [fieldBlocList3], extraData: null);
+    final groupFieldBloc2 = GroupFieldBlocImpl(
+        name: 'group2', fieldBlocs: [fieldBlocList3], extraData: null);
 
-    final groupFieldBloc3 =
-        GroupFieldBlocImpl(name: 'group3', fieldBlocs: [groupFieldBloc2], extraData: null);
+    final groupFieldBloc3 = GroupFieldBlocImpl(
+        name: 'group3', fieldBlocs: [groupFieldBloc2], extraData: null);
 
-    final fieldBlocList4 =
-        ListFieldBloc<FieldBloc, dynamic>(name: 'list4', fieldBlocs: [groupFieldBloc3]);
+    final fieldBlocList4 = ListFieldBloc<FieldBloc, dynamic>(
+        name: 'list4', fieldBlocs: [groupFieldBloc3]);
     group('getFieldBlocFromPath', () {
       test('First name of path is a SingleFieldBloc', () {
         final fieldBlocs = <String, FieldBloc>{
@@ -524,7 +543,9 @@ void main() {
         expect(fieldBloc, null);
       });
 
-      test('Returns null if has a path that exist and after has a path that not exist', () {
+      test(
+          'Returns null if has a path that exist and after has a path that not exist',
+          () {
         final fieldBlocs = <String, FieldBloc>{
           booleanFieldBloc1.state.name!: booleanFieldBloc1,
         };
@@ -714,7 +735,8 @@ void main() {
           textFieldBloc1.state.name!: textFieldBloc1,
         };
 
-        final fieldBlocsStates = FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
+        final fieldBlocsStates =
+            FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
 
         print(
           fieldBlocsStates,
@@ -730,13 +752,15 @@ void main() {
         textFieldBloc1.state.name!: textFieldBloc1,
       };
 
-      final fieldBlocsStates = FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
+      final fieldBlocsStates =
+          FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
       // TODO: Add more tests
       test('Root SingleFieldBloc', () {
         expect(
             textFieldBloc1.state,
             FormBlocUtils.getFieldBlocStateFromPath(
-                path: textFieldBloc1.state.name, fieldBlocsStates: fieldBlocsStates));
+                path: textFieldBloc1.state.name,
+                fieldBlocsStates: fieldBlocsStates));
       });
     });
 
@@ -749,7 +773,8 @@ void main() {
           textFieldBloc1.state.name!: textFieldBloc1,
         };
 
-        final fieldBlocsStates = FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
+        final fieldBlocsStates =
+            FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
 
         print(
           JsonEncoder.withIndent('    ').convert(
@@ -768,6 +793,122 @@ void main() {
         ];
 
         print(FormBlocUtils.fieldBlocsStatesListToJsonList(fieldBlocList));
+      });
+    });
+
+    group('addFormBlocAndAutoValidateToFieldBlocs & removeFormBlocToFieldBlocs',
+        () {
+      test('SingleFieldBloc', () async {
+        final formBloc = FormBlocImpl();
+
+        final listFieldBloc = BooleanFieldBloc<dynamic>(name: '');
+
+        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<BooleanFieldBlocState<dynamic>>[
+            BooleanFieldBlocState<dynamic>(
+              name: '',
+              formBloc: formBloc,
+              value: false,
+              error: null,
+              isInitial: true,
+              suggestions: null,
+              isValidated: false,
+              isValidating: false,
+            ),
+          ]),
+        );
+
+        FormBlocUtils.removeFormBlocToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<BooleanFieldBlocState>[
+            BooleanFieldBlocState<dynamic>(
+              name: '',
+              formBloc: null,
+              value: false,
+              error: null,
+              isInitial: true,
+              suggestions: null,
+              isValidated: false,
+              isValidating: false,
+            ),
+          ]),
+        );
+      });
+
+      test('ListFieldBloc', () async {
+        final formBloc = FormBlocImpl();
+
+        final listFieldBloc = ListFieldBloc<FieldBloc, dynamic>(name: '');
+
+        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<ListFieldBlocState<FieldBloc, dynamic>>[
+            ListFieldBlocState<FieldBloc, dynamic>(
+                name: '', fieldBlocs: [], formBloc: formBloc, extraData: null),
+          ]),
+        );
+
+        FormBlocUtils.removeFormBlocToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<ListFieldBlocState>[
+            ListFieldBlocState<FieldBloc, dynamic>(
+                name: '', fieldBlocs: [], formBloc: null, extraData: null),
+          ]),
+        );
+      });
+
+      test('GroupFieldBloc', () async {
+        final formBloc = FormBlocImpl();
+
+        final listFieldBloc =
+            GroupFieldBlocImpl(name: '', fieldBlocs: [], extraData: null);
+
+        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<GroupFieldBlocState>[
+            GroupFieldBlocState<FieldBloc, dynamic>(
+                name: '', fieldBlocs: [], formBloc: formBloc, extraData: null),
+          ]),
+        );
+
+        FormBlocUtils.removeFormBlocToFieldBlocs(
+          fieldBlocs: [listFieldBloc],
+          formBloc: formBloc,
+        );
+
+        await expectLater(
+          listFieldBloc.stream,
+          emitsInOrder(<GroupFieldBlocState>[
+            GroupFieldBlocState<FieldBloc, dynamic>(
+                name: '', fieldBlocs: [], formBloc: null, extraData: null),
+          ]),
+        );
       });
     });
   });

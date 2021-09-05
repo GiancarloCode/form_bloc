@@ -45,7 +45,7 @@ class TextFieldBlocState<ExtraData>
       Optional<Suggestions<String>>? suggestions,
       bool? isValidated,
       bool? isValidating,
-      FormBloc? formBloc,
+        Optional<FormBloc?>? formBloc,
       Optional<ExtraData?>? extraData}) {
     return TextFieldBlocState(
       value: value == null ? this.value : value.orNull,
@@ -54,7 +54,7 @@ class TextFieldBlocState<ExtraData>
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc ?? this.formBloc,
+      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
       name: name,
       toJson: _toJson,
       extraData: extraData == null ? this.extraData : extraData.orNull,
