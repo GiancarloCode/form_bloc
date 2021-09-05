@@ -61,6 +61,7 @@ class RemoveFormBlocToListFieldBloc extends ListFieldBlocEvent {
   @override
   List<Object?> get props => [formBloc];
 }
+
 class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
   final String name;
   final List<T> fieldBlocs;
@@ -76,7 +77,7 @@ class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
 
   ListFieldBlocState<T, ExtraData> _copyWith({
     List<T>? fieldBlocs,
-    FormBloc? formBloc,
+    Optional<FormBloc?>? formBloc,
     Optional<ExtraData>? extraData,
   }) {
     return ListFieldBlocState(
@@ -104,7 +105,8 @@ class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
 }
 
 class ListFieldBloc<T extends FieldBloc, ExtraData>
-    extends Bloc<ListFieldBlocEvent, ListFieldBlocState<T, ExtraData>> with FieldBloc {
+    extends Bloc<ListFieldBlocEvent, ListFieldBlocState<T, ExtraData>>
+    with FieldBloc {
   bool _autoValidate = true;
 
   ListFieldBloc({
@@ -120,12 +122,15 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
 
   List<T> get value => state.fieldBlocs;
 
-  void addFieldBloc(T fieldBloc) => add(AddFieldBlocsToListFieldBloc<T>([fieldBloc]));
+  void addFieldBloc(T fieldBloc) =>
+      add(AddFieldBlocsToListFieldBloc<T>([fieldBloc]));
 
-  void addFieldBlocs(List<T> fieldBlocs) => add(AddFieldBlocsToListFieldBloc<T>(fieldBlocs));
+  void addFieldBlocs(List<T> fieldBlocs) =>
+      add(AddFieldBlocsToListFieldBloc<T>(fieldBlocs));
 
   /// Removes the [FieldBloc] in the [index].
-  void removeFieldBlocAt(int index) => add(RemoveFieldBlocAtFromListFieldBloc(index));
+  void removeFieldBlocAt(int index) =>
+      add(RemoveFieldBlocAtFromListFieldBloc(index));
 
   /// Removes all [FieldBloc]s that satisfy [test].
   void removeFieldBlocsWhere(bool Function(T element) test) =>
@@ -135,19 +140,21 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
       add(UpdateExtraDataToListFieldBloc<ExtraData>(extraData));
 
   @override
-  Stream<ListFieldBlocState<T, ExtraData>> mapEventToState(ListFieldBlocEvent event) async* {
+  Stream<ListFieldBlocState<T, ExtraData>> mapEventToState(
+      ListFieldBlocEvent event) async* {
     if (event is AddFieldBlocsToListFieldBloc<T>) {
       final stateSnapshot = state;
       if (event.fieldBlocs.isNotEmpty) {
         final newState = stateSnapshot._copyWith(
-          fieldBlocs: List<T>.from(stateSnapshot.fieldBlocs)..addAll(event.fieldBlocs),
+          fieldBlocs: List<T>.from(stateSnapshot.fieldBlocs)
+            ..addAll(event.fieldBlocs),
         );
 
         yield newState;
 
         if (state.formBloc != null) {
           FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
-            fieldBlocs: event.fieldBloc!,
+            fieldBlocs: event.fieldBlocs,
             formBloc: state.formBloc,
             autoValidate: _autoValidate,
           );
@@ -205,17 +212,13 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
         formBloc: event.formBloc,
         autoValidate: _autoValidate,
       );
-    }
-    else if (event is UpdateExtraDataToListFieldBloc<ExtraData>) {
+    } else if (event is UpdateExtraDataToListFieldBloc<ExtraData>) {
       yield state._copyWith(
         extraData: Optional.fromNullable(event.extraData),
       );
-    }
-    else if (event is RemoveFormBlocToListFieldBloc) {
+    } else if (event is RemoveFormBlocToListFieldBloc) {
       if (state.formBloc == event.formBloc) {
         yield state._copyWith(formBloc: Optional.absent());
-      }
-
       }
       FormBlocUtils.removeFormBlocToFieldBlocs(
         fieldBlocs: state.fieldBlocs,

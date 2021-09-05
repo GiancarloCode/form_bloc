@@ -116,8 +116,7 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
         fieldBlocs: state._fieldBlocs.values.toList(),
         formBloc: event.formBloc,
       );
-    }
-    else if (event is UpdateExtraDataToGroupFieldBloc<ExtraData>) {
+    } else if (event is UpdateExtraDataToGroupFieldBloc<ExtraData>) {
       yield state._copyWith(
         extraData: Optional.fromNullable(event.extraData),
       );
