@@ -1,3 +1,4 @@
+import 'package:form_bloc/src/blocs/field/field_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 class FieldBlocUtils {
@@ -8,13 +9,13 @@ class FieldBlocUtils {
   }
 
   /// Returns the error of the [_initialValue].
-  static String? getInitialStateError<Value>({
-    required Value value,
-    required List<String? Function(Value)>? validators,
+  static Object? getInitialStateError<Value>({
+    required Value? value,
+    required List<Validator<Value>>? validators,
   }) {
     /// TODO: refactor
 
-    String? error;
+    Object? error;
 
     final hasValidators = validators != null;
 
@@ -35,9 +36,9 @@ class FieldBlocUtils {
 
   /// Returns the `isValidating` of the `initialState`.
   static bool getInitialStateIsValidating<Value>({
-    required List<Future<String?> Function(Value)>? asyncValidators,
-    required Value value,
-    required List<String? Function(Value)>? validators,
+    required List<AsyncValidator<Value>>? asyncValidators,
+    required Value? value,
+    required List<Validator<Value>>? validators,
   }) {
     /// TODO: refactor
 

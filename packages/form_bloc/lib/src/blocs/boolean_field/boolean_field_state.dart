@@ -4,7 +4,7 @@ class BooleanFieldBlocState<ExtraData>
     extends FieldBlocState<bool, bool, ExtraData?> {
   BooleanFieldBlocState({
     required bool? value,
-    required String? error,
+    required Object? error,
     required bool isInitial,
     required Suggestions<bool>? suggestions,
     required bool isValidated,
@@ -30,7 +30,7 @@ class BooleanFieldBlocState<ExtraData>
   @override
   FieldBlocState<bool, bool, ExtraData?> copyWith(
       {Optional<bool?>? value,
-      Optional<String>? error,
+      Optional<Object>? error,
       bool? isInitial,
       Optional<Suggestions<bool>>? suggestions,
       bool? isValidated,

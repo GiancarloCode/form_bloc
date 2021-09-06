@@ -30,14 +30,14 @@ part 'field_event.dart';
 part 'field_state.dart';
 
 /// Signature for the [Validator] function which takes [value]
-/// and should returns a `String` error, and if doesn't have error
+/// and should returns a `Object` error, and if doesn't have error
 /// should return `null`.
-typedef Validator<Value> = String? Function(Value? value);
+typedef Validator<Value> = Object? Function(Value? value);
 
 /// Signature for the [AsyncValidator] function which takes [value]
-/// and should returns a `String` error, and if doesn't have error
+/// and should returns a `Object` error, and if doesn't have error
 /// should return `null`.
-typedef AsyncValidator<Value> = Future<String?> Function(Value? value);
+typedef AsyncValidator<Value> = Future<Object?> Function(Value? value);
 
 /// Signature for the [Suggestions] function which takes [pattern]
 /// and should returns a `Future` with a `List<Value>`.
@@ -74,7 +74,7 @@ abstract class SingleFieldBloc<
 
   bool _autoValidate = true;
 
-  List<Validator<Value?>> _validators;
+  List<Validator<Value>> _validators;
 
   List<AsyncValidator<Value>> _asyncValidators;
 
@@ -232,7 +232,7 @@ abstract class SingleFieldBloc<
   ///
   /// It is useful when you want to add errors that
   /// you have obtained when submitting the `FormBloc`.
-  void addFieldError(String error, {bool isPermanent = false}) => add(
+  void addFieldError(Object error, {bool isPermanent = false}) => add(
       AddFieldBlocError(value: value, error: error, isPermanent: isPermanent));
 
   /// Updates the `extraData` of the current state.
@@ -290,13 +290,13 @@ abstract class SingleFieldBloc<
 
   /// Check [value] in each validator.
   ///
-  /// Returns a `String` error if [_autovalidate] is `true`
+  /// Returns a `Object` error if [_autoValidate] is `true`
   /// or [forceValidation] is `true`.
   ///
   /// Else returns the error of the current state.
-  String? _getError(Value? value,
+  Object? _getError(Value? value,
       {bool isInitialState = false, bool forceValidation = false}) {
-    String? error;
+    Object? error;
 
     if (forceValidation || _autoValidate) {
       for (var validator in _validators) {
@@ -315,7 +315,7 @@ abstract class SingleFieldBloc<
   /// Returns a `bool` indicating if is validating.
   bool _getAsyncValidatorsError({
     required Value? value,
-    required String? error,
+    required Object? error,
     bool forceValidation = false,
   }) {
     final hasError = error != null;
@@ -334,7 +334,7 @@ abstract class SingleFieldBloc<
   }
 
   /// Returns the error of the [_initialValue].
-  String? get _getInitialStateError =>
+  Object? get _getInitialStateError =>
       _getError(_initialValue, isInitialState: true);
 
   /// Returns the `isValidating` of the `initialState`.
@@ -567,7 +567,7 @@ abstract class SingleFieldBloc<
         .debounceTime(_asyncValidatorDebounceTime)
         .switchMap(
           ((value) => ((Value? value) async {
-                String? error;
+                Object? error;
 
                 if (error == null) {
                   for (var asyncValidator in _asyncValidators) {

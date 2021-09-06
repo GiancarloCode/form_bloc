@@ -77,7 +77,7 @@ class FieldBlocValidators {
   /// Returns [FieldBlocValidatorsErrors.email]
   /// if is not valid.
   ///
-  ///  Returns [FieldBlocValidatorsErrors.passwordMin6Chars]
+  /// Returns [FieldBlocValidatorsErrors.passwordMin6Chars]
   /// if is not valid.
   static Validator<String?> confirmPassword(
     TextFieldBloc passwordTextFieldBloc,

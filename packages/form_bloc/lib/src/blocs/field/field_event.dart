@@ -161,7 +161,7 @@ class ResetFieldBlocStateIsValidated extends FieldBlocEvent {
 }
 
 class UpdateFieldBlocStateError<Value> extends FieldBlocEvent {
-  final String? error;
+  final Object? error;
   final Value value;
 
   UpdateFieldBlocStateError({
@@ -223,7 +223,7 @@ class UpdateAsyncValidators<Value> extends FieldBlocEvent {
 
 class AddFieldBlocError<Value> extends FieldBlocEvent {
   final Value value;
-  final String error;
+  final Object error;
   final bool isPermanent;
 
   AddFieldBlocError({

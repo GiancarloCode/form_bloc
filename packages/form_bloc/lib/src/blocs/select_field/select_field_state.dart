@@ -6,7 +6,7 @@ class SelectFieldBlocState<Value, ExtraData>
 
   SelectFieldBlocState({
     required Value? value,
-    required String? error,
+    required Object? error,
     required bool isInitial,
     required Suggestions<Value>? suggestions,
     required bool isValidated,
@@ -32,7 +32,7 @@ class SelectFieldBlocState<Value, ExtraData>
   @override
   SelectFieldBlocState<Value, ExtraData> copyWith(
       {Optional<Value?>? value,
-      Optional<String>? error,
+      Optional<Object>? error,
       bool? isInitial,
       Optional<Suggestions<Value>>? suggestions,
       bool? isValidated,
