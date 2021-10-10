@@ -30,7 +30,8 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute<dynamic>);
+    _routeObserver.subscribe(
+        this, ModalRoute.of(context) as PageRoute<dynamic>);
   }
 
   @override
@@ -57,8 +58,8 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
         elevation: widget.permanentlyDisplay ? 0.0 : 16,
         child: Container(
           decoration: BoxDecoration(
-            gradient: drawerBodyGradient,
-          ),
+              // gradient: drawerBodyGradient,
+              ),
           child: Column(
             children: [
               _buildHeader(),
@@ -295,7 +296,6 @@ class _DrawerItemState extends State<DrawerItem> {
         Opacity(
           opacity: 0.7,
           child: Container(
-            height: 56,
             decoration: BoxDecoration(
               gradient: widget.isCurrentRoute ? mainGradient : null,
               borderRadius: _borderRadius,
@@ -313,11 +313,19 @@ class _DrawerItemState extends State<DrawerItem> {
             child: Theme(
               data: Theme.of(context).copyWith(primaryColor: Colors.white),
               child: ListTile(
-                leading: Icon(widget.iconData ??
-                    (widget.isCurrentRoute
-                        ? Icons.sentiment_very_satisfied
-                        : Icons.sentiment_satisfied)),
-                title: Text(widget.title),
+                leading: Icon(
+                  widget.iconData ??
+                      (widget.isCurrentRoute
+                          ? Icons.sentiment_very_satisfied
+                          : Icons.sentiment_satisfied),
+                  color: widget.isCurrentRoute ? Colors.white : null,
+                ),
+                title: Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: widget.isCurrentRoute ? Colors.white : null,
+                  ),
+                ),
                 selected: widget.isCurrentRoute,
               ),
             ),
