@@ -224,7 +224,7 @@ class _LiquidLinearProgressIndicatorWithTextState
   @override
   Widget build(BuildContext context) {
     return LiquidLinearProgressIndicator(
-      value: _tween!.evaluate(animation),
+      value: _tween!.evaluate(animation) as double,
       valueColor:
           AlwaysStoppedAnimation(Theme.of(context).primaryColor.withAlpha(150)),
       backgroundColor: Colors.white,
@@ -232,7 +232,7 @@ class _LiquidLinearProgressIndicatorWithTextState
       borderWidth: 0,
       borderRadius: 0,
       center: Text(
-        '${(_tween!.evaluate(animation) * 100).ceil().toString()}%',
+        '${((_tween!.evaluate(animation)! as double) * 100).ceil().toString()}%',
         style: TextStyle(color: Colors.black87, fontSize: 16),
       ),
     );
