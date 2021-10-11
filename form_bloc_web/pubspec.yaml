@@ -11,16 +11,16 @@ dependencies:
   # form_bloc:
   #   path: ../packages/form_bloc
   flutter_form_bloc:
-     path: ../packages/flutter_form_bloc
-#  flutter_form_bloc: ^0.20.0
-#  flutter_gradients: ^1.0.0+3
+    path: ../packages/flutter_form_bloc
+  #  flutter_form_bloc: ^0.20.0
+  #  flutter_gradients: ^1.0.0+3
   gradients: ^0.1.1+1
 
   flutter_syntax_view: ^4.0.0
   flash: ^1.5.2
   url_launcher: ^6.0.2
   flutter_markdown: ^0.6.1
-  flutter_particle_background: any
+  # flutter_particle_background: any
   simple_animations: ^3.1.1
   auto_size_text: ^3.0.0-nullsafety.0
   flutter_fadein: ^2.0.0
@@ -28,7 +28,7 @@ dependencies:
     git:
       url: https://github.com/explodus/liquid_progress_indicator
   rxdart: ^0.27.0
-
+  google_fonts: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -37,10 +37,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-  - family: JosefinSans
-    fonts:
-    - asset: assets/fonts/JosefinSans-Regular.ttf
-    - asset: assets/fonts/JosefinSans-Bold.ttf
-      weight: 700
+    - family: JosefinSans
+      fonts:
+        - asset: assets/fonts/JosefinSans-Regular.ttf
+        - asset: assets/fonts/JosefinSans-Bold.ttf
+          weight: 700
   assets:
     - lib/examples/
