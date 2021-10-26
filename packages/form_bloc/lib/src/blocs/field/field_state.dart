@@ -7,7 +7,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   /// The current error of this state.
   ///
   /// If doesn't have error it is `null`.
-  final String? error;
+  final Object? error;
 
   /// Indicate if this field was updated
   /// after be instantiate by the [FieldBloc].
@@ -91,7 +91,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   /// the values that are passed as parameters.
   FieldBlocState<Value, Suggestion, ExtraData> copyWith({
     Optional<Value?>? value,
-    Optional<String>? error,
+    Optional<Object>? error,
     bool? isInitial,
     Optional<Suggestions<Suggestion>>? suggestions,
     bool? isValidated,

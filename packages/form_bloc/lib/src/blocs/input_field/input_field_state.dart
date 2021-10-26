@@ -4,7 +4,7 @@ class InputFieldBlocState<Value, ExtraData>
     extends FieldBlocState<Value, Value, ExtraData?> {
   InputFieldBlocState({
     required Value? value,
-    required String? error,
+    required Object? error,
     required bool isInitial,
     required Suggestions<Value>? suggestions,
     required bool isValidated,
@@ -30,7 +30,7 @@ class InputFieldBlocState<Value, ExtraData>
   @override
   FieldBlocState<Value, Value, ExtraData?> copyWith(
       {Optional<Value?>? value,
-      Optional<String>? error,
+      Optional<Object>? error,
       bool? isInitial,
       Optional<Suggestions<Value>>? suggestions,
       bool? isValidated,

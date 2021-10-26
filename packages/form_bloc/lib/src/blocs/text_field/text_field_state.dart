@@ -4,7 +4,7 @@ class TextFieldBlocState<ExtraData>
     extends FieldBlocState<String, String, ExtraData?> {
   TextFieldBlocState({
     required String? value,
-    required String? error,
+    required Object? error,
     required bool isInitial,
     required Suggestions<String>? suggestions,
     required bool isValidated,
@@ -40,7 +40,7 @@ class TextFieldBlocState<ExtraData>
   @override
   FieldBlocState<String, String, ExtraData?> copyWith(
       {Optional<String?>? value,
-      Optional<String>? error,
+      Optional<Object>? error,
       bool? isInitial,
       Optional<Suggestions<String>>? suggestions,
       bool? isValidated,

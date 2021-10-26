@@ -6,7 +6,7 @@ class MultiSelectFieldBlocState<Value, ExtraData>
 
   MultiSelectFieldBlocState({
     required List<Value>? value,
-    required String? error,
+    required Object? error,
     required bool isInitial,
     required Suggestions<Value>? suggestions,
     required bool isValidated,
@@ -32,7 +32,7 @@ class MultiSelectFieldBlocState<Value, ExtraData>
   @override
   MultiSelectFieldBlocState<Value, ExtraData> copyWith(
       {Optional<List<Value>?>? value,
-      Optional<String>? error,
+      Optional<Object>? error,
       bool? isInitial,
       Optional<Suggestions<Value>>? suggestions,
       bool? isValidated,
