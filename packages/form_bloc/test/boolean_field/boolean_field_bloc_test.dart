@@ -93,7 +93,7 @@ void main() {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
 
-        fieldBloc = BooleanFieldBloc<dynamic>(name: 'name', initialValue: null);
+        fieldBloc = BooleanFieldBloc<dynamic>(name: 'name');
 
         initialState = BooleanFieldBlocState<dynamic>(
           value: false,

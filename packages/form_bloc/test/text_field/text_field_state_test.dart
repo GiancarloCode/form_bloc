@@ -8,7 +8,7 @@ void main() {
       final suggestions = (String pattern) async => ['1'];
 
       final state = TextFieldBlocState<dynamic>(
-        value: null,
+        value: '',
         error: null,
         isInitial: false,
         suggestions: null,

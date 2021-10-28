@@ -3,7 +3,7 @@ part of '../field/field_bloc.dart';
 class TextFieldBlocState<ExtraData>
     extends FieldBlocState<String, String, ExtraData?> {
   TextFieldBlocState({
-    required String? value,
+    required String value,
     required Object? error,
     required bool isInitial,
     required Suggestions<String>? suggestions,
@@ -11,8 +11,7 @@ class TextFieldBlocState<ExtraData>
     required bool isValidating,
     FormBloc? formBloc,
     String? name,
-    List additionalProps = const <dynamic>[],
-    dynamic Function(String? value)? toJson,
+    dynamic Function(String value)? toJson,
     ExtraData? extraData,
   }) : super(
           value: value,
@@ -30,25 +29,26 @@ class TextFieldBlocState<ExtraData>
   /// Parse the [value] to [int].
   /// if the value is an [int] returns an [int],
   /// else returns `null`.
-  int? get valueToInt => int.tryParse(value ?? '');
+  int? get valueToInt => int.tryParse(value);
 
   /// Parse the [value] to [double].
   /// if the value is a [double] returns a [double],
   /// else returns `null`.
-  double? get valueToDouble => double.tryParse(value ?? '');
+  double? get valueToDouble => double.tryParse(value);
 
   @override
-  FieldBlocState<String, String, ExtraData?> copyWith(
-      {Optional<String?>? value,
-      Optional<Object>? error,
-      bool? isInitial,
-      Optional<Suggestions<String>>? suggestions,
-      bool? isValidated,
-      bool? isValidating,
-        Optional<FormBloc?>? formBloc,
-      Optional<ExtraData?>? extraData}) {
+  TextFieldBlocState<ExtraData> copyWith({
+    Optional<String>? value,
+    Optional<Object?>? error,
+    bool? isInitial,
+    Optional<Suggestions<String>>? suggestions,
+    bool? isValidated,
+    bool? isValidating,
+    Optional<FormBloc?>? formBloc,
+    Optional<ExtraData?>? extraData,
+  }) {
     return TextFieldBlocState(
-      value: value == null ? this.value : value.orNull,
+      value: value == null ? this.value : value.value,
       error: error == null ? this.error : error.orNull,
       isInitial: isInitial ?? this.isInitial,
       suggestions: suggestions == null ? this.suggestions : suggestions.orNull,

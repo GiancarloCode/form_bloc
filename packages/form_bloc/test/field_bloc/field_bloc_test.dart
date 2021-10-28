@@ -17,6 +17,7 @@ void main() {
 
         fieldBloc = InputFieldBloc<int?, dynamic>(
           name: 'fieldName',
+          initialValue: null,
         );
         initialState = InputFieldBlocState<int?, dynamic>(
           value: null,
@@ -55,6 +56,7 @@ void main() {
       test('validators verify the value and add the corresponding error.', () {
         final fieldBloc = InputFieldBloc<int?, dynamic>(
           name: 'fieldName',
+          initialValue: null,
           // validators: [FieldBlocValidators.required],
           validators: [
             FieldBlocValidators.required,
@@ -110,8 +112,9 @@ void main() {
 
       test('asyncValidators verify the value and add the corresponding error.',
           () {
-        final fieldBloc = InputFieldBloc<int, dynamic>(
+        final fieldBloc = InputFieldBloc<int?, dynamic>(
           name: 'fieldName',
+          initialValue: null,
           asyncValidators: [
             (value) async {
               await Future<void>.delayed(Duration(milliseconds: 10));
@@ -161,8 +164,11 @@ void main() {
       test('_suggestions is added to suggestions of the current state.',
           () async {
         final suggestions = (String pattern) async => [1, 2, 3];
-        final fieldBloc = InputFieldBloc<int, dynamic>(
-            name: 'fieldName', suggestions: suggestions);
+        final fieldBloc = InputFieldBloc<int?, dynamic>(
+          name: 'fieldName',
+          initialValue: null,
+          suggestions: suggestions,
+        );
 
         final expectedStates = [
           InputFieldBlocState<int?, dynamic>(
@@ -187,8 +193,9 @@ void main() {
         );
       });
       test('_name is added to the current state', () async {
-        final fieldBloc = InputFieldBloc<int, dynamic>(
+        final fieldBloc = InputFieldBloc<int?, dynamic>(
           name: 'fieldName',
+          initialValue: null,
         );
 
         expect(
@@ -199,8 +206,9 @@ void main() {
     });
 
     test('initial state has isInitial in true.', () {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
 
       final initialState = InputFieldBlocState<int?, dynamic>(
@@ -222,6 +230,7 @@ void main() {
     test('updateValue method and UpdateFieldBlocValue event.', () {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
         validators: [FieldBlocValidators.required],
       );
 
@@ -268,6 +277,7 @@ void main() {
     test('updateValue method with isRequired false', () {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
 
       final state1 = InputFieldBlocState<int?, dynamic>(
@@ -311,6 +321,7 @@ void main() {
         () {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
         validators: [FieldBlocValidators.required],
       );
 
@@ -399,8 +410,9 @@ void main() {
     test(
         'selectSuggestion method SelectSuggestion event and selectedSuggestion stream.',
         () {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
 
       final expectedSuggestions = [1, 2, 3];
@@ -416,7 +428,7 @@ void main() {
     });
 
     test('addValidators method and AddValidators event.', () async {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
         initialValue: 1,
         validators: [FieldBlocValidators.required],
@@ -456,7 +468,7 @@ void main() {
     });
 
     test('addAsyncValidators method and AddAsyncValidators event.', () async {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
         initialValue: 1,
         validators: [FieldBlocValidators.required],
@@ -509,7 +521,7 @@ void main() {
         'addValidators method and AddValidators event, after DisableFieldBlocAutoValidate event was dispatched.',
         () {
       final fieldBloc =
-          InputFieldBloc<int, dynamic>(name: 'fieldName', initialValue: 1);
+          InputFieldBloc<int?, dynamic>(name: 'fieldName', initialValue: 1);
 
       final state1 = InputFieldBlocState<int?, dynamic>(
         value: 1,
@@ -551,7 +563,7 @@ void main() {
     test(
         'addAsyncValidators method and AddAsyncValidators event, after DisableFieldBlocAutoValidate event was dispatched.',
         () async {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
         initialValue: 1,
         validators: [FieldBlocValidators.required],
@@ -599,7 +611,7 @@ void main() {
     });
 
     test('updateValidators method and UpdateValidators event.', () {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
         initialValue: 1,
         validators: [
@@ -652,7 +664,7 @@ void main() {
 
     test('updateAsyncValidators method and UpdateAsyncValidators event.',
         () async {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
         initialValue: 1,
         asyncValidatorDebounceTime: Duration(milliseconds: 0),
@@ -739,6 +751,7 @@ void main() {
 
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
         suggestions: suggestions1,
       );
 
@@ -778,6 +791,7 @@ void main() {
         () {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
         validators: [
           FieldBlocValidators.required,
           (value) => value! > 5 ? '> 5' : null,
@@ -846,8 +860,9 @@ void main() {
     test(
         'ValidateFieldBloc event verify the value in validators and asyncValidators.',
         () {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
         validators: [FieldBlocValidators.required],
         asyncValidators: [
           (value) async => value == 2 ? 'async == 2' : null,
@@ -913,8 +928,9 @@ void main() {
     });
 
     test('ResetFieldBlocStateIsValidated event.', () {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
 
       final state1 = InputFieldBlocState<int?, dynamic>(
@@ -945,6 +961,7 @@ void main() {
     test('UpdateFieldBlocStateError event.', () {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
 
       final state1 = InputFieldBlocState<int?, dynamic>(
@@ -974,8 +991,9 @@ void main() {
     });
 
     test('UpdateFieldBlocState event.', () {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
       final suggestions = (String pattern) async => [1];
 
@@ -1012,11 +1030,13 @@ void main() {
 
     test('on subscribeToFieldBlocs method and SubscribeToFieldBlocs event.',
         () async {
-      final fieldBloc1 = InputFieldBloc<int, dynamic>(
+      final fieldBloc1 = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
-      final fieldBloc2 = InputFieldBloc<int, dynamic>(
+      final fieldBloc2 = InputFieldBloc<int?, dynamic>(
         name: 'fieldName2',
+        initialValue: null,
       );
 
       final equalError = 'is equal to fieldBLoc2';
@@ -1097,6 +1117,7 @@ void main() {
         () async {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
 
       final state1 = InputFieldBlocState<int?, dynamic>(
@@ -1248,6 +1269,7 @@ void main() {
         () async {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
+        initialValue: null,
       );
 
       final state1 = InputFieldBlocState<int?, dynamic>(
@@ -1339,7 +1361,8 @@ void main() {
     test('extraData added to extraData in state', () async {
       final expectedExtraData = 0;
 
-      final fieldBloc = InputFieldBloc<int, int>(
+      final fieldBloc = InputFieldBloc<int?, int>(
+        initialValue: null,
         extraData: 0,
       );
 
@@ -1352,7 +1375,7 @@ void main() {
     test('updateExtraData method', () async {
       final expected = [1];
 
-      final fieldBloc = InputFieldBloc<int, int>();
+      final fieldBloc = InputFieldBloc<int?, int>(initialValue: null);
 
       expect(
         fieldBloc.stream.map((state) => state.extraData),

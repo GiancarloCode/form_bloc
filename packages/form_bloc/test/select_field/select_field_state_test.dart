@@ -15,7 +15,7 @@ void main() {
         isValidated: false,
         isValidating: false,
         name: null,
-        items: null,
+        items: [],
       );
       final stateCopy1 = state.copyWith(
         value: Optional.of(1),
@@ -23,7 +23,7 @@ void main() {
         isInitial: true,
         suggestions: Optional.of(suggestions),
         isValidated: true,
-        items: Optional.of([1]),
+        items: [1],
       );
       final stateCopy2 = stateCopy1.copyWith(
         value: Optional.fromNullable(null),
@@ -31,7 +31,7 @@ void main() {
         isInitial: false,
         suggestions: Optional.fromNullable(null),
         isValidated: false,
-        items: Optional.fromNullable(null),
+        items: [],
       );
       final stateCopy3 = stateCopy2.copyWith();
 

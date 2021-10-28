@@ -130,7 +130,7 @@ void main() {
       TextFieldBloc fieldBloc;
       TextFieldBlocState initialState;
 
-      fieldBloc = TextFieldBloc<dynamic>(name: 'name', initialValue: null);
+      fieldBloc = TextFieldBloc<dynamic>(name: 'name', initialValue: '');
 
       initialState = TextFieldBlocState<dynamic>(
         value: '',

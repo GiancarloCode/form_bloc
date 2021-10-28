@@ -114,10 +114,10 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([true]),
+        items: [true],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
 
       final expectedStates = [
@@ -131,7 +131,7 @@ void main() {
       );
 
       fieldBloc.updateItems([true]);
-      fieldBloc.updateItems(null);
+      fieldBloc.updateItems([]);
     });
 
     test('updateItems method, if the value not is in the items it will be null',
@@ -143,7 +143,7 @@ void main() {
 
       final expectedState = fieldBloc.state.copyWith(
         value: Optional.absent(),
-        items: Optional.of([false]),
+        items: [false],
       );
 
       expect(
@@ -171,13 +171,13 @@ void main() {
         items: [true],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([true, false]),
+        items: [true, false],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
       final state4 = state3.copyWith(
-        items: Optional.of([true]),
+        items: [true],
       );
 
       final expectedStates = [
@@ -192,7 +192,7 @@ void main() {
       );
 
       fieldBloc.addItem(false);
-      fieldBloc.updateItems(null);
+      fieldBloc.updateItems([]);
       fieldBloc.addItem(true);
     });
 
@@ -213,10 +213,10 @@ void main() {
         items: [true, false],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([false]),
+        items: [false],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
 
       final expectedStates = [
@@ -243,7 +243,7 @@ void main() {
 
       final expectedState = fieldBloc.state.copyWith(
         value: Optional.absent(),
-        items: Optional.of([false]),
+        items: [false],
       );
 
       expect(

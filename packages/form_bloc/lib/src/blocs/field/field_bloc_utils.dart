@@ -10,7 +10,7 @@ class FieldBlocUtils {
 
   /// Returns the error of the [_initialValue].
   static Object? getInitialStateError<Value>({
-    required Value? value,
+    required Value value,
     required List<Validator<Value>>? validators,
   }) {
     /// TODO: refactor
@@ -37,7 +37,7 @@ class FieldBlocUtils {
   /// Returns the `isValidating` of the `initialState`.
   static bool getInitialStateIsValidating<Value>({
     required List<AsyncValidator<Value>>? asyncValidators,
-    required Value? value,
+    required Value value,
     required List<Validator<Value>>? validators,
   }) {
     /// TODO: refactor

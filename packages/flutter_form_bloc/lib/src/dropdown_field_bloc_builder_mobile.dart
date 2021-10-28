@@ -183,9 +183,9 @@ class _DropdownFieldBlocBuilderMobileState<Value>
                           widget.onChanged?.call(value);
                         },
                       ),
-                      items: fieldState.items!.isEmpty
+                      items: fieldState.items.isEmpty
                           ? null
-                          : _buildItems(fieldState.items!),
+                          : _buildItems(fieldState.items),
                     ),
                   ),
                 ),
@@ -288,7 +288,7 @@ class _DropdownFieldBlocBuilderMobileState<Value>
   }
 
   void _onDropdownPressed() async {
-    if (widget.selectFieldBloc.state.items!.isNotEmpty) {
+    if (widget.selectFieldBloc.state.items.isNotEmpty) {
       if (_isKeyboardVisible!) {
         _effectiveFocusNode.requestFocus();
         await Future<void>.delayed(Duration(

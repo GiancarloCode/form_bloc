@@ -101,8 +101,7 @@ void main() {
       MultiSelectFieldBloc fieldBloc;
       MultiSelectFieldBlocState initialState;
 
-      fieldBloc =
-          MultiSelectFieldBloc<bool, dynamic>(name: 'name', initialValue: null);
+      fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(name: 'name');
 
       initialState = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
@@ -137,10 +136,10 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([true]),
+        items: [true],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
 
       final expectedStates = [
@@ -154,7 +153,7 @@ void main() {
       );
 
       fieldBloc.updateItems([true]);
-      fieldBloc.updateItems(null);
+      fieldBloc.updateItems([]);
     });
 
     test('addItem method and  AddFieldBlocItem event.', () {
@@ -174,13 +173,13 @@ void main() {
         items: [true],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([true, false]),
+        items: [true, false],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
       final state4 = state3.copyWith(
-        items: Optional.of([true]),
+        items: [true],
       );
 
       final expectedStates = [
@@ -195,7 +194,7 @@ void main() {
       );
 
       fieldBloc.addItem(false);
-      fieldBloc.updateItems(null);
+      fieldBloc.updateItems([]);
       fieldBloc.addItem(true);
     });
 
@@ -216,10 +215,10 @@ void main() {
         items: [true, false],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([false]),
+        items: [false],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
 
       final expectedStates = [
@@ -277,7 +276,7 @@ void main() {
 
       fieldBloc.updateValue([true]);
       fieldBloc.updateValue([false, true]);
-      fieldBloc.updateValue(null);
+      fieldBloc.updateValue([]);
     });
     test('updateInitialValue method.', () {
       final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
@@ -320,7 +319,7 @@ void main() {
 
       fieldBloc.updateValue([true]);
       fieldBloc.updateInitialValue([false, true]);
-      fieldBloc.updateInitialValue(null);
+      fieldBloc.updateInitialValue([]);
     });
     test('select method SelectMultiSelectFieldBlocValue event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(
@@ -372,7 +371,7 @@ void main() {
 
       fieldBloc.select(true);
       fieldBloc.select(false);
-      fieldBloc.updateValue(null);
+      fieldBloc.updateValue([]);
       fieldBloc.select(false);
       fieldBloc.select(null);
     });

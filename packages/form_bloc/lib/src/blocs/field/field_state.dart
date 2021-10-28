@@ -2,7 +2,7 @@ part of 'field_bloc.dart';
 
 abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   /// The current value of this state.
-  final Value? value;
+  final Value value;
 
   /// The current error of this state.
   ///
@@ -41,7 +41,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   Object? toJson() => value == null ? null : _toJson(value);
 
   /// Implementation of [toJson]
-  final dynamic Function(Value? value) _toJson;
+  final dynamic Function(Value value) _toJson;
 
   /// Extra data that contains the data
   /// you added when you created the field bloc
@@ -57,7 +57,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
     required this.isValidating,
     required this.formBloc,
     this.name,
-    required dynamic Function(Value? value)? toJson,
+    required dynamic Function(Value value)? toJson,
     required this.extraData,
   }) : _toJson = toJson ?? ((value) => value);
 
@@ -90,8 +90,8 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   /// Returns a copy of the current state by changing
   /// the values that are passed as parameters.
   FieldBlocState<Value, Suggestion, ExtraData> copyWith({
-    Optional<Value?>? value,
-    Optional<Object>? error,
+    Optional<Value>? value,
+    Optional<Object?>? error,
     bool? isInitial,
     Optional<Suggestions<Suggestion>>? suggestions,
     bool? isValidated,

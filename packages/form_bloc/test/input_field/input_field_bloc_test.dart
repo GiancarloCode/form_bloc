@@ -12,7 +12,7 @@ void main() {
           (bool? value) => value! ? 'error' : null,
         ];
 
-        final fieldBloc = InputFieldBloc<bool, dynamic>(
+        final fieldBloc = InputFieldBloc<bool?, dynamic>(
           name: 'name',
           initialValue: null,
           validators: validators,
@@ -51,8 +51,9 @@ void main() {
       InputFieldBloc fieldBloc;
       InputFieldBlocState initialState;
 
-      fieldBloc = InputFieldBloc<bool, dynamic>(
+      fieldBloc = InputFieldBloc<bool?, dynamic>(
         name: 'name',
+        initialValue: null,
       );
 
       initialState = InputFieldBlocState<bool?, dynamic>(
@@ -124,7 +125,8 @@ void main() {
     test('extraData added to extraData in state', () async {
       final expectedExtraData = 0;
 
-      final fieldBloc = InputFieldBloc<int, int>(extraData: 0);
+      final fieldBloc =
+          InputFieldBloc<int?, int>(initialValue: null, extraData: 0);
 
       expect(
         fieldBloc.state.extraData,
