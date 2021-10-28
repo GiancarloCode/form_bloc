@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -30,8 +30,8 @@ void main() {
           items: [],
         );
         final state2 = state1.copyWith(
-          value: Optional.of([true]),
-          error: Optional.of('error'),
+          value: Param([true]),
+          error: Param('error'),
           isInitial: false,
         );
 
@@ -101,7 +101,7 @@ void main() {
       MultiSelectFieldBloc fieldBloc;
       MultiSelectFieldBlocState initialState;
 
-      fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(name: 'name');
+      fieldBloc = MultiSelectFieldBloc<bool, dynamic>(name: 'name');
 
       initialState = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
@@ -252,14 +252,14 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        value: Optional.of([true]),
+        value: Param([true]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([false, true]),
+        value: Param([false, true]),
       );
       final state4 = state3.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
 
       final expectedStates = [
@@ -294,15 +294,15 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        value: Optional.of([true]),
+        value: Param([true]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([false, true]),
+        value: Param([false, true]),
         isInitial: true,
       );
       final state4 = state3.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
 
       final expectedStates = [
@@ -337,22 +337,22 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        error: Optional.absent(),
-        value: Optional.of([true]),
+        error: Param(null),
+        value: Param([true]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([true, false]),
+        value: Param([true, false]),
       );
       final state4 = state3.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
       final state5 = state4.copyWith(
-        error: Optional.absent(),
-        value: Optional.of([false]),
+        error: Param(null),
+        value: Param([false]),
       );
       final state6 = state5.copyWith(
-        value: Optional.of([false, null]),
+        value: Param([false, null]),
       );
 
       final expectedStates = [
@@ -391,21 +391,21 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        value: Optional.of([false]),
+        value: Param([false]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
       final state4 = state3.copyWith(
-        error: Optional.absent(),
-        value: Optional.of([true, false, null]),
+        error: Param(null),
+        value: Param([true, false, null]),
       );
       final state5 = state4.copyWith(
-        value: Optional.of([true, false]),
+        value: Param([true, false]),
       );
       final state6 = state5.copyWith(
-        value: Optional.of([true]),
+        value: Param([true]),
       );
 
       final expectedStates = [

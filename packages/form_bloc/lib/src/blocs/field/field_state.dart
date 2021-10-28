@@ -90,14 +90,14 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   /// Returns a copy of the current state by changing
   /// the values that are passed as parameters.
   FieldBlocState<Value, Suggestion, ExtraData> copyWith({
-    Optional<Value>? value,
-    Optional<Object?>? error,
+    Param<Value>? value,
+    Param<Object?>? error,
     bool? isInitial,
-    Optional<Suggestions<Suggestion>>? suggestions,
+    Param<Suggestions<Suggestion>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    Optional<FormBloc?> formBloc,
-    Optional<ExtraData>? extraData,
+    Param<FormBloc?> formBloc,
+    Param<ExtraData>? extraData,
   });
 
   @override

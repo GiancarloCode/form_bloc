@@ -31,28 +31,28 @@ class SelectFieldBlocState<Value, ExtraData>
 
   @override
   SelectFieldBlocState<Value, ExtraData> copyWith({
-    Optional<Value?>? value,
-    Optional<Object?>? error,
+    Param<Value?>? value,
+    Param<Object?>? error,
     bool? isInitial,
-    Optional<Suggestions<Value>>? suggestions,
+    Param<Suggestions<Value>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    Optional<FormBloc?>? formBloc,
+    Param<FormBloc?>? formBloc,
     List<Value>? items,
-    Optional<ExtraData?>? extraData,
+    Param<ExtraData?>? extraData,
   }) {
     return SelectFieldBlocState(
-      value: value == null ? this.value : value.orNull,
-      error: error == null ? this.error : error.orNull,
+      value: value == null ? this.value : value.value,
+      error: error == null ? this.error : error.value,
       isInitial: isInitial ?? this.isInitial,
-      suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
+      suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
+      formBloc: formBloc == null ? this.formBloc : formBloc.value,
       name: name,
       items: items ?? this.items,
       toJson: _toJson,
-      extraData: extraData == null ? this.extraData : extraData.orNull,
+      extraData: extraData == null ? this.extraData : extraData.value,
     );
   }
   // @override

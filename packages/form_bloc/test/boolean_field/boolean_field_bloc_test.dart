@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -26,8 +26,8 @@ void main() {
           name: 'name',
         );
         final state2 = state1.copyWith(
-          value: Optional.of(true),
-          error: Optional.of('error'),
+          value: Param(true),
+          error: Param('error'),
           isInitial: false,
         );
 
@@ -89,7 +89,7 @@ void main() {
           initialState,
         );
       });
-      test('if the initialValue is null, it will be false', () {
+      test('if the initialValue is not passed, it will be false', () {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
 
@@ -118,21 +118,21 @@ void main() {
         );
 
         final state1 = BooleanFieldBlocState<dynamic>(
-          value: true,
+          value: false,
           error: null,
-          isInitial: true,
+          isInitial: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,
           name: 'name',
         );
         final state2 = state1.copyWith(
-          value: Optional.of(false),
+          value: Param(false),
           isInitial: true,
         );
 
         final expectedStates = [
-          // state1,
+          state1,
           state2,
         ];
         expect(
@@ -140,6 +140,7 @@ void main() {
           emitsInOrder(expectedStates),
         );
 
+        fieldBloc.updateValue(false);
         fieldBloc.clear();
       }, timeout: Timeout(Duration(minutes: 1)));
     });

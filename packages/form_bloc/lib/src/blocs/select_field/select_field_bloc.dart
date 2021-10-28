@@ -41,8 +41,8 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
   SelectFieldBloc({
     String? name,
     Value? initialValue,
-    List<Validator<Value?>> validators = const [],
-    List<AsyncValidator<Value?>> asyncValidators = const [],
+    List<Validator<Value?>>? validators,
+    List<AsyncValidator<Value?>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value>? suggestions,
     List<Value> items = const [],
@@ -108,7 +108,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
 
       yield state.copyWith(
         items: items,
-        value: items.contains(value) ? null : Optional.absent(),
+        value: items.contains(value) ? null : Param(null),
       );
     } else if (event is AddFieldBlocItem<Value>) {
       yield state.copyWith(
@@ -124,7 +124,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
         );
         yield state.copyWith(
           items: items,
-          value: items.contains(value) ? null : Optional.absent(),
+          value: items.contains(value) ? null : Param(null),
         );
       }
     }

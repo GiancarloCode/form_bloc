@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -29,8 +29,8 @@ void main() {
           name: 'name',
         );
         final state2 = state1.copyWith(
-          value: Optional.of(true),
-          error: Optional.of('error'),
+          value: Param(true),
+          error: Param('error'),
           isInitial: false,
         );
 
@@ -79,7 +79,7 @@ void main() {
         validators: [(value) => 'error'],
       );
 
-      initialState = InputFieldBlocState<bool?, dynamic>(
+      initialState = InputFieldBlocState<bool, dynamic>(
         value: true,
         error: 'error',
         isInitial: true,

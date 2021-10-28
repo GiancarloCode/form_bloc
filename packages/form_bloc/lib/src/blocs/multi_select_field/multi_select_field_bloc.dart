@@ -45,8 +45,8 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   MultiSelectFieldBloc({
     String? name,
     List<Value> initialValue = const [],
-    List<Validator<List<Value>>> validators = const [],
-    List<AsyncValidator<List<Value>>> asyncValidators = const [],
+    List<Validator<List<Value>>>? validators,
+    List<AsyncValidator<List<Value>>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value>? suggestions,
     List<Value> items = const [],
@@ -154,7 +154,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
 
       yield state.copyWith(
         items: items,
-        value: items.contains(value) ? null : Optional.of([]),
+        value: items.contains(value) ? null : Param([]),
       );
     } else if (event is AddFieldBlocItem<Value>) {
       yield state.copyWith(
@@ -170,7 +170,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
         );
         yield state.copyWith(
           items: items,
-          value: items.contains(value) ? null : Optional.of([]),
+          value: items.contains(value) ? null : Param([]),
         );
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
@@ -185,8 +185,8 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
             _getAsyncValidatorsError(value: newValue, error: error);
 
         yield state.copyWith(
-          value: Optional.fromNullable(newValue),
-          error: Optional.fromNullable(error),
+          value: Param(newValue),
+          error: Param(error),
           isInitial: false,
           isValidated: _isValidated(isValidating),
           isValidating: isValidating,
@@ -202,8 +202,8 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
             _getAsyncValidatorsError(value: newValue, error: error);
 
         yield state.copyWith(
-          value: Optional.fromNullable(newValue),
-          error: Optional.fromNullable(error),
+          value: Param(newValue),
+          error: Param(error),
           isInitial: false,
           isValidated: _isValidated(isValidating),
           isValidating: isValidating,

@@ -29,26 +29,26 @@ class BooleanFieldBlocState<ExtraData>
 
   @override
   BooleanFieldBlocState<ExtraData> copyWith({
-    Optional<bool>? value,
-    Optional<Object?>? error,
+    Param<bool>? value,
+    Param<Object?>? error,
     bool? isInitial,
-    Optional<Suggestions<bool>>? suggestions,
+    Param<Suggestions<bool>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    Optional<FormBloc?>? formBloc,
-    Optional<ExtraData?>? extraData,
+    Param<FormBloc?>? formBloc,
+    Param<ExtraData?>? extraData,
   }) {
     return BooleanFieldBlocState(
       value: value == null ? this.value : value.value,
-      error: error == null ? this.error : error.orNull,
+      error: error == null ? this.error : error.value,
       isInitial: isInitial ?? this.isInitial,
-      suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
+      suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
+      formBloc: formBloc == null ? this.formBloc : formBloc.value,
       name: name,
       toJson: _toJson,
-      extraData: extraData == null ? this.extraData : extraData.orNull,
+      extraData: extraData == null ? this.extraData : extraData.value,
     );
   }
 

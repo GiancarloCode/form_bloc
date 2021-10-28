@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -17,17 +17,17 @@ void main() {
         name: 'name',
       );
       final stateCopy1 = state.copyWith(
-        value: Optional.of(true),
-        error: Optional.of('error'),
+        value: Param(true),
+        error: Param('error'),
         isInitial: true,
-        suggestions: Optional.of(suggestions),
+        suggestions: Param(suggestions),
         isValidated: true,
       );
       final stateCopy2 = stateCopy1.copyWith(
-        value: Optional.fromNullable(false),
-        error: Optional.fromNullable(null),
+        value: Param(false),
+        error: Param(null),
         isInitial: false,
-        suggestions: Optional.fromNullable(null),
+        suggestions: Param(null),
         isValidated: false,
       );
       final stateCopy3 = stateCopy2.copyWith();

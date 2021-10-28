@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -29,8 +29,8 @@ void main() {
           name: 'name',
         );
         final state2 = state1.copyWith(
-          value: Optional.of('1'),
-          error: Optional.of('error'),
+          value: Param('1'),
+          error: Param('error'),
           isInitial: false,
         );
 
@@ -110,7 +110,7 @@ void main() {
         name: 'name',
       );
       final state2 = state1.copyWith(
-        value: Optional.of(''),
+        value: Param(''),
         isInitial: true,
       );
 

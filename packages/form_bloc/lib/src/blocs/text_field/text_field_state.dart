@@ -38,26 +38,26 @@ class TextFieldBlocState<ExtraData>
 
   @override
   TextFieldBlocState<ExtraData> copyWith({
-    Optional<String>? value,
-    Optional<Object?>? error,
+    Param<String>? value,
+    Param<Object?>? error,
     bool? isInitial,
-    Optional<Suggestions<String>>? suggestions,
+    Param<Suggestions<String>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    Optional<FormBloc?>? formBloc,
-    Optional<ExtraData?>? extraData,
+    Param<FormBloc?>? formBloc,
+    Param<ExtraData?>? extraData,
   }) {
     return TextFieldBlocState(
       value: value == null ? this.value : value.value,
-      error: error == null ? this.error : error.orNull,
+      error: error == null ? this.error : error.value,
       isInitial: isInitial ?? this.isInitial,
-      suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
+      suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
+      formBloc: formBloc == null ? this.formBloc : formBloc.value,
       name: name,
       toJson: _toJson,
-      extraData: extraData == null ? this.extraData : extraData.orNull,
+      extraData: extraData == null ? this.extraData : extraData.value,
     );
   }
 

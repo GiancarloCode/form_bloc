@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 import '../utils/my_bloc_delegate.dart';
@@ -75,21 +75,21 @@ void main() {
           name: 'fieldName',
         );
         final state2 = state1.copyWith(
-          value: Optional.of(1),
-          error: Optional.absent(),
+          value: Param(1),
+          error: Param(null),
           isInitial: false,
         );
         final state3 = state2.copyWith(
-          value: Optional.of(3),
-          error: Optional.of('== 3'),
+          value: Param(3),
+          error: Param('== 3'),
         );
         final state4 = state3.copyWith(
-          value: Optional.of(6),
-          error: Optional.of('> 5'),
+          value: Param(6),
+          error: Param('> 5'),
         );
         final state5 = state4.copyWith(
-          value: Optional.of(0),
-          error: Optional.absent(),
+          value: Param(0),
+          error: Param(null),
         );
 
         final expectedStates = [
@@ -137,13 +137,13 @@ void main() {
           name: 'fieldName',
         );
         final state2 = state1.copyWith(
-          value: Optional.of(1),
+          value: Param(1),
           isInitial: false,
           isValidated: false,
           isValidating: true,
         );
         final state3 = state2.copyWith(
-          error: Optional.of('async error'),
+          error: Param('async error'),
           isValidating: false,
           isValidated: true,
         );
@@ -244,17 +244,17 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        value: Optional.of(1),
-        error: Optional.absent(),
+        value: Param(1),
+        error: Param(null),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.absent(),
-        error: Optional.of(FieldBlocValidatorsErrors.required),
+        value: Param(null),
+        error: Param(FieldBlocValidatorsErrors.required),
       );
       final state4 = state3.copyWith(
-        value: Optional.of(2),
-        error: Optional.absent(),
+        value: Param(2),
+        error: Param(null),
       );
 
       final expectedStates = [
@@ -290,14 +290,14 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        value: Optional.of(1),
+        value: Param(1),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
       );
       final state4 = state3.copyWith(
-        value: Optional.of(2),
+        value: Param(2),
       );
 
       final expectedStates = [
@@ -335,18 +335,18 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        value: Optional.of(1),
-        error: Optional.absent(),
+        value: Param(1),
+        error: Param(null),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of(2),
-        error: Optional.absent(),
+        value: Param(2),
+        error: Param(null),
         isInitial: true,
       );
       final state4 = state3.copyWith(
-        value: Optional.absent(),
-        error: Optional.of(FieldBlocValidatorsErrors.required),
+        value: Param(null),
+        error: Param(FieldBlocValidatorsErrors.required),
         isInitial: false,
       );
       final state5 = state4.copyWith(
@@ -372,30 +372,30 @@ void main() {
       fieldBloc.updateInitialValue(null);
     });
 
-    test('clear method set value to null.', () {
-      final fieldBloc = InputFieldBloc<int, dynamic>(
+    test('clear method set value to initialValue.', () {
+      final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
-        initialValue: 1,
+        initialValue: null,
         validators: [FieldBlocValidators.required],
       );
 
       final state1 = InputFieldBlocState<int?, dynamic>(
         value: 1,
         error: null,
-        isInitial: true,
+        isInitial: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        value: Optional.absent(),
-        error: Optional.of(FieldBlocValidatorsErrors.required),
+        value: Param(null),
+        error: Param(FieldBlocValidatorsErrors.required),
         isInitial: true,
       );
 
       final expectedStates = [
-        // state1,
+        state1,
         state2,
       ];
 
@@ -403,7 +403,7 @@ void main() {
         fieldBloc.stream,
         emitsInOrder(expectedStates),
       );
-
+      fieldBloc.updateValue(1);
       fieldBloc.clear();
     });
 
@@ -444,12 +444,12 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        error: Optional.of('1 error'),
+        error: Param('1 error'),
       );
       final state3 = state2.copyWith(
         isInitial: false,
-        value: Optional.absent(),
-        error: Optional.of(FieldBlocValidatorsErrors.required),
+        value: Param(null),
+        error: Param(FieldBlocValidatorsErrors.required),
       );
 
       final expectedStates = [
@@ -489,13 +489,13 @@ void main() {
         isValidated: false,
       );
       final state3 = state2.copyWith(
-        error: Optional.of('1 error'),
+        error: Param('1 error'),
         isValidating: false,
         isValidated: true,
       );
       final state4 = state3.copyWith(
-        value: Optional.absent(),
-        error: Optional.of(FieldBlocValidatorsErrors.required),
+        value: Param(null),
+        error: Param(FieldBlocValidatorsErrors.required),
         isInitial: false,
       );
 
@@ -536,7 +536,7 @@ void main() {
         isValidated: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
         isInitial: false,
       );
 
@@ -583,7 +583,7 @@ void main() {
       );
 
       final state3 = state2.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
         isInitial: false,
       );
 
@@ -629,19 +629,19 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        value: Optional.of(2),
-        error: Optional.absent(),
+        value: Param(2),
+        error: Param(null),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        error: Optional.of('2 error'),
+        error: Param('2 error'),
       );
       final state4 = state3.copyWith(
-        value: Optional.of(1),
-        error: Optional.absent(),
+        value: Param(1),
+        error: Param(null),
       );
       final state5 = state4.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
       );
 
       final expectedStates = [
@@ -684,13 +684,13 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        error: Optional.of('1 error'),
+        error: Param('1 error'),
         isValidated: true,
         isValidating: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of(2),
-        error: Optional.absent(),
+        value: Param(2),
+        error: Param(null),
         isValidated: false,
         isValidating: true,
         isInitial: false,
@@ -704,14 +704,14 @@ void main() {
         isValidating: true,
       );
       final state6 = state5.copyWith(
-        error: Optional.of('2 error'),
+        error: Param('2 error'),
         isValidated: true,
         isValidating: false,
       );
 
       final state7 = state6.copyWith(
-        value: Optional.absent(),
-        error: Optional.of(FieldBlocValidatorsErrors.required),
+        value: Param(null),
+        error: Param(FieldBlocValidatorsErrors.required),
       );
 
       final expectedStates = [
@@ -765,10 +765,10 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        suggestions: Optional.of(suggestions2),
+        suggestions: Param(suggestions2),
       );
       final state3 = state2.copyWith(
-        suggestions: Optional.absent(),
+        suggestions: Param(null),
       );
 
       final expectedStates = [
@@ -812,24 +812,24 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        error: Optional.absent(),
+        error: Param(null),
         isValidated: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of(1),
+        value: Param(1),
         isInitial: false,
       );
       final state4 = state3.copyWith(
-        value: Optional.of(3),
+        value: Param(3),
       );
       final state5 = state4.copyWith(
-        value: Optional.of(6),
+        value: Param(6),
       );
       final state6 = state5.copyWith(
-        value: Optional.of(0),
+        value: Param(0),
       );
       final state7 = state6.copyWith(
-        value: Optional.of(2),
+        value: Param(2),
       );
 
       final expectedStates = [
@@ -879,28 +879,28 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        error: Optional.absent(),
+        error: Param(null),
         isValidated: false,
       );
       final state3 = state2.copyWith(
-        error: Optional.of(FieldBlocValidatorsErrors.required),
+        error: Param(FieldBlocValidatorsErrors.required),
         isValidated: true,
       );
       final state4 = state3.copyWith(
         isInitial: false,
       );
       final state5 = state4.copyWith(
-        value: Optional.of(2),
+        value: Param(2),
         isValidated: false,
       );
       final state6 = state5.copyWith(
-        error: Optional.absent(),
+        error: Param(null),
         isValidating: true,
       );
       final state7 = state6.copyWith(
         isValidated: true,
         isValidating: false,
-        error: Optional.of('async == 2'),
+        error: Param('async == 2'),
       );
 
       final expectedStates = [
@@ -974,7 +974,7 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
-        error: Optional.of('error2'),
+        error: Param('error2'),
       );
 
       final expectedStates = [
@@ -1059,25 +1059,25 @@ void main() {
       );
 
       final state2 = state1.copyWith(
-        error: Optional.of(equalError),
+        error: Param(equalError),
       );
 
       final state3 = state2.copyWith(
-        value: Optional.of(2),
+        value: Param(2),
         isInitial: false,
       );
 
       final state4 = state3.copyWith(
-        error: Optional.absent(),
+        error: Param(null),
       );
 
       final state5 = state4.copyWith(
-        value: Optional.of(2),
-        error: Optional.of(equalError),
+        value: Param(2),
+        error: Param(equalError),
       );
 
       final state6 = state5.copyWith(
-        error: Optional.absent(),
+        error: Param(null),
       );
 
       final expectedStates = [
@@ -1131,17 +1131,17 @@ void main() {
       );
 
       final state2 = state1.copyWith(
-        error: Optional.of('error'),
+        error: Param('error'),
         isInitial: false,
         isValidated: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of(1),
-        error: Optional.absent(),
+        value: Param(1),
+        error: Param(null),
         isValidated: true,
       );
       final state4 = state3.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
       );
 
       final expectedStates = [
@@ -1168,7 +1168,7 @@ void main() {
         initialValue: 1,
       );
 
-      final state1 = InputFieldBlocState<int?, dynamic>(
+      final state1 = InputFieldBlocState<int, dynamic>(
         value: 1,
         error: null,
         isInitial: true,
@@ -1179,17 +1179,17 @@ void main() {
       );
 
       final state2 = state1.copyWith(
-        error: Optional.of('error'),
+        error: Param('error'),
       );
 
       final state4 = state2.copyWith(
-        value: Optional.of(2),
-        error: Optional.absent(),
+        value: Param(2),
+        error: Param(null),
         isInitial: false,
       );
       final state5 = state4.copyWith(
-        value: Optional.of(1),
-        error: Optional.of('error'),
+        value: Param(1),
+        error: Param('error'),
       );
 
       final expectedStates = [
@@ -1216,7 +1216,7 @@ void main() {
         name: 'fieldName',
       );
 
-      final state1 = InputFieldBlocState<int?, dynamic>(
+      final state1 = InputFieldBlocState<int, dynamic>(
         value: 1,
         error: null,
         isInitial: true,
@@ -1231,15 +1231,15 @@ void main() {
       );
       final state3 = state2.copyWith(
         isValidated: true,
-        error: Optional.of('error'),
+        error: Param('error'),
       );
       final state4 = state3.copyWith(
         isValidated: false,
-        value: Optional.of(2),
+        value: Param(2),
         isInitial: false,
       );
       final state5 = state4.copyWith(
-        value: Optional.of(1),
+        value: Param(1),
       );
 
       final expectedStates = [
@@ -1288,13 +1288,13 @@ void main() {
       final state3 = state2.copyWith(
         isInitial: false,
         isValidated: false,
-        error: Optional.of('error'),
+        error: Param('error'),
       );
       final state4 = state3.copyWith(
-        value: Optional.of(1),
+        value: Param(1),
       );
       final state5 = state4.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
       );
 
       final expectedStates = [

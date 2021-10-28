@@ -77,14 +77,14 @@ class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
 
   ListFieldBlocState<T, ExtraData> _copyWith({
     List<T>? fieldBlocs,
-    Optional<FormBloc?>? formBloc,
-    Optional<ExtraData>? extraData,
+    Param<FormBloc?>? formBloc,
+    Param<ExtraData>? extraData,
   }) {
     return ListFieldBlocState(
       name: name,
       fieldBlocs: fieldBlocs ?? this.fieldBlocs,
-      extraData: extraData == null ? this.extraData : extraData.orNull,
-      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
+      extraData: extraData == null ? this.extraData : extraData.value,
+      formBloc: formBloc == null ? this.formBloc : formBloc.value,
     );
   }
 
@@ -205,7 +205,7 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
     } else if (event is AddFormBlocAndAutoValidateToListFieldBloc) {
       _autoValidate = event.autoValidate;
 
-      yield state._copyWith(formBloc: Optional.fromNullable(event.formBloc));
+      yield state._copyWith(formBloc: Param(event.formBloc));
 
       FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
         fieldBlocs: state.fieldBlocs,
@@ -214,11 +214,11 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
       );
     } else if (event is UpdateExtraDataToListFieldBloc<ExtraData>) {
       yield state._copyWith(
-        extraData: Optional.fromNullable(event.extraData),
+        extraData: Param(event.extraData),
       );
     } else if (event is RemoveFormBlocToListFieldBloc) {
       if (state.formBloc == event.formBloc) {
-        yield state._copyWith(formBloc: Optional.absent());
+        yield state._copyWith(formBloc: Param(null));
       }
       FormBlocUtils.removeFormBlocToFieldBlocs(
         fieldBlocs: state.fieldBlocs,

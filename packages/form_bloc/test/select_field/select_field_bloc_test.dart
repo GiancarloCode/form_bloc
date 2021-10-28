@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -30,8 +30,8 @@ void main() {
           items: [],
         );
         final state2 = state1.copyWith(
-          value: Optional.of(true),
-          error: Optional.of('error'),
+          value: Param(true),
+          error: Param('error'),
           isInitial: false,
         );
 
@@ -142,7 +142,7 @@ void main() {
       );
 
       final expectedState = fieldBloc.state.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
         items: [false],
       );
 
@@ -242,7 +242,7 @@ void main() {
       );
 
       final expectedState = fieldBloc.state.copyWith(
-        value: Optional.absent(),
+        value: Param(null),
         items: [false],
       );
 
