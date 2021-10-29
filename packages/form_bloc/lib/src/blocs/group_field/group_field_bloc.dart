@@ -55,14 +55,14 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
         );
 
   GroupFieldBlocState<T, ExtraData> _copyWith({
-    Optional<ExtraData>? extraData,
-    Optional<FormBloc?>? formBloc,
+    Param<ExtraData>? extraData,
+    Param<FormBloc?>? formBloc,
   }) {
     return GroupFieldBlocState(
       name: name,
       fieldBlocs: _fieldBlocs.values.toList(),
-      extraData: extraData == null ? this.extraData : extraData.orNull,
-      formBloc: formBloc == null ? this.formBloc : formBloc.orNull,
+      extraData: extraData == null ? this.extraData : extraData.value,
+      formBloc: formBloc == null ? this.formBloc : formBloc.value,
     );
   }
 
@@ -100,7 +100,7 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
   Stream<GroupFieldBlocState<T, ExtraData>> mapEventToState(
       GroupFieldBlocEvent event) async* {
     if (event is AddFormBlocAndAutoValidateToGroupFieldBloc) {
-      yield state._copyWith(formBloc: Optional.fromNullable(event.formBloc));
+      yield state._copyWith(formBloc: Param(event.formBloc));
 
       FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
         fieldBlocs: state._fieldBlocs.values.toList(),
@@ -109,7 +109,7 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
       );
     } else if (event is RemoveFormBlocToGroupFieldBloc) {
       if (state.formBloc == event.formBloc) {
-        yield state._copyWith(formBloc: Optional.absent());
+        yield state._copyWith(formBloc: Param(null));
       }
 
       FormBlocUtils.removeFormBlocToFieldBlocs(
@@ -118,7 +118,7 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
       );
     } else if (event is UpdateExtraDataToGroupFieldBloc<ExtraData>) {
       yield state._copyWith(
-        extraData: Optional.fromNullable(event.extraData),
+        extraData: Param(event.extraData),
       );
     }
   }

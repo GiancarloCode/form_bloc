@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -30,8 +30,8 @@ void main() {
           items: [],
         );
         final state2 = state1.copyWith(
-          value: Optional.of([true]),
-          error: Optional.of('error'),
+          value: Param([true]),
+          error: Param('error'),
           isInitial: false,
         );
 
@@ -101,8 +101,7 @@ void main() {
       MultiSelectFieldBloc fieldBloc;
       MultiSelectFieldBlocState initialState;
 
-      fieldBloc =
-          MultiSelectFieldBloc<bool, dynamic>(name: 'name', initialValue: null);
+      fieldBloc = MultiSelectFieldBloc<bool, dynamic>(name: 'name');
 
       initialState = MultiSelectFieldBlocState<bool, dynamic>(
         value: [],
@@ -137,10 +136,10 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([true]),
+        items: [true],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
 
       final expectedStates = [
@@ -154,7 +153,7 @@ void main() {
       );
 
       fieldBloc.updateItems([true]);
-      fieldBloc.updateItems(null);
+      fieldBloc.updateItems([]);
     });
 
     test('addItem method and  AddFieldBlocItem event.', () {
@@ -174,13 +173,13 @@ void main() {
         items: [true],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([true, false]),
+        items: [true, false],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
       final state4 = state3.copyWith(
-        items: Optional.of([true]),
+        items: [true],
       );
 
       final expectedStates = [
@@ -195,7 +194,7 @@ void main() {
       );
 
       fieldBloc.addItem(false);
-      fieldBloc.updateItems(null);
+      fieldBloc.updateItems([]);
       fieldBloc.addItem(true);
     });
 
@@ -216,10 +215,10 @@ void main() {
         items: [true, false],
       );
       final state2 = state1.copyWith(
-        items: Optional.of([false]),
+        items: [false],
       );
       final state3 = state2.copyWith(
-        items: Optional.of([]),
+        items: [],
       );
 
       final expectedStates = [
@@ -253,14 +252,14 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        value: Optional.of([true]),
+        value: Param([true]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([false, true]),
+        value: Param([false, true]),
       );
       final state4 = state3.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
 
       final expectedStates = [
@@ -277,7 +276,7 @@ void main() {
 
       fieldBloc.updateValue([true]);
       fieldBloc.updateValue([false, true]);
-      fieldBloc.updateValue(null);
+      fieldBloc.updateValue([]);
     });
     test('updateInitialValue method.', () {
       final fieldBloc = MultiSelectFieldBloc<bool, dynamic>(
@@ -295,15 +294,15 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        value: Optional.of([true]),
+        value: Param([true]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([false, true]),
+        value: Param([false, true]),
         isInitial: true,
       );
       final state4 = state3.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
 
       final expectedStates = [
@@ -320,7 +319,7 @@ void main() {
 
       fieldBloc.updateValue([true]);
       fieldBloc.updateInitialValue([false, true]);
-      fieldBloc.updateInitialValue(null);
+      fieldBloc.updateInitialValue([]);
     });
     test('select method SelectMultiSelectFieldBlocValue event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(
@@ -338,22 +337,22 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        error: Optional.absent(),
-        value: Optional.of([true]),
+        error: Param(null),
+        value: Param([true]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([true, false]),
+        value: Param([true, false]),
       );
       final state4 = state3.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
       final state5 = state4.copyWith(
-        error: Optional.absent(),
-        value: Optional.of([false]),
+        error: Param(null),
+        value: Param([false]),
       );
       final state6 = state5.copyWith(
-        value: Optional.of([false, null]),
+        value: Param([false, null]),
       );
 
       final expectedStates = [
@@ -372,7 +371,7 @@ void main() {
 
       fieldBloc.select(true);
       fieldBloc.select(false);
-      fieldBloc.updateValue(null);
+      fieldBloc.updateValue([]);
       fieldBloc.select(false);
       fieldBloc.select(null);
     });
@@ -392,21 +391,21 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
-        value: Optional.of([false]),
+        value: Param([false]),
         isInitial: false,
       );
       final state3 = state2.copyWith(
-        value: Optional.of([]),
+        value: Param([]),
       );
       final state4 = state3.copyWith(
-        error: Optional.absent(),
-        value: Optional.of([true, false, null]),
+        error: Param(null),
+        value: Param([true, false, null]),
       );
       final state5 = state4.copyWith(
-        value: Optional.of([true, false]),
+        value: Param([true, false]),
       );
       final state6 = state5.copyWith(
-        value: Optional.of([true]),
+        value: Param([true]),
       );
 
       final expectedStates = [

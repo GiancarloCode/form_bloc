@@ -15,7 +15,7 @@ class UpdateFieldBlocValue<Value> extends FieldBlocEvent {
 }
 
 class UpdateFieldBlocInitialValue<Value> extends FieldBlocEvent {
-  final Value? value;
+  final Value value;
 
   UpdateFieldBlocInitialValue(this.value);
 
@@ -96,7 +96,7 @@ class SelectSuggestion<Suggestion> extends FieldBlocEvent {
 }
 
 class UpdateFieldBlocItems<Value> extends FieldBlocEvent {
-  final List<Value>? items;
+  final List<Value> items;
 
   UpdateFieldBlocItems(this.items);
 

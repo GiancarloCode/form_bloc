@@ -45,7 +45,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
     List<AsyncValidator<Value?>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value>? suggestions,
-    List<Value>? items,
+    List<Value> items = const [],
     dynamic Function(Value? value)? toJson,
     ExtraData? extraData,
   }) : super(
@@ -78,7 +78,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
               value: initialValue,
             ),
             name: FieldBlocUtils.generateName(name),
-            items: SingleFieldBloc._itemsWithoutDuplicates(items ?? []),
+            items: SingleFieldBloc._itemsWithoutDuplicates(items),
             toJson: toJson,
             extraData: extraData,
           ),
@@ -89,7 +89,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
   /// If you want to add or remove elements to `items`
   /// of the current state,
   /// use [addItem] or [removeItem].
-  void updateItems(List<Value>? items) => add(UpdateFieldBlocItems(items));
+  void updateItems(List<Value> items) => add(UpdateFieldBlocItems(items));
 
   /// Add [item] to the current `items`
   /// of the current state.
@@ -104,31 +104,27 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
     FieldBlocEvent event,
   ) async* {
     if (event is UpdateFieldBlocItems<Value>) {
-      var items = event.items ?? [];
-      items = SingleFieldBloc._itemsWithoutDuplicates(items);
+      final items = SingleFieldBloc._itemsWithoutDuplicates(event.items);
 
       yield state.copyWith(
-        items: Optional.fromNullable(items),
-        value: items.contains(value) ? null : Optional.absent(),
+        items: items,
+        value: items.contains(value) ? null : Param(null),
       );
     } else if (event is AddFieldBlocItem<Value>) {
-      var items = state.items ?? [];
       yield state.copyWith(
-        items: Optional.fromNullable(
-          SingleFieldBloc._itemsWithoutDuplicates(
-            List<Value>.from(items)..add(event.item),
-          ),
+        items: SingleFieldBloc._itemsWithoutDuplicates(
+          List<Value>.from(state.items)..add(event.item),
         ),
       );
     } else if (event is RemoveFieldBlocItem<Value>) {
       var items = state.items;
-      if (items != null && items.isNotEmpty) {
+      if (items.isNotEmpty) {
         items = SingleFieldBloc._itemsWithoutDuplicates(
           List<Value>.from(items)..remove(event.item),
         );
         yield state.copyWith(
-          items: Optional.fromNullable(items),
-          value: items.contains(value) ? null : Optional.absent(),
+          items: items,
+          value: items.contains(value) ? null : Param(null),
         );
       }
     }

@@ -175,7 +175,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   Switch _buildSwitch(
       {required BuildContext context, required BooleanFieldBlocState state}) {
     return Switch(
-      value: state.value!,
+      value: state.value,
       onChanged: fieldBlocBuilderOnChange<bool>(
         isEnabled: isEnabled,
         nextFocusNode: nextFocusNode,

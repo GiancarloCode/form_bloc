@@ -159,9 +159,9 @@ class _DropdownFieldBlocBuilderWebState<Value>
                           widget.onChanged?.call(value);
                         },
                       ),
-                      items: fieldState.items!.isEmpty
+                      items: fieldState.items.isEmpty
                           ? null
-                          : _buildItems(fieldState.items!),
+                          : _buildItems(fieldState.items),
                     ),
                   ),
                 ),
@@ -227,9 +227,7 @@ class _DropdownFieldBlocBuilderWebState<Value>
     }
   }
 
-  List<DropdownMenuItem<Value>> _buildItems(
-    Iterable<Value>? items,
-  ) {
+  List<DropdownMenuItem<Value>> _buildItems(Iterable<Value> items) {
     final style = Theme.of(context).textTheme.subtitle1!.copyWith(
           color: ThemeData.estimateBrightnessForColor(
                       Theme.of(context).canvasColor) ==
@@ -238,20 +236,16 @@ class _DropdownFieldBlocBuilderWebState<Value>
               : Colors.grey[800],
         );
 
-    List<DropdownMenuItem<Value>>? menuItems;
-
-    menuItems = items?.map<DropdownMenuItem<Value>>(
-      (Value value) {
-        return DropdownMenuItem<Value>(
-          value: value,
-          text: widget.itemBuilder(context, value),
-          style: style,
-        );
-      },
-    ).toList();
+    var menuItems = items.map<DropdownMenuItem<Value>>((value) {
+      return DropdownMenuItem<Value>(
+        value: value,
+        text: widget.itemBuilder(context, value),
+        style: style,
+      );
+    }).toList();
 
     if (widget.showEmptyItem) {
-      menuItems?.insert(
+      menuItems.insert(
         0,
         DropdownMenuItem<Value>(
           value: null,
@@ -260,17 +254,17 @@ class _DropdownFieldBlocBuilderWebState<Value>
         ),
       );
     }
-    return menuItems ?? [];
+    return menuItems;
   }
 
   void _onDropdownPressed() async {
-    if (widget.selectFieldBloc.state.items!.isNotEmpty) {
+    if (widget.selectFieldBloc.state.items.isNotEmpty) {
       _onPressedController.add(null);
     }
   }
 
   InputDecoration _buildDecoration(BuildContext context,
-      SelectFieldBlocState<Value, dynamic> state, bool isEnabled) {
+      SelectFieldBlocState<Value?, dynamic> state, bool isEnabled) {
     InputDecoration decoration = widget.decoration;
 
     if (decoration.suffixIcon == null) {

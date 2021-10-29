@@ -111,8 +111,8 @@ void main() {
       final multiSelectFieldBloc3 =
           MultiSelectFieldBloc<String, dynamic>(name: 'booleanFieldBloc3');
       final textFieldBloc9 = TextFieldBloc<dynamic>(name: 'textFieldBloc9');
-      final inputFieldBloc1 =
-          InputFieldBloc<int, dynamic>(name: 'inputFieldBloc1');
+      final inputFieldBloc1 = InputFieldBloc<int?, dynamic>(
+          name: 'inputFieldBloc1', initialValue: null);
 
       final groupFieldBlocWithAll1 = GroupFieldBlocImpl(
         name: 'groupFieldBlocWithAll1',

@@ -40,13 +40,13 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       'Option 2',
     ],
   );
-  final file = InputFieldBloc<File, String>();
+  final file = InputFieldBloc<File?, String>(initialValue: null);
 
-  final date1 = InputFieldBloc<DateTime, Object>();
+  final date1 = InputFieldBloc<DateTime?, Object>(initialValue: null);
 
-  final dateAndTime1 = InputFieldBloc<DateTime, Object>();
+  final dateAndTime1 = InputFieldBloc<DateTime?, Object>(initialValue: null);
 
-  final time1 = InputFieldBloc<TimeOfDay, Object>();
+  final time1 = InputFieldBloc<TimeOfDay?, Object>(initialValue: null);
 
   AllFieldsFormBloc() {
     addFieldBlocs(fieldBlocs: [
@@ -223,8 +223,8 @@ class AllFieldsForm extends StatelessWidget {
                             child: Text('CheckboxFieldBlocBuilder'),
                           ),
                         ),
-                        BlocBuilder<InputFieldBloc<File, String>,
-                                InputFieldBlocState<File, String>>(
+                        BlocBuilder<InputFieldBloc<File?, String>,
+                                InputFieldBlocState<File?, String>>(
                             bloc: formBloc.file,
                             builder: (context, state) {
                               return Container();

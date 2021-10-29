@@ -1,5 +1,5 @@
 import 'package:form_bloc/form_bloc.dart';
-import 'package:quiver/core.dart';
+import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -12,7 +12,7 @@ void main() {
           (bool? value) => value! ? 'error' : null,
         ];
 
-        final fieldBloc = InputFieldBloc<bool, dynamic>(
+        final fieldBloc = InputFieldBloc<bool?, dynamic>(
           name: 'name',
           initialValue: null,
           validators: validators,
@@ -29,8 +29,8 @@ void main() {
           name: 'name',
         );
         final state2 = state1.copyWith(
-          value: Optional.of(true),
-          error: Optional.of('error'),
+          value: Param(true),
+          error: Param('error'),
           isInitial: false,
         );
 
@@ -51,8 +51,9 @@ void main() {
       InputFieldBloc fieldBloc;
       InputFieldBlocState initialState;
 
-      fieldBloc = InputFieldBloc<bool, dynamic>(
+      fieldBloc = InputFieldBloc<bool?, dynamic>(
         name: 'name',
+        initialValue: null,
       );
 
       initialState = InputFieldBlocState<bool?, dynamic>(
@@ -78,7 +79,7 @@ void main() {
         validators: [(value) => 'error'],
       );
 
-      initialState = InputFieldBlocState<bool?, dynamic>(
+      initialState = InputFieldBlocState<bool, dynamic>(
         value: true,
         error: 'error',
         isInitial: true,
@@ -124,7 +125,8 @@ void main() {
     test('extraData added to extraData in state', () async {
       final expectedExtraData = 0;
 
-      final fieldBloc = InputFieldBloc<int, int>(extraData: 0);
+      final fieldBloc =
+          InputFieldBloc<int?, int>(initialValue: null, extraData: 0);
 
       expect(
         fieldBloc.state.extraData,

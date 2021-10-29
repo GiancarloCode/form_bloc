@@ -105,9 +105,9 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      itemCount: state.items!.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final item = state.items![index];
+        final item = state.items[index];
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Checkbox(
@@ -116,12 +116,12 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
                 defaultColor: Theme.of(context).toggleableActiveColor,
               ),
               activeColor: activeColor,
-              value: state.value!.contains(state.items![index]),
+              value: state.value.contains(state.items[index]),
               onChanged: fieldBlocBuilderOnChange<bool?>(
                 isEnabled: isEnabled,
                 nextFocusNode: nextFocusNode,
                 onChanged: (_) {
-                  if (state.value!.contains(item)) {
+                  if (state.value.contains(item)) {
                     multiSelectFieldBloc.deselect(item);
                   } else {
                     multiSelectFieldBloc.select(item);
@@ -132,7 +132,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
           ),
           child: DefaultFieldBlocBuilderTextStyle(
             isEnabled: isEnabled,
-            child: Text(itemBuilder(context, state.items!.elementAt(index))),
+            child: Text(itemBuilder(context, state.items.elementAt(index))),
           ),
         );
       },

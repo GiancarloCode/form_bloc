@@ -108,18 +108,18 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      itemCount: state.items!.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Stack(
               children: <Widget>[
                 Radio<Value>(
-                  value: state.items!.elementAt(index),
+                  value: state.items.elementAt(index),
                   groupValue: state.value,
                   onChanged: onChanged,
                 ),
-                if (canDeselect && state.items!.elementAt(index) == state.value)
+                if (canDeselect && state.items.elementAt(index) == state.value)
                   Theme(
                     data: Theme.of(context).copyWith(
                       unselectedWidgetColor: Colors.transparent,
@@ -135,7 +135,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
           ),
           child: DefaultFieldBlocBuilderTextStyle(
             isEnabled: isEnabled,
-            child: Text(itemBuilder(context, state.items!.elementAt(index))),
+            child: Text(itemBuilder(context, state.items.elementAt(index))),
           ),
         );
       },
@@ -143,7 +143,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   }
 
   InputDecoration _buildDecoration(BuildContext context,
-      SelectFieldBlocState<Value, dynamic> state, bool isEnable) {
+      SelectFieldBlocState<Value?, dynamic> state, bool isEnable) {
     InputDecoration decoration = this.decoration;
 
     return decoration.copyWith(

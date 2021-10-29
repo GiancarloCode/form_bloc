@@ -44,16 +44,16 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   MultiSelectFieldBloc({
     String? name,
-    List<Value>? initialValue = const [],
-    List<Validator<List<Value>?>>? validators,
+    List<Value> initialValue = const [],
+    List<Validator<List<Value>>>? validators,
     List<AsyncValidator<List<Value>>>? asyncValidators,
     Duration asyncValidatorDebounceTime = const Duration(milliseconds: 500),
     Suggestions<Value>? suggestions,
-    List<Value>? items = const [],
-    dynamic Function(List<Value>? value)? toJson,
+    List<Value> items = const [],
+    dynamic Function(List<Value> value)? toJson,
     ExtraData? extraData,
   }) : super(
-          initialValue ?? const [],
+          initialValue,
           validators,
           asyncValidators,
           asyncValidatorDebounceTime,
@@ -62,10 +62,10 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
           toJson,
           extraData,
           MultiSelectFieldBlocState(
-            value: initialValue ?? const [],
+            value: initialValue,
             error: FieldBlocUtils.getInitialStateError(
               validators: validators,
-              value: initialValue ?? const [],
+              value: initialValue,
             ),
             isInitial: true,
             suggestions: suggestions,
@@ -73,13 +73,13 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
               FieldBlocUtils.getInitialStateIsValidating(
                 asyncValidators: asyncValidators,
                 validators: validators,
-                value: initialValue ?? const [],
+                value: initialValue,
               ),
             ),
             isValidating: FieldBlocUtils.getInitialStateIsValidating(
               asyncValidators: asyncValidators,
               validators: validators,
-              value: initialValue ?? const [],
+              value: initialValue,
             ),
             name: FieldBlocUtils.generateName(name),
             items: SingleFieldBloc._itemsWithoutDuplicates(items),
@@ -93,7 +93,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// If you want to add or remove elements to `items`
   /// of the current state,
   /// use [addItem] or [removeItem].
-  void updateItems(List<Value>? items) => add(UpdateFieldBlocItems(items));
+  void updateItems(List<Value> items) => add(UpdateFieldBlocItems(items));
 
   /// Add [item] to the current `items`
   /// of the current state.
@@ -114,8 +114,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void updateValue(List<Value>? value) =>
-      add(UpdateFieldBlocValue(value ?? []));
+  void updateValue(List<Value> value) => add(UpdateFieldBlocValue(value));
 
   /// Set [value] to the `value` and set `isInitial` to `true`
   /// of the current state.
@@ -150,37 +149,34 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
     FieldBlocEvent event,
   ) async* {
     if (event is UpdateFieldBlocItems<Value>) {
-      var items = event.items ?? [];
+      var items = event.items;
       items = SingleFieldBloc._itemsWithoutDuplicates(items);
 
       yield state.copyWith(
-        items: Optional.fromNullable(items),
-        value: items.contains(value) ? null : Optional.of([]),
+        items: items,
+        value: items.contains(value) ? null : Param([]),
       );
     } else if (event is AddFieldBlocItem<Value>) {
-      var items = state.items ?? [];
       yield state.copyWith(
-        items: Optional.fromNullable(
-          SingleFieldBloc._itemsWithoutDuplicates(
-            List<Value>.from(items)..add(event.item),
-          ),
+        items: SingleFieldBloc._itemsWithoutDuplicates(
+          List<Value>.from(state.items)..add(event.item),
         ),
       );
     } else if (event is RemoveFieldBlocItem<Value>) {
       var items = state.items;
-      if (items != null && items.isNotEmpty) {
+      if (items.isNotEmpty) {
         items = SingleFieldBloc._itemsWithoutDuplicates(
           List<Value>.from(items)..remove(event.item),
         );
         yield state.copyWith(
-          items: Optional.fromNullable(items),
-          value: items.contains(value) ? null : Optional.of([]),
+          items: items,
+          value: items.contains(value) ? null : Param([]),
         );
       }
     } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
       var newValue = state.value;
       newValue = SingleFieldBloc._itemsWithoutDuplicates(
-        List<Value>.from(newValue ?? <Value>[])..add(event.valueToSelect),
+        List<Value>.from(newValue)..add(event.valueToSelect),
       );
       if (_canUpdateValue(value: newValue, isInitialValue: false)) {
         final error = _getError(newValue);
@@ -189,8 +185,8 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
             _getAsyncValidatorsError(value: newValue, error: error);
 
         yield state.copyWith(
-          value: Optional.fromNullable(newValue),
-          error: Optional.fromNullable(error),
+          value: Param(newValue),
+          error: Param(error),
           isInitial: false,
           isValidated: _isValidated(isValidating),
           isValidating: isValidating,
@@ -198,8 +194,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
       }
     } else if (event is DeselectMultiSelectFieldBlocValue<Value>) {
       var newValue = state.value;
-      newValue = List<Value>.from(newValue ?? <Value>[])
-        ..remove(event.valueToDeselect);
+      newValue = List<Value>.from(newValue)..remove(event.valueToDeselect);
       if (_canUpdateValue(value: newValue, isInitialValue: false)) {
         final error = _getError(newValue);
 
@@ -207,8 +202,8 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
             _getAsyncValidatorsError(value: newValue, error: error);
 
         yield state.copyWith(
-          value: Optional.fromNullable(newValue),
-          error: Optional.fromNullable(error),
+          value: Param(newValue),
+          error: Param(error),
           isInitial: false,
           isValidated: _isValidated(isValidating),
           isValidating: isValidating,
