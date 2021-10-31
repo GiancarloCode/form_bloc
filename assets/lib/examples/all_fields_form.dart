@@ -37,11 +37,11 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
     ],
   );
 
-  final date1 = InputFieldBloc<DateTime, dynamic>();
+  final date1 = InputFieldBloc<DateTime?, dynamic>(initialValue: null);
 
-  final dateAndTime1 = InputFieldBloc<DateTime, Object?>();
+  final dateAndTime1 = InputFieldBloc<DateTime?, dynamic>(initialValue: null);
 
-  final time1 = InputFieldBloc<TimeOfDay, Object>();
+  final time1 = InputFieldBloc<TimeOfDay?, Object>(initialValue: null);
 
   AllFieldsFormBloc() {
     addFieldBlocs(fieldBlocs: [
