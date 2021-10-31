@@ -4,17 +4,19 @@ import 'package:test/test.dart';
 void main() {
   group('FormBlocState:', () {
     test('Equality', () {
-      final state1 = FormBlocLoaded<String, String>({1: true, 2: false});
-      final state2 = FormBlocLoaded<String, String>({1: true});
+      final state1 =
+          FormBlocLoaded<String, String>(isValidByStep: {1: true, 2: false});
+      final state2 = FormBlocLoaded<String, String>(isValidByStep: {1: true});
 
-      final state3 = FormBlocLoaded<String, String>({1: true, 2: false});
+      final state3 =
+          FormBlocLoaded<String, String>(isValidByStep: {1: true, 2: false});
       expect(state1 == state2, isFalse);
       expect(state1, state3);
     });
 
     test('to methods', () {
       final loadingState = FormBlocLoading<String, String>(
-          isEditing: true, isValidByStep: null, progress: 0.0);
+          isEditing: true, isValidByStep: {}, progress: 0.0);
       final loadFailed = loadingState.toLoadFailed(failureResponse: 'fail');
       final loaded1 = loadFailed.toLoaded();
       final loaded2 = loaded1.toLoaded();
@@ -44,27 +46,28 @@ void main() {
 
       final expectedStates = <FormBlocState>[
         FormBlocLoading<String, String>(
-            isEditing: true, isValidByStep: null, progress: 0.0),
+            isEditing: true, isValidByStep: {}, progress: 0.0),
         FormBlocLoadFailed<String, String>(
-            isValidByStep: null, failureResponse: 'fail', isEditing: true),
-        FormBlocLoaded<String, String>(null, isEditing: true),
-        FormBlocLoaded<String, String>(null, isEditing: true),
+            isValidByStep: {}, failureResponse: 'fail', isEditing: true),
+        FormBlocLoaded<String, String>(isValidByStep: {}, isEditing: true),
+        FormBlocLoaded<String, String>(isValidByStep: {}, isEditing: true),
         FormBlocSubmitting<String, String>(
-            isValidByStep: null,
+            isValidByStep: {},
             isEditing: true,
             isCanceling: false,
             progress: 0.5),
         FormBlocSuccess<String, String>(
-            isValidByStep: null, isEditing: true, successResponse: 'success'),
+            isValidByStep: {}, isEditing: true, successResponse: 'success'),
         FormBlocFailure<String, String>(
-            isValidByStep: null, failureResponse: 'fail', isEditing: true),
-        FormBlocSubmissionCancelled<String, String>(null, isEditing: true),
+            isValidByStep: {}, failureResponse: 'fail', isEditing: true),
+        FormBlocSubmissionCancelled<String, String>(
+            isValidByStep: {}, isEditing: true),
         FormBlocDeleteFailed<String, String>(
-            isValidByStep: null, isEditing: true, failureResponse: 'fail'),
+            isValidByStep: {}, isEditing: true, failureResponse: 'fail'),
         FormBlocDeleteSuccessful<String, String>(
-            isValidByStep: null, isEditing: true, successResponse: 'success'),
+            isValidByStep: {}, isEditing: true, successResponse: 'success'),
         FormBlocUpdatingFields<String, String>(
-          isValidByStep: null,
+          isValidByStep: {},
           isEditing: true,
           progress: 0.0,
         ),
@@ -77,9 +80,9 @@ void main() {
     group('hasSuccessResponse property:', () {
       test('FormBlocSuccess', () {
         final successWithResponse = FormBlocSuccess<Object, Object>(
-            isValidByStep: null, successResponse: 1);
+            isValidByStep: {}, successResponse: 1);
         final successWithoutResponse =
-            FormBlocSuccess<Object, Object>(isValidByStep: null);
+            FormBlocSuccess<Object, Object>(isValidByStep: {});
 
         expect(successWithResponse.hasSuccessResponse, true);
         expect(successWithoutResponse.hasSuccessResponse, false);
@@ -87,9 +90,9 @@ void main() {
       test('FormBlocDeleteSuccessful', () {
         final deleteSuccessfulWithResponse =
             FormBlocDeleteSuccessful<Object, Object>(
-                isValidByStep: null, successResponse: 1);
+                isValidByStep: {}, successResponse: 1);
         final deleteSuccessfulWithoutResponse =
-            FormBlocDeleteSuccessful<Object, Object>(isValidByStep: null);
+            FormBlocDeleteSuccessful<Object, Object>(isValidByStep: {});
 
         expect(deleteSuccessfulWithResponse.hasSuccessResponse, true);
         expect(deleteSuccessfulWithoutResponse.hasSuccessResponse, false);
@@ -99,27 +102,27 @@ void main() {
     group('hasFailureResponse property:', () {
       test('FormBlocLoadFailed', () {
         final loadedFailedWithResponse = FormBlocLoadFailed<Object, Object>(
-            isValidByStep: null, failureResponse: 1);
+            isValidByStep: {}, failureResponse: 1);
         final loadedFailedWithoutResponse =
-            FormBlocLoadFailed<Object, Object>(isValidByStep: null);
+            FormBlocLoadFailed<Object, Object>(isValidByStep: {});
 
         expect(loadedFailedWithResponse.hasFailureResponse, true);
         expect(loadedFailedWithoutResponse.hasFailureResponse, false);
       });
       test('FormBlocFailure', () {
         final failureWithResponse = FormBlocFailure<Object, Object>(
-            isValidByStep: null, failureResponse: 1);
+            isValidByStep: {}, failureResponse: 1);
         final failureWithoutResponse =
-            FormBlocFailure<Object, Object>(isValidByStep: null);
+            FormBlocFailure<Object, Object>(isValidByStep: {});
 
         expect(failureWithResponse.hasFailureResponse, true);
         expect(failureWithoutResponse.hasFailureResponse, false);
       });
       test('FormBlocDeleteFailed', () {
         final deleteFailedWithResponse = FormBlocDeleteFailed<Object, Object>(
-            isValidByStep: null, failureResponse: 1);
+            isValidByStep: {}, failureResponse: 1);
         final deleteFailedWithoutResponse =
-            FormBlocDeleteFailed<Object, Object>(isValidByStep: null);
+            FormBlocDeleteFailed<Object, Object>(isValidByStep: {});
 
         expect(deleteFailedWithResponse.hasFailureResponse, true);
         expect(deleteFailedWithoutResponse.hasFailureResponse, false);

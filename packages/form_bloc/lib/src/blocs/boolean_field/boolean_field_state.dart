@@ -10,7 +10,7 @@ class BooleanFieldBlocState<ExtraData>
     required bool isValidated,
     required bool isValidating,
     FormBloc? formBloc,
-    String? name,
+    required String name,
     List additionalProps = const <dynamic>[],
     dynamic Function(bool value)? toJson,
     ExtraData? extraData,

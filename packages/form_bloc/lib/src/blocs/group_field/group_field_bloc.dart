@@ -3,11 +3,13 @@ part of '../field/field_bloc.dart';
 abstract class GroupFieldBlocEvent extends Equatable {}
 
 class AddFormBlocAndAutoValidateToGroupFieldBloc extends GroupFieldBlocEvent {
-  final FormBloc<dynamic, dynamic>? formBloc;
+  final FormBloc<dynamic, dynamic> formBloc;
   final bool autoValidate;
 
-  AddFormBlocAndAutoValidateToGroupFieldBloc(
-      {required this.formBloc, required this.autoValidate});
+  AddFormBlocAndAutoValidateToGroupFieldBloc({
+    required this.formBloc,
+    required this.autoValidate,
+  });
 
   @override
   List<Object?> get props => [formBloc, autoValidate];
@@ -23,7 +25,7 @@ class UpdateExtraDataToGroupFieldBloc<ExtraData> extends GroupFieldBlocEvent {
 }
 
 class RemoveFormBlocToGroupFieldBloc extends GroupFieldBlocEvent {
-  final FormBloc<dynamic, dynamic>? formBloc;
+  final FormBloc<dynamic, dynamic> formBloc;
 
   RemoveFormBlocToGroupFieldBloc({required this.formBloc});
 

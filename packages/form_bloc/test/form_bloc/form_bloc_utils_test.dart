@@ -376,7 +376,7 @@ void main() {
     group('getFieldBlocFromPath', () {
       test('First name of path is a SingleFieldBloc', () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -478,13 +478,13 @@ void main() {
         expect(fieldBloc, null);
       });
 
-      test('Returns null if the path is null', () {
+      test('Returns null if the path is empty', () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
-          path: null,
+          path: '',
           fieldBlocs: fieldBlocs,
         );
 
@@ -493,7 +493,7 @@ void main() {
 
       test('Returns null if the first path is wrong', () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -506,7 +506,7 @@ void main() {
 
       test('Returns null if the first path is list and is wrong', () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -519,7 +519,7 @@ void main() {
 
       test('Returns null if has a path that not exist', () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -532,7 +532,7 @@ void main() {
 
       test('Returns null if has a path that not exist and has lists', () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -547,7 +547,7 @@ void main() {
           'Returns null if has a path that exist and after has a path that not exist',
           () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -562,7 +562,7 @@ void main() {
           'Returns null if has a path that exist and after has a path that not exist that is a list',
           () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -575,7 +575,7 @@ void main() {
 
       test('Returns null if has a path that start with an index', () {
         final fieldBlocs = <String, FieldBloc>{
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
         };
 
         final fieldBloc = FormBlocUtils.getFieldBlocFromPath(
@@ -731,8 +731,8 @@ void main() {
         final fieldBlocs = <String, FieldBloc>{
           groupFieldBloc2.state.name: groupFieldBloc2,
           groupFieldBloc3.state.name: groupFieldBloc3,
-          booleanFieldBloc1.state.name!: booleanFieldBloc1,
-          textFieldBloc1.state.name!: textFieldBloc1,
+          booleanFieldBloc1.state.name: booleanFieldBloc1,
+          textFieldBloc1.state.name: textFieldBloc1,
         };
 
         final fieldBlocsStates =
@@ -748,8 +748,8 @@ void main() {
       final fieldBlocs = <String, FieldBloc>{
         groupFieldBloc2.state.name: groupFieldBloc2,
         groupFieldBloc3.state.name: groupFieldBloc3,
-        booleanFieldBloc1.state.name!: booleanFieldBloc1,
-        textFieldBloc1.state.name!: textFieldBloc1,
+        booleanFieldBloc1.state.name: booleanFieldBloc1,
+        textFieldBloc1.state.name: textFieldBloc1,
       };
 
       final fieldBlocsStates =
@@ -770,7 +770,7 @@ void main() {
         final fieldBlocs = <String, FieldBloc>{
           groupFieldBloc2.state.name: groupFieldBloc2,
           groupFieldBloc3.state.name: groupFieldBloc3,
-          textFieldBloc1.state.name!: textFieldBloc1,
+          textFieldBloc1.state.name: textFieldBloc1,
         };
 
         final fieldBlocsStates =

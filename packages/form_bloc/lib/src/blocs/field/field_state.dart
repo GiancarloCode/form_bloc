@@ -20,7 +20,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   final Suggestions<Suggestion>? suggestions;
 
   /// It is the string that identifies the [FieldBloc].
-  final String? name;
+  final String name;
 
   /// Indicate if [value] was checked with the validators
   /// of the [FieldBloc].
@@ -56,7 +56,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
     required this.isValidated,
     required this.isValidating,
     required this.formBloc,
-    this.name,
+    required this.name,
     required dynamic Function(Value value)? toJson,
     required this.extraData,
   }) : _toJson = toJson ?? ((value) => value);

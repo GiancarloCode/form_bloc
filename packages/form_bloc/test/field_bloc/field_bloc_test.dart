@@ -5,11 +5,18 @@ import 'package:test/test.dart';
 
 import '../utils/my_bloc_delegate.dart';
 
+class _FakeFormBloc extends FormBloc<void, void> {
+  @override
+  void onSubmitting() {}
+}
+
 void main() {
   Bloc.observer = MyBlocObserver();
   // FormBlocDelegate.notifyOnFieldBlocEvent = true;
   // FormBlocDelegate.notifyOnFieldBlocTransition = true;
   group('FieldBloc:', () {
+    final formBloc = _FakeFormBloc();
+
     group('constructor:', () {
       test('_initialValue is the value of the initial state.', () {
         InputFieldBloc<int?, dynamic> fieldBloc;
@@ -533,6 +540,7 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
+        formBloc: Param(formBloc),
         isValidated: false,
       );
       final state3 = state2.copyWith(
@@ -552,7 +560,7 @@ void main() {
       );
 
       fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: null,
+        formBloc: formBloc,
         autoValidate: false,
       ));
 
@@ -579,6 +587,7 @@ void main() {
         name: 'fieldName',
       );
       final state2 = state1.copyWith(
+        formBloc: Param(formBloc),
         isValidated: false,
       );
 
@@ -599,7 +608,7 @@ void main() {
       );
 
       fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: null,
+        formBloc: formBloc,
         autoValidate: false,
       ));
 
@@ -813,6 +822,7 @@ void main() {
       );
       final state2 = state1.copyWith(
         error: Param(null),
+        formBloc: Param(formBloc),
         isValidated: false,
       );
       final state3 = state2.copyWith(
@@ -847,7 +857,7 @@ void main() {
       );
 
       fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: null,
+        formBloc: formBloc,
         autoValidate: false,
       ));
       fieldBloc.updateValue(1);
@@ -880,6 +890,7 @@ void main() {
       );
       final state2 = state1.copyWith(
         error: Param(null),
+        formBloc: Param(formBloc),
         isValidated: false,
       );
       final state3 = state2.copyWith(
@@ -918,7 +929,7 @@ void main() {
       );
 
       fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: null,
+        formBloc: formBloc,
         autoValidate: false,
       ));
       fieldBloc.add(ValidateFieldBloc(false));
@@ -1227,6 +1238,7 @@ void main() {
       );
 
       final state2 = state1.copyWith(
+        formBloc: Param(formBloc),
         isValidated: false,
       );
       final state3 = state2.copyWith(
@@ -1255,7 +1267,7 @@ void main() {
       );
 
       fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: null,
+        formBloc: formBloc,
         autoValidate: false,
       ));
 
@@ -1283,6 +1295,7 @@ void main() {
       );
 
       final state2 = state1.copyWith(
+        formBloc: Param(formBloc),
         isValidated: false,
       );
       final state3 = state2.copyWith(
@@ -1310,7 +1323,7 @@ void main() {
       );
 
       fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: null,
+        formBloc: formBloc,
         autoValidate: false,
       ));
 

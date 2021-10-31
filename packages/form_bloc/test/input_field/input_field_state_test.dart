@@ -14,7 +14,7 @@ void main() {
         suggestions: null,
         isValidated: false,
         isValidating: false,
-        name: null,
+        name: '',
       );
       final stateCopy1 = state.copyWith(
         value: Param(1),

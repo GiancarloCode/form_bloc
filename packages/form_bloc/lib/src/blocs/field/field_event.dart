@@ -250,10 +250,13 @@ class UpdateFieldBlocExtraData<ExtraData> extends FieldBlocEvent {
 }
 
 class AddFormBlocAndAutoValidateToFieldBloc extends FieldBlocEvent {
-  final FormBloc<dynamic, dynamic>? formBloc;
+  final FormBloc<dynamic, dynamic> formBloc;
   final bool autoValidate;
-  AddFormBlocAndAutoValidateToFieldBloc(
-      {required this.formBloc, required this.autoValidate});
+
+  AddFormBlocAndAutoValidateToFieldBloc({
+    required this.formBloc,
+    required this.autoValidate,
+  });
 
   @override
   List<Object?> get props => [formBloc, autoValidate];

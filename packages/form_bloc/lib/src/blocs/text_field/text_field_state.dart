@@ -10,7 +10,7 @@ class TextFieldBlocState<ExtraData>
     required bool isValidated,
     required bool isValidating,
     FormBloc? formBloc,
-    String? name,
+    required String name,
     dynamic Function(String value)? toJson,
     ExtraData? extraData,
   }) : super(

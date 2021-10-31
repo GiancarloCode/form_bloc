@@ -10,7 +10,7 @@ class InputFieldBlocState<Value, ExtraData>
     required bool isValidated,
     required bool isValidating,
     FormBloc? formBloc,
-    String? name,
+    required String name,
     List additionalProps = const <dynamic>[],
     dynamic Function(Value value)? toJson,
     ExtraData? extraData,
