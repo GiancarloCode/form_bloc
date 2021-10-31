@@ -1,3 +1,5 @@
+# 0.20.7-alpha
+-  Updated to `form_bloc: ^0.20.7-alpha`.
 # 0.20.6
 -  Updated to `form_bloc: ^0.20.6`.
 # 0.20.5

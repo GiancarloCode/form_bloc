@@ -1,3 +1,9 @@
+# 0.20.7-alpha
+- Now the items of SelectFieldBlocState and MultiSelectFieldBlocState are not nullable.
+- Now the value field in the FieldBlocState must be specified null. It is no longer nullable in TextFieldBlocState, BooleanFieldBlocState, MultiSelectFieldBlocState.
+- InputFieldBloc now ask for the initial parameter to support more robust null safety
+- Validators are now not forced to accept null values
+
 # 0.20.6
 - fix InputFieldBloc ExtraData?
 - form bloc isInitial may throw error

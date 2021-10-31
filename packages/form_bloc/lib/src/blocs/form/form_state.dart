@@ -107,7 +107,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
     if (step == null) {
       return _allFieldBlocsMap;
     } else {
-      if (_fieldBlocs!.containsKey(step)) {
+      if (_fieldBlocs?.containsKey(step) == true) {
         return _fieldBlocs![step];
       } else {
         return null;

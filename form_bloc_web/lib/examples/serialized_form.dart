@@ -27,8 +27,9 @@ class SerializedFormBloc extends FormBloc<String, String> {
     items: ['male', 'female'],
   );
 
-  final birthDate = InputFieldBloc<DateTime, Object>(
+  final birthDate = InputFieldBloc<DateTime?, Object>(
     name: 'birthDate',
+    initialValue: null,
     toJson: (value) => value!.toUtc().toIso8601String(),
   );
 

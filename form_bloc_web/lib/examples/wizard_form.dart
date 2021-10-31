@@ -42,7 +42,8 @@ class WizardFormBloc extends FormBloc<String, String> {
     items: ['Male', 'Female'],
   );
 
-  final birthDate = InputFieldBloc<DateTime, Object>(
+  final birthDate = InputFieldBloc<DateTime?, Object>(
+    initialValue: null,
     validators: [FieldBlocValidators.required],
   );
 
