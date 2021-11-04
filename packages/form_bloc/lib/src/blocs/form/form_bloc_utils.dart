@@ -49,13 +49,9 @@ class FormBlocUtils {
   /// Returns the corresponding [FieldBloc] to the [path].
   /// if it does not exist, return `null`.
   static FieldBloc? getFieldBlocFromPath({
-    required String? path,
+    required String path,
     required Map<String, FieldBloc> fieldBlocs,
   }) {
-    if (path == null) {
-      return null;
-    }
-
     var names = path.split('/');
 
     FieldBloc? currentFieldBloc;
@@ -296,13 +292,9 @@ class FormBlocUtils {
   /// [FieldBlocState] that is on the path.
   /// if it does not exist, return `null`.
   static dynamic getFieldBlocStateFromPath({
-    required String? path,
+    required String path,
     required Map<String, dynamic> fieldBlocsStates,
   }) {
-    if (path == null) {
-      return null;
-    }
-
     var names = path.split('/');
 
     dynamic currentFieldBlocState;
@@ -382,6 +374,8 @@ class FormBlocUtils {
     required FormBloc? formBloc,
     bool autoValidate = false,
   }) {
+    if (formBloc == null) return;
+
     final allFieldBlocs = FormBlocUtils.getAllFieldBlocs(fieldBlocs);
 
     allFieldBlocs.forEach((e) {

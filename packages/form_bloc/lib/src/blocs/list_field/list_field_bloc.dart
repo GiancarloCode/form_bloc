@@ -39,7 +39,7 @@ class UpdateExtraDataToListFieldBloc<ExtraData> extends ListFieldBlocEvent {
 }
 
 class AddFormBlocAndAutoValidateToListFieldBloc extends ListFieldBlocEvent {
-  final FormBloc<dynamic, dynamic>? formBloc;
+  final FormBloc<dynamic, dynamic> formBloc;
   final bool autoValidate;
 
   AddFormBlocAndAutoValidateToListFieldBloc({
@@ -54,9 +54,7 @@ class AddFormBlocAndAutoValidateToListFieldBloc extends ListFieldBlocEvent {
 class RemoveFormBlocToListFieldBloc extends ListFieldBlocEvent {
   final FormBloc<dynamic, dynamic> formBloc;
 
-  RemoveFormBlocToListFieldBloc({
-    required this.formBloc,
-  });
+  RemoveFormBlocToListFieldBloc({required this.formBloc});
 
   @override
   List<Object?> get props => [formBloc];

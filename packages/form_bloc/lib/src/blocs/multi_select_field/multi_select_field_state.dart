@@ -12,7 +12,7 @@ class MultiSelectFieldBlocState<Value, ExtraData>
     required bool isValidated,
     required bool isValidating,
     FormBloc? formBloc,
-    String? name,
+    required String name,
     this.items = const [],
     dynamic Function(List<Value> value)? toJson,
     ExtraData? extraData,

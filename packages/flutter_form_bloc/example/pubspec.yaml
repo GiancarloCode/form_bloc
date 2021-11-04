@@ -1,7 +1,7 @@
 name: flutter_form_bloc_example
 description: flutter_form_bloc example
-
 version: 1.0.0+1
+publish_to: 'none'
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
