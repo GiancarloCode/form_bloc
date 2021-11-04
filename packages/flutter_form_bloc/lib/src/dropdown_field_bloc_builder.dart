@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart'
-    hide DropdownButton, DropdownMenuItem, DropdownButtonHideUnderline;
+import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
-import 'package:flutter_form_bloc/src/dropdown_field_bloc_builder_mobile.dart';
-import 'package:flutter_form_bloc/src/dropdown_field_bloc_builder_web.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -19,7 +17,6 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.decoration = const InputDecoration(),
     this.errorBuilder,
     this.showEmptyItem = true,
-    this.millisecondsForShowDropdownItemsWhenKeyboardIsOpen = 600,
     this.nextFocusNode,
     this.focusNode,
     this.textAlign,
@@ -49,10 +46,6 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// If `true` an empty item is showed at the top of the dropdown items,
   /// and can be used for deselect.
   final bool showEmptyItem;
-
-  /// The milliseconds for show the dropdown items when the keyboard is open
-  /// and closes. By default is 600 milliseconds.
-  final int millisecondsForShowDropdownItemsWhenKeyboardIsOpen;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry? padding;
@@ -86,45 +79,106 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
       fieldBloc: selectFieldBloc,
       animate: animateWhenCanShow,
       builder: (_, __) {
-        return widgetBasedOnPlatform(
-          mobile: DropdownFieldBlocBuilderMobile(
-            selectFieldBloc: selectFieldBloc,
-            itemBuilder: itemBuilder,
-            decoration: decoration,
-            enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-            errorBuilder: errorBuilder,
-            focusNode: focusNode,
-            isEnabled: isEnabled,
-            key: key,
-            millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
-                millisecondsForShowDropdownItemsWhenKeyboardIsOpen,
-            nextFocusNode: nextFocusNode,
-            padding: padding,
-            showEmptyItem: showEmptyItem,
-            textAlign: textAlign,
-            onChanged: onChanged,
-            emptyItemLabel: emptyItemLabel,
-          ),
-          other: DropdownFieldBlocBuilderWeb(
-            selectFieldBloc: selectFieldBloc,
-            itemBuilder: itemBuilder,
-            decoration: decoration,
-            enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-            errorBuilder: errorBuilder,
-            focusNode: focusNode,
-            isEnabled: isEnabled,
-            key: key,
-            millisecondsForShowDropdownItemsWhenKeyboardIsOpen:
-                millisecondsForShowDropdownItemsWhenKeyboardIsOpen,
-            nextFocusNode: nextFocusNode,
-            padding: padding,
-            showEmptyItem: showEmptyItem,
-            textAlign: textAlign,
-            onChanged: onChanged,
-            emptyItemLabel: emptyItemLabel,
-          ),
+        return BlocBuilder<SelectFieldBloc<Value, dynamic>,
+            SelectFieldBlocState<Value, dynamic>>(
+          bloc: selectFieldBloc,
+          builder: (context, fieldState) {
+            final isEnabled = fieldBlocIsEnabled(
+              isEnabled: this.isEnabled,
+              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+              fieldBlocState: fieldState,
+            );
+
+            final decoration = _buildDecoration(context, fieldState, isEnabled);
+
+            return DefaultFieldBlocBuilderPadding(
+              padding: padding,
+              child: InputDecorator(
+                decoration: decoration,
+                textAlign: textAlign,
+                isEmpty:
+                    fieldState.value == null && decoration.hintText == null,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<Value>(
+                    value: fieldState.value,
+                    focusNode: focusNode,
+                    disabledHint: decoration.hintText != null
+                        ? DefaultFieldBlocBuilderTextStyle(
+                            isEnabled: isEnabled,
+                            style: decoration.hintStyle,
+                            child: Text(decoration.hintText!),
+                          )
+                        : null,
+                    style: Style.getDefaultTextStyle(
+                      context: context,
+                      isEnabled: isEnabled,
+                    ),
+                    onChanged: fieldBlocBuilderOnChange<Value?>(
+                      isEnabled: isEnabled,
+                      nextFocusNode: nextFocusNode,
+                      onChanged: (value) {
+                        selectFieldBloc.updateValue(value);
+                        onChanged?.call(value);
+                      },
+                    ),
+                    items: fieldState.items.isEmpty
+                        ? null
+                        : _buildItems(context, fieldState.items, false),
+                    selectedItemBuilder: (context) {
+                      return _buildItems(context, fieldState.items, true);
+                    },
+                    icon: decoration.suffixIcon,
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );
+  }
+
+  List<DropdownMenuItem<Value>> _buildItems(
+    BuildContext context,
+    Iterable<Value> items,
+    bool isSelected,
+  ) {
+    return [
+      if (showEmptyItem)
+        DropdownMenuItem<Value>(
+          value: null,
+          child: Text(
+            isSelected ? decoration.hintText ?? '' : emptyItemLabel,
+            style: isSelected ? decoration.hintStyle : null,
+          ),
+        ),
+      ...items.map<DropdownMenuItem<Value>>((Value value) {
+        return DropdownMenuItem<Value>(
+          value: value,
+          child: Text(itemBuilder(context, value)),
+        );
+      })
+    ];
+  }
+
+  InputDecoration _buildDecoration(
+    BuildContext context,
+    SelectFieldBlocState<Value, dynamic> state,
+    bool isEnabled,
+  ) {
+    InputDecoration decoration = this.decoration;
+
+    decoration = decoration.copyWith(
+      enabled: isEnabled,
+      contentPadding: EdgeInsets.only(left: 16.0),
+      errorText: Style.getErrorText(
+        context: context,
+        errorBuilder: errorBuilder,
+        fieldBlocState: state,
+        fieldBloc: selectFieldBloc,
+      ),
+    );
+
+    return decoration;
   }
 }
