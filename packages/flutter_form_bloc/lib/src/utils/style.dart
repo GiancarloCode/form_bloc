@@ -17,27 +17,17 @@ class Style {
     contentPadding: defaultInputDecorationContentPadding,
   );
 
-  static Color? getIconColor({
-    required Color? customColor,
-    required Color defaultColor,
-  }) =>
-      customColor ??
-      (ThemeData.estimateBrightnessForColor(defaultColor) == Brightness.dark
-          ? Colors.white
-          : Colors.grey[800]);
-
   static String? getErrorText({
     required BuildContext context,
-    required FieldBlocState? fieldBlocState,
+    required FieldBlocState fieldBlocState,
     required FieldBlocErrorBuilder? errorBuilder,
     required FieldBloc fieldBloc,
   }) {
-    if (fieldBlocState != null && fieldBlocState.canShowError) {
+    if (fieldBlocState.canShowError) {
       if (errorBuilder != null) {
         return errorBuilder(context, fieldBlocState.error);
       } else {
         return FieldBlocBuilder.defaultErrorBuilder(
-          // ignore: curly_braces_in_flow_control_structures
           context,
           fieldBlocState.error,
           fieldBloc,
@@ -48,19 +38,17 @@ class Style {
     }
   }
 
-  static TextStyle? getDefaultTextStyle({
-    required BuildContext context,
+  static TextStyle resolveTextStyle({
     required bool isEnabled,
-  }) =>
-      isEnabled
-          ? Theme.of(context).textTheme.subtitle1
-          : Theme.of(context)
-              .textTheme
-              .subtitle1
-              ?.copyWith(color: Theme.of(context).disabledColor);
-
-  /// Returns `EdgeInsets.all(8.0)`.
-  static EdgeInsets defaultPadding = const EdgeInsets.symmetric(vertical: 8.0);
+    required TextStyle style,
+    required MaterialStateProperty<Color?> color,
+  }) {
+    return style.copyWith(
+      color: color.resolve({
+        if (!isEnabled) MaterialState.disabled,
+      }),
+    );
+  }
 
   static EdgeInsets getGroupFieldBlocContentPadding({
     required bool isVisible,
@@ -85,4 +73,10 @@ class Style {
       );
     }
   }
+}
+
+class Param<T> {
+  final T value;
+
+  Param(this.value);
 }

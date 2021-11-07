@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -23,6 +24,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.animateWhenCanShow = true,
     this.emptyItemLabel = '',
     this.onChanged,
+    this.textStyle,
+    this.textColor,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -73,8 +76,28 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// Called when the user selects an item.
   final ValueChanged<Value?>? onChanged;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
+  final TextStyle? textStyle;
+
+  final MaterialStateProperty<Color?>? textColor;
+
+  DropdownFieldTheme themeStyleOf(BuildContext context) {
+    final theme = Theme.of(context);
+    final formTheme = FormTheme.of(context);
+    final fieldTheme = formTheme.dropdownTheme;
+    final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
+
+    return DropdownFieldTheme(
+      decorationTheme: resolver.decorationTheme,
+      textStyle: textStyle ?? resolver.textStyle,
+      textColor: textColor ?? resolver.textColor,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final fieldTheme = themeStyleOf(context);
+
     return CanShowFieldBlocBuilder(
       fieldBloc: selectFieldBloc,
       animate: animateWhenCanShow,
@@ -89,7 +112,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
               fieldBlocState: fieldState,
             );
 
-            final decoration = _buildDecoration(context, fieldState, isEnabled);
+            final decoration =
+                _buildDecoration(context, fieldTheme, fieldState, isEnabled);
 
             return DefaultFieldBlocBuilderPadding(
               padding: padding,
@@ -103,15 +127,20 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                     value: fieldState.value,
                     focusNode: focusNode,
                     disabledHint: decoration.hintText != null
-                        ? DefaultFieldBlocBuilderTextStyle(
-                            isEnabled: isEnabled,
-                            style: decoration.hintStyle,
+                        ? DefaultTextStyle(
+                            style: Style.resolveTextStyle(
+                              isEnabled: isEnabled,
+                              style:
+                                  decoration.hintStyle ?? fieldTheme.textStyle!,
+                              color: fieldTheme.textColor!,
+                            ),
                             child: Text(decoration.hintText!),
                           )
                         : null,
-                    style: Style.getDefaultTextStyle(
-                      context: context,
+                    style: Style.resolveTextStyle(
                       isEnabled: isEnabled,
+                      style: fieldTheme.textStyle!,
+                      color: fieldTheme.textColor!,
                     ),
                     onChanged: fieldBlocBuilderOnChange<Value?>(
                       isEnabled: isEnabled,
@@ -127,7 +156,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                     selectedItemBuilder: (context) {
                       return _buildItems(context, fieldState.items, true);
                     },
-                    icon: decoration.suffixIcon,
+                    icon: decoration.suffixIcon ?? fieldTheme.moreIcon,
                   ),
                 ),
               ),
@@ -163,6 +192,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
 
   InputDecoration _buildDecoration(
     BuildContext context,
+    DropdownFieldTheme fieldTheme,
     SelectFieldBlocState<Value, dynamic> state,
     bool isEnabled,
   ) {
@@ -179,6 +209,6 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
       ),
     );
 
-    return decoration;
+    return decoration.applyDefaults(fieldTheme.decorationTheme!);
   }
 }

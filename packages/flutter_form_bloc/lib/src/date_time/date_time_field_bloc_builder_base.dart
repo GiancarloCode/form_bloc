@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
+import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -34,12 +36,13 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
     this.routeSettings,
     required this.initialTime,
     required this.animateWhenCanShow,
-    this.showClearIcon = true,
+    this.showClearIcon,
     this.clearIcon,
     this.nextFocusNode,
     this.focusNode,
-    this.style,
-    this.textAlign = TextAlign.start,
+    this.textStyle,
+    this.textColor,
+    this.textAlign,
   })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
         assert(isEnabled != null),
         super(key: key);
@@ -47,7 +50,7 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   final DateTimeFieldBlocBuilderBaseType type;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
-  final InputFieldBloc<T?, dynamic> dateTimeFieldBloc;
+  final InputFieldBloc<T, dynamic> dateTimeFieldBloc;
 
   /// For representing the date as a string e.g.
   /// `DateFormat("EEEE, MMMM d, yyyy 'at' h:mma")`
@@ -79,14 +82,18 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   final FocusNode? focusNode;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
-  final TextStyle? style;
+  final TextStyle? textStyle;
 
-  final bool showClearIcon;
+  final MaterialStateProperty<Color?>? textColor;
 
-  final Icon? clearIcon;
+  /// Defaults `true`
+  final bool? showClearIcon;
+
+  /// Defaults `Icon(Icons.clear)`
+  final Widget? clearIcon;
 
   final DateTime? initialDate;
   final DateTime? firstDate;
@@ -102,6 +109,22 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   @override
   _DateTimeFieldBlocBuilderBaseState createState() =>
       _DateTimeFieldBlocBuilderBaseState();
+
+  DateTimeFieldTheme themeStyleOf(BuildContext context) {
+    final theme = Theme.of(context);
+    final formTheme = FormTheme.of(context);
+    final fieldTheme = formTheme.dateTimeTheme;
+    final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
+
+    return DateTimeFieldTheme(
+      decorationTheme: resolver.decorationTheme,
+      textStyle: textStyle ?? resolver.textStyle,
+      textColor: textColor ?? resolver.textColor,
+      textAlign: textAlign ?? fieldTheme.textAlign ?? TextAlign.start,
+      showClearIcon: showClearIcon ?? fieldTheme.showClearIcon ?? true,
+      clearIcon: clearIcon ?? fieldTheme.clearIcon ?? const Icon(Icons.clear),
+    );
+  }
 }
 
 class _DateTimeFieldBlocBuilderBaseState<T>
@@ -161,14 +184,16 @@ class _DateTimeFieldBlocBuilderBaseState<T>
 
   @override
   Widget build(BuildContext context) {
+    final fieldTheme = widget.themeStyleOf(context);
+
     return Focus(
       focusNode: _effectiveFocusNode,
       child: CanShowFieldBlocBuilder(
         fieldBloc: widget.dateTimeFieldBloc,
         animate: widget.animateWhenCanShow,
         builder: (_, __) {
-          return BlocBuilder<InputFieldBloc<T?, dynamic>,
-              InputFieldBlocState<T?, dynamic>>(
+          return BlocBuilder<InputFieldBloc<T, dynamic>,
+              InputFieldBlocState<T, dynamic>>(
             bloc: widget.dateTimeFieldBloc,
             builder: (context, state) {
               final isEnabled = fieldBlocIsEnabled(
@@ -183,14 +208,14 @@ class _DateTimeFieldBlocBuilderBaseState<T>
               if (state.value == null && widget.decoration.hintText != null) {
                 child = Text(
                   widget.decoration.hintText!,
-                  style: widget.style == null
-                      ? widget.decoration.hintStyle
-                      : isEnabled
-                          ? widget.style
-                          : widget.style!
-                              .copyWith(color: Theme.of(context).disabledColor),
-                  overflow: TextOverflow.ellipsis,
                   maxLines: widget.decoration.hintMaxLines,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: fieldTheme.textAlign,
+                  style: Style.resolveTextStyle(
+                    isEnabled: isEnabled,
+                    style: widget.decoration.hintStyle ?? fieldTheme.textStyle!,
+                    color: fieldTheme.textColor!,
+                  ),
                 );
               } else {
                 child = Text(
@@ -200,25 +225,22 @@ class _DateTimeFieldBlocBuilderBaseState<T>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
-                  textAlign: widget.textAlign,
-                  style: widget.style == null
-                      ? Style.getDefaultTextStyle(
-                          context: context,
-                          isEnabled: isEnabled,
-                        )
-                      : isEnabled
-                          ? widget.style
-                          : widget.style!
-                              .copyWith(color: Theme.of(context).disabledColor),
+                  textAlign: fieldTheme.textAlign,
+                  style: Style.resolveTextStyle(
+                    isEnabled: isEnabled,
+                    style: fieldTheme.textStyle!,
+                    color: fieldTheme.textColor!,
+                  ),
                 );
               }
 
               return DefaultFieldBlocBuilderPadding(
-                padding: widget.padding as EdgeInsets?,
+                padding: widget.padding,
                 child: GestureDetector(
                   onTap: !isEnabled ? null : () => _showPicker(context),
                   child: InputDecorator(
-                    decoration: _buildDecoration(context, state, isEnabled),
+                    decoration:
+                        _buildDecoration(context, fieldTheme, state, isEnabled),
                     isEmpty: state.value == null &&
                         widget.decoration.hintText == null,
                     child: child,
@@ -278,7 +300,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     return null;
   }
 
-  String _tryFormat(T? value, DateFormat format) {
+  String _tryFormat(T value, DateFormat format) {
     DateTime? date;
     if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
       final time = value as TimeOfDay?;
@@ -296,8 +318,12 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     }
   }
 
-  InputDecoration _buildDecoration(BuildContext context,
-      InputFieldBlocState<T?, dynamic>? state, bool isEnabled) {
+  InputDecoration _buildDecoration(
+    BuildContext context,
+    DateTimeFieldTheme fieldTheme,
+    InputFieldBlocState<T, dynamic> state,
+    bool isEnabled,
+  ) {
     InputDecoration decoration = this.widget.decoration;
 
     decoration = decoration.copyWith(
@@ -309,14 +335,14 @@ class _DateTimeFieldBlocBuilderBaseState<T>
         fieldBloc: widget.dateTimeFieldBloc,
       ),
       suffixIcon: decoration.suffixIcon ??
-          (widget.showClearIcon
+          (fieldTheme.showClearIcon!
               ? AnimatedOpacity(
                   duration: Duration(milliseconds: 400),
                   opacity:
                       widget.dateTimeFieldBloc.state.value == null ? 0.0 : 1.0,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(25),
-                    child: widget.clearIcon ?? Icon(Icons.clear),
+                    child: fieldTheme.clearIcon!,
                     onTap: widget.dateTimeFieldBloc.state.value == null
                         ? null
                         : widget.dateTimeFieldBloc.clear,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -18,6 +19,12 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.canDeselect = true,
     this.nextFocusNode,
     this.animateWhenCanShow = true,
+    this.textStyle,
+    this.textColor,
+    this.mouseCursor,
+    this.fillColor,
+    this.overlayColor,
+    this.splashRadius,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -51,54 +58,85 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  final TextStyle? textStyle;
+  final MaterialStateProperty<Color?>? textColor;
+
+  // ========== [Radio] ==========
+
+  /// [Radio.mouseCursor]
+  final MaterialStateProperty<MouseCursor?>? mouseCursor;
+
+  /// [Radio.fillColor]
+  final MaterialStateProperty<Color?>? fillColor;
+
+  /// [Radio.overlayColor]
+  final MaterialStateProperty<Color?>? overlayColor;
+
+  /// [Radio.splashRadius]
+  final double? splashRadius;
+
+  RadioFieldTheme themeStyleOf(BuildContext context) {
+    final theme = Theme.of(context);
+    final formTheme = FormTheme.of(context);
+    final fieldTheme = formTheme.radioTheme;
+    final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
+    final radioTheme = fieldTheme.radioTheme ?? theme.radioTheme;
+
+    return RadioFieldTheme(
+      decorationTheme: resolver.decorationTheme,
+      textStyle: textStyle ?? resolver.textStyle,
+      textColor: textColor ?? resolver.textColor,
+      radioTheme: radioTheme.copyWith(
+        mouseCursor: mouseCursor,
+        fillColor: fillColor,
+        overlayColor: overlayColor,
+        splashRadius: splashRadius,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CanShowFieldBlocBuilder(
-      fieldBloc: selectFieldBloc,
-      animate: animateWhenCanShow,
-      builder: (_, __) {
-        return BlocBuilder<SelectFieldBloc<Value, dynamic>,
-            SelectFieldBlocState<Value, dynamic>>(
-          bloc: selectFieldBloc,
-          builder: (context, state) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: this.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: state,
-            );
+    final fieldTheme = themeStyleOf(context);
 
-            return DefaultFieldBlocBuilderPadding(
-              padding: padding as EdgeInsets?,
-              child: Stack(
-                children: <Widget>[
-                  InputDecorator(
-                    decoration: _buildDecoration(context, state, isEnabled),
-                    isEmpty: false,
-                    child: Opacity(
-                      opacity: 0.0,
-                      child: _buildRadioButtons(state, isEnabled),
-                    ),
-                  ),
-                  InputDecorator(
-                    decoration: Style.inputDecorationWithoutBorder.copyWith(
-                      contentPadding: Style.getGroupFieldBlocContentPadding(
-                        isVisible: true,
-                        decoration: decoration,
-                      ),
-                    ),
-                    child: _buildRadioButtons(state, isEnabled),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+    return RadioTheme(
+      data: fieldTheme.radioTheme!,
+      child: CanShowFieldBlocBuilder(
+        fieldBloc: selectFieldBloc,
+        animate: animateWhenCanShow,
+        builder: (_, __) {
+          return BlocBuilder<SelectFieldBloc<Value, dynamic>,
+              SelectFieldBlocState<Value, dynamic>>(
+            bloc: selectFieldBloc,
+            builder: (context, state) {
+              final isEnabled = fieldBlocIsEnabled(
+                isEnabled: this.isEnabled,
+                enableOnlyWhenFormBlocCanSubmit:
+                    enableOnlyWhenFormBlocCanSubmit,
+                fieldBlocState: state,
+              );
+
+              return DefaultFieldBlocBuilderPadding(
+                padding: padding,
+                child: InputDecorator(
+                  isEmpty: false,
+                  decoration:
+                      _buildDecoration(context, fieldTheme, state, isEnabled),
+                  child: _buildRadioButtons(state, fieldTheme, isEnabled),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
   Widget _buildRadioButtons(
-      SelectFieldBlocState<Value, dynamic> state, bool isEnable) {
+    SelectFieldBlocState<Value, dynamic> state,
+    RadioFieldTheme fieldTheme,
+    bool isEnable,
+  ) {
     final onChanged = fieldBlocBuilderOnChange<Value?>(
       isEnabled: isEnabled,
       nextFocusNode: nextFocusNode,
@@ -110,16 +148,18 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
       physics: ClampingScrollPhysics(),
       itemCount: state.items.length,
       itemBuilder: (context, index) {
+        final item = state.items[index];
+
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Stack(
               children: <Widget>[
                 Radio<Value>(
-                  value: state.items.elementAt(index),
+                  value: item,
                   groupValue: state.value,
                   onChanged: onChanged,
                 ),
-                if (canDeselect && state.items.elementAt(index) == state.value)
+                if (canDeselect && item == state.value)
                   Theme(
                     data: Theme.of(context).copyWith(
                       unselectedWidgetColor: Colors.transparent,
@@ -133,20 +173,28 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
               ],
             ),
           ),
-          child: DefaultFieldBlocBuilderTextStyle(
-            isEnabled: isEnabled,
-            child: Text(itemBuilder(context, state.items.elementAt(index))),
+          child: Text(
+            itemBuilder(context, item),
+            style: Style.resolveTextStyle(
+              isEnabled: isEnabled,
+              style: fieldTheme.textStyle!,
+              color: fieldTheme.textColor!,
+            ),
           ),
         );
       },
     );
   }
 
-  InputDecoration _buildDecoration(BuildContext context,
-      SelectFieldBlocState<Value?, dynamic> state, bool isEnable) {
-    InputDecoration decoration = this.decoration;
+  InputDecoration _buildDecoration(
+    BuildContext context,
+    RadioFieldTheme fieldTheme,
+    SelectFieldBlocState<Value, dynamic> state,
+    bool isEnable,
+  ) {
+    var decoration = this.decoration;
 
-    return decoration.copyWith(
+    decoration = decoration.copyWith(
       suffix: this.decoration.suffix != null ? SizedBox.shrink() : null,
       prefixIcon: this.decoration.prefixIcon != null ? SizedBox.shrink() : null,
       prefix: this.decoration.prefix != null ? SizedBox.shrink() : null,
@@ -163,5 +211,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
         fieldBloc: selectFieldBloc,
       ),
     );
+
+    return decoration.applyDefaults(fieldTheme.decorationTheme!);
   }
 }

@@ -24,10 +24,13 @@ class TimeFieldBlocBuilder extends StatelessWidget {
     this.useRootNavigator = false,
     this.routeSettings,
     this.animateWhenCanShow = true,
-    this.showClearIcon = true,
+    this.showClearIcon,
     this.clearIcon,
     this.nextFocusNode,
     this.focusNode,
+    this.textAlign,
+    this.textStyle,
+    this.textColor,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -62,6 +65,14 @@ class TimeFieldBlocBuilder extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.focusNode}
   final FocusNode? focusNode;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
+  final TextAlign? textAlign;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
+  final TextStyle? textStyle;
+
+  final MaterialStateProperty<Color?>? textColor;
+
   final SelectableDayPredicate? selectableDayPredicate;
   final DatePickerMode initialDatePickerMode = DatePickerMode.day;
   final Locale? locale;
@@ -71,9 +82,11 @@ class TimeFieldBlocBuilder extends StatelessWidget {
   final RouteSettings? routeSettings;
   final TimeOfDay initialTime;
 
-  final bool showClearIcon;
+  /// Defaults `true`
+  final bool? showClearIcon;
 
-  final Icon? clearIcon;
+  /// Defaults `const Icon(Icons.clear)`
+  final Widget? clearIcon;
 
   @override
   Widget build(BuildContext context) {

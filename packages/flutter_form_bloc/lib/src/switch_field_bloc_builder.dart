@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
+import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
+import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -15,30 +17,30 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.errorBuilder,
-    this.checkColor,
-    this.activeColor,
     this.padding,
     this.nextFocusNode,
-    this.controlAffinity = FieldBlocBuilderControlAffinity.leading,
-    this.activeTrackColor,
-    this.inactiveThumbColor,
-    this.inactiveTrackColor,
-    this.activeThumbImage,
-    this.inactiveThumbImage,
-    this.materialTapTargetSize,
+    this.controlAffinity,
     this.dragStartBehavior = DragStartBehavior.start,
-    this.focusColor,
-    this.hoverColor,
     this.focusNode,
     this.autofocus = false,
     this.animateWhenCanShow = true,
+    this.textStyle,
+    this.textColor,
+    this.activeThumbImage,
+    this.inactiveThumbImage,
+    this.thumbColor,
+    this.trackColor,
+    this.materialTapTargetSize,
+    this.mouseCursor,
+    this.overlayColor,
+    this.splashRadius,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final BooleanFieldBloc booleanFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilderControlAffinity}
-  final FieldBlocBuilderControlAffinity controlAffinity;
+  final FieldBlocBuilderControlAffinity? controlAffinity;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;
@@ -58,60 +60,8 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxBody}
   final Widget body;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxColor}
-  final Color? checkColor;
-
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.checkboxActiveColor}
-  final Color? activeColor;
-
-  /// The color to use on the track when this switch is on.
-  ///
-  /// Defaults to [ThemeData.toggleableActiveColor] with the opacity set at 50%.
-  ///
-  /// Ignored if this switch is created with [Switch.adaptive].
-  final Color? activeTrackColor;
-
-  /// The color to use on the thumb when this switch is off.
-  ///
-  /// Defaults to the colors described in the Material design specification.
-  ///
-  /// Ignored if this switch is created with [Switch.adaptive].
-  final Color? inactiveThumbColor;
-
-  /// The color to use on the track when this switch is off.
-  ///
-  /// Defaults to the colors described in the Material design specification.
-  ///
-  /// Ignored if this switch is created with [Switch.adaptive].
-  final Color? inactiveTrackColor;
-
-  /// An image to use on the thumb of this switch when the switch is on.
-  ///
-  /// Ignored if this switch is created with [Switch.adaptive].
-  final ImageProvider? activeThumbImage;
-
-  /// An image to use on the thumb of this switch when the switch is off.
-  ///
-  /// Ignored if this switch is created with [Switch.adaptive].
-  final ImageProvider? inactiveThumbImage;
-
-  /// Configures the minimum size of the tap target.
-  ///
-  /// Defaults to [ThemeData.materialTapTargetSize].
-  ///
-  /// See also:
-  ///
-  ///  * [MaterialTapTargetSize], for a description of how this affects tap targets.
-  final MaterialTapTargetSize? materialTapTargetSize;
-
   /// {@macro flutter.cupertino.switch.dragStartBehavior}
   final DragStartBehavior dragStartBehavior;
-
-  /// The color for the button's [Material] when it has the input focus.
-  final Color? focusColor;
-
-  /// The color for the button's [Material] when a pointer is hovering over it.
-  final Color? hoverColor;
 
   /// {@macro flutter.widgets.Focus.focusNode}
   final FocusNode? focusNode;
@@ -122,58 +72,124 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  final TextStyle? textStyle;
+  final MaterialStateProperty<Color?>? textColor;
+
+  // ========== [Switch] ==========
+
+  /// An image to use on the thumb of this switch when the switch is on.
+  final ImageProvider? activeThumbImage;
+
+  /// An image to use on the thumb of this switch when the switch is off.
+  final ImageProvider? inactiveThumbImage;
+
+  /// [Switch.thumbColor]
+  final MaterialStateProperty<Color?>? thumbColor;
+
+  /// [Switch.trackColor]
+  final MaterialStateProperty<Color?>? trackColor;
+
+  /// [Switch.materialTapTargetSize]
+  final MaterialTapTargetSize? materialTapTargetSize;
+
+  /// [Switch.mouseCursor]
+  final MaterialStateProperty<MouseCursor?>? mouseCursor;
+
+  /// [Switch.overlayColor]
+  final MaterialStateProperty<Color?>? overlayColor;
+
+  /// [Switch.splashRadius]
+  final double? splashRadius;
+
+  SwitchFieldTheme themeStyleOf(BuildContext context) {
+    final theme = Theme.of(context);
+    final formTheme = FormTheme.of(context);
+    final fieldTheme = formTheme.switchTheme;
+    final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
+    final switchTheme = fieldTheme.switchTheme ?? theme.switchTheme;
+
+    return SwitchFieldTheme(
+      decorationTheme: resolver.decorationTheme,
+      textStyle: textStyle ?? resolver.textStyle,
+      textColor: textColor ?? resolver.textColor,
+      switchTheme: switchTheme.copyWith(
+        thumbColor: thumbColor,
+        trackColor: trackColor,
+        materialTapTargetSize: materialTapTargetSize,
+        mouseCursor: mouseCursor,
+        overlayColor: overlayColor,
+        splashRadius: splashRadius,
+      ),
+      controlAffinity: controlAffinity ??
+          fieldTheme.controlAffinity ??
+          FieldBlocBuilderControlAffinity.leading,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CanShowFieldBlocBuilder(
-      fieldBloc: booleanFieldBloc,
-      animate: animateWhenCanShow,
-      builder: (_, __) {
-        return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
-          bloc: booleanFieldBloc,
-          builder: (context, state) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: this.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: state,
-            );
+    final fieldTheme = themeStyleOf(context);
 
-            return DefaultFieldBlocBuilderPadding(
-              padding: padding as EdgeInsets?,
-              child: InputDecorator(
-                decoration: Style.inputDecorationWithoutBorder.copyWith(
-                  contentPadding: EdgeInsets.all(0),
-                  prefixIcon:
-                      controlAffinity == FieldBlocBuilderControlAffinity.leading
-                          ? _buildSwitch(context: context, state: state)
-                          : null,
-                  suffixIcon: controlAffinity ==
-                          FieldBlocBuilderControlAffinity.trailing
-                      ? _buildSwitch(context: context, state: state)
-                      : null,
-                  errorText: Style.getErrorText(
-                    context: context,
-                    errorBuilder: errorBuilder,
-                    fieldBlocState: state,
-                    fieldBloc: booleanFieldBloc,
+    return SwitchTheme(
+      data: fieldTheme.switchTheme!,
+      child: CanShowFieldBlocBuilder(
+        fieldBloc: booleanFieldBloc,
+        animate: animateWhenCanShow,
+        builder: (_, __) {
+          return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
+            bloc: booleanFieldBloc,
+            builder: (context, state) {
+              final isEnabled = fieldBlocIsEnabled(
+                isEnabled: this.isEnabled,
+                enableOnlyWhenFormBlocCanSubmit:
+                    enableOnlyWhenFormBlocCanSubmit,
+                fieldBlocState: state,
+              );
+
+              return DefaultFieldBlocBuilderPadding(
+                padding: padding,
+                child: InputDecorator(
+                  decoration: Style.inputDecorationWithoutBorder.copyWith(
+                    contentPadding: EdgeInsets.all(0),
+                    prefixIcon: controlAffinity ==
+                            FieldBlocBuilderControlAffinity.leading
+                        ? _buildSwitch(context, state)
+                        : null,
+                    suffixIcon: controlAffinity ==
+                            FieldBlocBuilderControlAffinity.trailing
+                        ? _buildSwitch(context, state)
+                        : null,
+                    errorText: Style.getErrorText(
+                      context: context,
+                      errorBuilder: errorBuilder,
+                      fieldBlocState: state,
+                      fieldBloc: booleanFieldBloc,
+                    ),
+                  ),
+                  child: DefaultTextStyle(
+                    style: Style.resolveTextStyle(
+                      isEnabled: isEnabled,
+                      style: fieldTheme.textStyle!,
+                      color: fieldTheme.textColor!,
+                    ),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: 48),
+                      child: body,
+                    ),
                   ),
                 ),
-                child: DefaultFieldBlocBuilderTextStyle(
-                  isEnabled: isEnabled,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: 48),
-                    child: body,
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
   Switch _buildSwitch(
-      {required BuildContext context, required BooleanFieldBlocState state}) {
+    BuildContext context,
+    BooleanFieldBlocState state,
+  ) {
     return Switch(
       value: state.value,
       onChanged: fieldBlocBuilderOnChange<bool>(
@@ -181,17 +197,11 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
         nextFocusNode: nextFocusNode,
         onChanged: booleanFieldBloc.updateValue,
       ),
-      activeColor: activeColor,
       activeThumbImage: activeThumbImage,
-      activeTrackColor: activeTrackColor,
       autofocus: autofocus,
       dragStartBehavior: dragStartBehavior,
-      focusColor: focusColor,
       focusNode: focusNode,
-      hoverColor: hoverColor,
-      inactiveThumbColor: inactiveThumbColor,
       inactiveThumbImage: inactiveThumbImage,
-      inactiveTrackColor: inactiveThumbColor,
       materialTapTargetSize: materialTapTargetSize,
     );
   }
