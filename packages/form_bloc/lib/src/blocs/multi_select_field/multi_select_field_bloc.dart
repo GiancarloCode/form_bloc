@@ -93,15 +93,40 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// If you want to add or remove elements to `items`
   /// of the current state,
   /// use [addItem] or [removeItem].
-  void updateItems(List<Value> items) => add(UpdateFieldBlocItems(items));
+  void updateItems(List<Value> items) {
+    items = SingleFieldBloc._itemsWithoutDuplicates(items);
+
+    emit(state.copyWith(
+      items: items,
+      value: items.contains(value) ? null : Param([]),
+    ));
+  }
 
   /// Add [item] to the current `items`
   /// of the current state.
-  void addItem(Value item) => add(AddFieldBlocItem(item));
+  void addItem(Value item) {
+    emit(state.copyWith(
+      items: SingleFieldBloc._itemsWithoutDuplicates([
+        ...state.items,
+        item,
+      ]),
+    ));
+  }
 
   /// Remove [item] to the current `items`
   /// of the current state.
-  void removeItem(Value item) => add(RemoveFieldBlocItem(item));
+  void removeItem(Value item) {
+    var items = state.items;
+    if (items.isNotEmpty) {
+      items = SingleFieldBloc._itemsWithoutDuplicates(
+        [...items]..remove(item),
+      );
+      emit(state.copyWith(
+        items: items,
+        value: items.contains(value) ? null : Param([]),
+      ));
+    }
+  }
 
   /// Set [value] to the `value` of the current state.
   ///
@@ -114,7 +139,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void updateValue(List<Value> value) => add(UpdateFieldBlocValue(value));
+  void updateValue(List<Value> value) => super.updateValue(value);
 
   /// Set [value] to the `value` and set `isInitial` to `true`
   /// of the current state.
@@ -125,90 +150,54 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   @override
-  void updateInitialValue(List<Value>? value) =>
-      add(UpdateFieldBlocInitialValue(value ?? []));
+  void updateInitialValue(List<Value> value) => super.updateInitialValue(value);
 
   /// Add [valueToSelect] to the `value` of the current state.
   ///
   /// {@macro form_bloc.field_bloc.itemsWithoutDuplicates}
   ///
   /// {@macro form_bloc.field_bloc.update_value}
-  void select(Value valueToSelect) =>
-      add(SelectMultiSelectFieldBlocValue(valueToSelect));
+  void select(Value valueToSelect) {
+    var newValue = state.value;
+    newValue =
+        SingleFieldBloc._itemsWithoutDuplicates([...newValue, valueToSelect]);
+    if (_canUpdateValue(value: newValue, isInitialValue: false)) {
+      final error = _getError(newValue);
+
+      final isValidating =
+          _getAsyncValidatorsError(value: newValue, error: error);
+
+      emit(state.copyWith(
+        value: Param(newValue),
+        error: Param(error),
+        isInitial: false,
+        isValidated: _isValidated(isValidating),
+        isValidating: isValidating,
+      ));
+    }
+  }
 
   /// Remove [valueToDeselect] from the `value` of the current state.
   ///
   /// {@macro form_bloc.field_bloc.itemsWithoutDuplicates}
   ///
   /// {@macro form_bloc.field_bloc.update_value}
-  void deselect(Value valueToDeselect) =>
-      add(DeselectMultiSelectFieldBlocValue(valueToDeselect));
+  void deselect(Value valueToDeselect) {
+    var newValue = state.value;
+    newValue = [...newValue]..remove(valueToDeselect);
+    if (_canUpdateValue(value: newValue, isInitialValue: false)) {
+      final error = _getError(newValue);
 
-  @override
-  Stream<MultiSelectFieldBlocState<Value, ExtraData>> _mapCustomEventToState(
-    FieldBlocEvent event,
-  ) async* {
-    if (event is UpdateFieldBlocItems<Value>) {
-      var items = event.items;
-      items = SingleFieldBloc._itemsWithoutDuplicates(items);
+      final isValidating =
+          _getAsyncValidatorsError(value: newValue, error: error);
 
-      yield state.copyWith(
-        items: items,
-        value: items.contains(value) ? null : Param([]),
-      );
-    } else if (event is AddFieldBlocItem<Value>) {
-      yield state.copyWith(
-        items: SingleFieldBloc._itemsWithoutDuplicates(
-          List<Value>.from(state.items)..add(event.item),
-        ),
-      );
-    } else if (event is RemoveFieldBlocItem<Value>) {
-      var items = state.items;
-      if (items.isNotEmpty) {
-        items = SingleFieldBloc._itemsWithoutDuplicates(
-          List<Value>.from(items)..remove(event.item),
-        );
-        yield state.copyWith(
-          items: items,
-          value: items.contains(value) ? null : Param([]),
-        );
-      }
-    } else if (event is SelectMultiSelectFieldBlocValue<Value>) {
-      var newValue = state.value;
-      newValue = SingleFieldBloc._itemsWithoutDuplicates(
-        List<Value>.from(newValue)..add(event.valueToSelect),
-      );
-      if (_canUpdateValue(value: newValue, isInitialValue: false)) {
-        final error = _getError(newValue);
-
-        final isValidating =
-            _getAsyncValidatorsError(value: newValue, error: error);
-
-        yield state.copyWith(
-          value: Param(newValue),
-          error: Param(error),
-          isInitial: false,
-          isValidated: _isValidated(isValidating),
-          isValidating: isValidating,
-        );
-      }
-    } else if (event is DeselectMultiSelectFieldBlocValue<Value>) {
-      var newValue = state.value;
-      newValue = List<Value>.from(newValue)..remove(event.valueToDeselect);
-      if (_canUpdateValue(value: newValue, isInitialValue: false)) {
-        final error = _getError(newValue);
-
-        final isValidating =
-            _getAsyncValidatorsError(value: newValue, error: error);
-
-        yield state.copyWith(
-          value: Param(newValue),
-          error: Param(error),
-          isInitial: false,
-          isValidated: _isValidated(isValidating),
-          isValidating: isValidating,
-        );
-      }
+      emit(state.copyWith(
+        value: Param(newValue),
+        error: Param(error),
+        isInitial: false,
+        isValidated: _isValidated(isValidating),
+        isValidating: isValidating,
+      ));
     }
   }
 }

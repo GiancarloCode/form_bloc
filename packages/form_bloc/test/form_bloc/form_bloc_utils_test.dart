@@ -801,48 +801,44 @@ void main() {
       test('SingleFieldBloc', () async {
         final formBloc = FormBlocImpl();
 
-        final listFieldBloc = BooleanFieldBloc<dynamic>(name: '');
+        final booleanFieldBloc = BooleanFieldBloc<dynamic>(name: '');
 
-        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
-          fieldBlocs: [listFieldBloc],
+        FormBlocUtils.updateFormBloc(
+          fieldBlocs: [booleanFieldBloc],
           formBloc: formBloc,
         );
 
-        await expectLater(
-          listFieldBloc.stream,
-          emitsInOrder(<BooleanFieldBlocState<dynamic>>[
-            BooleanFieldBlocState<dynamic>(
-              name: '',
-              formBloc: formBloc,
-              value: false,
-              error: null,
-              isInitial: true,
-              suggestions: null,
-              isValidated: false,
-              isValidating: false,
-            ),
-          ]),
+        expect(
+          booleanFieldBloc.state,
+          BooleanFieldBlocState<dynamic>(
+            name: '',
+            formBloc: formBloc,
+            value: false,
+            error: null,
+            isInitial: true,
+            suggestions: null,
+            isValidated: false,
+            isValidating: false,
+          ),
         );
 
-        FormBlocUtils.removeFormBlocToFieldBlocs(
-          fieldBlocs: [listFieldBloc],
+        FormBlocUtils.removeFormBloc(
+          fieldBlocs: [booleanFieldBloc],
           formBloc: formBloc,
         );
 
-        await expectLater(
-          listFieldBloc.stream,
-          emitsInOrder(<BooleanFieldBlocState>[
-            BooleanFieldBlocState<dynamic>(
-              name: '',
-              formBloc: null,
-              value: false,
-              error: null,
-              isInitial: true,
-              suggestions: null,
-              isValidated: false,
-              isValidating: false,
-            ),
-          ]),
+        expect(
+          booleanFieldBloc.state,
+          BooleanFieldBlocState<dynamic>(
+            name: '',
+            formBloc: null,
+            value: false,
+            error: null,
+            isInitial: true,
+            suggestions: null,
+            isValidated: false,
+            isValidating: false,
+          ),
         );
       });
 
@@ -851,30 +847,34 @@ void main() {
 
         final listFieldBloc = ListFieldBloc<FieldBloc, dynamic>(name: '');
 
-        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+        FormBlocUtils.updateFormBloc(
           fieldBlocs: [listFieldBloc],
           formBloc: formBloc,
         );
 
-        await expectLater(
-          listFieldBloc.stream,
-          emitsInOrder(<ListFieldBlocState<FieldBloc, dynamic>>[
-            ListFieldBlocState<FieldBloc, dynamic>(
-                name: '', fieldBlocs: [], formBloc: formBloc, extraData: null),
-          ]),
+        expect(
+          listFieldBloc.state,
+          ListFieldBlocState<FieldBloc, dynamic>(
+            name: '',
+            fieldBlocs: [],
+            formBloc: formBloc,
+            extraData: null,
+          ),
         );
 
-        FormBlocUtils.removeFormBlocToFieldBlocs(
+        FormBlocUtils.removeFormBloc(
           fieldBlocs: [listFieldBloc],
           formBloc: formBloc,
         );
 
-        await expectLater(
-          listFieldBloc.stream,
-          emitsInOrder(<ListFieldBlocState>[
-            ListFieldBlocState<FieldBloc, dynamic>(
-                name: '', fieldBlocs: [], formBloc: null, extraData: null),
-          ]),
+        expect(
+          listFieldBloc.state,
+          ListFieldBlocState<FieldBloc, dynamic>(
+            name: '',
+            fieldBlocs: [],
+            formBloc: null,
+            extraData: null,
+          ),
         );
       });
 
@@ -884,30 +884,34 @@ void main() {
         final listFieldBloc =
             GroupFieldBlocImpl(name: '', fieldBlocs: [], extraData: null);
 
-        FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
+        FormBlocUtils.updateFormBloc(
           fieldBlocs: [listFieldBloc],
           formBloc: formBloc,
         );
 
-        await expectLater(
-          listFieldBloc.stream,
-          emitsInOrder(<GroupFieldBlocState>[
-            GroupFieldBlocState<FieldBloc, dynamic>(
-                name: '', fieldBlocs: [], formBloc: formBloc, extraData: null),
-          ]),
+        expect(
+          listFieldBloc.state,
+          GroupFieldBlocState<FieldBloc, dynamic>(
+            name: '',
+            fieldBlocs: [],
+            formBloc: formBloc,
+            extraData: null,
+          ),
         );
 
-        FormBlocUtils.removeFormBlocToFieldBlocs(
+        FormBlocUtils.removeFormBloc(
           fieldBlocs: [listFieldBloc],
           formBloc: formBloc,
         );
 
-        await expectLater(
-          listFieldBloc.stream,
-          emitsInOrder(<GroupFieldBlocState>[
-            GroupFieldBlocState<FieldBloc, dynamic>(
-                name: '', fieldBlocs: [], formBloc: null, extraData: null),
-          ]),
+        expect(
+          listFieldBloc.state,
+          GroupFieldBlocState<FieldBloc, dynamic>(
+            name: '',
+            fieldBlocs: [],
+            formBloc: null,
+            extraData: null,
+          ),
         );
       });
     });

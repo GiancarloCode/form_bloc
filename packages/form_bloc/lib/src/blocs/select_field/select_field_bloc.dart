@@ -89,44 +89,36 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
   /// If you want to add or remove elements to `items`
   /// of the current state,
   /// use [addItem] or [removeItem].
-  void updateItems(List<Value> items) => add(UpdateFieldBlocItems(items));
+  void updateItems(List<Value> items) {
+    items = SingleFieldBloc._itemsWithoutDuplicates(items);
+
+    emit(state.copyWith(
+      items: items,
+      value: items.contains(value) ? null : Param(null),
+    ));
+  }
 
   /// Add [item] to the current `items`
   /// of the current state.
-  void addItem(Value item) => add(AddFieldBlocItem(item));
+  void addItem(Value item) {
+    emit(state.copyWith(
+      items: SingleFieldBloc._itemsWithoutDuplicates(
+        List<Value>.from(state.items)..add(item),
+      ),
+    ));
+  }
 
   /// Remove [item] to the current `items`
   /// of the current state.
-  void removeItem(Value item) => add(RemoveFieldBlocItem(item));
-
-  @override
-  Stream<SelectFieldBlocState<Value, ExtraData>> _mapCustomEventToState(
-    FieldBlocEvent event,
-  ) async* {
-    if (event is UpdateFieldBlocItems<Value>) {
-      final items = SingleFieldBloc._itemsWithoutDuplicates(event.items);
-
-      yield state.copyWith(
+  void removeItem(Value item) {
+    var items = state.items;
+    if (items.isNotEmpty) {
+      items = SingleFieldBloc._itemsWithoutDuplicates(
+          List<Value>.from(items)..remove(item));
+      emit(state.copyWith(
         items: items,
         value: items.contains(value) ? null : Param(null),
-      );
-    } else if (event is AddFieldBlocItem<Value>) {
-      yield state.copyWith(
-        items: SingleFieldBloc._itemsWithoutDuplicates(
-          List<Value>.from(state.items)..add(event.item),
-        ),
-      );
-    } else if (event is RemoveFieldBlocItem<Value>) {
-      var items = state.items;
-      if (items.isNotEmpty) {
-        items = SingleFieldBloc._itemsWithoutDuplicates(
-          List<Value>.from(items)..remove(event.item),
-        );
-        yield state.copyWith(
-          items: items,
-          value: items.contains(value) ? null : Param(null),
-        );
-      }
+      ));
     }
   }
 }

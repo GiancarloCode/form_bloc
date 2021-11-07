@@ -1,38 +1,5 @@
 part of '../field/field_bloc.dart';
 
-abstract class GroupFieldBlocEvent extends Equatable {}
-
-class AddFormBlocAndAutoValidateToGroupFieldBloc extends GroupFieldBlocEvent {
-  final FormBloc<dynamic, dynamic> formBloc;
-  final bool autoValidate;
-
-  AddFormBlocAndAutoValidateToGroupFieldBloc({
-    required this.formBloc,
-    required this.autoValidate,
-  });
-
-  @override
-  List<Object?> get props => [formBloc, autoValidate];
-}
-
-class UpdateExtraDataToGroupFieldBloc<ExtraData> extends GroupFieldBlocEvent {
-  final ExtraData extraData;
-
-  UpdateExtraDataToGroupFieldBloc(this.extraData);
-
-  @override
-  List<Object?> get props => [extraData];
-}
-
-class RemoveFormBlocToGroupFieldBloc extends GroupFieldBlocEvent {
-  final FormBloc<dynamic, dynamic> formBloc;
-
-  RemoveFormBlocToGroupFieldBloc({required this.formBloc});
-
-  @override
-  List<Object?> get props => [formBloc];
-}
-
 class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
   final String name;
   final Map<String, T> _fieldBlocs;
@@ -85,8 +52,7 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
 }
 
 class GroupFieldBloc<T extends FieldBloc, ExtraData>
-    extends Bloc<GroupFieldBlocEvent, GroupFieldBlocState<T, ExtraData>>
-    with FieldBloc {
+    extends Cubit<GroupFieldBlocState<T, ExtraData>> with FieldBloc {
   GroupFieldBloc({
     String? name,
     List<T>? fieldBlocs,
@@ -98,30 +64,35 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
           extraData: extraData,
         ));
 
+  void updateExtraData(ExtraData extraData) {
+    emit(state._copyWith(
+      extraData: Param(extraData),
+    ));
+  }
+
+  // ========== INTERNAL USE ==========
+
+  /// See [FieldBloc.updateFormBloc]
   @override
-  Stream<GroupFieldBlocState<T, ExtraData>> mapEventToState(
-      GroupFieldBlocEvent event) async* {
-    if (event is AddFormBlocAndAutoValidateToGroupFieldBloc) {
-      yield state._copyWith(formBloc: Param(event.formBloc));
+  void updateFormBloc(FormBloc? formBloc, {bool autoValidate = false}) {
+    emit(state._copyWith(
+      formBloc: Param(formBloc),
+    ));
 
-      FormBlocUtils.addFormBlocAndAutoValidateToFieldBlocs(
-        fieldBlocs: state._fieldBlocs.values.toList(),
-        formBloc: event.formBloc,
-        autoValidate: event.autoValidate,
-      );
-    } else if (event is RemoveFormBlocToGroupFieldBloc) {
-      if (state.formBloc == event.formBloc) {
-        yield state._copyWith(formBloc: Param(null));
-      }
+    FormBlocUtils.updateFormBloc(
+      fieldBlocs: state._fieldBlocs.values.toList(),
+      formBloc: formBloc,
+      autoValidate: autoValidate,
+    );
+  }
 
-      FormBlocUtils.removeFormBlocToFieldBlocs(
-        fieldBlocs: state._fieldBlocs.values.toList(),
-        formBloc: event.formBloc,
-      );
-    } else if (event is UpdateExtraDataToGroupFieldBloc<ExtraData>) {
-      yield state._copyWith(
-        extraData: Param(event.extraData),
-      );
+  /// See [FieldBloc.removeFormBloc]
+  @override
+  void removeFormBloc(FormBloc formBloc) {
+    if (state.formBloc == formBloc) {
+      emit(state._copyWith(
+        formBloc: Param(null),
+      ));
     }
   }
 
