@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:form_bloc/form_bloc.dart';
 
-typedef DefaultFieldBlocErrorBuilder = String? Function(
+typedef DefaultFieldBlocErrorBuilder = String Function(
   BuildContext context,
   Object? error,
   FieldBloc fieldBloc,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 
 class DefaultFieldBlocBuilderTextStyle extends StatelessWidget {
@@ -15,12 +16,19 @@ class DefaultFieldBlocBuilderTextStyle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final formStyle = FormTheme.of(context);
+
     return DefaultTextStyle(
-      style: style ??
-          Style.getDefaultTextStyle(
-            context: context,
-            isEnabled: isEnabled,
-          )!,
+      style: Style.resolveTextStyle(
+        isEnabled: isEnabled,
+        style: style ?? formStyle.textStyle ?? theme.textTheme.subtitle1!,
+        color: formStyle.textColor ??
+            SimpleMaterialStateProperty(
+              normal: theme.textTheme.subtitle1!.color,
+              disabled: theme.disabledColor,
+            ),
+      ),
       child: child,
     );
   }
@@ -39,7 +47,8 @@ class DefaultFieldBlocBuilderPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? Style.defaultPadding,
+      padding:
+          padding ?? FormTheme.of(context).padding ?? FormTheme.defaultPadding,
       child: child,
     );
   }

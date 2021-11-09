@@ -7,6 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
+import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
+import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -87,10 +89,12 @@ class TextFieldBlocBuilder extends StatefulWidget {
     TextInputType? keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
-    this.style,
+    @Deprecated('Use textStyle') TextStyle? style,
+    TextStyle? textStyle,
+    this.textColor,
     this.strutStyle,
     this.obscureText,
-    this.textAlign = TextAlign.start,
+    this.textAlign,
     this.textAlignVertical,
     this.textDirection,
     this.showCursor,
@@ -134,9 +138,9 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.toolbarOptions,
     this.enableSuggestions = true,
     this.animateWhenCanShow = true,
-    this.obscureTextTrueIcon = const Icon(Icons.visibility),
-    this.obscureTextFalseIcon = const Icon(Icons.visibility_off),
-    this.clearTextIcon = const Icon(Icons.clear),
+    this.obscureTextTrueIcon,
+    this.obscureTextFalseIcon,
+    this.clearTextIcon,
     this.autofillHints,
     this.asyncValidatingIcon = const SizedBox(
       height: 24,
@@ -163,6 +167,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
             maxLength > 0),
         keyboardType = keyboardType ??
             (maxLines == 1 ? TextInputType.text : TextInputType.multiline),
+        textStyle = textStyle ?? style,
         super(key: key);
 
   /// {@template flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -393,14 +398,16 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// This text style is also used as the base style for the [decoration].
   ///
-  /// If null, defaults to the `subhead` text style from the current [Theme].
-  final TextStyle? style;
+  /// If null, defaults to the `subtitle` text style from the current [Theme].
+  final TextStyle? textStyle;
+  final MaterialStateProperty<Color?>? textColor;
 
   /// {@macro flutter.widgets.editableText.strutStyle}
   final StrutStyle? strutStyle;
 
   /// {@macro flutter.widgets.editableText.textAlign}
-  final TextAlign textAlign;
+  /// Defaults [TextAlign.start]
+  final TextAlign? textAlign;
 
   /// {@macro flutter.material.inputDecorator.textAlignVertical}
   final TextAlignVertical? textAlignVertical;
@@ -637,19 +644,19 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// this icon will be displayed when obscure text is `true`.
   ///
   /// Default: `Icon(Icons.visibility)`
-  final Widget obscureTextTrueIcon;
+  final Widget? obscureTextTrueIcon;
 
   /// When [suffixButton] is [SuffixButton.obscureText],
   /// this icon will be displayed when obscure text is `false`.
   ///
   /// Default: `const Icon(Icons.visibility_off)`
-  final Widget obscureTextFalseIcon;
+  final Widget? obscureTextFalseIcon;
 
   /// When [suffixButton] is [SuffixButton.clearText],
   /// this icon will be displayed.
   ///
   /// Default: `const Icon(Icons.clear)`
-  final Widget clearTextIcon;
+  final Widget? clearTextIcon;
 
   /// When [suffixButton] is [SuffixButton.asyncValidating],
   /// this icon will be displayed.
@@ -669,6 +676,35 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// ```
   final Widget asyncValidatingIcon;
   final Iterable<String>? autofillHints;
+
+  TextFieldTheme themeStyleOf(BuildContext context) {
+    final theme = Theme.of(context);
+    final formTheme = FormTheme.of(context);
+    final fieldTheme = formTheme.textTheme;
+    final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
+
+    return TextFieldTheme(
+      decorationTheme: resolver.decorationTheme,
+      textStyle: textStyle ?? resolver.textStyle,
+      textColor: textColor ?? resolver.textColor,
+      textAlign: textAlign ?? fieldTheme.textAlign ?? TextAlign.start,
+      clearIcon:
+          clearTextIcon ?? fieldTheme.clearIcon ?? const Icon(Icons.clear),
+      obscureTrueIcon: obscureTextTrueIcon ??
+          fieldTheme.obscureTrueIcon ??
+          const Icon(Icons.visibility),
+      obscureFalseIcon: obscureTextFalseIcon ??
+          fieldTheme.obscureFalseIcon ??
+          const Icon(Icons.visibility_off),
+      suggestionsTextStyle: fieldTheme.suggestionsTextStyle ??
+          theme.textTheme.subtitle1!.copyWith(
+            color: ThemeData.estimateBrightnessForColor(theme.canvasColor) ==
+                    Brightness.dark
+                ? Colors.white
+                : Colors.grey[800],
+          ),
+    );
+  }
 
   @override
   _TextFieldBlocBuilderState createState() => _TextFieldBlocBuilderState();
@@ -704,8 +740,6 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     super.dispose();
   }
 
-  int i = 0;
-
   /// Disable editing when the state of the FormBloc is [FormBlocSubmitting].
   void _textControllerListener() {
     if (widget.textFieldBloc.state.formBloc?.state is FormBlocSubmitting) {
@@ -739,6 +773,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    final fieldTheme = widget.themeStyleOf(context);
+
     return CanShowFieldBlocBuilder(
       fieldBloc: widget.textFieldBloc,
       animate: widget.animateWhenCanShow,
@@ -757,8 +793,12 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               _fixControllerTextValue(state.value);
             }
             return DefaultFieldBlocBuilderPadding(
-              padding: widget.padding as EdgeInsets?,
-              child: _buildTextField(state: state, isEnabled: isEnabled),
+              padding: widget.padding,
+              child: _buildTextField(
+                state: state,
+                isEnabled: isEnabled,
+                fieldTheme: fieldTheme,
+              ),
             );
           },
         );
@@ -766,7 +806,10 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     );
   }
 
-  InputDecoration _buildDecoration(TextFieldBlocState state) {
+  InputDecoration _buildDecoration(
+    TextFieldTheme fieldTheme,
+    TextFieldBlocState state,
+  ) {
     InputDecoration decoration = widget.decoration;
     if (widget.suffixButton != null) {
       switch (widget.suffixButton!) {
@@ -776,8 +819,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               suffixIcon: InkWell(
                   borderRadius: BorderRadius.circular(25),
                   child: _obscureText!
-                      ? widget.obscureTextTrueIcon
-                      : widget.obscureTextFalseIcon,
+                      ? fieldTheme.obscureTrueIcon!
+                      : fieldTheme.obscureFalseIcon!,
                   onTap: () {
                     setState(() {
                       _obscureText = !_obscureText!;
@@ -790,7 +833,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
           decoration = decoration.copyWith(
             suffixIcon: InkWell(
               borderRadius: BorderRadius.circular(25),
-              child: widget.clearTextIcon,
+              child: fieldTheme.clearIcon!,
               onTap: () {
                 widget.textFieldBloc.clear();
               },
@@ -808,7 +851,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
       }
     }
 
-    return decoration.copyWith(
+    decoration = decoration.copyWith(
       errorText: Style.getErrorText(
         context: context,
         errorBuilder: widget.errorBuilder,
@@ -816,15 +859,20 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         fieldBloc: widget.textFieldBloc,
       ),
     );
+
+    return decoration.applyDefaults(fieldTheme.decorationTheme!);
   }
 
-  Widget _buildTextField(
-      {required TextFieldBlocState state, required bool isEnabled}) {
+  Widget _buildTextField({
+    required TextFieldTheme fieldTheme,
+    required TextFieldBlocState state,
+    required bool isEnabled,
+  }) {
     return TypeAheadField<String>(
       textFieldConfiguration: TextFieldConfiguration<String>(
         controller: _controller,
         autofillHints: widget.autofillHints,
-        decoration: _buildDecoration(state),
+        decoration: _buildDecoration(fieldTheme, state),
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction != null
             ? widget.textInputAction
@@ -832,15 +880,12 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
                 ? TextInputAction.next
                 : null,
         textCapitalization: widget.textCapitalization,
-        style: isEnabled
-            ? widget.style
-            : widget.style != null
-                ? widget.style!.copyWith(color: Theme.of(context).disabledColor)
-                : Theme.of(context)
-                    .textTheme
-                    .subtitle1!
-                    .copyWith(color: Theme.of(context).disabledColor),
-        textAlign: widget.textAlign,
+        style: Style.resolveTextStyle(
+          isEnabled: isEnabled,
+          style: fieldTheme.textStyle!,
+          color: fieldTheme.textColor!,
+        ),
+        textAlign: fieldTheme.textAlign!,
         textDirection: widget.textDirection,
         autofocus: widget.autofocus,
         obscureText: _obscureText,
@@ -904,14 +949,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               padding: _kMenuItemPadding,
               child: Text(
                 'No Items Found!',
-                style: widget.suggestionTextStyle ??
-                    Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: ThemeData.estimateBrightnessForColor(
-                                      Theme.of(context).canvasColor) ==
-                                  Brightness.dark
-                              ? Colors.white
-                              : Colors.grey[800],
-                        ),
+                style: fieldTheme.suggestionsTextStyle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -931,14 +969,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
           padding: _kMenuItemPadding,
           child: Text(
             suggestion,
-            style: widget.suggestionTextStyle ??
-                Theme.of(context).textTheme.subtitle1!.copyWith(
-                      color: ThemeData.estimateBrightnessForColor(
-                                  Theme.of(context).canvasColor) ==
-                              Brightness.dark
-                          ? Colors.white
-                          : Colors.grey[800],
-                    ),
+            style: fieldTheme.suggestionsTextStyle,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
