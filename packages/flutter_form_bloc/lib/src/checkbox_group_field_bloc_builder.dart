@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/shared/field_item.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -37,7 +38,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
-  final FieldBlocStringItemBuilder<Value> itemBuilder;
+  final FieldItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
@@ -160,7 +161,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   Widget _buildCheckboxes(
     MultiSelectFieldBlocState<Value, dynamic> state,
-    bool isEnabled,
+    bool isFieldEnabled,
     CheckboxFieldTheme fieldTheme,
   ) {
     return ListView.builder(
@@ -170,6 +171,9 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
       itemCount: state.items.length,
       itemBuilder: (context, index) {
         final item = state.items[index];
+        final fieldItem = itemBuilder(context, state.items[index]);
+        final isEnabled = isFieldEnabled && fieldItem.isEnabled;
+
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Checkbox(
@@ -183,17 +187,18 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
                   } else {
                     multiSelectFieldBloc.select(item);
                   }
+                  fieldItem.onTap?.call();
                 },
               ),
             ),
           ),
-          child: Text(
-            itemBuilder(context, state.items[index]),
+          child: DefaultTextStyle(
             style: Style.resolveTextStyle(
               isEnabled: isEnabled,
               style: fieldTheme.textStyle!,
               color: fieldTheme.textColor!,
             ),
+            child: fieldItem.child,
           ),
         );
       },

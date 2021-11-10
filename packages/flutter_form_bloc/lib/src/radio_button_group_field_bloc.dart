@@ -31,7 +31,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   final SelectFieldBloc<Value, dynamic> selectFieldBloc;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
-  final FieldBlocStringItemBuilder<Value> itemBuilder;
+  final FieldItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;
@@ -135,13 +135,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   Widget _buildRadioButtons(
     SelectFieldBlocState<Value, dynamic> state,
     RadioFieldTheme fieldTheme,
-    bool isEnable,
+    bool isFieldEnabled,
   ) {
-    final onChanged = fieldBlocBuilderOnChange<Value?>(
-      isEnabled: isEnabled,
-      nextFocusNode: nextFocusNode,
-      onChanged: selectFieldBloc.updateValue,
-    );
     return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
@@ -149,6 +144,17 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
       itemCount: state.items.length,
       itemBuilder: (context, index) {
         final item = state.items[index];
+        final fieldItem = itemBuilder(context, state.items[index]);
+        final isEnabled = isFieldEnabled && fieldItem.isEnabled;
+
+        final onChanged = fieldBlocBuilderOnChange<Value?>(
+          isEnabled: isEnabled,
+          nextFocusNode: nextFocusNode,
+          onChanged: (value) {
+            selectFieldBloc.updateValue(value);
+            fieldItem.onTap?.call();
+          },
+        );
 
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
@@ -173,13 +179,13 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
               ],
             ),
           ),
-          child: Text(
-            itemBuilder(context, item),
+          child: DefaultTextStyle(
             style: Style.resolveTextStyle(
               isEnabled: isEnabled,
               style: fieldTheme.textStyle!,
               color: fieldTheme.textColor!,
             ),
+            child: fieldItem.child,
           ),
         );
       },

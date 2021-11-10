@@ -38,7 +38,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// This function takes the `context` and the `value`
   /// and must return a String that represent that `value`.
   /// {@endtemplate}
-  final FieldBlocStringItemBuilder<Value> itemBuilder;
+  final FieldItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
@@ -182,9 +182,13 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
           ),
         ),
       ...items.map<DropdownMenuItem<Value>>((Value value) {
+        final fieldItem = itemBuilder(context, value);
+
         return DropdownMenuItem<Value>(
           value: value,
-          child: Text(itemBuilder(context, value)),
+          enabled: fieldItem.isEnabled,
+          onTap: fieldItem.onTap,
+          child: fieldItem.child,
         );
       })
     ];
