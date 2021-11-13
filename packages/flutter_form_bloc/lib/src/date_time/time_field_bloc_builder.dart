@@ -114,6 +114,9 @@ class TimeFieldBlocBuilder extends StatelessWidget {
       clearIcon: clearIcon,
       nextFocusNode: nextFocusNode,
       focusNode: focusNode,
+      textAlign: textAlign,
+      textStyle: textStyle,
+      textColor: textColor,
     );
   }
 }

@@ -128,6 +128,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
       focusNode: focusNode,
       textAlign: textAlign,
       textStyle: textStyle,
+      textColor: textColor,
     );
   }
 }
