@@ -394,12 +394,20 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.textCapitalization}
   final TextCapitalization textCapitalization;
 
+  /// {@template flutter_form_bloc.FieldBlocBuilder.textStyle}
   /// The style to use for the text being edited.
   ///
   /// This text style is also used as the base style for the [decoration].
   ///
   /// If null, defaults to the `subtitle` text style from the current [Theme].
+  /// {@endtemplate}
   final TextStyle? textStyle;
+
+  /// {@template flutter_form_bloc.FieldBlocBuilder.textColor}
+  /// It is the color of the text
+  ///
+  /// You can receive this state: [MaterialState.disabled]
+  /// {@endtemplate}
   final MaterialStateProperty<Color?>? textColor;
 
   /// {@macro flutter.widgets.editableText.strutStyle}

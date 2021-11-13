@@ -36,7 +36,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemBuilder}
   final FieldItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
@@ -57,8 +57,11 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
-  final MaterialStateProperty<Color>? textColor;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
+  final MaterialStateProperty<Color?>? textColor;
 
   // ========== [Checkbox] ==========
 

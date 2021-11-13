@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
@@ -12,6 +13,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     Key? key,
     required this.selectFieldBloc,
     required this.itemBuilder,
+    this.selectedItemBuilder,
     this.enableOnlyWhenFormBlocCanSubmit = false,
     this.isEnabled = true,
     this.padding,
@@ -34,11 +36,13 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;
 
-  /// {@template flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
-  /// This function takes the `context` and the `value`
-  /// and must return a String that represent that `value`.
-  /// {@endtemplate}
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemBuilder}
   final FieldItemBuilder<Value> itemBuilder;
+
+  /// This function is invoked to render the selected item
+  ///
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemBuilder}
+  final ItemBuilder<Value>? selectedItemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
@@ -76,9 +80,10 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// Called when the user selects an item.
   final ValueChanged<Value?>? onChanged;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
   DropdownFieldTheme themeStyleOf(BuildContext context) {
@@ -145,10 +150,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                         onChanged?.call(value);
                       },
                     ),
-                    items: fieldState.items.isEmpty
-                        ? null
-                        : _buildItems(
-                            context, fieldTheme, fieldState.items, false),
+                    items: _buildItems(
+                        context, fieldTheme, fieldState.items, false),
                     selectedItemBuilder: (context) {
                       return _buildItems(
                           context, fieldTheme, fieldState.items, true);
@@ -176,6 +179,9 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     Iterable<Value> items,
     bool isSelected,
   ) {
+    final builder =
+        (isSelected ? this.selectedItemBuilder : itemBuilder) ?? itemBuilder;
+
     return [
       if (showEmptyItem)
         DropdownMenuItem<Value>(
@@ -185,9 +191,22 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
             style: isSelected ? decoration.hintStyle : null,
           ),
         ),
-      ...items.map<DropdownMenuItem<Value>>((Value value) {
-        final fieldItem = itemBuilder(context, value);
+      ...items.map<DropdownMenuItem<Value>>((value) {
+        final fieldItem = builder(context, value);
 
+        if (fieldItem is! FieldItem) {
+          return DropdownMenuItem<Value>(
+            value: value,
+            child: DefaultTextStyle(
+              style: Style.resolveTextStyle(
+                isEnabled: isEnabled,
+                style: fieldTheme.textStyle!,
+                color: fieldTheme.textColor!,
+              ),
+              child: fieldItem,
+            ),
+          );
+        }
         return DropdownMenuItem<Value>(
           value: value,
           enabled: fieldItem.isEnabled,
@@ -195,7 +214,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
           onTap: fieldItem.onTap,
           child: DefaultTextStyle(
             style: Style.resolveTextStyle(
-              isEnabled: isSelected ? isEnabled : fieldItem.isEnabled,
+              isEnabled: fieldItem.isEnabled,
               style: fieldTheme.textStyle!,
               color: fieldTheme.textColor!,
             ),

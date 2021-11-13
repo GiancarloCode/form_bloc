@@ -64,8 +64,11 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
-  final MaterialStateProperty<Color>? textColor;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
+  final MaterialStateProperty<Color?>? textColor;
 
   // ========== [Checkbox] ==========
 

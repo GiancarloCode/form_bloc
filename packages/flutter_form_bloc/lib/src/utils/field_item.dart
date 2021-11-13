@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Signature to create a field item
+/// {@template flutter_form_bloc.FieldBlocBuilder.itemBuilder}
+/// This function takes the `context` and the `value`
+/// and must return a [FieldItem] that represent that `value`.
+/// {@endtemplate}
 typedef FieldItemBuilder<T> = FieldItem Function(BuildContext context, T value);
 
 /// Class that defines the properties of an item contained in a field

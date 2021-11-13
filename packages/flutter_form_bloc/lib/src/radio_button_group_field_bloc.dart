@@ -30,7 +30,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final SelectFieldBloc<Value, dynamic> selectFieldBloc;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemBuilder}
   final FieldItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
@@ -58,7 +58,10 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
   // ========== [Radio] ==========
