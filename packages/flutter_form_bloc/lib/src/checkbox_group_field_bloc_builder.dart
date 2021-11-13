@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
-import 'package:flutter_form_bloc/src/shared/field_item.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -130,26 +129,10 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
               return DefaultFieldBlocBuilderPadding(
                 padding: padding,
-                child: Stack(
-                  children: <Widget>[
-                    InputDecorator(
-                      decoration: _buildDecoration(
-                          context, state, isEnabled, fieldTheme),
-                      child: Opacity(
-                        opacity: 0.0,
-                        child: _buildCheckboxes(state, isEnabled, fieldTheme),
-                      ),
-                    ),
-                    InputDecorator(
-                      decoration: Style.inputDecorationWithoutBorder.copyWith(
-                        contentPadding: Style.getGroupFieldBlocContentPadding(
-                          isVisible: true,
-                          decoration: decoration,
-                        ),
-                      ),
-                      child: _buildCheckboxes(state, isEnabled, fieldTheme),
-                    ),
-                  ],
+                child: GroupInputDecorator(
+                  decoration:
+                      _buildDecoration(context, state, isEnabled, fieldTheme),
+                  child: _buildCheckboxes(state, isEnabled, fieldTheme),
                 ),
               );
             },
@@ -165,7 +148,6 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     CheckboxFieldTheme fieldTheme,
   ) {
     return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       itemCount: state.items.length,
@@ -198,7 +180,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
               style: fieldTheme.textStyle!,
               color: fieldTheme.textColor!,
             ),
-            child: fieldItem.child,
+            child: fieldItem,
           ),
         );
       },
@@ -211,25 +193,17 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     bool isEnabled,
     CheckboxFieldTheme fieldTheme,
   ) {
-    final decoration = this.decoration.copyWith(
-          suffix: this.decoration.suffix != null ? SizedBox.shrink() : null,
-          prefixIcon:
-              this.decoration.prefixIcon != null ? SizedBox.shrink() : null,
-          prefix: this.decoration.prefix != null ? SizedBox.shrink() : null,
-          suffixIcon:
-              this.decoration.suffixIcon != null ? SizedBox.shrink() : null,
-          enabled: isEnabled,
-          contentPadding: Style.getGroupFieldBlocContentPadding(
-            isVisible: false,
-            decoration: this.decoration,
-          ),
-          errorText: Style.getErrorText(
-            context: context,
-            errorBuilder: errorBuilder,
-            fieldBlocState: state,
-            fieldBloc: multiSelectFieldBloc,
-          ),
-        );
+    var decoration = this.decoration;
+
+    decoration = decoration.copyWith(
+      enabled: isEnabled,
+      errorText: Style.getErrorText(
+        context: context,
+        errorBuilder: errorBuilder,
+        fieldBlocState: state,
+        fieldBloc: multiSelectFieldBloc,
+      ),
+    );
 
     return decoration.applyDefaults(fieldTheme.decorationTheme!);
   }

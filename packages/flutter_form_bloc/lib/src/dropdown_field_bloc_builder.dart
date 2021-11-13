@@ -137,11 +137,6 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                             child: Text(decoration.hintText!),
                           )
                         : null,
-                    style: Style.resolveTextStyle(
-                      isEnabled: isEnabled,
-                      style: fieldTheme.textStyle!,
-                      color: fieldTheme.textColor!,
-                    ),
                     onChanged: fieldBlocBuilderOnChange<Value?>(
                       isEnabled: isEnabled,
                       nextFocusNode: nextFocusNode,
@@ -152,11 +147,19 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                     ),
                     items: fieldState.items.isEmpty
                         ? null
-                        : _buildItems(context, fieldState.items, false),
+                        : _buildItems(
+                            context, fieldTheme, fieldState.items, false),
                     selectedItemBuilder: (context) {
-                      return _buildItems(context, fieldState.items, true);
+                      return _buildItems(
+                          context, fieldTheme, fieldState.items, true);
                     },
-                    icon: decoration.suffixIcon ?? fieldTheme.moreIcon,
+                    // Simulates the normal alignment of the suffixIcon
+                    icon: Transform.translate(
+                      offset: Offset(6.0, 0.0),
+                      child: decoration.suffixIcon ??
+                          fieldTheme.moreIcon ??
+                          const Icon(Icons.arrow_drop_down),
+                    ),
                   ),
                 ),
               ),
@@ -169,6 +172,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
 
   List<DropdownMenuItem<Value>> _buildItems(
     BuildContext context,
+    DropdownFieldTheme fieldTheme,
     Iterable<Value> items,
     bool isSelected,
   ) {
@@ -187,8 +191,16 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         return DropdownMenuItem<Value>(
           value: value,
           enabled: fieldItem.isEnabled,
+          alignment: fieldItem.alignment,
           onTap: fieldItem.onTap,
-          child: fieldItem.child,
+          child: DefaultTextStyle(
+            style: Style.resolveTextStyle(
+              isEnabled: isSelected ? isEnabled : fieldItem.isEnabled,
+              style: fieldTheme.textStyle!,
+              color: fieldTheme.textColor!,
+            ),
+            child: fieldItem.child,
+          ),
         );
       })
     ];
@@ -204,7 +216,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
 
     decoration = decoration.copyWith(
       enabled: isEnabled,
-      contentPadding: EdgeInsets.only(left: 16.0),
+      contentPadding: const EdgeInsets.only(left: 16.0),
       errorText: Style.getErrorText(
         context: context,
         errorBuilder: errorBuilder,

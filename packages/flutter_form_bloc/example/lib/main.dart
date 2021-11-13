@@ -158,6 +158,7 @@ class AllFieldsForm extends StatelessWidget {
                             prefixIcon: Icon(Icons.sentiment_satisfied),
                           ),
                           itemBuilder: (context, value) => FieldItem(
+                            isEnabled: value != 'Option 1',
                             child: Text(value),
                           ),
                         ),
@@ -215,17 +216,11 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         SwitchFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean2,
-                          body: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('CheckboxFieldBlocBuilder'),
-                          ),
+                          body: Text('CheckboxFieldBlocBuilder'),
                         ),
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean1,
-                          body: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('CheckboxFieldBlocBuilder'),
-                          ),
+                          body: Text('CheckboxFieldBlocBuilder'),
                         ),
                         BlocBuilder<InputFieldBloc<File?, String>,
                                 InputFieldBlocState<File?, String>>(

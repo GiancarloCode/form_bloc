@@ -4,9 +4,6 @@ import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
 class Style {
-  static const EdgeInsets defaultInputDecorationContentPadding =
-      EdgeInsets.fromLTRB(15, 14, 14, 12);
-
   static const InputDecoration inputDecorationWithoutBorder = InputDecoration(
     border: InputBorder.none,
     enabledBorder: InputBorder.none,
@@ -14,7 +11,7 @@ class Style {
     disabledBorder: InputBorder.none,
     focusedBorder: InputBorder.none,
     focusedErrorBorder: InputBorder.none,
-    contentPadding: defaultInputDecorationContentPadding,
+    contentPadding: EdgeInsets.zero,
   );
 
   static String? getErrorText({
@@ -54,8 +51,8 @@ class Style {
     required bool isVisible,
     required InputDecoration decoration,
   }) {
-    final contentPadding =
-        decoration.contentPadding as EdgeInsets? ?? EdgeInsets.all(0);
+    final contentPadding = decoration.contentPadding as EdgeInsets? ??
+        const EdgeInsets.symmetric(vertical: 4.0);
 
     if (isVisible) {
       return EdgeInsets.fromLTRB(
@@ -73,10 +70,4 @@ class Style {
       );
     }
   }
-}
-
-class Param<T> {
-  final T value;
-
-  Param(this.value);
 }

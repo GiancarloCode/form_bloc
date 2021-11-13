@@ -118,8 +118,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
               return DefaultFieldBlocBuilderPadding(
                 padding: padding,
-                child: InputDecorator(
-                  isEmpty: false,
+                child: GroupInputDecorator(
                   decoration:
                       _buildDecoration(context, fieldTheme, state, isEnabled),
                   child: _buildRadioButtons(state, fieldTheme, isEnabled),
@@ -138,7 +137,6 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     bool isFieldEnabled,
   ) {
     return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       itemCount: state.items.length,
@@ -158,25 +156,11 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
-            prefixIcon: Stack(
-              children: <Widget>[
-                Radio<Value>(
-                  value: item,
-                  groupValue: state.value,
-                  onChanged: onChanged,
-                ),
-                if (canDeselect && item == state.value)
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      unselectedWidgetColor: Colors.transparent,
-                    ),
-                    child: Radio<Value?>(
-                      value: null,
-                      groupValue: state.value,
-                      onChanged: onChanged,
-                    ),
-                  )
-              ],
+            prefixIcon: Radio<Value>(
+              value: item,
+              groupValue: state.value,
+              toggleable: canDeselect,
+              onChanged: onChanged,
             ),
           ),
           child: DefaultTextStyle(
@@ -185,7 +169,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
               style: fieldTheme.textStyle!,
               color: fieldTheme.textColor!,
             ),
-            child: fieldItem.child,
+            child: fieldItem,
           ),
         );
       },
@@ -201,15 +185,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     var decoration = this.decoration;
 
     decoration = decoration.copyWith(
-      suffix: this.decoration.suffix != null ? SizedBox.shrink() : null,
-      prefixIcon: this.decoration.prefixIcon != null ? SizedBox.shrink() : null,
-      prefix: this.decoration.prefix != null ? SizedBox.shrink() : null,
-      suffixIcon: this.decoration.suffixIcon != null ? SizedBox.shrink() : null,
       enabled: isEnable,
-      contentPadding: Style.getGroupFieldBlocContentPadding(
-        isVisible: false,
-        decoration: decoration,
-      ),
       errorText: Style.getErrorText(
         context: context,
         errorBuilder: errorBuilder,
