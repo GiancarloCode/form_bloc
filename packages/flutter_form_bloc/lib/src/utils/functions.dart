@@ -2,9 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_bloc/form_bloc.dart';
 
-typedef FieldBlocStringItemBuilder<Value> = String Function(
-    BuildContext context, Value value);
-
 ValueChanged<T>? fieldBlocBuilderOnChange<T>({
   required bool isEnabled,
   required FocusNode? nextFocusNode,

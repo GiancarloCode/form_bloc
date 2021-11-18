@@ -53,3 +53,58 @@ class DefaultFieldBlocBuilderPadding extends StatelessWidget {
     );
   }
 }
+
+/// Removes the suffix from the decoration, moves the label to the right as
+/// if the suffix were present and keeps the error shifted slightly to the right
+class GroupInputDecorator extends StatelessWidget {
+  final InputDecoration decoration;
+  final Widget child;
+
+  const GroupInputDecorator({
+    Key? key,
+    required this.decoration,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        // Shows the shifted error of common field padding
+        InputDecorator(
+          decoration: decoration.copyWith(
+            // Align the label with the texts of the children
+            prefixIcon: const SizedBox.shrink(),
+            prefix: const SizedBox.shrink(),
+            contentPadding: Style.getGroupFieldBlocContentPadding(
+              isVisible: false,
+              decoration: decoration,
+            ),
+          ),
+          child: Opacity(
+            opacity: 0.0,
+            child: child,
+          ),
+        ),
+        InputDecorator(
+          decoration: Style.inputDecorationWithoutBorder.copyWith(
+            // Removes the prefix and the space it would occupy
+            prefixIcon: const SizedBox.shrink(),
+            prefix: const SizedBox.shrink(),
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 0.0,
+              minHeight: 0.0,
+              maxHeight: 0.0,
+              maxWidth: 0.0,
+            ),
+            contentPadding: Style.getGroupFieldBlocContentPadding(
+              isVisible: true,
+              decoration: decoration,
+            ),
+          ),
+          child: child,
+        ),
+      ],
+    );
+  }
+}

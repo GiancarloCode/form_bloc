@@ -157,20 +157,27 @@ class AllFieldsForm extends StatelessWidget {
                             labelText: 'DropdownFieldBlocBuilder',
                             prefixIcon: Icon(Icons.sentiment_satisfied),
                           ),
-                          itemBuilder: (context, value) => value,
+                          itemBuilder: (context, value) => FieldItem(
+                            isEnabled: value != 'Option 1',
+                            child: Text(value),
+                          ),
                         ),
                         RadioButtonGroupFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select2,
                           decoration: InputDecoration(
                             labelText: 'RadioButtonGroupFieldBlocBuilder',
                           ),
-                          itemBuilder: (context, item) => item,
+                          itemBuilder: (context, item) => FieldItem(
+                            child: Text(item),
+                          ),
                         ),
                         CheckboxGroupFieldBlocBuilder<String>(
                           multiSelectFieldBloc: formBloc.multiSelect1,
-                          itemBuilder: (context, item) => item,
                           decoration: InputDecoration(
                             labelText: 'CheckboxGroupFieldBlocBuilder',
+                          ),
+                          itemBuilder: (context, item) => FieldItem(
+                            child: Text(item),
                           ),
                         ),
                         DateTimeFieldBlocBuilder(
@@ -209,17 +216,11 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         SwitchFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean2,
-                          body: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('CheckboxFieldBlocBuilder'),
-                          ),
+                          body: Text('CheckboxFieldBlocBuilder'),
                         ),
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean1,
-                          body: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('CheckboxFieldBlocBuilder'),
-                          ),
+                          body: Text('CheckboxFieldBlocBuilder'),
                         ),
                         BlocBuilder<InputFieldBloc<File?, String>,
                                 InputFieldBlocState<File?, String>>(

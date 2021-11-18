@@ -75,9 +75,10 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textAlign}
   final TextAlign? textAlign;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.style}
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
   final DateTime initialDate;
@@ -128,6 +129,7 @@ class DateTimeFieldBlocBuilder extends StatelessWidget {
       focusNode: focusNode,
       textAlign: textAlign,
       textStyle: textStyle,
+      textColor: textColor,
     );
   }
 }

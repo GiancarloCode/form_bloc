@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme_provider.dart';
+import 'package:flutter_form_bloc/src/utils/field_bloc_builder_control_affinity.dart';
 
 class FormTheme {
   /// If [FieldTheme.textStyle] is null this value is used

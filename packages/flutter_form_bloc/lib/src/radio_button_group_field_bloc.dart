@@ -30,8 +30,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
   final SelectFieldBloc<Value, dynamic> selectFieldBloc;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
-  final FieldBlocStringItemBuilder<Value> itemBuilder;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemBuilder}
+  final FieldItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;
@@ -58,7 +58,10 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
   // ========== [Radio] ==========
@@ -118,8 +121,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
               return DefaultFieldBlocBuilderPadding(
                 padding: padding,
-                child: InputDecorator(
-                  isEmpty: false,
+                child: GroupInputDecorator(
                   decoration:
                       _buildDecoration(context, fieldTheme, state, isEnabled),
                   child: _buildRadioButtons(state, fieldTheme, isEnabled),
@@ -135,51 +137,42 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   Widget _buildRadioButtons(
     SelectFieldBlocState<Value, dynamic> state,
     RadioFieldTheme fieldTheme,
-    bool isEnable,
+    bool isFieldEnabled,
   ) {
-    final onChanged = fieldBlocBuilderOnChange<Value?>(
-      isEnabled: isEnabled,
-      nextFocusNode: nextFocusNode,
-      onChanged: selectFieldBloc.updateValue,
-    );
     return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       itemCount: state.items.length,
       itemBuilder: (context, index) {
         final item = state.items[index];
+        final fieldItem = itemBuilder(context, state.items[index]);
+        final isEnabled = isFieldEnabled && fieldItem.isEnabled;
+
+        final onChanged = fieldBlocBuilderOnChange<Value?>(
+          isEnabled: isEnabled,
+          nextFocusNode: nextFocusNode,
+          onChanged: (value) {
+            selectFieldBloc.updateValue(value);
+            fieldItem.onTap?.call();
+          },
+        );
 
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
-            prefixIcon: Stack(
-              children: <Widget>[
-                Radio<Value>(
-                  value: item,
-                  groupValue: state.value,
-                  onChanged: onChanged,
-                ),
-                if (canDeselect && item == state.value)
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      unselectedWidgetColor: Colors.transparent,
-                    ),
-                    child: Radio<Value?>(
-                      value: null,
-                      groupValue: state.value,
-                      onChanged: onChanged,
-                    ),
-                  )
-              ],
+            prefixIcon: Radio<Value>(
+              value: item,
+              groupValue: state.value,
+              toggleable: canDeselect,
+              onChanged: onChanged,
             ),
           ),
-          child: Text(
-            itemBuilder(context, item),
+          child: DefaultTextStyle(
             style: Style.resolveTextStyle(
               isEnabled: isEnabled,
               style: fieldTheme.textStyle!,
               color: fieldTheme.textColor!,
             ),
+            child: fieldItem,
           ),
         );
       },
@@ -195,15 +188,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     var decoration = this.decoration;
 
     decoration = decoration.copyWith(
-      suffix: this.decoration.suffix != null ? SizedBox.shrink() : null,
-      prefixIcon: this.decoration.prefixIcon != null ? SizedBox.shrink() : null,
-      prefix: this.decoration.prefix != null ? SizedBox.shrink() : null,
-      suffixIcon: this.decoration.suffixIcon != null ? SizedBox.shrink() : null,
       enabled: isEnable,
-      contentPadding: Style.getGroupFieldBlocContentPadding(
-        isVisible: false,
-        decoration: decoration,
-      ),
       errorText: Style.getErrorText(
         context: context,
         errorBuilder: errorBuilder,

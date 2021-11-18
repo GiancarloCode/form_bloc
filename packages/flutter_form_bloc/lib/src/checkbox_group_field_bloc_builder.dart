@@ -36,8 +36,8 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   final FieldBlocErrorBuilder? errorBuilder;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.stringItemBuilder}
-  final FieldBlocStringItemBuilder<Value> itemBuilder;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemBuilder}
+  final FieldItemBuilder<Value> itemBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
   final bool enableOnlyWhenFormBlocCanSubmit;
@@ -57,8 +57,11 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
-  final MaterialStateProperty<Color>? textColor;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
+  final MaterialStateProperty<Color?>? textColor;
 
   // ========== [Checkbox] ==========
 
@@ -129,26 +132,10 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
               return DefaultFieldBlocBuilderPadding(
                 padding: padding,
-                child: Stack(
-                  children: <Widget>[
-                    InputDecorator(
-                      decoration: _buildDecoration(
-                          context, state, isEnabled, fieldTheme),
-                      child: Opacity(
-                        opacity: 0.0,
-                        child: _buildCheckboxes(state, isEnabled, fieldTheme),
-                      ),
-                    ),
-                    InputDecorator(
-                      decoration: Style.inputDecorationWithoutBorder.copyWith(
-                        contentPadding: Style.getGroupFieldBlocContentPadding(
-                          isVisible: true,
-                          decoration: decoration,
-                        ),
-                      ),
-                      child: _buildCheckboxes(state, isEnabled, fieldTheme),
-                    ),
-                  ],
+                child: GroupInputDecorator(
+                  decoration:
+                      _buildDecoration(context, state, isEnabled, fieldTheme),
+                  child: _buildCheckboxes(state, isEnabled, fieldTheme),
                 ),
               );
             },
@@ -160,16 +147,18 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   Widget _buildCheckboxes(
     MultiSelectFieldBlocState<Value, dynamic> state,
-    bool isEnabled,
+    bool isFieldEnabled,
     CheckboxFieldTheme fieldTheme,
   ) {
     return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 4),
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       itemCount: state.items.length,
       itemBuilder: (context, index) {
         final item = state.items[index];
+        final fieldItem = itemBuilder(context, state.items[index]);
+        final isEnabled = isFieldEnabled && fieldItem.isEnabled;
+
         return InputDecorator(
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Checkbox(
@@ -183,17 +172,18 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
                   } else {
                     multiSelectFieldBloc.select(item);
                   }
+                  fieldItem.onTap?.call();
                 },
               ),
             ),
           ),
-          child: Text(
-            itemBuilder(context, state.items[index]),
+          child: DefaultTextStyle(
             style: Style.resolveTextStyle(
               isEnabled: isEnabled,
               style: fieldTheme.textStyle!,
               color: fieldTheme.textColor!,
             ),
+            child: fieldItem,
           ),
         );
       },
@@ -206,25 +196,17 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     bool isEnabled,
     CheckboxFieldTheme fieldTheme,
   ) {
-    final decoration = this.decoration.copyWith(
-          suffix: this.decoration.suffix != null ? SizedBox.shrink() : null,
-          prefixIcon:
-              this.decoration.prefixIcon != null ? SizedBox.shrink() : null,
-          prefix: this.decoration.prefix != null ? SizedBox.shrink() : null,
-          suffixIcon:
-              this.decoration.suffixIcon != null ? SizedBox.shrink() : null,
-          enabled: isEnabled,
-          contentPadding: Style.getGroupFieldBlocContentPadding(
-            isVisible: false,
-            decoration: this.decoration,
-          ),
-          errorText: Style.getErrorText(
-            context: context,
-            errorBuilder: errorBuilder,
-            fieldBlocState: state,
-            fieldBloc: multiSelectFieldBloc,
-          ),
-        );
+    var decoration = this.decoration;
+
+    decoration = decoration.copyWith(
+      enabled: isEnabled,
+      errorText: Style.getErrorText(
+        context: context,
+        errorBuilder: errorBuilder,
+        fieldBlocState: state,
+        fieldBloc: multiSelectFieldBloc,
+      ),
+    );
 
     return decoration.applyDefaults(fieldTheme.decorationTheme!);
   }

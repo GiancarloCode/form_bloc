@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
-import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -18,6 +17,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
     this.isEnabled = true,
     this.errorBuilder,
     this.padding,
+    this.alignment = AlignmentDirectional.centerStart,
     this.nextFocusNode,
     this.controlAffinity,
     this.dragStartBehavior = DragStartBehavior.start,
@@ -53,6 +53,8 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry? padding;
+
+  final AlignmentGeometry alignment;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
   final FocusNode? nextFocusNode;
@@ -150,12 +152,11 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
                 padding: padding,
                 child: InputDecorator(
                   decoration: Style.inputDecorationWithoutBorder.copyWith(
-                    contentPadding: EdgeInsets.all(0),
-                    prefixIcon: controlAffinity ==
+                    prefixIcon: fieldTheme.controlAffinity ==
                             FieldBlocBuilderControlAffinity.leading
                         ? _buildSwitch(context, state)
                         : null,
-                    suffixIcon: controlAffinity ==
+                    suffixIcon: fieldTheme.controlAffinity ==
                             FieldBlocBuilderControlAffinity.trailing
                         ? _buildSwitch(context, state)
                         : null,
@@ -172,8 +173,11 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
                       style: fieldTheme.textStyle!,
                       color: fieldTheme.textColor!,
                     ),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: 48),
+                    child: Container(
+                      constraints: const BoxConstraints(
+                        minHeight: kMinInteractiveDimension,
+                      ),
+                      alignment: alignment,
                       child: body,
                     ),
                   ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
-import 'package:flutter_form_bloc/src/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -17,6 +16,7 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
     this.isEnabled = true,
     this.errorBuilder,
     this.padding,
+    this.alignment = AlignmentDirectional.centerStart,
     this.nextFocusNode,
     this.animateWhenCanShow = true,
     this.textStyle,
@@ -51,6 +51,8 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry? padding;
 
+  final AlignmentGeometry alignment;
+
   /// {@macro flutter_form_bloc.FieldBlocBuilder.nextFocusNode}
   final FocusNode? nextFocusNode;
 
@@ -62,8 +64,11 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
   /// {@macro  flutter_form_bloc.FieldBlocBuilder.animateWhenCanShow}
   final bool animateWhenCanShow;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
   final TextStyle? textStyle;
-  final MaterialStateProperty<Color>? textColor;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
+  final MaterialStateProperty<Color?>? textColor;
 
   // ========== [Checkbox] ==========
 
@@ -138,7 +143,6 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
                 padding: padding,
                 child: InputDecorator(
                   decoration: Style.inputDecorationWithoutBorder.copyWith(
-                    contentPadding: EdgeInsets.all(0),
                     prefixIcon: fieldTheme.controlAffinity! ==
                             FieldBlocBuilderControlAffinity.leading
                         ? _buildCheckbox(context, state)
@@ -160,8 +164,11 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
                       style: fieldTheme.textStyle!,
                       color: fieldTheme.textColor!,
                     ),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: 48),
+                    child: Container(
+                      constraints: const BoxConstraints(
+                        minHeight: kMinInteractiveDimension,
+                      ),
+                      alignment: alignment,
                       child: body,
                     ),
                   ),
