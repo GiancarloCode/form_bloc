@@ -1,9 +1,6 @@
-import 'package:bloc/bloc.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
-
-import '../utils/my_bloc_delegate.dart';
 
 class _FakeFormBloc extends FormBloc<void, void> {
   @override
@@ -11,7 +8,6 @@ class _FakeFormBloc extends FormBloc<void, void> {
 }
 
 void main() {
-  Bloc.observer = MyBlocObserver();
   // FormBlocDelegate.notifyOnFieldBlocEvent = true;
   // FormBlocDelegate.notifyOnFieldBlocTransition = true;
   group('FieldBloc:', () {

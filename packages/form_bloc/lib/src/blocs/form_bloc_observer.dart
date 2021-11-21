@@ -17,8 +17,6 @@ import 'form/form_bloc.dart';
 /// * [FormBlocObserver.notifyOnFormBlocTransition].
 /// * [FormBlocObserver.notifyOnFormBlocError].
 class FormBlocObserver extends BlocObserver {
-  final BlocObserver _oldBlocObserver;
-
   /// If is `true` every `transition` of any
   /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
@@ -49,8 +47,6 @@ class FormBlocObserver extends BlocObserver {
   /// to [BlocSupervisor.delegate].
   static bool notifyOnFormBlocError = true;
 
-  FormBlocObserver() : _oldBlocObserver = Bloc.observer;
-
   @override
   void onEvent(Bloc bloc, Object? event) {
     var notify = true;
@@ -65,7 +61,6 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onEvent(bloc, event);
       super.onEvent(bloc, event);
     }
   }
@@ -84,7 +79,6 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onChange(cubit, change);
       super.onChange(cubit, change);
     }
   }
@@ -103,7 +97,6 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onTransition(bloc, transition);
       super.onTransition(bloc, transition);
     }
   }
@@ -122,27 +115,7 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onError(cubit, error, stacktrace);
       super.onError(cubit, error, stacktrace);
-    }
-  }
-
-  /// Override the current [BlocSupervisor.delegate]
-  /// with a [FormBlocObserver] for hide `events` and `transitions`
-  /// of any [FieldBloc] or [FormBloc].
-  ///
-  /// But it retains the behavior of the current [BlocSupervisor.delegate].
-  ///
-  /// You can customize using:
-  /// * [FormBlocObserver.notifyOnFieldBlocEvent].
-  /// * [FormBlocObserver.notifyOnFieldBlocTransition].
-  /// * [FormBlocObserver.notifyOnFieldBlocError].
-  /// * [FormBlocObserver.notifyOnFormBlocEvent].
-  /// * [FormBlocObserver.notifyOnFormBlocTransition].
-  /// * [FormBlocObserver.notifyOnFormBlocError].
-  static void overrideDelegateOfBlocSupervisor() {
-    if (Bloc.observer is! FormBlocObserver) {
-      Bloc.observer = FormBlocObserver();
     }
   }
 }

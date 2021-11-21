@@ -12,6 +12,9 @@ import '../field/field_bloc.dart';
 part 'form_event.dart';
 part 'form_state.dart';
 
+typedef FormBlocEmitter<SuccessResponse, FailureResponse>
+    = Emitter<FormBlocState<SuccessResponse, FailureResponse>>;
+
 /// The base class for all `FormBlocs`.
 ///
 /// See complex examples here: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example/lib/forms
@@ -64,6 +67,32 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
                 progress: 0.0,
               )
             : FormBlocLoaded(isEditing: isEditing)) {
+    on<SubmitFormBloc>((event, emit) => _onSubmitFormBloc(emit));
+    on<UpdateFormBlocState<SuccessResponse, FailureResponse>>(
+        (event, emit) => emit(event.state));
+    on<ClearFormBloc>((event, emit) => _onClearFormBloc);
+    on<ReloadFormBloc>((event, emit) async {
+      if (state is! FormBlocLoading) {
+        emit(state.toLoading());
+        await _callInBlocContext(onLoading);
+      }
+    });
+    on<LoadFormBloc>((event, emit) => _callInBlocContext(onLoading));
+    on<CancelSubmissionFormBloc>(
+        (event, emit) => _onCancelSubmissionFormBloc(emit));
+    on<UpdateFormBlocStateIsValid>(
+        (event, emit) => _onUpdateFormBlocStateIsValid(event, emit));
+    on<DeleteFormBloc>((event, emit) => _onDeleteFormBloc(emit));
+    on<RefreshFieldBlocsSubscription>(
+        (event, emit) => _onRefreshFieldBlocsSubscription(event));
+    on<PreviousStepFormBlocEvent>((event, emit) => _onPreviousStep(emit));
+    on<UpdateCurrentStepFormBlocEvent>(
+        (event, emit) => _onUpdateCurrentStepFormBlocEvent(event, emit));
+    on<AddFieldBloc>((event, emit) => _onAddFieldBloc(event, emit));
+    on<AddFieldBlocs>((event, emit) => _onAddFieldBlocs(event, emit));
+    on<RemoveFieldBloc>((event, emit) => _onRemoveFieldBloc(event, emit));
+    on<RemoveFieldBlocs>((event, emit) => _onRemoveFieldBlocs(event, emit));
+
     _callOnLoadingIfNeeded(isLoading);
     _initSetupAreAllFieldsValidSubscription();
   }
@@ -145,46 +174,6 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   void _callOnLoadingIfNeeded(bool isLoading) {
     if (isLoading) {
       add(LoadFormBloc());
-    }
-  }
-
-  @override
-  Stream<FormBlocState<SuccessResponse, FailureResponse>> mapEventToState(
-    FormBlocEvent event,
-  ) async* {
-    if (event is SubmitFormBloc) {
-      yield* _onSubmitFormBloc();
-    } else if (event is UpdateFormBlocState<SuccessResponse, FailureResponse>) {
-      yield event.state;
-    } else if (event is ClearFormBloc) {
-      yield* _onClearFormBloc();
-    } else if (event is ReloadFormBloc) {
-      if (state is! FormBlocLoading) {
-        yield state.toLoading();
-        await _callInBlocContext(onLoading);
-      }
-    } else if (event is LoadFormBloc) {
-      await _callInBlocContext(onLoading);
-    } else if (event is CancelSubmissionFormBloc) {
-      yield* _onCancelSubmissionFormBloc();
-    } else if (event is UpdateFormBlocStateIsValid) {
-      yield* _onUpdateFormBlocStateIsValid(event);
-    } else if (event is DeleteFormBloc) {
-      yield* _onDeleteFormBloc();
-    } else if (event is RefreshFieldBlocsSubscription) {
-      yield* _onRefreshFieldBlocsSubscription(event);
-    } else if (event is PreviousStepFormBlocEvent) {
-      yield* _onPreviousStep();
-    } else if (event is UpdateCurrentStepFormBlocEvent) {
-      yield* _onUpdateCurrentStepFormBlocEvent(event);
-    } else if (event is AddFieldBloc) {
-      yield* _onAddFieldBloc(event);
-    } else if (event is AddFieldBlocs) {
-      yield* _onAddFieldBlocs(event);
-    } else if (event is RemoveFieldBloc) {
-      yield* _onRemoveFieldBloc(event);
-    } else if (event is RemoveFieldBlocs) {
-      yield* _onRemoveFieldBlocs(event);
     }
   }
 
@@ -410,8 +399,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
   // EVENTS IMPLEMENTATIONS
   // ===========================================================================
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onSubmitFormBloc() async* {
+  void _onSubmitFormBloc(
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     // TODO: Check when is the last step, but not can submit again, and then go to previous step and try to submit again.
     final stateSnapshot = state;
 
@@ -422,14 +411,14 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         notValidStep != stateSnapshot.lastStep) {
       // go to the first step invalid
 
-      yield FormBlocSubmissionFailed(
+      emit(FormBlocSubmissionFailed(
         isValidByStep: stateSnapshot._isValidByStep,
         isEditing: stateSnapshot.isEditing,
         fieldBlocs: stateSnapshot._fieldBlocs,
         currentStep: state.currentStep,
-      );
-      yield stateSnapshot.toLoaded();
-      yield stateSnapshot._copyWith(currentStep: notValidStep);
+      ));
+      emit(stateSnapshot.toLoaded());
+      emit(stateSnapshot._copyWith(currentStep: notValidStep));
     } else if (stateSnapshot.canSubmit && _canSubmit) {
       _canSubmit = false;
       unawaited(_onSubmittingSubscription?.cancel());
@@ -536,8 +525,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     }
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onUpdateFormBlocStateIsValid(UpdateFormBlocStateIsValid event) async* {
+  void _onUpdateFormBlocStateIsValid(UpdateFormBlocStateIsValid event,
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final stateSnapshot = state;
 
     final newState = stateSnapshot._copyWith(
@@ -545,19 +534,18 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
           ..[event.step] = event.isValid,
         fieldBlocs: Map.from(stateSnapshot._fieldBlocs));
 
-    yield newState;
+    emit(newState);
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onClearFormBloc() async* {
+  void _onClearFormBloc() async {
     final allSingleFieldBlocs =
         FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs()!.values);
 
     allSingleFieldBlocs.forEach((fieldBloc) => fieldBloc.clear());
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onCancelSubmissionFormBloc() async* {
+  void _onCancelSubmissionFormBloc(
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final FormBlocState<SuccessResponse, FailureResponse>? stateSnapshot =
         state;
     if (stateSnapshot is FormBlocSubmitting<SuccessResponse, FailureResponse> &&
@@ -570,7 +558,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         fieldBlocs: stateSnapshot._fieldBlocs,
         currentStep: stateSnapshot.currentStep,
       );
-      yield newState;
+      emit(newState);
       await Rx.merge([
         Stream.value(state),
         stream,
@@ -580,48 +568,46 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     }
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onDeleteFormBloc() async* {
+  void _onDeleteFormBloc(
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final stateSnapshot = state;
-    yield FormBlocDeleting(
+    emit(FormBlocDeleting(
       isValidByStep: stateSnapshot._isValidByStep,
       isEditing: stateSnapshot.isEditing,
       fieldBlocs: stateSnapshot._fieldBlocs,
       currentStep: stateSnapshot.currentStep,
       progress: 0.0,
-    );
+    ));
     await _callInBlocContext(onDeleting);
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onRefreshFieldBlocsSubscription(
+  void _onRefreshFieldBlocsSubscription(
     RefreshFieldBlocsSubscription event,
-  ) async* {
+  ) async {
     _setupAreAllFieldsValidSubscriptionSubject.add(state._fieldBlocs);
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onPreviousStep() async* {
+  void _onPreviousStep(
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final stateSnapshot = state;
     final newCurrentStep = stateSnapshot.currentStep - 1;
     if (newCurrentStep >= 0 &&
         stateSnapshot._fieldBlocs.containsKey(newCurrentStep)) {
-      yield stateSnapshot._copyWith(currentStep: newCurrentStep);
+      emit(stateSnapshot._copyWith(currentStep: newCurrentStep));
     }
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>>
-      _onUpdateCurrentStepFormBlocEvent(
-          UpdateCurrentStepFormBlocEvent event) async* {
+  void _onUpdateCurrentStepFormBlocEvent(UpdateCurrentStepFormBlocEvent event,
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final stateSnapshot = state;
 
     if (stateSnapshot._fieldBlocs.containsKey(event.step)) {
-      yield stateSnapshot._copyWith(currentStep: event.step);
+      emit(stateSnapshot._copyWith(currentStep: event.step));
     }
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>> _onAddFieldBloc(
-      AddFieldBloc event) async* {
+  void _onAddFieldBloc(AddFieldBloc event,
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final fieldBloc = event.fieldBloc;
     final step = event.step;
 
@@ -661,7 +647,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
     _setupAreAllFieldsValidSubscriptionSubject.add(newFieldBlocs);
 
-    yield newState;
+    emit(newState);
 
     await Rx.merge([
       Stream.value(state),
@@ -669,8 +655,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     ]).firstWhere((state) => state == newState);
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>> _onRemoveFieldBloc(
-      RemoveFieldBloc event) async* {
+  void _onRemoveFieldBloc(RemoveFieldBloc event,
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final fieldBloc = event.fieldBloc;
 
     final stateSnapshot = state;
@@ -714,7 +700,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
       _setupAreAllFieldsValidSubscriptionSubject.add(newFieldBlocs);
 
-      yield newState;
+      emit(newState);
 
       await Rx.merge([
         Stream.value(state),
@@ -723,8 +709,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     }
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>> _onRemoveFieldBlocs(
-      RemoveFieldBlocs event) async* {
+  void _onRemoveFieldBlocs(RemoveFieldBlocs event,
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final fieldBlocs = event.fieldBlocs;
 
     if (fieldBlocs.isNotEmpty) {
@@ -778,7 +764,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
       _setupAreAllFieldsValidSubscriptionSubject.add(newFieldBlocs);
 
-      yield newState;
+      emit(newState);
 
       await Rx.merge([
         Stream.value(state),
@@ -789,8 +775,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     }
   }
 
-  Stream<FormBlocState<SuccessResponse, FailureResponse>> _onAddFieldBlocs(
-      AddFieldBlocs event) async* {
+  void _onAddFieldBlocs(AddFieldBlocs event,
+      FormBlocEmitter<SuccessResponse, FailureResponse> emit) async {
     final fieldBlocs = event.fieldBlocs;
     final step = event.step;
 
@@ -836,7 +822,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
       _setupAreAllFieldsValidSubscriptionSubject.add(newFieldBlocs);
 
-      yield newState;
+      emit(newState);
 
       await Rx.merge([
         Stream.value(state),
