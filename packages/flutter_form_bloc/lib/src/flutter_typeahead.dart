@@ -148,12 +148,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///           onSaved: (value) => this._selectedCity = value,
 ///         ),
 ///         SizedBox(height: 10.0,),
-///         RaisedButton(
+///         ElevatedButton(
 ///           child: Text('Submit'),
 ///           onPressed: () {
 ///             if (this._formKey.state.validate()) {
 ///               this._formKey.state.save();
-///               Scaffold.of(context).showSnackBar(SnackBar(
+///               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
 ///                 content: Text('Your Favorite City is ${this._selectedCity}')
 ///               ));
 ///             }

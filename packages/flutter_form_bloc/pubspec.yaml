@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 #  bloc: ^7.0.0
-  flutter_bloc: ^7.0.1
+  flutter_bloc: ^8.0.0
   form_bloc:
     path: '../form_bloc'
 #  form_bloc: ^0.20.7-alpha.1
