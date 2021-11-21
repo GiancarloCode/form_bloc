@@ -8,7 +8,7 @@ class ShowAllCodeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 24.0),
-      child: GradientRaisedButton(
+      child: GradientElevatedButton(
         onPressed: () => DefaultTabController.of(context)!.animateTo(2),
         child: Text(
           'SHOW ALL CODE',

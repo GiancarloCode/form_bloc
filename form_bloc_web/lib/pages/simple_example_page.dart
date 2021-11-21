@@ -335,7 +335,7 @@ In this example:
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
 
-                Scaffold.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.failureResponse)));
               },
               child: 
@@ -402,7 +402,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => LoginForm())),
               icon: Icon(Icons.replay),
@@ -491,12 +491,12 @@ To use them you simply have to assign a field bloc.
         TutorialText('''
 You must create a widget that can call the `submit` method of the form bloc.
 
-In our case we will do it with a RaisedButton.        
+In our case we will do it with a ElevatedButton.        
 '''),
         CodeCard.main(
           nestedPath: _formBlocWidgetBuildName,
           code: '''
-                    RaisedButton(
+                    ElevatedButton(
                       onPressed: loginFormBloc.submit,
                       child: Text('LOGIN'),
                     ),

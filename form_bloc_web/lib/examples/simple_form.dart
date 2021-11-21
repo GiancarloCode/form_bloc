@@ -49,7 +49,7 @@ class LoginFormBloc extends FormBloc<String, String> {
 
     await Future<void>.delayed(Duration(seconds: 1));
 
-    if (showSuccessResponse.value!) {
+    if (showSuccessResponse.value) {
       emitSuccess();
     } else {
       emitFailure(failureResponse: 'This is an awesome error!');
@@ -82,7 +82,7 @@ class LoginForm extends StatelessWidget {
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
 
-                Scaffold.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.failureResponse!)));
               },
               child: SingleChildScrollView(
@@ -120,7 +120,7 @@ class LoginForm extends StatelessWidget {
                           ),
                         ),
                       ),
-                      RaisedButton(
+                      ElevatedButton(
                         onPressed: loginFormBloc.submit,
                         child: Text('LOGIN'),
                       ),
@@ -184,7 +184,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => LoginForm())),
               icon: Icon(Icons.replay),

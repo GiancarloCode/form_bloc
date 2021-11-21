@@ -75,7 +75,7 @@ class CodeScreenState extends State<CodeScreen> {
       floatingActionButton: Builder(builder: (context) {
         return Padding(
           padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
-          child: GradientRaisedButton(
+          child: GradientElevatedButton(
             onPressed: _copy,
             height: 45,
             width: 140,

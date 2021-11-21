@@ -32,7 +32,7 @@ class SubmissionErrorToFieldFormBloc extends FormBloc<String, String> {
 
     await Future<void>.delayed(Duration(milliseconds: 500));
 
-    if (username.value!.toLowerCase() == 'dev') {
+    if (username.value.toLowerCase() == 'dev') {
       username.addFieldError(
         'Cached - That username is taken. Try another.',
         isPermanent: true,
@@ -81,7 +81,7 @@ class SubmissionErrorToFieldForm extends StatelessWidget {
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
 
-                  Scaffold.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
@@ -102,7 +102,7 @@ class SubmissionErrorToFieldForm extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text('"dev" will add a cached error'),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
                           onPressed: formBloc.submit,
                           child: Text('SUBMIT'),
                         ),
@@ -167,7 +167,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                       builder: (_) => SubmissionErrorToFieldForm())),
