@@ -20,32 +20,40 @@ class FormBlocObserver extends BlocObserver {
   /// If is `true` every `transition` of any
   /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFieldBlocTransition = false;
+  final bool notifyOnFieldBlocTransition; // = false;
 
   /// If is `true` every `event` of any
   /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFieldBlocEvent = false;
+  final bool notifyOnFieldBlocEvent; // = false;
 
   /// If is `true` every `error` of any
   /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFieldBlocError = true;
+  final bool notifyOnFieldBlocError; // = true;
 
   /// If is `true` every `transition` of any
   /// [FormBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFormBlocTransition = false;
+  final bool notifyOnFormBlocTransition; // = false;
 
   /// If is `true` every `event` of any
   /// [FormBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFormBlocEvent = false;
+  final bool notifyOnFormBlocEvent; // = false;
 
   /// If is `true` every `error` of any
   /// [FormBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFormBlocError = true;
+  final bool notifyOnFormBlocError;
+
+  FormBlocObserver(
+      {this.notifyOnFieldBlocTransition = false,
+      this.notifyOnFieldBlocEvent = false,
+      this.notifyOnFieldBlocError = true,
+      this.notifyOnFormBlocTransition = false,
+      this.notifyOnFormBlocEvent = false,
+      this.notifyOnFormBlocError = false}); // = true;
 
   @override
   void onEvent(Bloc bloc, Object? event) {
