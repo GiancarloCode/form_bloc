@@ -101,7 +101,7 @@ class AllFieldsForm extends StatelessWidget {
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
 
-                  Scaffold.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
@@ -123,7 +123,9 @@ class AllFieldsForm extends StatelessWidget {
                             labelText: 'DropdownFieldBlocBuilder',
                             prefixIcon: Icon(Icons.sentiment_satisfied),
                           ),
-                          itemBuilder: (context, value) => value,
+                          itemBuilder: (context, value) => FieldItem(
+                            child: Text(value),
+                          ),
                         ),
                         RadioButtonGroupFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select2,
@@ -131,11 +133,15 @@ class AllFieldsForm extends StatelessWidget {
                             labelText: 'RadioButtonGroupFieldBlocBuilder',
                             prefixIcon: SizedBox(),
                           ),
-                          itemBuilder: (context, item) => item,
+                          itemBuilder: (context, item) => FieldItem(
+                            child: Text(item),
+                          ),
                         ),
                         CheckboxGroupFieldBlocBuilder<String>(
                           multiSelectFieldBloc: formBloc.multiSelect1,
-                          itemBuilder: (context, item) => item,
+                          itemBuilder: (context, item) => FieldItem(
+                            child: Text(item),
+                          ),
                           decoration: InputDecoration(
                             labelText: 'CheckboxGroupFieldBlocBuilder',
                             prefixIcon: SizedBox(),
@@ -250,7 +256,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => AllFieldsForm())),
               icon: Icon(Icons.replay),

@@ -80,7 +80,7 @@ class SerializedForm extends StatelessWidget {
               ),
               body: FormBlocListener<SerializedFormBloc, String, String>(
                 onSuccess: (context, state) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(state.successResponse!),
                     duration: Duration(seconds: 2),
                   ));
@@ -101,8 +101,9 @@ class SerializedForm extends StatelessWidget {
                         ),
                         RadioButtonGroupFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.gender,
-                          itemBuilder: (context, value) =>
-                              value[0].toUpperCase() + value.substring(1),
+                          itemBuilder: (context, value) => FieldItem(
+                              child: Text(
+                                  value[0].toUpperCase() + value.substring(1))),
                           decoration: InputDecoration(
                             labelText: 'Gender',
                             prefixIcon: SizedBox(),
@@ -180,7 +181,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => SerializedForm())),
               icon: Icon(Icons.replay),

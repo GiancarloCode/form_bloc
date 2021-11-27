@@ -232,7 +232,9 @@ class _WizardFormState extends State<WizardForm> {
           ),
           RadioButtonGroupFieldBlocBuilder<String>(
             selectFieldBloc: wizardFormBloc.gender,
-            itemBuilder: (context, value) => value,
+            itemBuilder: (context, value) => FieldItem(
+              child: Text(value),
+            ),
             decoration: InputDecoration(
               labelText: 'Gender',
               prefixIcon: SizedBox(),
@@ -337,7 +339,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => WizardForm())),
               icon: Icon(Icons.replay),
