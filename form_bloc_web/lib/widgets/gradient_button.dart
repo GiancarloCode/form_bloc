@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:form_bloc_web/constants/style.dart';
 
-class GradientRaisedButton extends StatelessWidget {
-  const GradientRaisedButton({
+class GradientElevatedButton extends StatelessWidget {
+  const GradientElevatedButton({
     Key? key,
     required this.onPressed,
     this.height,

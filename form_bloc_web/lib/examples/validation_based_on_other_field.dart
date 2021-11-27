@@ -86,8 +86,7 @@ class ValidationBasedOnOtherFieldForm extends StatelessWidget {
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
-
-                Scaffold.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.failureResponse!)));
               },
               child: SingleChildScrollView(
@@ -110,7 +109,7 @@ class ValidationBasedOnOtherFieldForm extends StatelessWidget {
                         prefixIcon: Icon(Icons.lock),
                       ),
                     ),
-                    RaisedButton(
+                    ElevatedButton(
                       onPressed: loginFormBloc.submit,
                       child: Text('SUBMIT'),
                     ),
@@ -173,7 +172,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                       builder: (_) => ValidationBasedOnOtherFieldForm())),

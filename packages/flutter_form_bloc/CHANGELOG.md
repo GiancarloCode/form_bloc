@@ -1,3 +1,7 @@
+# 0.28.0-alpha
+- Updated to `form_bloc: ^0.28.0-alpha`.
+- Simplification of the dropdown  
+- Added theme for all FieldBlocBuilders
 # 0.20.7-alpha
 -  Updated to `form_bloc: ^0.20.7-alpha`.
 # 0.20.6

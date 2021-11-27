@@ -175,7 +175,7 @@ class SubmitButton extends StatelessWidget {
         if (state is FormBlocSubmitting || state is FormBlocSuccess) {
           return WillPopScope(
               onWillPop: () async {
-                Scaffold.of(context).showSnackBar(SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(
                         'Can\'t close, please wait until form is submitted, or cancel the submission.')));
 
@@ -183,16 +183,16 @@ class SubmitButton extends StatelessWidget {
               },
               child: state is FormBlocSuccess ||
                       (state is FormBlocSubmitting && !state.isCanceling)
-                  ? RaisedButton(
+                  ? ElevatedButton(
                       onPressed: formBloc.cancelSubmission,
                       child: Text('CANCEL'),
                     )
-                  : RaisedButton(
+                  : ElevatedButton(
                       onPressed: () => null,
                       child: Text('CANCELING'),
                     ));
         } else {
-          return RaisedButton(
+          return ElevatedButton(
             onPressed: formBloc.submit,
             child: Text('SUBMIT'),
           );
@@ -292,7 +292,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => SubmissionProgressForm())),
               icon: Icon(Icons.replay),

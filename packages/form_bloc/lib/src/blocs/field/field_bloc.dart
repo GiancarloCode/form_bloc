@@ -10,7 +10,6 @@ import 'package:pedantic/pedantic.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
-import '../form_bloc_observer.dart';
 import 'field_bloc_utils.dart';
 
 part '../boolean_field/boolean_field_bloc.dart';
@@ -109,7 +108,6 @@ abstract class SingleFieldBloc<
   )   : _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
         super(initialState) {
-    FormBlocObserver.overrideDelegateOfBlocSupervisor();
     _setUpAsyncValidatorsSubscription();
   }
 

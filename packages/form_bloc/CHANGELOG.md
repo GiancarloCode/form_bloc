@@ -1,3 +1,17 @@
+#0.28.0-alpha
+## Breaking changes
+* Updated to `bloc: ^8.0.0`
+* Improved null safety of form bloc ( Thanks to **@SimoneBressan** )
+  * InputFieldBloc will require  initial parameter to support more robust null safety
+  * Improved null safety of form bloc. Specifically, the fieldBlocs field is no longer null
+  * Aligned the properties of the states of form bloc. Default values used in place of null properties
+  * Used num.clamp to manage the progress and is checked if the progress is correct 0.0 >= progress <= 1.0
+  * Now the name field of a field bloc is not null
+  * Now the items of SelectFieldBlocState and MultiSelectFieldBlocState are not nullable.
+  * Now the value field in the FieldBlocState must be specified null. It is no longer nullable in TextFieldBlocState, BooleanFieldBlocState, MultiSelectFieldBlocState.
+  * Validators are now not forced to accept null values
+* Converted SingleFieldBloc, ListFieldBloc, GroupFieldBloc to Cubit ( Thanks to **@SimoneBressan**  )
+
 # 0.20.7-alpha
 - Now the items of SelectFieldBlocState and MultiSelectFieldBlocState are not nullable.
 - Now the value field in the FieldBlocState must be specified null. It is no longer nullable in TextFieldBlocState, BooleanFieldBlocState, MultiSelectFieldBlocState.

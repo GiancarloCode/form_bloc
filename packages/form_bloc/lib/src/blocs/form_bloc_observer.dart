@@ -17,39 +17,43 @@ import 'form/form_bloc.dart';
 /// * [FormBlocObserver.notifyOnFormBlocTransition].
 /// * [FormBlocObserver.notifyOnFormBlocError].
 class FormBlocObserver extends BlocObserver {
-  final BlocObserver _oldBlocObserver;
-
   /// If is `true` every `transition` of any
   /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFieldBlocTransition = false;
+  final bool notifyOnFieldBlocTransition; // = false;
 
   /// If is `true` every `event` of any
   /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFieldBlocEvent = false;
+  final bool notifyOnFieldBlocEvent; // = false;
 
   /// If is `true` every `error` of any
   /// [FieldBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFieldBlocError = true;
+  final bool notifyOnFieldBlocError; // = true;
 
   /// If is `true` every `transition` of any
   /// [FormBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFormBlocTransition = false;
+  final bool notifyOnFormBlocTransition; // = false;
 
   /// If is `true` every `event` of any
   /// [FormBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFormBlocEvent = false;
+  final bool notifyOnFormBlocEvent; // = false;
 
   /// If is `true` every `error` of any
   /// [FormBloc] will be notified
   /// to [BlocSupervisor.delegate].
-  static bool notifyOnFormBlocError = true;
+  final bool notifyOnFormBlocError;
 
-  FormBlocObserver() : _oldBlocObserver = Bloc.observer;
+  FormBlocObserver(
+      {this.notifyOnFieldBlocTransition = false,
+      this.notifyOnFieldBlocEvent = false,
+      this.notifyOnFieldBlocError = true,
+      this.notifyOnFormBlocTransition = false,
+      this.notifyOnFormBlocEvent = false,
+      this.notifyOnFormBlocError = false}); // = true;
 
   @override
   void onEvent(Bloc bloc, Object? event) {
@@ -65,7 +69,6 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onEvent(bloc, event);
       super.onEvent(bloc, event);
     }
   }
@@ -84,7 +87,6 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onChange(cubit, change);
       super.onChange(cubit, change);
     }
   }
@@ -103,7 +105,6 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onTransition(bloc, transition);
       super.onTransition(bloc, transition);
     }
   }
@@ -122,27 +123,7 @@ class FormBlocObserver extends BlocObserver {
     }
 
     if (notify) {
-      _oldBlocObserver.onError(cubit, error, stacktrace);
       super.onError(cubit, error, stacktrace);
-    }
-  }
-
-  /// Override the current [BlocSupervisor.delegate]
-  /// with a [FormBlocObserver] for hide `events` and `transitions`
-  /// of any [FieldBloc] or [FormBloc].
-  ///
-  /// But it retains the behavior of the current [BlocSupervisor.delegate].
-  ///
-  /// You can customize using:
-  /// * [FormBlocObserver.notifyOnFieldBlocEvent].
-  /// * [FormBlocObserver.notifyOnFieldBlocTransition].
-  /// * [FormBlocObserver.notifyOnFieldBlocError].
-  /// * [FormBlocObserver.notifyOnFormBlocEvent].
-  /// * [FormBlocObserver.notifyOnFormBlocTransition].
-  /// * [FormBlocObserver.notifyOnFormBlocError].
-  static void overrideDelegateOfBlocSupervisor() {
-    if (Bloc.observer is! FormBlocObserver) {
-      Bloc.observer = FormBlocObserver();
     }
   }
 }

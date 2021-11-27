@@ -193,7 +193,7 @@ class ListFieldsForm extends StatelessWidget {
                 onSuccess: (context, state) {
                   LoadingDialog.hide(context);
 
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: SingleChildScrollView(
                         child: Text(state.successResponse!)),
                     duration: Duration(milliseconds: 1500),
@@ -202,7 +202,7 @@ class ListFieldsForm extends StatelessWidget {
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
 
-                  Scaffold.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
@@ -240,8 +240,7 @@ class ListFieldsForm extends StatelessWidget {
                           return Container();
                         },
                       ),
-                      RaisedButton(
-                        color: Colors.blue[100],
+                      ElevatedButton(
                         onPressed: formBloc.addMember,
                         child: Text('ADD MEMBER'),
                       ),
@@ -346,8 +345,7 @@ class MemberCard extends StatelessWidget {
                 return Container();
               },
             ),
-            FlatButton(
-              color: Colors.white,
+            TextButton(
               onPressed: onAddHobby,
               child: Text('ADD HOBBY'),
             ),
@@ -406,7 +404,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => ListFieldsForm())),
               icon: Icon(Icons.replay),

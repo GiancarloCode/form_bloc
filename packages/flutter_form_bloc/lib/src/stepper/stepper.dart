@@ -280,7 +280,7 @@ class _StepperState extends State<Stepper> with TickerProviderStateMixin {
           : Colors.black38;
     } else {
       return widget.steps[index].isActive
-          ? themeData.accentColor
+          ? themeData.colorScheme.secondary
           : themeData.backgroundColor;
     }
   }
@@ -627,7 +627,6 @@ class _StepperState extends State<Stepper> with TickerProviderStateMixin {
             key: Key('__stepper_horizontal_step_${widget.currentStep}__'),
             curve: Curves.easeIn,
             duration: kThemeAnimationDuration,
-            vsync: this,
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
