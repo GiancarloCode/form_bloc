@@ -152,7 +152,9 @@ class LoadingForm extends StatelessWidget {
                               ),
                               RadioButtonGroupFieldBlocBuilder<String>(
                                 selectFieldBloc: loadingFormBloc.select,
-                                itemBuilder: (context, item) => item,
+                                itemBuilder: (context, item) => FieldItem(
+                                  child: Text(item),
+                                ),
                                 decoration: InputDecoration(
                                   labelText: 'Prefilled select field',
                                   prefixIcon: SizedBox(),

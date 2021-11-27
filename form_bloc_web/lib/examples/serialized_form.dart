@@ -101,8 +101,9 @@ class SerializedForm extends StatelessWidget {
                         ),
                         RadioButtonGroupFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.gender,
-                          itemBuilder: (context, value) =>
-                              value[0].toUpperCase() + value.substring(1),
+                          itemBuilder: (context, value) => FieldItem(
+                              child: Text(
+                                  value[0].toUpperCase() + value.substring(1))),
                           decoration: InputDecoration(
                             labelText: 'Gender',
                             prefixIcon: SizedBox(),

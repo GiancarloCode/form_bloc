@@ -123,7 +123,9 @@ class AllFieldsForm extends StatelessWidget {
                             labelText: 'DropdownFieldBlocBuilder',
                             prefixIcon: Icon(Icons.sentiment_satisfied),
                           ),
-                          itemBuilder: (context, value) => value,
+                          itemBuilder: (context, value) => FieldItem(
+                            child: Text(value),
+                          ),
                         ),
                         RadioButtonGroupFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select2,
@@ -131,11 +133,15 @@ class AllFieldsForm extends StatelessWidget {
                             labelText: 'RadioButtonGroupFieldBlocBuilder',
                             prefixIcon: SizedBox(),
                           ),
-                          itemBuilder: (context, item) => item,
+                          itemBuilder: (context, item) => FieldItem(
+                            child: Text(item),
+                          ),
                         ),
                         CheckboxGroupFieldBlocBuilder<String>(
                           multiSelectFieldBloc: formBloc.multiSelect1,
-                          itemBuilder: (context, item) => item,
+                          itemBuilder: (context, item) => FieldItem(
+                            child: Text(item),
+                          ),
                           decoration: InputDecoration(
                             labelText: 'CheckboxGroupFieldBlocBuilder',
                             prefixIcon: SizedBox(),

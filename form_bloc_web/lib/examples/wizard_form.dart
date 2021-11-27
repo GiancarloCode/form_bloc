@@ -232,7 +232,9 @@ class _WizardFormState extends State<WizardForm> {
           ),
           RadioButtonGroupFieldBlocBuilder<String>(
             selectFieldBloc: wizardFormBloc.gender,
-            itemBuilder: (context, value) => value,
+            itemBuilder: (context, value) => FieldItem(
+              child: Text(value),
+            ),
             decoration: InputDecoration(
               labelText: 'Gender',
               prefixIcon: SizedBox(),
