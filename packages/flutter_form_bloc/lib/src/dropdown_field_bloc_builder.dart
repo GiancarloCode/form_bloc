@@ -28,6 +28,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.onChanged,
     this.textStyle,
     this.textColor,
+    this.hint,
+    this.disabledHint,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -86,6 +88,21 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
+  /// A placeholder widget that is displayed by the dropdown button.
+  ///
+  /// If [value] is null and the dropdown is enabled ([items] and [onChanged] are non-null),
+  /// this widget is displayed as a placeholder for the dropdown button's value.
+  ///
+  /// If [value] is null and the dropdown is disabled and [disabledHint] is null,
+  /// this widget is used as the placeholder.
+  final Widget? hint;
+
+  /// A preferred placeholder widget that is displayed when the dropdown is disabled.
+  ///
+  /// If [value] is null, the dropdown is disabled ([items] or [onChanged] is null),
+  /// this widget is displayed as a placeholder for the dropdown button's value.
+  final Widget? disabledHint;
+
   DropdownFieldTheme themeStyleOf(BuildContext context) {
     final theme = Theme.of(context);
     final formTheme = FormTheme.of(context);
@@ -131,17 +148,19 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                   child: DropdownButton<Value>(
                     value: fieldState.value,
                     focusNode: focusNode,
-                    disabledHint: decoration.hintText != null
-                        ? DefaultTextStyle(
-                            style: Style.resolveTextStyle(
-                              isEnabled: isEnabled,
-                              style:
-                                  decoration.hintStyle ?? fieldTheme.textStyle!,
-                              color: fieldTheme.textColor!,
-                            ),
-                            child: Text(decoration.hintText!),
-                          )
-                        : null,
+                    hint: hint,
+                    disabledHint: disabledHint ??
+                        (decoration.hintText != null
+                            ? DefaultTextStyle(
+                                style: Style.resolveTextStyle(
+                                  isEnabled: isEnabled,
+                                  style: decoration.hintStyle ??
+                                      fieldTheme.textStyle!,
+                                  color: fieldTheme.textColor!,
+                                ),
+                                child: Text(decoration.hintText!),
+                              )
+                            : null),
                     onChanged: fieldBlocBuilderOnChange<Value?>(
                       isEnabled: isEnabled,
                       nextFocusNode: nextFocusNode,
