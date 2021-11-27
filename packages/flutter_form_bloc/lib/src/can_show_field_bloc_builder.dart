@@ -35,10 +35,11 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
   void initState() {
     super.initState();
 
-    if ((widget.fieldBloc as Bloc).state.formBloc != null) {
-      _showOnFirstFrame = ((widget.fieldBloc as dynamic).state.formBloc as Bloc)
-          .state
-          .contains(widget.fieldBloc) as bool?;
+    if ((widget.fieldBloc as BlocBase).state.formBloc != null) {
+      _showOnFirstFrame =
+          ((widget.fieldBloc as dynamic).state.formBloc as BlocBase)
+              .state
+              .contains(widget.fieldBloc) as bool?;
       _initAnimation();
     } else {
       _init();
@@ -46,7 +47,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
   }
 
   void _init() async {
-    final bloc = (widget.fieldBloc as Bloc);
+    final bloc = (widget.fieldBloc as BlocBase);
 
     final formBloc = await Rx.merge([
       Stream.value(bloc.state),
@@ -59,9 +60,10 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
         (widget.fieldBloc as dynamic).state.formBloc == null) {
       _showOnFirstFrame = false;
     } else {
-      _showOnFirstFrame = ((widget.fieldBloc as dynamic).state.formBloc as Bloc)
-          .state
-          .contains(widget.fieldBloc) as bool?;
+      _showOnFirstFrame =
+          ((widget.fieldBloc as dynamic).state.formBloc as BlocBase)
+              .state
+              .contains(widget.fieldBloc) as bool?;
     }
     _initAnimation();
     setState(() {});
@@ -71,7 +73,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
         bloc.stream,
       ]).firstWhere((state) => state.formBloc != null);
 
-      final formBloc = (widget.fieldBloc as dynamic).state.formBloc as Bloc;
+      final formBloc = (widget.fieldBloc as dynamic).state.formBloc as BlocBase;
 
       await Rx.merge([
         Stream.value(formBloc.state),
@@ -111,7 +113,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
   @override
   Widget build(BuildContext context) {
     // ignore: close_sinks
-    final _fieldBloc = widget.fieldBloc as Bloc;
+    final _fieldBloc = widget.fieldBloc as BlocBase;
 
     if (_showOnFirstFrame == null) {
       return SizedBox();
@@ -124,7 +126,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
         Widget child;
         if (state.formBloc != null) {
           child = BlocListener(
-            bloc: state.formBloc as Bloc?,
+            bloc: state.formBloc as BlocBase?,
             listenWhen: (dynamic p, dynamic c) =>
                 p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
             listener: (context, dynamic formBlocState) {
@@ -145,7 +147,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
               }
             },
             child: BlocBuilder(
-              bloc: state.formBloc as Bloc?,
+              bloc: state.formBloc as BlocBase?,
               buildWhen: (dynamic p, dynamic c) =>
                   p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
               builder: (context, dynamic state) {

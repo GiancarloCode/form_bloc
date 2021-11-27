@@ -369,57 +369,26 @@ class FormBlocUtils {
     }
   }
 
-  static void addFormBlocAndAutoValidateToFieldBlocs({
+  static void updateFormBloc({
     required List<FieldBloc> fieldBlocs,
     required FormBloc? formBloc,
     bool autoValidate = false,
   }) {
     if (formBloc == null) return;
 
-    final allFieldBlocs = FormBlocUtils.getAllFieldBlocs(fieldBlocs);
-
-    allFieldBlocs.forEach((e) {
-      if (e is SingleFieldBloc) {
-        e.add(AddFormBlocAndAutoValidateToFieldBloc(
-          formBloc: formBloc,
-          autoValidate: autoValidate,
-        ));
-      } else if (e is ListFieldBloc) {
-        e.add(AddFormBlocAndAutoValidateToListFieldBloc(
-          formBloc: formBloc,
-          autoValidate: autoValidate,
-        ));
-      } else if (e is GroupFieldBloc) {
-        e.add(AddFormBlocAndAutoValidateToGroupFieldBloc(
-          formBloc: formBloc,
-          autoValidate: autoValidate,
-        ));
-      }
-    });
+    for (final fieldBloc in fieldBlocs) {
+      fieldBloc.updateFormBloc(formBloc, autoValidate: autoValidate);
+    }
   }
 
-  static void removeFormBlocToFieldBlocs({
+  static void removeFormBloc({
     required List<FieldBloc> fieldBlocs,
     required FormBloc? formBloc,
   }) {
     if (formBloc == null) return;
 
-    final allFieldBlocs = FormBlocUtils.getAllFieldBlocs(fieldBlocs);
-
-    allFieldBlocs.forEach((e) {
-      if (e is SingleFieldBloc) {
-        e.add(RemoveFormBlocToFieldBloc(
-          formBloc: formBloc,
-        ));
-      } else if (e is ListFieldBloc) {
-        e.add(RemoveFormBlocToListFieldBloc(
-          formBloc: formBloc,
-        ));
-      } else if (e is GroupFieldBloc) {
-        e.add(RemoveFormBlocToGroupFieldBloc(
-          formBloc: formBloc,
-        ));
-      }
-    });
+    for (final fieldBloc in fieldBlocs) {
+      fieldBloc.removeFormBloc(formBloc);
+    }
   }
 }

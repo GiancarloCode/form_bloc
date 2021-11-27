@@ -459,7 +459,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         allSingleFieldBlocs.forEach(
           (fieldBloc) {
             if (!_isFieldStateValid(fieldBloc.state)) {
-              fieldBloc.add(ValidateFieldBloc(true));
+              fieldBloc.validate(true);
             }
           },
         );
@@ -627,24 +627,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
     _allFieldBlocsUsed.add(fieldBloc);
 
-    FormBlocUtils.getAllFieldBlocs([fieldBloc]).forEach((e) {
-      if (e is SingleFieldBloc) {
-        e.add(
-          AddFormBlocAndAutoValidateToFieldBloc(
-              formBloc: this, autoValidate: _autoValidate),
-        );
-      } else if (e is ListFieldBloc) {
-        e.add(
-          AddFormBlocAndAutoValidateToListFieldBloc(
-              formBloc: this, autoValidate: _autoValidate),
-        );
-      } else if (e is GroupFieldBloc) {
-        e.add(
-          AddFormBlocAndAutoValidateToGroupFieldBloc(
-              formBloc: this, autoValidate: _autoValidate),
-        );
-      }
-    });
+    fieldBloc.updateFormBloc(this, autoValidate: _autoValidate);
 
     final stateSnapshot = state;
 
@@ -802,10 +785,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         stream,
       ]).firstWhere((state) => state == newState);
 
-      FormBlocUtils.removeFormBlocToFieldBlocs(
-        fieldBlocs: fieldBlocs,
-        formBloc: this,
-      );
+      FormBlocUtils.updateFormBloc(fieldBlocs: fieldBlocs, formBloc: this);
     }
   }
 
@@ -819,24 +799,9 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
 
       final stateSnapshot = state;
 
-      FormBlocUtils.getAllFieldBlocs(fieldBlocs).forEach((e) {
-        if (e is SingleFieldBloc) {
-          e.add(
-            AddFormBlocAndAutoValidateToFieldBloc(
-                formBloc: this, autoValidate: _autoValidate),
-          );
-        } else if (e is ListFieldBloc) {
-          e.add(
-            AddFormBlocAndAutoValidateToListFieldBloc(
-                formBloc: this, autoValidate: _autoValidate),
-          );
-        } else if (e is GroupFieldBloc) {
-          e.add(
-            AddFormBlocAndAutoValidateToGroupFieldBloc(
-                formBloc: this, autoValidate: _autoValidate),
-          );
-        }
-      });
+      for (final fieldBloc in fieldBlocs) {
+        fieldBloc.updateFormBloc(this, autoValidate: _autoValidate);
+      }
 
       final newFieldBlocs = <int, Map<String, FieldBloc>>{};
 
@@ -845,13 +810,6 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
       });
 
       fieldBlocs.forEach((fieldBloc) {
-        if (fieldBloc is ListFieldBloc) {
-          fieldBloc.add(
-            AddFormBlocAndAutoValidateToListFieldBloc(
-                formBloc: this, autoValidate: _autoValidate),
-          );
-        }
-
         if (!newFieldBlocs.containsKey(step)) {
           newFieldBlocs[step] = {};
         }

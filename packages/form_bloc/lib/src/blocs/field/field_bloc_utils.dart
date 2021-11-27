@@ -54,3 +54,10 @@ class FieldBlocUtils {
     return isValidating;
   }
 }
+
+class ValueAndError<Value> {
+  final Value value;
+  final Object? error;
+
+  ValueAndError(this.value, this.error);
+}

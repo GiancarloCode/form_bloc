@@ -559,10 +559,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: formBloc,
-        autoValidate: false,
-      ));
+      fieldBloc.updateFormBloc(formBloc, autoValidate: false);
 
       fieldBloc.addValidators([(value) => value == 1 ? '1 error' : null]);
       fieldBloc.updateValue(null);
@@ -607,10 +604,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: formBloc,
-        autoValidate: false,
-      ));
+      fieldBloc.updateFormBloc(formBloc, autoValidate: false);
 
       fieldBloc
           .addAsyncValidators([(value) async => value == 1 ? '1 error' : null]);
@@ -856,10 +850,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: formBloc,
-        autoValidate: false,
-      ));
+      fieldBloc.updateFormBloc(formBloc, autoValidate: false);
       fieldBloc.updateValue(1);
       fieldBloc.updateValue(3);
       fieldBloc.updateValue(6);
@@ -928,14 +919,11 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: formBloc,
-        autoValidate: false,
-      ));
-      fieldBloc.add(ValidateFieldBloc(false));
-      fieldBloc.add(ValidateFieldBloc(true));
+      fieldBloc.updateFormBloc(formBloc, autoValidate: false);
+      fieldBloc.validate(false);
+      fieldBloc.validate(true);
       fieldBloc.updateValue(2);
-      fieldBloc.add(ValidateFieldBloc(true));
+      fieldBloc.validate(true);
     });
 
     test('ResetFieldBlocStateIsValidated event.', () {
@@ -966,7 +954,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(ResetFieldBlocStateIsValidated());
+      fieldBloc.resetStateIsValidated();
     });
 
     test('UpdateFieldBlocStateError event.', () {
@@ -997,46 +985,8 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(UpdateFieldBlocStateError(error: 'error1', value: 1));
-      fieldBloc.add(UpdateFieldBlocStateError(error: 'error2', value: null));
-    });
-
-    test('UpdateFieldBlocState event.', () {
-      final fieldBloc = InputFieldBloc<int?, dynamic>(
-        name: 'fieldName',
-        initialValue: null,
-      );
-      final suggestions = (String pattern) async => [1];
-
-      // final state1 = InputFieldBlocState<int, dynamic>(
-      //   value: null,
-      //   error: null,
-      //   isInitial: true,
-      //   suggestions: null,
-      //   isValidated: true,
-      //   isValidating: false,
-      //   name: 'fieldName',
-      // );
-      final state2 = InputFieldBlocState<int, dynamic>(
-        value: 2,
-        error: null,
-        isInitial: false,
-        suggestions: suggestions,
-        isValidated: false,
-        isValidating: true,
-        name: 'name',
-      );
-
-      final expectedStates = [
-        // state1,
-        state2,
-      ];
-      expect(
-        fieldBloc.stream,
-        emitsInOrder(expectedStates),
-      );
-
-      fieldBloc.add(UpdateFieldBlocState(state2));
+      fieldBloc.updateStateError(error: 'error1', value: 1);
+      fieldBloc.updateStateError(error: 'error2', value: null);
     });
 
     test('on subscribeToFieldBlocs method and SubscribeToFieldBlocs event.',
@@ -1266,10 +1216,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: formBloc,
-        autoValidate: false,
-      ));
+      fieldBloc.updateFormBloc(formBloc, autoValidate: false);
 
       fieldBloc.addFieldError('error', isPermanent: true);
       fieldBloc.updateValue(2);
@@ -1322,10 +1269,7 @@ void main() {
         emitsInOrder(expectedStates),
       );
 
-      fieldBloc.add(AddFormBlocAndAutoValidateToFieldBloc(
-        formBloc: formBloc,
-        autoValidate: false,
-      ));
+      fieldBloc.updateFormBloc(formBloc, autoValidate: false);
 
       fieldBloc.addFieldError('error');
       await Future<void>.delayed(Duration(milliseconds: 0));
