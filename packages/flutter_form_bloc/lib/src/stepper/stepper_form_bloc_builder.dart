@@ -191,9 +191,12 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
           ],
           controlsBuilder: controlsBuilder == null
               ? null
-              : (context, step, onStepContinue, onStepCancel) =>
-                  controlsBuilder!(
-                      context, onStepContinue, onStepCancel, step, formBloc),
+              : (context, controlsDetails) => controlsBuilder!(
+                  context,
+                  controlsDetails.onStepContinue,
+                  controlsDetails.onStepContinue,
+                  controlsDetails.stepIndex,
+                  formBloc),
         );
       },
     );
