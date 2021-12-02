@@ -178,9 +178,16 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                     // Simulates the normal alignment of the suffixIcon
                     icon: Transform.translate(
                       offset: Offset(6.0, 0.0),
-                      child: decoration.suffixIcon ??
-                          fieldTheme.moreIcon ??
-                          const Icon(Icons.arrow_drop_down),
+                      child: ConstrainedBox(
+                        constraints: this.decoration.suffixIconConstraints ??
+                            const BoxConstraints(
+                              minHeight: 48.0,
+                              minWidth: 48.0,
+                            ),
+                        child: this.decoration.suffixIcon ??
+                            fieldTheme.moreIcon ??
+                            const Icon(Icons.arrow_drop_down),
+                      ),
                     ),
                   ),
                 ),
@@ -255,6 +262,9 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     decoration = decoration.copyWith(
       enabled: isEnabled,
       contentPadding: const EdgeInsets.only(left: 16.0),
+      suffix: const SizedBox.shrink(),
+      suffixIcon: const SizedBox.shrink(),
+      suffixIconConstraints: const BoxConstraints(),
       errorText: Style.getErrorText(
         context: context,
         errorBuilder: errorBuilder,
