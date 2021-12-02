@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
-
-import '../flutter_form_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_bloc/form_bloc.dart';
 
 class CanShowFieldBlocBuilder extends StatefulWidget {
   const CanShowFieldBlocBuilder({
@@ -15,163 +12,116 @@ class CanShowFieldBlocBuilder extends StatefulWidget {
 
   final FieldBloc fieldBloc;
   final bool animate;
-  final Widget Function(BuildContext context, bool? canShow) builder;
+
+  /// [canShow] is not used if [animate] is true
+  final Widget Function(BuildContext context, bool canShow) builder;
 
   @override
-  _CanShowFieldBlocBuilderState createState() =>
-      _CanShowFieldBlocBuilderState();
+  _CanShowFieldBlocBuilderState createState() => _CanShowFieldBlocBuilderState();
 }
 
 class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _sizeAnimation;
+  // Identifies whether it is waiting for the FormBloc's event handling
+  bool _showOnFirstFrame = false;
 
-  bool? _showOnFirstFrame;
-
-  StreamSubscription? _formBlocSubscription;
+  AnimationController? _controller;
+  bool _canShow = false;
 
   @override
   void initState() {
     super.initState();
 
-    if ((widget.fieldBloc as BlocBase).state.formBloc != null) {
-      _showOnFirstFrame =
-          ((widget.fieldBloc as dynamic).state.formBloc as BlocBase)
-              .state
-              .contains(widget.fieldBloc) as bool?;
-      _initAnimation();
+    if (widget.fieldBloc.state.formBloc != null) {
+      _showOnFirstFrame = true;
+      _init();
     } else {
+      Future.delayed(Duration(milliseconds: 10)).whenComplete(() {
+        if (!mounted) return;
+        setState(() {
+          _showOnFirstFrame = true;
+          _init();
+        });
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant CanShowFieldBlocBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.animate != oldWidget.animate) {
+      _dispose();
       _init();
     }
   }
 
-  void _init() async {
-    final bloc = (widget.fieldBloc as BlocBase);
-
-    final formBloc = await Rx.merge([
-      Stream.value(bloc.state),
-      bloc.stream,
-    ])
-        .firstWhere((state) => state.formBloc != null)
-        .timeout(Duration(milliseconds: 10), onTimeout: () => null);
-
-    if (formBloc == null ||
-        (widget.fieldBloc as dynamic).state.formBloc == null) {
-      _showOnFirstFrame = false;
-    } else {
-      _showOnFirstFrame =
-          ((widget.fieldBloc as dynamic).state.formBloc as BlocBase)
-              .state
-              .contains(widget.fieldBloc) as bool?;
-    }
-    _initAnimation();
-    setState(() {});
-    try {
-      await Rx.merge([
-        Stream.value(bloc.state),
-        bloc.stream,
-      ]).firstWhere((state) => state.formBloc != null);
-
-      final formBloc = (widget.fieldBloc as dynamic).state.formBloc as BlocBase;
-
-      await Rx.merge([
-        Stream.value(formBloc.state),
-        formBloc.stream,
-      ]).firstWhere(
-          (formBlocState) => formBlocState.contains(widget.fieldBloc));
-
-      if (widget.animate) {
-        if (_showOnFirstFrame!) {
-          await _controller.reverse();
-        } else {
-          await _controller.forward();
-        }
-      }
-    } catch (e) {
-      // TODO: Improve this
-    }
-  }
-
-  void _initAnimation() {
-    _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
-
-    final begin = _showOnFirstFrame! ? 1.0 : 0.0;
-    final end = _showOnFirstFrame! ? 0.0 : 1.0;
-
-    _sizeAnimation = Tween<double>(begin: begin, end: end).animate(_controller);
-  }
-
   @override
   void dispose() {
-    _controller.dispose();
-    _formBlocSubscription?.cancel();
+    _dispose();
     super.dispose();
+  }
+
+  void _init() {
+    final canShow = widget.fieldBloc.state.formBloc != null;
+    if (widget.animate) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 300),
+        value: canShow ? 1.0 : 0.0,
+      );
+    } else {
+      _canShow = canShow;
+    }
+  }
+
+  void _dispose() {
+    _controller?.dispose();
+  }
+
+  void _changeVisibility(bool canShow) {
+    if (!_showOnFirstFrame) return;
+
+    if (widget.animate) {
+      if (canShow) {
+        _controller!.forward();
+      } else {
+        _controller!.reverse();
+      }
+    } else {
+      setState(() {
+        _canShow = canShow;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // ignore: close_sinks
-    final _fieldBloc = widget.fieldBloc as BlocBase;
+    Widget child;
 
-    if (_showOnFirstFrame == null) {
-      return SizedBox();
+    if (_showOnFirstFrame) {
+      child = widget.builder(context, _canShow);
+    } else {
+      child = const SizedBox.shrink();
     }
 
-    return BlocBuilder(
-      bloc: _fieldBloc,
-      buildWhen: (dynamic p, dynamic c) => p.formBloc != c.formBloc,
-      builder: (context, dynamic state) {
-        Widget child;
-        if (state.formBloc != null) {
-          child = BlocListener(
-            bloc: state.formBloc as BlocBase?,
-            listenWhen: (dynamic p, dynamic c) =>
-                p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
-            listener: (context, dynamic formBlocState) {
-              if (widget.animate) {
-                if (formBlocState.contains(widget.fieldBloc)) {
-                  if (_showOnFirstFrame!) {
-                    _controller.reverse();
-                  } else {
-                    _controller.forward();
-                  }
-                } else {
-                  if (_showOnFirstFrame!) {
-                    _controller.forward();
-                  } else {
-                    _controller.reverse();
-                  }
-                }
-              }
-            },
-            child: BlocBuilder(
-              bloc: state.formBloc as BlocBase?,
-              buildWhen: (dynamic p, dynamic c) =>
-                  p.contains(widget.fieldBloc) != c.contains(widget.fieldBloc),
-              builder: (context, dynamic state) {
-                return widget.builder(
-                    context, state.contains(widget.fieldBloc));
-              },
-            ),
-          );
-        } else {
-          child = widget.builder(context, _showOnFirstFrame);
-        }
+    if (widget.animate && _controller != null) {
+      child = FadeTransition(
+        opacity: _controller!,
+        child: SizeTransition(
+          sizeFactor: _controller!,
+          child: child,
+        ),
+      );
+    }
 
-        if (widget.animate) {
-          return FadeTransition(
-            opacity: _sizeAnimation,
-            child: SizeTransition(
-              sizeFactor: _sizeAnimation,
-              child: child,
-            ),
-          );
-        } else {
-          return child;
-        }
+    return BlocListener<FieldBloc, FieldBlocStateBase>(
+      bloc: widget.fieldBloc,
+      listenWhen: (prev, curr) => prev.formBloc != curr.formBloc,
+      listener: (context, state) {
+        final formBloc = state.formBloc;
+        _changeVisibility(formBloc != null);
       },
+      child: child,
     );
   }
 }

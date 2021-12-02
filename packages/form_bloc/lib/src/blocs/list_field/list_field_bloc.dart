@@ -1,9 +1,11 @@
 part of '../field/field_bloc.dart';
 
-class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable {
+class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
+    implements FieldBlocStateBase {
   final String name;
   final List<T> fieldBlocs;
   final ExtraData? extraData;
+  @override
   final FormBloc? formBloc;
 
   ListFieldBlocState({

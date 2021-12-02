@@ -1,6 +1,7 @@
 part of 'field_bloc.dart';
 
-abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
+abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
+    implements FieldBlocStateBase {
   /// The current value of this state.
   final Value value;
 
@@ -31,6 +32,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable {
   final bool isValidating;
 
   /// The current  [FormBloc] that contains this `FieldBloc`.
+  @override
   final FormBloc? formBloc;
 
   /// Transform [value] in a JSON value.
