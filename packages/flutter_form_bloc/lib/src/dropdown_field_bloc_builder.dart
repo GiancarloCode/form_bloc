@@ -28,6 +28,11 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     this.onChanged,
     this.textStyle,
     this.textColor,
+    this.textOverflow,
+    this.maxLines,
+    this.selectedTextStyle,
+    this.selectedMaxLines,
+    this.isExpanded = true,
     this.hint,
     this.disabledHint,
   }) : super(key: key);
@@ -88,6 +93,25 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
+  /// Defaults is [TextOverflow.ellipsis]
+  final TextOverflow? textOverflow;
+
+  /// Defaults is `2`
+  final int? maxLines;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.textStyle}
+  final TextStyle? selectedTextStyle;
+
+  /// Defaults is [maxLines]
+  final int? selectedMaxLines;
+
+  /// Set the dropdown's inner contents to horizontally fill its parent.
+  ///
+  /// By default this button's inner width is the minimum size of its contents.
+  /// If [isExpanded] is true, the inner width is expanded to fill its
+  /// surrounding container.
+  final bool isExpanded;
+
   /// A placeholder widget that is displayed by the dropdown button.
   ///
   /// If [value] is null and the dropdown is enabled ([items] and [onChanged] are non-null),
@@ -109,10 +133,21 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     final fieldTheme = formTheme.dropdownTheme;
     final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
 
+    final textStyle = this.textStyle ?? resolver.textStyle;
+    final textOverflow =
+        this.textOverflow ?? fieldTheme.textOverflow ?? TextOverflow.ellipsis;
+    final maxLines = this.maxLines ?? fieldTheme.maxLines ?? 2;
+
     return DropdownFieldTheme(
       decorationTheme: resolver.decorationTheme,
-      textStyle: textStyle ?? resolver.textStyle,
+      textStyle: textStyle,
       textColor: textColor ?? resolver.textColor,
+      maxLines: maxLines,
+      textOverflow: textOverflow,
+      selectedTextStyle:
+          selectedTextStyle ?? fieldTheme.selectedTextStyle ?? textStyle,
+      selectedMaxLines:
+          selectedMaxLines ?? fieldTheme.selectedMaxLines ?? maxLines,
     );
   }
 
@@ -149,6 +184,8 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                     value: fieldState.value,
                     focusNode: focusNode,
                     hint: hint,
+                    isExpanded: isExpanded,
+                    isDense: true,
                     disabledHint: disabledHint ??
                         (decoration.hintText != null
                             ? DefaultTextStyle(
@@ -170,25 +207,22 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                       },
                     ),
                     items: _buildItems(
-                        context, fieldTheme, fieldState.items, false),
-                    selectedItemBuilder: (context) {
-                      return _buildItems(
-                          context, fieldTheme, fieldState.items, true);
-                    },
-                    // Simulates the normal alignment of the suffixIcon
-                    icon: Transform.translate(
-                      offset: Offset(6.0, 0.0),
-                      child: ConstrainedBox(
-                        constraints: this.decoration.suffixIconConstraints ??
-                            const BoxConstraints(
-                              minHeight: 48.0,
-                              minWidth: 48.0,
-                            ),
-                        child: this.decoration.suffixIcon ??
-                            fieldTheme.moreIcon ??
-                            const Icon(Icons.arrow_drop_down),
-                      ),
+                      context: context,
+                      fieldTheme: fieldTheme,
+                      items: fieldState.items,
+                      isEnabled: isExpanded,
+                      isSelected: false,
                     ),
+                    selectedItemBuilder: (context) => _buildItems(
+                      context: context,
+                      fieldTheme: fieldTheme,
+                      items: fieldState.items,
+                      isEnabled: isExpanded,
+                      isSelected: true,
+                    ),
+                    icon: this.decoration.suffixIcon ??
+                        fieldTheme.moreIcon ??
+                        const Icon(Icons.arrow_drop_down),
                   ),
                 ),
               ),
@@ -199,12 +233,32 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     );
   }
 
-  List<DropdownMenuItem<Value>> _buildItems(
-    BuildContext context,
-    DropdownFieldTheme fieldTheme,
-    Iterable<Value> items,
-    bool isSelected,
-  ) {
+  Widget _buildDefaultTextStyle({
+    required DropdownFieldTheme fieldTheme,
+    required bool isEnabled,
+    required bool isSelected,
+    required Widget child,
+  }) {
+    return DefaultTextStyle(
+      overflow: fieldTheme.textOverflow!,
+      maxLines: isSelected ? fieldTheme.selectedMaxLines : fieldTheme.maxLines,
+      style: Style.resolveTextStyle(
+        isEnabled: isEnabled,
+        style:
+            isSelected ? fieldTheme.selectedTextStyle! : fieldTheme.textStyle!,
+        color: fieldTheme.textColor!,
+      ),
+      child: child,
+    );
+  }
+
+  List<DropdownMenuItem<Value>> _buildItems({
+    required BuildContext context,
+    required DropdownFieldTheme fieldTheme,
+    required Iterable<Value> items,
+    required bool isSelected,
+    required bool isEnabled,
+  }) {
     final builder =
         (isSelected ? this.selectedItemBuilder : itemBuilder) ?? itemBuilder;
 
@@ -214,7 +268,13 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
           value: null,
           child: Text(
             isSelected ? decoration.hintText ?? '' : emptyItemLabel,
-            style: isSelected ? decoration.hintStyle : null,
+            style: isSelected
+                ? decoration.hintStyle
+                : Style.resolveTextStyle(
+                    isEnabled: isEnabled,
+                    style: fieldTheme.textStyle!,
+                    color: fieldTheme.textColor!,
+                  ),
           ),
         ),
       ...items.map<DropdownMenuItem<Value>>((value) {
@@ -223,12 +283,10 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
         if (fieldItem is! FieldItem) {
           return DropdownMenuItem<Value>(
             value: value,
-            child: DefaultTextStyle(
-              style: Style.resolveTextStyle(
-                isEnabled: isEnabled,
-                style: fieldTheme.textStyle!,
-                color: fieldTheme.textColor!,
-              ),
+            child: _buildDefaultTextStyle(
+              fieldTheme: fieldTheme,
+              isEnabled: isEnabled,
+              isSelected: isSelected,
               child: fieldItem,
             ),
           );
@@ -238,12 +296,10 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
           enabled: fieldItem.isEnabled,
           alignment: fieldItem.alignment,
           onTap: fieldItem.onTap,
-          child: DefaultTextStyle(
-            style: Style.resolveTextStyle(
-              isEnabled: fieldItem.isEnabled,
-              style: fieldTheme.textStyle!,
-              color: fieldTheme.textColor!,
-            ),
+          child: _buildDefaultTextStyle(
+            fieldTheme: fieldTheme,
+            isEnabled: fieldItem.isEnabled && isEnabled,
+            isSelected: isSelected,
             child: fieldItem.child,
           ),
         );
@@ -261,7 +317,6 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
 
     decoration = decoration.copyWith(
       enabled: isEnabled,
-      contentPadding: const EdgeInsets.only(left: 16.0),
       suffix: const SizedBox.shrink(),
       suffixIcon: const SizedBox.shrink(),
       suffixIconConstraints: const BoxConstraints(),

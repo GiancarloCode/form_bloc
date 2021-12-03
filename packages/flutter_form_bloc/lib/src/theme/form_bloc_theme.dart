@@ -157,6 +157,18 @@ class DateTimeFieldTheme extends FieldTheme {
 
 /// The theme of [DropdownFieldBlocBuilder]
 class DropdownFieldTheme extends FieldTheme {
+  /// Defaults is [TextOverflow.ellipsis]
+  final TextOverflow? textOverflow;
+
+  /// Defaults is `1`
+  final int? maxLines;
+
+  /// Defaults is [FieldTheme.textStyle]
+  final TextStyle? selectedTextStyle;
+
+  /// Defaults is [DropdownFieldTheme.maxLines]
+  final int? selectedMaxLines;
+
   /// Defaults is [Icons.arrow_drop_down]
   final Widget? moreIcon;
 
@@ -164,6 +176,10 @@ class DropdownFieldTheme extends FieldTheme {
     TextStyle? textStyle,
     MaterialStateProperty<Color?>? textColor,
     InputDecorationTheme? decorationTheme,
+    this.textOverflow,
+    this.maxLines,
+    this.selectedTextStyle,
+    this.selectedMaxLines,
     this.moreIcon,
   }) : super(
           textStyle: textStyle,
@@ -175,12 +191,20 @@ class DropdownFieldTheme extends FieldTheme {
     TextStyle? textStyle,
     MaterialStateProperty<Color?>? textColor,
     InputDecorationTheme? decorationTheme,
+    TextOverflow? textOverflow,
+    int? maxLines,
+    TextStyle? selectedTextStyle,
+    int? selectedMaxLines,
     Widget? moreIcon,
   }) {
     return DropdownFieldTheme(
       textStyle: textStyle ?? this.textStyle,
       textColor: textColor ?? this.textColor,
       decorationTheme: decorationTheme ?? this.decorationTheme,
+      textOverflow: textOverflow ?? this.textOverflow,
+      maxLines: maxLines ?? this.maxLines,
+      selectedTextStyle: selectedTextStyle ?? this.selectedTextStyle,
+      selectedMaxLines: selectedMaxLines ?? this.selectedMaxLines,
       moreIcon: moreIcon ?? this.moreIcon,
     );
   }
