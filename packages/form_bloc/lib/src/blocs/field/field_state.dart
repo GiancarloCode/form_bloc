@@ -1,7 +1,7 @@
 part of 'field_bloc.dart';
 
 abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
-    implements FieldBlocStateBase {
+    with FieldBlocStateBase {
   /// The current value of this state.
   final Value value;
 

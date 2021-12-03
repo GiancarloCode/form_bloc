@@ -11,11 +11,15 @@ class FieldThemeResolver {
   const FieldThemeResolver(this.theme, this.formTheme, [this.fieldTheme]);
 
   InputDecorationTheme get decorationTheme {
-    return fieldTheme?.decorationTheme ?? formTheme.decorationTheme ?? theme.inputDecorationTheme;
+    return fieldTheme?.decorationTheme ??
+        formTheme.decorationTheme ??
+        theme.inputDecorationTheme;
   }
 
   TextStyle get textStyle {
-    return fieldTheme?.textStyle ?? formTheme.textStyle ?? theme.textTheme.subtitle1!;
+    return fieldTheme?.textStyle ??
+        formTheme.textStyle ??
+        theme.textTheme.subtitle1!;
   }
 
   MaterialStateProperty<Color?> get textColor {

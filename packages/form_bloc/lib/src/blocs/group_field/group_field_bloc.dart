@@ -1,9 +1,9 @@
 part of '../field/field_bloc.dart';
 
 class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
-    implements FieldBlocStateBase {
+    with FieldBlocStateBase {
   final String name;
-  final Map<String, T> _fieldBlocs;
+  final Map<String, T> fieldBlocs;
   final ExtraData? extraData;
   @override
   final FormBloc? formBloc;
@@ -15,7 +15,7 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
     required this.formBloc,
   }) :
         //ignore: prefer_for_elements_to_map_fromiterable
-        _fieldBlocs = Map.fromIterable(
+        fieldBlocs = Map.fromIterable(
           fieldBlocs,
           key: (dynamic f) {
             return f.state.name as String;
@@ -25,20 +25,20 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
           },
         );
 
-  GroupFieldBlocState<T, ExtraData> _copyWith({
+  GroupFieldBlocState<T, ExtraData> copyWith({
     Param<ExtraData>? extraData,
     Param<FormBloc?>? formBloc,
   }) {
     return GroupFieldBlocState(
       name: name,
-      fieldBlocs: _fieldBlocs.values.toList(),
+      fieldBlocs: fieldBlocs.values.toList(),
       extraData: extraData == null ? this.extraData : extraData.value,
       formBloc: formBloc == null ? this.formBloc : formBloc.value,
     );
   }
 
   @override
-  List<Object?> get props => [name, _fieldBlocs, extraData, formBloc];
+  List<Object?> get props => [name, fieldBlocs, extraData, formBloc];
 
   @override
   String toString() {
@@ -47,7 +47,7 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
     _string += ',\n  name: $name';
     _string += ',\n  extraData: $extraData';
     _string += ',\n  formBloc: $formBloc';
-    _string += ',\n  fieldBlocs: $_fieldBlocs';
+    _string += ',\n  fieldBlocs: $fieldBlocs';
     _string += '\n}';
     return _string;
   }
@@ -67,7 +67,7 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
         ));
 
   void updateExtraData(ExtraData extraData) {
-    emit(state._copyWith(
+    emit(state.copyWith(
       extraData: Param(extraData),
     ));
   }
@@ -76,13 +76,13 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
 
   /// See [FieldBloc.updateFormBloc]
   @override
-  void updateFormBloc(FormBloc? formBloc, {bool autoValidate = false}) {
-    emit(state._copyWith(
+  void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
+    emit(state.copyWith(
       formBloc: Param(formBloc),
     ));
 
     FormBlocUtils.updateFormBloc(
-      fieldBlocs: state._fieldBlocs.values.toList(),
+      fieldBlocs: state.fieldBlocs.values,
       formBloc: formBloc,
       autoValidate: autoValidate,
     );
@@ -92,9 +92,14 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
   @override
   void removeFormBloc(FormBloc formBloc) {
     if (state.formBloc == formBloc) {
-      emit(state._copyWith(
+      emit(state.copyWith(
         formBloc: Param(null),
       ));
+
+      FormBlocUtils.removeFormBloc(
+        fieldBlocs: state.fieldBlocs.values,
+        formBloc: formBloc,
+      );
     }
   }
 
