@@ -991,6 +991,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
       removeSuggestionOnLongPress: widget.removeSuggestionOnLongPress,
       suggestionsBoxDecoration: widget.suggestionsBoxDecoration ??
           SuggestionsBoxDecoration(
+            constraints: const BoxConstraints(minHeight: _kMenuItemHeight),
             borderRadius: BorderRadius.circular(4),
             color: Theme.of(context).canvasColor,
           ),

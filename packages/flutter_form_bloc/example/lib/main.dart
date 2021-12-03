@@ -155,7 +155,6 @@ class AllFieldsForm extends StatelessWidget {
                           selectFieldBloc: formBloc.select1,
                           decoration: InputDecoration(
                             labelText: 'DropdownFieldBlocBuilder',
-                            prefixIcon: Icon(Icons.sentiment_satisfied),
                           ),
                           itemBuilder: (context, value) => FieldItem(
                             isEnabled: value != 'Option 1',

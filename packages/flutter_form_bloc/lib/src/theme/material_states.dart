@@ -14,4 +14,9 @@ class SimpleMaterialStateProperty<T> implements MaterialStateProperty<T> {
     if (states.contains(MaterialState.disabled)) return disabled;
     return normal;
   }
+
+  @override
+  String toString() {
+    return 'SimpleMaterialStateProperty{normal: $normal, disabled: $disabled}';
+  }
 }

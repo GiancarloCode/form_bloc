@@ -50,12 +50,18 @@ typedef Suggestions<Value> = Future<List<Value>> Function(String pattern);
 ///   * [MultiSelectFieldBloc].
 /// * [GroupFieldBloc].
 /// * [ListFieldBloc].
-abstract class FieldBloc {
+mixin FieldBloc<State extends FieldBlocStateBase> on BlocBase<State> {
   /// Update the [formBloc] and [autoValidate] to the fieldBloc
   void updateFormBloc(FormBloc formBloc, {bool autoValidate = false});
 
   /// Remove the [formBloc] to the fieldBloc
   void removeFormBloc(FormBloc formBloc);
+}
+
+/// The common state interface of all field blocs
+abstract class FieldBlocStateBase {
+  /// Identifies whether the FieldBloc has been added to the FormBloc
+  FormBloc? get formBloc;
 }
 
 /// The base class with the common behavior
