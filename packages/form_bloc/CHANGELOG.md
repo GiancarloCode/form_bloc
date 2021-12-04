@@ -1,4 +1,6 @@
-#0.28.0-alpha
+
+
+#0.28.0
 ## Breaking changes
 * Updated to `bloc: ^8.0.0`
 * Improved null safety of form bloc ( Thanks to **@SimoneBressan** )
