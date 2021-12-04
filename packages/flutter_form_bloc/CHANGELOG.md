@@ -1,6 +1,19 @@
-# 0.28.0-alpha
-- Updated to `form_bloc: ^0.28.0-alpha`.
-- Simplification of the dropdown  
+# 0.28.0
+- Updated to `form_bloc: ^0.28.0`.
+- Simplification of the dropdown
+- Dropdown enhancements
+  * Now you can customize the dropdown theme more
+  * Fixed DropdownFieldBlocBuilder icon alignment
+  *  Now you can disable single elements of the dropdown or fieldgroups
+  *  Now you can pass a widget to dropdown or fieldgroups
+  *  Dropdown or fieldGroups items now have all the space available and are pre-aligned in the center
+  *  Use GroupInputDecorator to create custom widget builders for your groups!
+  *  Simplify the construction of the Radio, you do not need two Radios to deselect the value
+  *  Fix missing parameters on date time field
+  * expose DropdownFieldBlocBuilder hint and disable hint
+  * Removed dropdown code forked from flutter and platform dropdown code (mobile/web)
+  * Now the dropdown will not open when it acquires focus
+  * Reduced and simplified the dropdown code
 - Added theme for all FieldBlocBuilders
 # 0.20.7-alpha
 -  Updated to `form_bloc: ^0.20.7-alpha`.

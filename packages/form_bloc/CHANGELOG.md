@@ -13,6 +13,8 @@
   * Now the value field in the FieldBlocState must be specified null. It is no longer nullable in TextFieldBlocState, BooleanFieldBlocState, MultiSelectFieldBlocState.
   * Validators are now not forced to accept null values
 * Converted SingleFieldBloc, ListFieldBloc, GroupFieldBloc to Cubit ( Thanks to **@SimoneBressan**  )
+* Added FieldBlocStateBase to have a common state between FieldBloc
+
 
 # 0.20.7-alpha
 - Now the items of SelectFieldBlocState and MultiSelectFieldBlocState are not nullable.
