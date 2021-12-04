@@ -88,12 +88,12 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
 
     if ((stateSnapshot.fieldBlocs.length > index)) {
       final newFieldBlocs = [...stateSnapshot.fieldBlocs];
-
+      final removableFiled = newFieldBlocs.removeAt(index);
       emit(state.copyWith(fieldBlocs: newFieldBlocs));
 
       if (state.formBloc != null) {
         FormBlocUtils.removeFormBloc(
-          fieldBlocs: [newFieldBlocs.removeAt(index)],
+          fieldBlocs: [removableFiled],
           formBloc: state.formBloc,
         );
 
