@@ -17,7 +17,8 @@ class CanShowFieldBlocBuilder extends StatefulWidget {
   final Widget Function(BuildContext context, bool canShow) builder;
 
   @override
-  _CanShowFieldBlocBuilderState createState() => _CanShowFieldBlocBuilderState();
+  _CanShowFieldBlocBuilderState createState() =>
+      _CanShowFieldBlocBuilderState();
 }
 
 class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
@@ -25,22 +26,27 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
   // Identifies whether it is waiting for the FormBloc's event handling
   bool _showOnFirstFrame = false;
 
-  AnimationController? _controller;
+  late AnimationController _controller;
   bool _canShow = false;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.fieldBloc.state.formBloc != null) {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    if (widget.fieldBloc.state.hasFormBloc) {
       _showOnFirstFrame = true;
-      _init();
+      _initVisibility();
     } else {
       Future.delayed(Duration(milliseconds: 10)).whenComplete(() {
         if (!mounted) return;
         setState(() {
           _showOnFirstFrame = true;
-          _init();
+          _initVisibility();
         });
       });
     }
@@ -49,33 +55,31 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
   @override
   void didUpdateWidget(covariant CanShowFieldBlocBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    if (!_showOnFirstFrame) return;
+
     if (widget.animate != oldWidget.animate) {
-      _dispose();
-      _init();
+      _initVisibility();
+    }
+    if (widget.fieldBloc.state.hasFormBloc !=
+        oldWidget.fieldBloc.state.hasFormBloc) {
+      _initVisibility();
     }
   }
 
   @override
   void dispose() {
-    _dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  void _init() {
-    final canShow = widget.fieldBloc.state.formBloc != null;
+  void _initVisibility() {
+    final canShow = widget.fieldBloc.state.hasFormBloc;
     if (widget.animate) {
-      _controller = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 300),
-        value: canShow ? 1.0 : 0.0,
-      );
+      _controller.value = canShow ? 1.0 : 0.0;
     } else {
       _canShow = canShow;
     }
-  }
-
-  void _dispose() {
-    _controller?.dispose();
   }
 
   void _changeVisibility(bool canShow) {
@@ -83,9 +87,9 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
 
     if (widget.animate) {
       if (canShow) {
-        _controller!.forward();
+        _controller.forward();
       } else {
-        _controller!.reverse();
+        _controller.reverse();
       }
     } else {
       setState(() {
@@ -104,11 +108,11 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
       child = const SizedBox.shrink();
     }
 
-    if (widget.animate && _controller != null) {
+    if (widget.animate) {
       child = FadeTransition(
-        opacity: _controller!,
+        opacity: _controller,
         child: SizeTransition(
-          sizeFactor: _controller!,
+          sizeFactor: _controller,
           child: child,
         ),
       );
@@ -116,11 +120,8 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
 
     return BlocListener<FieldBloc, FieldBlocStateBase>(
       bloc: widget.fieldBloc,
-      listenWhen: (prev, curr) => prev.formBloc != curr.formBloc,
-      listener: (context, state) {
-        final formBloc = state.formBloc;
-        _changeVisibility(formBloc != null);
-      },
+      listenWhen: (prev, curr) => prev.hasFormBloc != curr.hasFormBloc,
+      listener: (context, state) => _changeVisibility(state.hasFormBloc),
       child: child,
     );
   }

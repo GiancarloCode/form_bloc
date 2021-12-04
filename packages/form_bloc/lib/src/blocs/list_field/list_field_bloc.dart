@@ -1,7 +1,7 @@
 part of '../field/field_bloc.dart';
 
 class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
-    implements FieldBlocStateBase {
+    with FieldBlocStateBase {
   final String name;
   final List<T> fieldBlocs;
   final ExtraData? extraData;
@@ -15,7 +15,7 @@ class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
     required this.formBloc,
   });
 
-  ListFieldBlocState<T, ExtraData> _copyWith({
+  ListFieldBlocState<T, ExtraData> copyWith({
     List<T>? fieldBlocs,
     Param<FormBloc?>? formBloc,
     Param<ExtraData>? extraData,
@@ -66,7 +66,7 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
   void addFieldBlocs(List<T> fieldBlocs) {
     final stateSnapshot = state;
     if (fieldBlocs.isNotEmpty) {
-      emit(stateSnapshot._copyWith(
+      emit(stateSnapshot.copyWith(
         fieldBlocs: [...stateSnapshot.fieldBlocs, ...fieldBlocs],
       ));
 
@@ -77,7 +77,7 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
           autoValidate: _autoValidate,
         );
 
-        state.formBloc?.add(RefreshFieldBlocsSubscription());
+        state.formBloc!.add(RefreshFieldBlocsSubscription());
       }
     }
   }
@@ -89,14 +89,16 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
     if ((stateSnapshot.fieldBlocs.length > index)) {
       final newFieldBlocs = [...stateSnapshot.fieldBlocs];
 
-      FormBlocUtils.removeFormBloc(
-        fieldBlocs: [newFieldBlocs.removeAt(index)],
-        formBloc: state.formBloc,
-      );
+      emit(state.copyWith(fieldBlocs: newFieldBlocs));
 
-      emit(state._copyWith(fieldBlocs: newFieldBlocs));
+      if (state.formBloc != null) {
+        FormBlocUtils.removeFormBloc(
+          fieldBlocs: [newFieldBlocs.removeAt(index)],
+          formBloc: state.formBloc,
+        );
 
-      state.formBloc?.add(RefreshFieldBlocsSubscription());
+        state.formBloc!.add(RefreshFieldBlocsSubscription());
+      }
     }
   }
 
@@ -116,20 +118,22 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
       return false;
     });
 
-    FormBlocUtils.removeFormBloc(
-      fieldBlocs: fieldBlocsRemoved,
-      formBloc: state.formBloc,
-    );
-
-    emit(state._copyWith(
+    emit(state.copyWith(
       fieldBlocs: newFieldBlocs,
     ));
 
-    state.formBloc?.add(RefreshFieldBlocsSubscription());
+    if (state.formBloc != null) {
+      FormBlocUtils.removeFormBloc(
+        fieldBlocs: fieldBlocsRemoved,
+        formBloc: state.formBloc,
+      );
+
+      state.formBloc!.add(RefreshFieldBlocsSubscription());
+    }
   }
 
   void updateExtraData(ExtraData extraData) {
-    emit(state._copyWith(
+    emit(state.copyWith(
       extraData: Param(extraData),
     ));
   }
@@ -141,7 +145,7 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
   void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
     _autoValidate = autoValidate;
 
-    emit(state._copyWith(
+    emit(state.copyWith(
       formBloc: Param(formBloc),
     ));
 
@@ -156,9 +160,14 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
   @override
   void removeFormBloc(FormBloc formBloc) {
     if (state.formBloc == formBloc) {
-      emit(state._copyWith(
+      emit(state.copyWith(
         formBloc: Param(null),
       ));
+
+      FormBlocUtils.removeFormBloc(
+        fieldBlocs: state.fieldBlocs,
+        formBloc: formBloc,
+      );
     }
   }
 

@@ -12,7 +12,7 @@ class FormBlocUtils {
           singleFieldBlocs.add(fieldBloc);
         } else if (fieldBloc is GroupFieldBloc) {
           singleFieldBlocs.addAll(
-              getAllSingleFieldBlocs(fieldBloc.state._fieldBlocs.values));
+              getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs.values));
         } else if (fieldBloc is ListFieldBloc) {
           singleFieldBlocs.addAll(
             getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs),
@@ -33,7 +33,7 @@ class FormBlocUtils {
         } else if (fieldBloc is GroupFieldBloc) {
           _fieldBlocs.add(fieldBloc);
           _fieldBlocs
-              .addAll(getAllFieldBlocs(fieldBloc.state._fieldBlocs.values));
+              .addAll(getAllFieldBlocs(fieldBloc.state.fieldBlocs.values));
         } else if (fieldBloc is ListFieldBloc) {
           _fieldBlocs.add(fieldBloc);
           _fieldBlocs.addAll(
@@ -96,7 +96,7 @@ class FormBlocUtils {
           }
         } else {
           if (currentFieldBloc is GroupFieldBloc) {
-            currentFieldBloc = currentFieldBloc.state._fieldBlocs[name];
+            currentFieldBloc = currentFieldBloc.state.fieldBlocs[name];
           } else {
             return null;
           }
@@ -247,7 +247,7 @@ class FormBlocUtils {
       if (fieldBloc is SingleFieldBloc) {
         json[name] = fieldBloc.state;
       } else if (fieldBloc is GroupFieldBloc) {
-        json[name] = fieldBlocsToFieldBlocsStates(fieldBloc.state._fieldBlocs);
+        json[name] = fieldBlocsToFieldBlocsStates(fieldBloc.state.fieldBlocs);
       }
       if (fieldBloc is ListFieldBloc) {
         json[name] = fieldBlocListToFieldBlocsStatesList(fieldBloc);
@@ -264,7 +264,7 @@ class FormBlocUtils {
       if (fieldBloc is SingleFieldBloc) {
         list.add(fieldBloc.state);
       } else if (fieldBloc is GroupFieldBloc) {
-        list.add(fieldBlocsToFieldBlocsStates(fieldBloc.state._fieldBlocs));
+        list.add(fieldBlocsToFieldBlocsStates(fieldBloc.state.fieldBlocs));
       } else if (fieldBloc is ListFieldBloc) {
         list.add(fieldBlocListToFieldBlocsStatesList(fieldBloc));
       }
@@ -370,7 +370,7 @@ class FormBlocUtils {
   }
 
   static void updateFormBloc({
-    required List<FieldBloc> fieldBlocs,
+    required Iterable<FieldBloc> fieldBlocs,
     required FormBloc? formBloc,
     bool autoValidate = false,
   }) {
@@ -382,7 +382,7 @@ class FormBlocUtils {
   }
 
   static void removeFormBloc({
-    required List<FieldBloc> fieldBlocs,
+    required Iterable<FieldBloc> fieldBlocs,
     required FormBloc? formBloc,
   }) {
     if (formBloc == null) return;

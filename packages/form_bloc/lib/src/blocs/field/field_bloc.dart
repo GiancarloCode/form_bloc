@@ -59,9 +59,11 @@ mixin FieldBloc<State extends FieldBlocStateBase> on BlocBase<State> {
 }
 
 /// The common state interface of all field blocs
-abstract class FieldBlocStateBase {
+mixin FieldBlocStateBase {
   /// Identifies whether the FieldBloc has been added to the FormBloc
   FormBloc? get formBloc;
+
+  bool get hasFormBloc => formBloc != null;
 }
 
 /// The base class with the common behavior
