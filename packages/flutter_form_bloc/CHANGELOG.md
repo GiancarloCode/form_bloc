@@ -1,4 +1,4 @@
-# 0.28.0
+# 0.29.0
 - Updated to `form_bloc: ^0.28.0`.
 - Simplification of the dropdown
 - Dropdown enhancements
