@@ -6308,6 +6308,8 @@ path_provider_macos
 path_provider_windows
 plugin_platform_interface
 url_launcher
+url_launcher_android
+url_launcher_ios
 url_launcher_linux
 url_launcher_macos
 url_launcher_platform_interface
