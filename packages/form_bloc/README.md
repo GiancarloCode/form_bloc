@@ -3,7 +3,7 @@
 | Package                                                                            | Pub                                                                                                    |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | [form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/form_bloc)                 | [![pub package](https://img.shields.io/pub/v/form_bloc.svg)](https://pub.dev/packages/form_bloc)                 |
-| [flutter_form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc)                 | [![pub package](https://img.shields.io/pub/v/flutter_form_bloc.svg)](https://pub.dev/packages/flutter_form_bloc)       
+| [flutter_form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc)                 | [![pub package](https://img.shields.io/pub/v/flutter_form_bloc.svg)](https://pub.dev/packages/flutter_form_bloc)
 
 
 Easy Form State Management using BLoC pattern. Separate the Form State and Business Logic from the User Interface.
@@ -29,9 +29,6 @@ Easy Form State Management using BLoC pattern. Separate the Form State and Busin
 
 ---
 
-To create beautiful forms in Flutter using `form_bloc` check out [flutter_form_bloc](https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/).
-
-
 ## Examples
 
 <div>
@@ -39,55 +36,39 @@ To create beautiful forms in Flutter using `form_bloc` check out [flutter_form_b
         <tr>
             <td> 
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_1.gif" width="230"/>
+                    <img src="https://raw.githubusercontent.com/GiancarloCode/form_bloc/master/screenshots/form_bloc1.gif" width="230"/>
                 </a>
             </td>    
             <td>   
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_2.gif" width="230"/>                   
+                    <img src="https://raw.githubusercontent.com/GiancarloCode/form_bloc/master/screenshots/form_bloc2.gif" width="230"/>                   
                 </a>
             </td>
              <td>   
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_3.gif" width="230"/>                   
+                    <img src="https://raw.githubusercontent.com/GiancarloCode/form_bloc/master/screenshots/form_bloc3.gif" width="230"/>                   
                 </a>
             </td>        
         </tr>
         <tr>
             <td> 
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_4.gif" width="230"/>
+                    <img src="https://raw.githubusercontent.com/GiancarloCode/form_bloc/master/screenshots/form_bloc4.gif" width="230"/>
                 </a>
             </td>    
             <td>   
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_5.gif" width="230"/>                   
+                    <img src="https://raw.githubusercontent.com/GiancarloCode/form_bloc/master/screenshots/form_bloc5.gif" width="230"/>                   
                 </a>
             </td>
             <td>   
                 <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_6.gif" width="230"/>                   
+                    <img src="https://raw.githubusercontent.com/GiancarloCode/form_bloc/master/screenshots/form_bloc6.gif" width="230"/>                   
                 </a>
             </td>            
         </tr>
-        <tr>
-            <td> 
-                <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_7.gif" width="230"/>
-                </a>
-            </td>
-            <td> 
-                <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_8.gif" width="230"/>
-                </a>
-            </td>
-            <td> 
-                <a>
-                    <img src="https://giancarlocode.com/wp-content/uploads/flutter_form_bloc_demo_9.gif" width="230"/>
-                </a>
-            </td>                      
-        </tr>
-    </table>
+    <table>
+
 </div>
 
 
@@ -95,3 +76,4 @@ To create beautiful forms in Flutter using `form_bloc` check out [flutter_form_b
 
 - [GiancarloCode](https://github.com/GiancarloCode)
 - [AhmedWahdan](https://github.com/WahdanZ)
+

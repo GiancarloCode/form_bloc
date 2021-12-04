@@ -66,8 +66,9 @@ Easy Form State Management using BLoC pattern. Separate the Form State and Busin
                     <img src="https://raw.githubusercontent.com/GiancarloCode/form_bloc/master/screenshots/form_bloc6.gif" width="230"/>                   
                 </a>
             </td>            
-  
-    </table>
+        </tr>
+    <table>
+
 </div>
 
 
