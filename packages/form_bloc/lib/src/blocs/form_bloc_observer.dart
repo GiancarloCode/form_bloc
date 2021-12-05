@@ -2,11 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:form_bloc/src/blocs/field/field_bloc.dart';
 import 'package:form_bloc/src/blocs/form/form_bloc.dart';
 
-/// [BlocDelegate] that override the [BlocSupervisor.delegate]
-/// for hide `events` and `transitions`
-/// of any [FieldBloc] or [FormBloc].
+/// [FormBlocObserver] hide `events` and `transitions`of any [FieldBloc] or [FormBloc]
+/// from the [child].
 ///
-/// But it retains the behavior of the current [BlocSupervisor.delegate].
+/// But the [child] retains the behavior of the current [BlocObserver].
 ///
 /// You can customize using:
 /// * [FormBlocObserver.notifyOnFieldBlocEvent].
@@ -15,114 +14,171 @@ import 'package:form_bloc/src/blocs/form/form_bloc.dart';
 /// * [FormBlocObserver.notifyOnFormBlocEvent].
 /// * [FormBlocObserver.notifyOnFormBlocTransition].
 /// * [FormBlocObserver.notifyOnFormBlocError].
+///
+/// Example:
+/// final blocObserver = FormBlocObserver(
+///   child: MyBlocObserver(),
+/// );
+/// BlocOverrides.runZoned(_run, blocObserver: blocObserver)
 class FormBlocObserver extends BlocObserver {
-  /// If is `true` every `transition` of any
+  /// If is `true` every `create` of any
   /// [FieldBloc] will be notified
-  /// to [BlocSupervisor.delegate].
-  final bool notifyOnFieldBlocTransition; // = false;
+  /// to [child].
+  final bool notifyOnFieldBlocCreate; // = false;
 
-  /// If is `true` every `event` of any
+  /// If is `true` every `change` of any
   /// [FieldBloc] will be notified
-  /// to [BlocSupervisor.delegate].
-  final bool notifyOnFieldBlocEvent; // = false;
+  /// to [child].
+  final bool notifyOnFieldBlocChange; // = false;
 
   /// If is `true` every `error` of any
   /// [FieldBloc] will be notified
-  /// to [BlocSupervisor.delegate].
+  /// to [child].
   final bool notifyOnFieldBlocError; // = true;
+
+  /// If is `true` every `close` of any
+  /// [FieldBloc] will be notified
+  /// to [child].
+  final bool notifyOnFieldBlocClose; // = false;
+
+  /// If is `true` every `create` of any
+  /// [FormBloc] will be notified
+  /// to [child].
+  final bool notifyOnFormBlocCreate; // = false;
 
   /// If is `true` every `transition` of any
   /// [FormBloc] will be notified
-  /// to [BlocSupervisor.delegate].
+  /// to [child].
   final bool notifyOnFormBlocTransition; // = false;
 
   /// If is `true` every `event` of any
   /// [FormBloc] will be notified
-  /// to [BlocSupervisor.delegate].
+  /// to [child].
   final bool notifyOnFormBlocEvent; // = false;
 
   /// If is `true` every `error` of any
   /// [FormBloc] will be notified
-  /// to [BlocSupervisor.delegate].
-  final bool notifyOnFormBlocError;
+  /// to [child].
+  final bool notifyOnFormBlocError; // = true
 
-  FormBlocObserver(
-      {this.notifyOnFieldBlocTransition = false,
-      this.notifyOnFieldBlocEvent = false,
-      this.notifyOnFieldBlocError = true,
-      this.notifyOnFormBlocTransition = false,
-      this.notifyOnFormBlocEvent = false,
-      this.notifyOnFormBlocError = false}); // = true;
+  /// If is `true` every `close` of any
+  /// [FormBloc] will be notified
+  /// to [child].
+  final bool notifyOnFormBlocClose; // = false
+
+  /// The child receives all events
+  /// but not those not defined in the FormBlocObserver
+  final BlocObserver child;
+
+  FormBlocObserver({
+    this.notifyOnFieldBlocCreate = false,
+    this.notifyOnFieldBlocChange = false,
+    this.notifyOnFieldBlocError = true,
+    this.notifyOnFieldBlocClose = false,
+    this.notifyOnFormBlocCreate = false,
+    this.notifyOnFormBlocTransition = false,
+    this.notifyOnFormBlocEvent = false,
+    this.notifyOnFormBlocError = true,
+    this.notifyOnFormBlocClose = false,
+    required this.child,
+  });
 
   @override
-  void onEvent(Bloc bloc, Object? event) {
+  void onCreate(BlocBase bloc) {
+    super.onCreate(bloc);
+
     var notify = true;
 
-    if ((bloc is SingleFieldBloc ||
-            bloc is GroupFieldBloc ||
-            bloc is ListFieldBloc) &&
-        !notifyOnFieldBlocEvent) {
+    if (bloc is FieldBloc && !notifyOnFieldBlocCreate) {
       notify = false;
-    } else if (bloc is FormBloc && !notifyOnFormBlocEvent) {
+    } else if (bloc is FormBloc && !notifyOnFormBlocCreate) {
       notify = false;
     }
 
     if (notify) {
-      super.onEvent(bloc, event);
+      child.onCreate(bloc);
+    }
+  }
+
+  @override
+  void onEvent(Bloc bloc, Object? event) {
+    super.onEvent(bloc, event);
+
+    var notify = true;
+
+    if (bloc is FormBloc && !notifyOnFormBlocEvent) {
+      notify = false;
+    }
+
+    if (notify) {
+      child.onEvent(bloc, event);
     }
   }
 
   @override
   void onChange(BlocBase bloc, Change change) {
+    super.onChange(bloc, change);
+
     var notify = true;
 
-    if ((bloc is SingleFieldBloc ||
-            bloc is GroupFieldBloc ||
-            bloc is ListFieldBloc) &&
-        !notifyOnFieldBlocTransition) {
+    if (bloc is FieldBloc && !notifyOnFieldBlocChange) {
       notify = false;
-    } else if (bloc is FormBloc && !notifyOnFormBlocTransition) {
+    } else if (bloc is FormBloc) {
+      // Changes to the `FormBloc` can be listened to with onTransition
       notify = false;
     }
 
     if (notify) {
-      super.onChange(bloc, change);
+      child.onChange(bloc, change);
     }
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+
     var notify = true;
 
-    if ((bloc is SingleFieldBloc ||
-            bloc is GroupFieldBloc ||
-            bloc is ListFieldBloc) &&
-        !notifyOnFieldBlocTransition) {
-      notify = false;
-    } else if (bloc is FormBloc && !notifyOnFormBlocTransition) {
+    if (bloc is FormBloc && !notifyOnFormBlocTransition) {
       notify = false;
     }
 
     if (notify) {
-      super.onTransition(bloc, transition);
+      child.onTransition(bloc, transition);
     }
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    super.onError(bloc, error, stackTrace);
+
     var notify = true;
 
-    if ((bloc is SingleFieldBloc ||
-            bloc is GroupFieldBloc ||
-            bloc is ListFieldBloc) &&
-        !notifyOnFieldBlocError) {
+    if (bloc is FieldBloc && !notifyOnFieldBlocError) {
       notify = false;
     } else if (bloc is FormBloc && !notifyOnFormBlocError) {
       notify = false;
     }
 
     if (notify) {
-      super.onError(bloc, error, stackTrace);
+      child.onError(bloc, error, stackTrace);
+    }
+  }
+
+  @override
+  void onClose(BlocBase bloc) {
+    super.onClose(bloc);
+
+    var notify = true;
+
+    if (bloc is FieldBloc && !notifyOnFieldBlocClose) {
+      notify = false;
+    } else if (bloc is FormBloc && !notifyOnFormBlocClose) {
+      notify = false;
+    }
+
+    if (notify) {
+      child.onClose(bloc);
     }
   }
 }
