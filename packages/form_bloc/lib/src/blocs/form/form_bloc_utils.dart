@@ -6,42 +6,37 @@ class FormBlocUtils {
   static List<SingleFieldBloc> getAllSingleFieldBlocs(
       Iterable<FieldBloc?> fieldBlocs) {
     final singleFieldBlocs = <SingleFieldBloc>[];
-    fieldBlocs.forEach(
-      (fieldBloc) {
-        if (fieldBloc is SingleFieldBloc) {
-          singleFieldBlocs.add(fieldBloc);
-        } else if (fieldBloc is GroupFieldBloc) {
-          singleFieldBlocs.addAll(
-              getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs.values));
-        } else if (fieldBloc is ListFieldBloc) {
-          singleFieldBlocs.addAll(
-            getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs),
-          );
-        }
-      },
-    );
+    for (var fieldBloc in fieldBlocs) {
+      if (fieldBloc is SingleFieldBloc) {
+        singleFieldBlocs.add(fieldBloc);
+      } else if (fieldBloc is GroupFieldBloc) {
+        singleFieldBlocs
+            .addAll(getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs.values));
+      } else if (fieldBloc is ListFieldBloc) {
+        singleFieldBlocs.addAll(
+          getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs),
+        );
+      }
+    }
 
     return singleFieldBlocs;
   }
 
   static List<FieldBloc> getAllFieldBlocs(Iterable<FieldBloc?> fieldBlocs) {
     final _fieldBlocs = <FieldBloc>[];
-    fieldBlocs.forEach(
-      (fieldBloc) {
-        if (fieldBloc is SingleFieldBloc) {
-          _fieldBlocs.add(fieldBloc);
-        } else if (fieldBloc is GroupFieldBloc) {
-          _fieldBlocs.add(fieldBloc);
-          _fieldBlocs
-              .addAll(getAllFieldBlocs(fieldBloc.state.fieldBlocs.values));
-        } else if (fieldBloc is ListFieldBloc) {
-          _fieldBlocs.add(fieldBloc);
-          _fieldBlocs.addAll(
-            getAllFieldBlocs(fieldBloc.state.fieldBlocs),
-          );
-        }
-      },
-    );
+    for (var fieldBloc in fieldBlocs) {
+      if (fieldBloc is SingleFieldBloc) {
+        _fieldBlocs.add(fieldBloc);
+      } else if (fieldBloc is GroupFieldBloc) {
+        _fieldBlocs.add(fieldBloc);
+        _fieldBlocs.addAll(getAllFieldBlocs(fieldBloc.state.fieldBlocs.values));
+      } else if (fieldBloc is ListFieldBloc) {
+        _fieldBlocs.add(fieldBloc);
+        _fieldBlocs.addAll(
+          getAllFieldBlocs(fieldBloc.state.fieldBlocs),
+        );
+      }
+    }
 
     return _fieldBlocs;
   }
@@ -227,7 +222,7 @@ class FormBlocUtils {
       List<dynamic> fieldBlocsStatesList) {
     final list = <dynamic>[];
 
-    fieldBlocsStatesList.forEach((dynamic fieldBlocState) {
+    for (var fieldBlocState in fieldBlocsStatesList) {
       if (fieldBlocState is FieldBlocState) {
         list.add(fieldBlocState.toJson());
       } else if (fieldBlocState is Map<String, dynamic>) {
@@ -235,7 +230,7 @@ class FormBlocUtils {
       } else if (fieldBlocState is List<dynamic>) {
         list.add(fieldBlocsStatesListToJsonList(fieldBlocState));
       }
-    });
+    }
     return list;
   }
 
@@ -260,7 +255,7 @@ class FormBlocUtils {
       ListFieldBloc fieldBlocList) {
     final list = <dynamic>[];
 
-    fieldBlocList.state.fieldBlocs.forEach((fieldBloc) {
+    for (var fieldBloc in fieldBlocList.state.fieldBlocs) {
       if (fieldBloc is SingleFieldBloc) {
         list.add(fieldBloc.state);
       } else if (fieldBloc is GroupFieldBloc) {
@@ -268,7 +263,7 @@ class FormBlocUtils {
       } else if (fieldBloc is ListFieldBloc) {
         list.add(fieldBlocListToFieldBlocsStatesList(fieldBloc));
       }
-    });
+    }
     return list;
   }
 
@@ -276,7 +271,7 @@ class FormBlocUtils {
       Iterable<dynamic> fieldBlocStateList) {
     final list = <FieldBlocState>[];
 
-    fieldBlocStateList.forEach((dynamic fieldBlocState) {
+    for (var fieldBlocState in fieldBlocStateList) {
       if (fieldBlocState is FieldBlocState) {
         list.add(fieldBlocState);
       } else if (fieldBlocState is Map<String, dynamic>) {
@@ -284,7 +279,7 @@ class FormBlocUtils {
       } else if (fieldBlocState is Iterable) {
         list.addAll(flattenFieldBlocsStateList(fieldBlocState));
       }
-    });
+    }
     return list;
   }
 

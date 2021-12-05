@@ -26,7 +26,7 @@ class Style {
       } else {
         return FieldBlocBuilder.defaultErrorBuilder(
           context,
-          fieldBlocState.error,
+          fieldBlocState.error!,
           fieldBloc,
         );
       }

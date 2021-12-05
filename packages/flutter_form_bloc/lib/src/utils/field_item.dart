@@ -23,12 +23,14 @@ class FieldItem extends StatelessWidget {
   final Widget child;
 
   const FieldItem({
+    Key? key,
     this.isEnabled = true,
     this.alignment = AlignmentDirectional.centerStart,
     this.onTap,
     required this.child,
-  });
+  }) : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),

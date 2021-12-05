@@ -166,7 +166,7 @@ void main() {
 
       test('_suggestions is added to suggestions of the current state.',
           () async {
-        final suggestions = (String pattern) async => [1, 2, 3];
+        Future<List<int>> suggestions(String pattern) async => [1, 2, 3];
         final fieldBloc = InputFieldBloc<int?, dynamic>(
           name: 'fieldName',
           initialValue: null,
@@ -745,8 +745,8 @@ void main() {
     });
 
     test('updateSuggestions method and UpdateSuggestions event.', () {
-      final suggestions1 = (String pattern) async => [1];
-      final suggestions2 = (String pattern) async => [2];
+      Future<List<int>> suggestions1(String pattern) async => [1];
+      Future<List<int>> suggestions2(String pattern) async => [2];
 
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',

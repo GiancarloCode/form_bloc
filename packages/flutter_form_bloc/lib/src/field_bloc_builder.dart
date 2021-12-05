@@ -3,13 +3,18 @@ import 'package:form_bloc/form_bloc.dart';
 
 typedef DefaultFieldBlocErrorBuilder = String Function(
   BuildContext context,
-  Object? error,
+  Object error,
   FieldBloc fieldBloc,
 );
 
 class FieldBlocBuilder {
-  static DefaultFieldBlocErrorBuilder defaultErrorBuilder =
-      (BuildContext context, Object? error, FieldBloc fieldBloc) {
+  static DefaultFieldBlocErrorBuilder defaultErrorBuilder = buildDefaultError;
+
+  static String buildDefaultError(
+    BuildContext context,
+    Object error,
+    FieldBloc fieldBloc,
+  ) {
     switch (error) {
       case FieldBlocValidatorsErrors.required:
         if (fieldBloc is MultiSelectFieldBloc || fieldBloc is SelectFieldBloc) {
@@ -25,5 +30,5 @@ class FieldBlocBuilder {
       default:
         return '$error';
     }
-  };
+  }
 }

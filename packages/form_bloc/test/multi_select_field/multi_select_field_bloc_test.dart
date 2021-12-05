@@ -6,7 +6,7 @@ void main() {
   group('MultiSelectFieldBloc:', () {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
-        final suggestions = (String pattern) async => [true];
+        Future<List<bool>> suggestions(String pattern) async => [true];
         final validators = [
           FieldBlocValidators.required,
           (List<bool>? value) => 'error',

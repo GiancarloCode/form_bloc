@@ -21,7 +21,7 @@ class FormBlocListener<
   FormBlocListener({
     Key? key,
     this.formBloc,
-    this.child,
+    Widget? child,
     this.onLoading,
     this.onLoaded,
     this.onLoadFailed,
@@ -160,5 +160,6 @@ class FormBlocListener<
   final FormBloc? formBloc;
 
   /// The [Widget] which will be rendered as a descendant of the [BlocListener].
-  final Widget? child;
+  @override
+  Widget? get child => super.child;
 }

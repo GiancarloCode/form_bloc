@@ -720,15 +720,15 @@ class _StepperState extends State<Stepper> with TickerProviderStateMixin {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Container(
-            height: widget.titleHeight,
-            // Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: children.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    children[index])),
+        SizedBox(
+          height: widget.titleHeight,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: children.length,
+            itemBuilder: (BuildContext context, int index) => children[index],
+          ),
+        ),
         Expanded(
           child: ListView(
             physics: widget.physics,

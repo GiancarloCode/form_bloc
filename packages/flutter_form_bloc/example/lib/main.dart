@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() {
-  runApp(App());
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -12,7 +12,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AllFieldsForm(),
     );
@@ -77,7 +77,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   @override
   void onSubmitting() async {
     try {
-      await Future<void>.delayed(Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       emitSuccess(canSubmitAgain: true);
     } catch (e) {
@@ -87,6 +87,8 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
 }
 
 class AllFieldsForm extends StatelessWidget {
+  const AllFieldsForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -104,22 +106,22 @@ class AllFieldsForm extends StatelessWidget {
               ),
             ),
             child: Scaffold(
-              appBar: AppBar(title: Text('Built-in Widgets')),
+              appBar: AppBar(title: const Text('Built-in Widgets')),
               floatingActionButton: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   FloatingActionButton.extended(
                     heroTag: null,
                     onPressed: formBloc.addErrors,
-                    icon: Icon(Icons.error_outline),
-                    label: Text('ADD ERRORS'),
+                    icon: const Icon(Icons.error_outline),
+                    label: const Text('ADD ERRORS'),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   FloatingActionButton.extended(
                     heroTag: null,
                     onPressed: formBloc.submit,
-                    icon: Icon(Icons.send),
-                    label: Text('SUBMIT'),
+                    icon: const Icon(Icons.send),
+                    label: const Text('SUBMIT'),
                   ),
                 ],
               ),
@@ -131,7 +133,7 @@ class AllFieldsForm extends StatelessWidget {
                   LoadingDialog.hide(context);
 
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => SuccessScreen()));
+                      MaterialPageRoute(builder: (_) => const SuccessScreen()));
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
@@ -139,21 +141,21 @@ class AllFieldsForm extends StatelessWidget {
                       SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Column(
                       children: <Widget>[
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.text1,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'TextFieldBlocBuilder',
                             prefixIcon: Icon(Icons.text_fields),
                           ),
                         ),
                         DropdownFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select1,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'DropdownFieldBlocBuilder',
                           ),
                           itemBuilder: (context, value) => FieldItem(
@@ -163,7 +165,7 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         RadioButtonGroupFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select2,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'RadioButtonGroupFieldBlocBuilder',
                           ),
                           itemBuilder: (context, item) => FieldItem(
@@ -172,7 +174,7 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         CheckboxGroupFieldBlocBuilder<String>(
                           multiSelectFieldBloc: formBloc.multiSelect1,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'CheckboxGroupFieldBlocBuilder',
                           ),
                           itemBuilder: (context, item) => FieldItem(
@@ -185,7 +187,7 @@ class AllFieldsForm extends StatelessWidget {
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'DateTimeFieldBlocBuilder',
                             prefixIcon: Icon(Icons.calendar_today),
                             helperText: 'Date',
@@ -198,7 +200,7 @@ class AllFieldsForm extends StatelessWidget {
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'DateTimeFieldBlocBuilder',
                             prefixIcon: Icon(Icons.date_range),
                             helperText: 'Date and Time',
@@ -208,18 +210,18 @@ class AllFieldsForm extends StatelessWidget {
                           timeFieldBloc: formBloc.time1,
                           format: DateFormat('hh:mm a'),
                           initialTime: TimeOfDay.now(),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'TimeFieldBlocBuilder',
                             prefixIcon: Icon(Icons.access_time),
                           ),
                         ),
                         SwitchFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean2,
-                          body: Text('CheckboxFieldBlocBuilder'),
+                          body: const Text('CheckboxFieldBlocBuilder'),
                         ),
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean1,
-                          body: Text('CheckboxFieldBlocBuilder'),
+                          body: const Text('CheckboxFieldBlocBuilder'),
                         ),
                         BlocBuilder<InputFieldBloc<File?, String>,
                                 InputFieldBlocState<File?, String>>(
@@ -250,7 +252,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -261,8 +263,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -271,7 +273,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -280,19 +282,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => AllFieldsForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const AllFieldsForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

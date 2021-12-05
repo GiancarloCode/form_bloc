@@ -9,7 +9,7 @@ import 'package:form_bloc/form_bloc.dart';
 
 /// A material design dropdown.
 class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
-  DropdownFieldBlocBuilder({
+  const DropdownFieldBlocBuilder({
     Key? key,
     required this.selectFieldBloc,
     required this.itemBuilder,
@@ -260,7 +260,7 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
     required bool isEnabled,
   }) {
     final builder =
-        (isSelected ? this.selectedItemBuilder : itemBuilder) ?? itemBuilder;
+        (isSelected ? selectedItemBuilder : itemBuilder) ?? itemBuilder;
 
     return [
       if (showEmptyItem)

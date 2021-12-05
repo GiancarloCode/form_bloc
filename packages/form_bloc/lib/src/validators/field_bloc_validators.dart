@@ -1,4 +1,4 @@
-import '../blocs/field/field_bloc.dart';
+import 'package:form_bloc/src/blocs/field/field_bloc.dart';
 
 class FieldBlocValidatorsErrors {
   FieldBlocValidatorsErrors._();

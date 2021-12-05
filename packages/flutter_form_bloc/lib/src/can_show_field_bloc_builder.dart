@@ -42,7 +42,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
       _showOnFirstFrame = true;
       _initVisibility();
     } else {
-      Future.delayed(Duration(milliseconds: 10)).whenComplete(() {
+      Future.delayed(const Duration(milliseconds: 10)).whenComplete(() {
         if (!mounted) return;
         setState(() {
           _showOnFirstFrame = true;

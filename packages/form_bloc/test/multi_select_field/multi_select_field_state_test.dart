@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 void main() {
   group('MultiSelectFieldBlocState:', () {
     test('copyWith.', () {
-      final suggestions = (String pattern) async => [1];
+      Future<List<int>> suggestions(String pattern) async => [1];
 
       final state = MultiSelectFieldBlocState<int?, dynamic>(
         value: [],

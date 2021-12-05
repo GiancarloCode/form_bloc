@@ -3,14 +3,12 @@ import 'dart:collection' show LinkedHashSet;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:form_bloc/src/blocs/field/field_bloc_utils.dart';
 import 'package:form_bloc/src/blocs/form/form_bloc.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:meta/meta.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
-
-import 'field_bloc_utils.dart';
 
 part '../boolean_field/boolean_field_bloc.dart';
 part '../boolean_field/boolean_field_state.dart';
@@ -140,7 +138,7 @@ abstract class SingleFieldBloc<
     unawaited(_selectedSuggestionSubject.close());
     unawaited(_asyncValidatorsSubject.close());
     unawaited(_asyncValidatorsSubscription.cancel());
-    unawaited(_revalidateFieldBlocsSubscription?.cancel());
+    _revalidateFieldBlocsSubscription?.cancel();
 
     unawaited(super.close());
   }
@@ -303,7 +301,7 @@ abstract class SingleFieldBloc<
   /// of validator that confirms a password
   /// with the password of other `fieldBloc`.
   void subscribeToFieldBlocs(List<FieldBloc> fieldBlocs) {
-    unawaited(_revalidateFieldBlocsSubscription?.cancel());
+    _revalidateFieldBlocsSubscription?.cancel();
     if (fieldBlocs.isNotEmpty) {
       _revalidateFieldBlocsSubscription = Rx.combineLatest<dynamic, void>(
         fieldBlocs.whereType<SingleFieldBloc>().toList().map(
@@ -311,7 +309,7 @@ abstract class SingleFieldBloc<
             return state.stream.map<dynamic>((state) => state.value).distinct();
           },
         ),
-        (_) => null,
+        (_) {},
       ).listen((_) {
         if (_autoValidate) {
           validate(false);

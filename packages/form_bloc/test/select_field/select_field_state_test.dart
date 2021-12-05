@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 void main() {
   group('SelectFieldBlocState:', () {
     test('copyWith.', () {
-      final suggestions = (String pattern) async => [1];
+      Future<List<int>> suggestions(String pattern) async => [1];
 
       final state = SelectFieldBlocState<int?, dynamic>(
         value: null,

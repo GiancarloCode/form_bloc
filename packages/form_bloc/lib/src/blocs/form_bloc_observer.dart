@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
-
-import 'field/field_bloc.dart';
-import 'form/form_bloc.dart';
+import 'package:form_bloc/src/blocs/field/field_bloc.dart';
+import 'package:form_bloc/src/blocs/form/form_bloc.dart';
 
 /// [BlocDelegate] that override the [BlocSupervisor.delegate]
 /// for hide `events` and `transitions`
@@ -74,20 +73,20 @@ class FormBlocObserver extends BlocObserver {
   }
 
   @override
-  void onChange(BlocBase cubit, Change change) {
+  void onChange(BlocBase bloc, Change change) {
     var notify = true;
 
-    if ((cubit is SingleFieldBloc ||
-            cubit is GroupFieldBloc ||
-            cubit is ListFieldBloc) &&
+    if ((bloc is SingleFieldBloc ||
+            bloc is GroupFieldBloc ||
+            bloc is ListFieldBloc) &&
         !notifyOnFieldBlocTransition) {
       notify = false;
-    } else if (cubit is FormBloc && !notifyOnFormBlocTransition) {
+    } else if (bloc is FormBloc && !notifyOnFormBlocTransition) {
       notify = false;
     }
 
     if (notify) {
-      super.onChange(cubit, change);
+      super.onChange(bloc, change);
     }
   }
 
@@ -110,20 +109,20 @@ class FormBlocObserver extends BlocObserver {
   }
 
   @override
-  void onError(BlocBase cubit, Object error, StackTrace stacktrace) {
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     var notify = true;
 
-    if ((cubit is SingleFieldBloc ||
-            cubit is GroupFieldBloc ||
-            cubit is ListFieldBloc) &&
+    if ((bloc is SingleFieldBloc ||
+            bloc is GroupFieldBloc ||
+            bloc is ListFieldBloc) &&
         !notifyOnFieldBlocError) {
       notify = false;
-    } else if (cubit is FormBloc && !notifyOnFormBlocError) {
+    } else if (bloc is FormBloc && !notifyOnFormBlocError) {
       notify = false;
     }
 
     if (notify) {
-      super.onError(cubit, error, stacktrace);
+      super.onError(bloc, error, stackTrace);
     }
   }
 }
