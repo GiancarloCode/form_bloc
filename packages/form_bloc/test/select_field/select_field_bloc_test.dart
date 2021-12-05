@@ -6,7 +6,7 @@ void main() {
   group('SelectFieldBloc:', () {
     group('constructor:', () {
       test('call the super constructor correctly.', () {
-        final suggestions = (String pattern) async => [true];
+        Future<List<bool>> suggestions(String pattern) async => [true];
         final validators = [
           FieldBlocValidators.required,
           (bool? value) => value ?? false ? 'error' : null,

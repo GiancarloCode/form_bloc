@@ -19,7 +19,9 @@ dependencies:
   flutter_keyboard_visibility: ^5.0.2
   collection: ^1.15.0
   intl: ^0.17.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.11.0
+
+  flutter_lints: ^1.0.4

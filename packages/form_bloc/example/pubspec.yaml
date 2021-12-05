@@ -9,3 +9,6 @@ environment:
 dependencies:
   form_bloc:
     path: ../
+
+dev_dependencies:
+  lints: ^1.0.1

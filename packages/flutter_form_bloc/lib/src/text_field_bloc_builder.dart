@@ -146,8 +146,8 @@ class TextFieldBlocBuilder extends StatefulWidget {
       height: 24,
       width: 24,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: const CircularProgressIndicator(
+        padding: EdgeInsets.all(8.0),
+        child: CircularProgressIndicator(
           strokeWidth: 2.0,
         ),
       ),
@@ -772,7 +772,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
       ..selection = TextSelection.collapsed(offset: _controller.text.length);
 
     // TODO: Find out why the cursor returns to the beginning.
-    await Future.delayed(Duration(milliseconds: 0));
+    await Future.delayed(const Duration(milliseconds: 0));
     _controller.selection =
         TextSelection.collapsed(offset: _controller.text.length);
   }
@@ -851,7 +851,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         case SuffixButton.asyncValidating:
           decoration = decoration.copyWith(
             suffixIcon: AnimatedOpacity(
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               opacity: state.canShowIsValidating ? 1.0 : 0.0,
               child: widget.asyncValidatingIcon,
             ),
@@ -882,11 +882,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         autofillHints: widget.autofillHints,
         decoration: _buildDecoration(fieldTheme, state),
         keyboardType: widget.keyboardType,
-        textInputAction: widget.textInputAction != null
-            ? widget.textInputAction
-            : widget.nextFocusNode != null
-                ? TextInputAction.next
-                : null,
+        textInputAction: widget.textInputAction ??
+            (widget.nextFocusNode != null ? TextInputAction.next : null),
         textCapitalization: widget.textCapitalization,
         style: Style.resolveTextStyle(
           isEnabled: isEnabled,
@@ -944,8 +941,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
               child: Container(
                 height: 36,
                 width: 36,
-                padding: EdgeInsets.all(4.0),
-                child: CircularProgressIndicator(strokeWidth: 3),
+                padding: const EdgeInsets.all(4.0),
+                child: const CircularProgressIndicator(strokeWidth: 3),
               ),
             );
           },

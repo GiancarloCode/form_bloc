@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this, prefer_const_constructors, prefer_const_constructors_in_immutables, prefer_generic_function_type_aliases
+
 /*
 BSD 2-Clause License
 

@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 void main() {
   group('BooleanFieldBlocState:', () {
     test('copyWith.', () {
-      final suggestions = (String pattern) async => [true];
+      Future<List<bool>> suggestions(String pattern) async => [true];
 
       final state = BooleanFieldBlocState<dynamic>(
         value: false,

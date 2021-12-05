@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 void main() {
   group('TextFieldBlocState:', () {
     test('copyWith.', () {
-      final suggestions = (String pattern) async => ['1'];
+      Future<List<String>> suggestions(String pattern) async => ['1'];
 
       final state = TextFieldBlocState<dynamic>(
         value: '',

@@ -131,7 +131,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     extends State<DateTimeFieldBlocBuilderBase<T>> {
   final DatePickerMode initialDatePickerMode = DatePickerMode.day;
 
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   FocusNode get _effectiveFocusNode => widget.focusNode ?? _focusNode;
 
@@ -156,7 +156,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
 
   void _showPicker(BuildContext context) async {
     FocusScope.of(context).requestFocus(FocusNode());
-    var result;
+    dynamic result;
     if (widget.type == DateTimeFieldBlocBuilderBaseType.date) {
       result = await _showDatePicker(context);
     } else if (widget.type == DateTimeFieldBlocBuilderBaseType.both) {
@@ -197,7 +197,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
             bloc: widget.dateTimeFieldBloc,
             builder: (context, state) {
               final isEnabled = fieldBlocIsEnabled(
-                isEnabled: this.widget.isEnabled ?? true,
+                isEnabled: widget.isEnabled ?? true,
                 enableOnlyWhenFormBlocCanSubmit:
                     widget.enableOnlyWhenFormBlocCanSubmit,
                 fieldBlocState: state,
@@ -324,7 +324,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     InputFieldBlocState<T, dynamic> state,
     bool isEnabled,
   ) {
-    InputDecoration decoration = this.widget.decoration;
+    InputDecoration decoration = widget.decoration;
 
     decoration = decoration.copyWith(
       enabled: isEnabled,
@@ -337,7 +337,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
       suffixIcon: decoration.suffixIcon ??
           (fieldTheme.showClearIcon!
               ? AnimatedOpacity(
-                  duration: Duration(milliseconds: 400),
+                  duration: const Duration(milliseconds: 400),
                   opacity:
                       widget.dateTimeFieldBloc.state.value == null ? 0.0 : 1.0,
                   child: InkWell(

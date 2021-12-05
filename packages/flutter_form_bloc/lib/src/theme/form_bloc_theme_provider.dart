@@ -17,7 +17,7 @@ class FormThemeProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(FormThemeProvider old) {
-    return theme != old.theme;
+  bool updateShouldNotify(FormThemeProvider oldWidget) {
+    return theme != oldWidget.theme;
   }
 }

@@ -152,7 +152,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   ) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       itemCount: state.items.length,
       itemBuilder: (context, index) {
         final item = state.items[index];

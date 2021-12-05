@@ -1,6 +1,14 @@
-include: package:pedantic/analysis_options.yaml
+include: package:lints/recommended.yaml
 
 analyzer:
+  errors:
+    avoid_print: warning
+    annotate_overrides: warning
+    always_use_package_imports: warning
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
+
+linter:
+  rules:
+    always_use_package_imports: true

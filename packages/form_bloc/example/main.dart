@@ -1,14 +1,14 @@
 import 'package:form_bloc/form_bloc.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
-  final email = TextFieldBloc(
+  final email = TextFieldBloc<dynamic>(
     validators: [
       FieldBlocValidators.required,
       FieldBlocValidators.email,
     ],
   );
 
-  final password = TextFieldBloc(
+  final password = TextFieldBloc<dynamic>(
     validators: [
       FieldBlocValidators.required,
     ],
