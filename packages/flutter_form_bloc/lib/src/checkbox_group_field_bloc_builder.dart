@@ -28,6 +28,8 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.splashRadius,
     this.shape,
     this.side,
+    this.numberOfItemPerRow = 1,
+    this.itemHight = 60,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -62,6 +64,16 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.numberOfItemPerRow}
+  /// The number of checkbox button per row
+  /// default is 1
+  final int numberOfItemPerRow;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemHight}
+  /// checkbox item max hight
+  /// default value is 60
+  final double itemHight;
 
   // ========== [Checkbox] ==========
 
@@ -150,10 +162,14 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     bool isFieldEnabled,
     CheckboxFieldTheme fieldTheme,
   ) {
-    return ListView.builder(
-      shrinkWrap: true,
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: numberOfItemPerRow,
+        mainAxisExtent: itemHight,
+      ),
       physics: const ClampingScrollPhysics(),
       itemCount: state.items.length,
+      shrinkWrap: true,
       itemBuilder: (context, index) {
         final item = state.items[index];
         final fieldItem = itemBuilder(context, state.items[index]);
@@ -163,6 +179,14 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Checkbox(
               value: state.value.contains(state.items[index]),
+              fillColor: fieldTheme.checkboxTheme?.checkColor,
+              side: fieldTheme.checkboxTheme?.side,
+              overlayColor: fieldTheme.checkboxTheme?.overlayColor,
+              materialTapTargetSize:
+                  fieldTheme.checkboxTheme?.materialTapTargetSize,
+              shape: fieldTheme.checkboxTheme?.shape,
+              splashRadius: fieldTheme.checkboxTheme?.splashRadius,
+              visualDensity: fieldTheme.checkboxTheme?.visualDensity,
               onChanged: fieldBlocBuilderOnChange<bool?>(
                 isEnabled: isEnabled,
                 nextFocusNode: nextFocusNode,
