@@ -4,6 +4,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
+import 'package:collection/collection.dart';
 
 /// A material design radio buttons.
 class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
@@ -25,6 +26,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.fillColor,
     this.overlayColor,
     this.splashRadius,
+    this.numberOfItemPerRow = 1,
+    this.itemHight = 60,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -64,6 +67,15 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.numberOfItemPerRow}
+  /// The number of radio button per row
+  /// default is 1
+  final int numberOfItemPerRow;
+
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemHight}
+  /// radio item max hight
+  /// default value is 60
+  final double itemHight;
   // ========== [Radio] ==========
 
   /// [Radio.mouseCursor]
@@ -124,7 +136,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
                 child: GroupInputDecorator(
                   decoration:
                       _buildDecoration(context, fieldTheme, state, isEnabled),
-                  child: _buildRadioButtons(state, fieldTheme, isEnabled),
+                  child:
+                      _buildRadioButtons(context, state, fieldTheme, isEnabled),
                 ),
               );
             },
@@ -135,48 +148,54 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   }
 
   Widget _buildRadioButtons(
+    BuildContext context,
     SelectFieldBlocState<Value, dynamic> state,
     RadioFieldTheme fieldTheme,
     bool isFieldEnabled,
   ) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      itemCount: state.items.length,
-      itemBuilder: (context, index) {
-        final item = state.items[index];
-        final fieldItem = itemBuilder(context, state.items[index]);
-        final isEnabled = isFieldEnabled && fieldItem.isEnabled;
+    return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: numberOfItemPerRow,
+          mainAxisExtent: itemHight,
+        ),
+        physics: const ClampingScrollPhysics(),
+        itemCount: state.items.length,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          final item = state.items[index];
+          final fieldItem = itemBuilder(context, state.items[index]);
+          final isEnabled = isFieldEnabled && fieldItem.isEnabled;
 
-        final onChanged = fieldBlocBuilderOnChange<Value?>(
-          isEnabled: isEnabled,
-          nextFocusNode: nextFocusNode,
-          onChanged: (value) {
-            selectFieldBloc.updateValue(value);
-            fieldItem.onTap?.call();
-          },
-        );
-
-        return InputDecorator(
-          decoration: Style.inputDecorationWithoutBorder.copyWith(
-            prefixIcon: Radio<Value>(
-              value: item,
-              groupValue: state.value,
-              toggleable: canDeselect,
-              onChanged: onChanged,
+          final onChanged = fieldBlocBuilderOnChange<Value?>(
+            isEnabled: isEnabled,
+            nextFocusNode: nextFocusNode,
+            onChanged: (value) {
+              selectFieldBloc.updateValue(value);
+              fieldItem.onTap?.call();
+            },
+          );
+          return InputDecorator(
+            decoration: Style.inputDecorationWithoutBorder.copyWith(
+              prefixIcon: Radio<Value>(
+                value: item,
+                fillColor: fieldTheme.radioTheme?.fillColor,
+                overlayColor: fieldTheme.radioTheme?.overlayColor,
+                splashRadius: fieldTheme.radioTheme?.splashRadius,
+                groupValue: state.value,
+                toggleable: canDeselect,
+                onChanged: onChanged,
+              ),
             ),
-          ),
-          child: DefaultTextStyle(
-            style: Style.resolveTextStyle(
-              isEnabled: isEnabled,
-              style: fieldTheme.textStyle!,
-              color: fieldTheme.textColor!,
+            child: DefaultTextStyle(
+              style: Style.resolveTextStyle(
+                isEnabled: isEnabled,
+                style: fieldTheme.textStyle!,
+                color: fieldTheme.textColor!,
+              ),
+              child: fieldItem,
             ),
-            child: fieldItem,
-          ),
-        );
-      },
-    );
+          );
+        });
   }
 
   InputDecoration _buildDecoration(
