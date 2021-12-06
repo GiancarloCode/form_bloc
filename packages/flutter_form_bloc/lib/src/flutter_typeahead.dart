@@ -258,9 +258,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 library flutter_typeahead;
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -629,7 +631,9 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     // }
     this._suggestionsBox!.widgetMounted = false;
     WidgetsBinding.instance!.removeObserver(this);
-    _keyboardSubscription.cancel();
+    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+      _keyboardSubscription.cancel();
+    }
 
     _effectiveFocusNode!.removeListener(_focusNodeListener);
     _focusNode?.dispose();
@@ -644,7 +648,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     super.dispose();
   }
 
-  var keyboardVisibilityController = KeyboardVisibilityController();
+  late final KeyboardVisibilityController keyboardVisibilityController;
   @override
   void initState() {
     super.initState();
@@ -658,19 +662,20 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     if (widget.textFieldConfiguration.focusNode == null) {
       this._focusNode = FocusNode();
     }
-
     this._suggestionsBox =
         _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-
-    _keyboardSubscription =
-        keyboardVisibilityController.onChange.listen((bool visible) {
-      setState(() {
-        if (widget.hideSuggestionsOnKeyboardHide && !visible) {
-          _effectiveFocusNode!.unfocus();
-        }
+    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+      keyboardVisibilityController = KeyboardVisibilityController();
+      _keyboardSubscription =
+          keyboardVisibilityController.onChange.listen((bool visible) {
+        setState(() {
+          if (widget.hideSuggestionsOnKeyboardHide && !visible) {
+            _effectiveFocusNode!.unfocus();
+          }
+        });
       });
-    });
+    }
 
     this._focusNodeListener = () {
       if (_effectiveFocusNode!.hasFocus) {
