@@ -21,3 +21,4 @@ export 'src/theme/material_states.dart';
 export 'src/utils/field_bloc_builder_control_affinity.dart';
 export 'src/utils/field_item.dart';
 export 'src/utils/typedefs.dart';
+export 'src/utils/style.dart';
