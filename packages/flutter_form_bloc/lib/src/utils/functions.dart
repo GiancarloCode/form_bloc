@@ -4,11 +4,13 @@ import 'package:form_bloc/form_bloc.dart';
 
 ValueChanged<T>? fieldBlocBuilderOnChange<T>({
   required bool isEnabled,
+  bool readOnly = false,
   required FocusNode? nextFocusNode,
   required void Function(T value) onChanged,
 }) {
   if (isEnabled) {
     return (T value) {
+      if (readOnly) return;
       onChanged(value);
       if (nextFocusNode != null) {
         nextFocusNode.requestFocus();

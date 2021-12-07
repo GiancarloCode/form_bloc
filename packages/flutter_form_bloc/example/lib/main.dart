@@ -223,6 +223,18 @@ class AllFieldsForm extends StatelessWidget {
                           booleanFieldBloc: formBloc.boolean1,
                           body: const Text('CheckboxFieldBlocBuilder'),
                         ),
+                        ChoiceChipFieldBlocBuilder<String>(
+                          selectFieldBloc: formBloc.select1,
+                          itemBuilder: (context, value) => ChipFieldItem(
+                            label: Text(value),
+                          ),
+                        ),
+                        FilterChipFieldBlocBuilder<String>(
+                          multiSelectFieldBloc: formBloc.multiSelect1,
+                          itemBuilder: (context, value) => ChipFieldItem(
+                            label: Text(value),
+                          ),
+                        ),
                         BlocBuilder<InputFieldBloc<File?, String>,
                                 InputFieldBlocState<File?, String>>(
                             bloc: formBloc.file,
