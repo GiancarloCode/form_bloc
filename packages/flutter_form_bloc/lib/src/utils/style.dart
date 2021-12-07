@@ -22,7 +22,7 @@ class Style {
   }) {
     if (fieldBlocState.canShowError) {
       if (errorBuilder != null) {
-        return errorBuilder(context, fieldBlocState.error);
+        return errorBuilder(context, fieldBlocState.error!);
       } else {
         return FieldBlocBuilder.defaultErrorBuilder(
           context,
