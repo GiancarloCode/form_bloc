@@ -179,7 +179,8 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// {@template flutter_form_bloc.FieldBlocBuilder.errorBuilder}
   /// This function take the `context` and the [FieldBlocState.error]
   /// and must return a String error to display in the widget when
-  /// has an error. By default is [defaultErrorBuilder].
+  /// has an error or null if you don't want to display the error.
+  /// By default is [FieldBlocBuilder.defaultErrorBuilder].
   /// {@endtemplate}
   final FieldBlocErrorBuilder? errorBuilder;
 
