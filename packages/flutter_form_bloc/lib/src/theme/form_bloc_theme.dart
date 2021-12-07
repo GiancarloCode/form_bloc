@@ -1,9 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme_provider.dart';
 import 'package:flutter_form_bloc/src/utils/field_bloc_builder_control_affinity.dart';
+import 'package:flutter_form_bloc/src/utils/to_string.dart';
 
-class FormTheme {
+class FormTheme extends Equatable {
   /// If [FieldTheme.textStyle] is null this value is used
   final TextStyle? textStyle;
 
@@ -18,6 +20,12 @@ class FormTheme {
 
   /// The theme of [CheckboxFieldBlocBuilder] and [CheckboxGroupFieldBlocBuilder]
   final CheckboxFieldTheme checkboxTheme;
+
+  /// The theme of [ChoiceChipFieldBlocBuilder]
+  final ChoiceChipFieldTheme choiceChipFieldTheme;
+
+  /// The theme of [FilterChipFieldBlocBuilder]
+  final FilterChipFieldTheme filterChipFieldTheme;
 
   /// The theme of [DateTimeFieldBlocBuilder]
   final DateTimeFieldTheme dateTimeTheme;
@@ -43,6 +51,8 @@ class FormTheme {
     this.decorationTheme,
     this.padding,
     this.checkboxTheme = const CheckboxFieldTheme(),
+    this.choiceChipFieldTheme = const ChoiceChipFieldTheme(),
+    this.filterChipFieldTheme = const FilterChipFieldTheme(),
     this.dateTimeTheme = const DateTimeFieldTheme(),
     this.dropdownTheme = const DropdownFieldTheme(),
     this.switchTheme = const SwitchFieldTheme(),
@@ -76,6 +86,40 @@ class FormTheme {
       switchTheme: switchTheme ?? this.switchTheme,
       textTheme: textTheme ?? this.textTheme,
     );
+  }
+
+  @override
+  List<Object?> get props => [
+        textStyle,
+        textColor,
+        decorationTheme,
+        padding,
+        checkboxTheme,
+        choiceChipFieldTheme,
+        filterChipFieldTheme,
+        dateTimeTheme,
+        dropdownTheme,
+        switchTheme,
+        radioTheme,
+        textTheme.hashCode
+      ];
+
+  @override
+  String toString() {
+    return (ToString(FormTheme)
+          ..add('textStyle', textStyle)
+          ..add('textColor', textColor)
+          ..add('decorationTheme', decorationTheme)
+          ..add('padding', padding)
+          ..add('checkboxTheme', checkboxTheme)
+          ..add('choiceChipFieldTheme', choiceChipFieldTheme)
+          ..add('filterChipFieldTheme', filterChipFieldTheme)
+          ..add('dateTimeTheme', dateTimeTheme)
+          ..add('dropdownTheme', dropdownTheme)
+          ..add('switchTheme', switchTheme)
+          ..add('radioTheme', radioTheme)
+          ..add('textTheme', textTheme))
+        .toString();
   }
 }
 
@@ -113,6 +157,116 @@ class CheckboxFieldTheme extends FieldTheme {
       checkboxTheme: checkboxTheme ?? this.checkboxTheme,
       controlAffinity: controlAffinity ?? this.controlAffinity,
     );
+  }
+
+  @override
+  List<Object?> get props => [super.props, checkboxTheme, controlAffinity];
+
+  @override
+  String toString([ToString? toString]) {
+    return super.toString(ToString(runtimeType)
+      ..add('checkboxTheme', checkboxTheme)
+      ..add('controlAffinity', controlAffinity));
+  }
+}
+
+/// The theme of [ChoiceChipFieldBlocBuilder] and [FilterChipFieldBlocBuilder]
+/// for the chip wrap
+class WrapChipFieldTheme extends Equatable {
+  /// Defaults value is `8.0`
+  final double? spacing;
+
+  /// Defaults value is `8.0`
+  final double? runSpacing;
+
+  const WrapChipFieldTheme({
+    this.spacing,
+    this.runSpacing,
+  });
+
+  WrapChipFieldTheme copyWith({
+    double? spacing,
+    double? runSpacing,
+  }) {
+    return WrapChipFieldTheme(
+      spacing: spacing ?? this.spacing,
+      runSpacing: runSpacing ?? this.runSpacing,
+    );
+  }
+
+  @override
+  List<Object?> get props => [spacing, runSpacing];
+
+  @override
+  String toString() {
+    return (ToString(runtimeType)
+          ..add('spacing', spacing)
+          ..add('runSpacing', runSpacing))
+        .toString();
+  }
+}
+
+/// The theme of [ChoiceChipFieldBlocBuilder]
+class ChoiceChipFieldTheme extends Equatable {
+  final ChipThemeData? chipTheme;
+  final WrapChipFieldTheme wrapTheme;
+
+  const ChoiceChipFieldTheme({
+    this.chipTheme,
+    this.wrapTheme = const WrapChipFieldTheme(),
+  });
+
+  ChoiceChipFieldTheme copyWith({
+    ChipThemeData? chipTheme,
+    WrapChipFieldTheme? wrapTheme,
+  }) {
+    return ChoiceChipFieldTheme(
+      chipTheme: chipTheme ?? this.chipTheme,
+      wrapTheme: wrapTheme ?? this.wrapTheme,
+    );
+  }
+
+  @override
+  List<Object?> get props => [chipTheme, wrapTheme];
+
+  @override
+  String toString() {
+    return (ToString(runtimeType)
+          ..add('chipTheme', chipTheme)
+          ..add('wrapTheme', wrapTheme))
+        .toString();
+  }
+}
+
+/// The theme of [FilterChipFieldBlocBuilder]
+class FilterChipFieldTheme extends Equatable {
+  final ChipThemeData? chipTheme;
+  final WrapChipFieldTheme wrapTheme;
+
+  const FilterChipFieldTheme({
+    this.chipTheme,
+    this.wrapTheme = const WrapChipFieldTheme(),
+  });
+
+  FilterChipFieldTheme copyWith({
+    ChipThemeData? chipTheme,
+    WrapChipFieldTheme? wrapTheme,
+  }) {
+    return FilterChipFieldTheme(
+      chipTheme: chipTheme ?? this.chipTheme,
+      wrapTheme: wrapTheme ?? this.wrapTheme,
+    );
+  }
+
+  @override
+  List<Object?> get props => [chipTheme, wrapTheme];
+
+  @override
+  String toString() {
+    return (ToString(runtimeType)
+          ..add('chipTheme', chipTheme)
+          ..add('wrapTheme', wrapTheme))
+        .toString();
   }
 }
 
@@ -152,6 +306,17 @@ class DateTimeFieldTheme extends FieldTheme {
       showClearIcon: showClearIcon ?? this.showClearIcon,
       textAlign: textAlign ?? this.textAlign,
     );
+  }
+
+  @override
+  List<Object?> get props => [super.props, textAlign, showClearIcon, clearIcon];
+
+  @override
+  String toString([ToString? toString]) {
+    return super.toString(ToString(runtimeType)
+      ..add('textAlign', textAlign)
+      ..add('showClearIcon', showClearIcon)
+      ..add('clearIcon', clearIcon));
   }
 }
 
@@ -208,6 +373,26 @@ class DropdownFieldTheme extends FieldTheme {
       moreIcon: moreIcon ?? this.moreIcon,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        super.props,
+        textOverflow,
+        maxLines,
+        selectedTextStyle,
+        selectedMaxLines,
+        moreIcon
+      ];
+
+  @override
+  String toString([ToString? toString]) {
+    return super.toString(ToString(runtimeType)
+      ..add('textOverflow', textOverflow)
+      ..add('maxLines', maxLines)
+      ..add('selectedTextStyle', selectedTextStyle)
+      ..add('selectedMaxLines', selectedMaxLines)
+      ..add('moreIcon', moreIcon));
+  }
 }
 
 /// Theme of [SwitchFieldBlocBuilder]
@@ -245,6 +430,16 @@ class SwitchFieldTheme extends FieldTheme {
       controlAffinity: controlAffinity ?? this.controlAffinity,
     );
   }
+
+  @override
+  List<Object?> get props => [super.props, switchTheme, controlAffinity];
+
+  @override
+  String toString([ToString? toString]) {
+    return super.toString(ToString(runtimeType)
+      ..add('switchTheme', switchTheme)
+      ..add('controlAffinity', controlAffinity));
+  }
 }
 
 /// Theme of [RadioButtonGroupFieldBlocBuilder]
@@ -275,6 +470,14 @@ class RadioFieldTheme extends FieldTheme {
       decorationTheme: decorationTheme ?? this.decorationTheme,
       radioTheme: radioTheme ?? this.radioTheme,
     );
+  }
+
+  @override
+  List<Object?> get props => [super.props, radioTheme];
+
+  @override
+  String toString([ToString? toString]) {
+    return super.toString(ToString(runtimeType)..add('radioTheme', radioTheme));
   }
 }
 
@@ -326,5 +529,25 @@ class TextFieldTheme extends FieldTheme {
       obscureFalseIcon: obscureFalseIcon ?? this.obscureFalseIcon,
       suggestionsTextStyle: suggestionsTextStyle ?? this.suggestionsTextStyle,
     );
+  }
+
+  @override
+  List<Object?> get props => [
+        super.props,
+        textAlign,
+        clearIcon,
+        obscureTrueIcon,
+        obscureFalseIcon,
+        suggestionsTextStyle
+      ];
+
+  @override
+  String toString([ToString? toString]) {
+    return super.toString(ToString(runtimeType)
+      ..add('textAlign', textAlign)
+      ..add('clearIcon', clearIcon)
+      ..add('obscureTrueIcon', obscureTrueIcon)
+      ..add('obscureFalseIcon', obscureFalseIcon)
+      ..add('suggestionsTextStyle', suggestionsTextStyle));
   }
 }
