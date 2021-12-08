@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc/src/slider/slider_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme_provider.dart';
 import 'package:flutter_form_bloc/src/utils/field_bloc_builder_control_affinity.dart';
@@ -22,16 +23,19 @@ class FormTheme extends Equatable {
   final CheckboxFieldTheme checkboxTheme;
 
   /// The theme of [ChoiceChipFieldBlocBuilder]
-  final ChoiceChipFieldTheme choiceChipFieldTheme;
+  final ChoiceChipFieldTheme choiceChipTheme;
 
   /// The theme of [FilterChipFieldBlocBuilder]
-  final FilterChipFieldTheme filterChipFieldTheme;
+  final FilterChipFieldTheme filterChipTheme;
 
   /// The theme of [DateTimeFieldBlocBuilder]
   final DateTimeFieldTheme dateTimeTheme;
 
   /// The theme of [DropdownFieldBlocBuilder]
   final DropdownFieldTheme dropdownTheme;
+
+  /// The theme of [SliderFieldBlocBuilder]
+  final SliderFieldTheme sliderTheme;
 
   /// The theme of [SwitchFieldBlocBuilder]
   final SwitchFieldTheme switchTheme;
@@ -51,10 +55,11 @@ class FormTheme extends Equatable {
     this.decorationTheme,
     this.padding,
     this.checkboxTheme = const CheckboxFieldTheme(),
-    this.choiceChipFieldTheme = const ChoiceChipFieldTheme(),
-    this.filterChipFieldTheme = const FilterChipFieldTheme(),
+    this.choiceChipTheme = const ChoiceChipFieldTheme(),
+    this.filterChipTheme = const FilterChipFieldTheme(),
     this.dateTimeTheme = const DateTimeFieldTheme(),
     this.dropdownTheme = const DropdownFieldTheme(),
+    this.sliderTheme = const SliderFieldTheme(),
     this.switchTheme = const SwitchFieldTheme(),
     this.radioTheme = const RadioFieldTheme(),
     this.textTheme = const TextFieldTheme(),
@@ -95,8 +100,8 @@ class FormTheme extends Equatable {
         decorationTheme,
         padding,
         checkboxTheme,
-        choiceChipFieldTheme,
-        filterChipFieldTheme,
+        choiceChipTheme,
+        filterChipTheme,
         dateTimeTheme,
         dropdownTheme,
         switchTheme,
@@ -112,8 +117,8 @@ class FormTheme extends Equatable {
           ..add('decorationTheme', decorationTheme)
           ..add('padding', padding)
           ..add('checkboxTheme', checkboxTheme)
-          ..add('choiceChipFieldTheme', choiceChipFieldTheme)
-          ..add('filterChipFieldTheme', filterChipFieldTheme)
+          ..add('choiceChipFieldTheme', choiceChipTheme)
+          ..add('filterChipFieldTheme', filterChipTheme)
           ..add('dateTimeTheme', dateTimeTheme)
           ..add('dropdownTheme', dropdownTheme)
           ..add('switchTheme', switchTheme)
@@ -392,6 +397,22 @@ class DropdownFieldTheme extends FieldTheme {
       ..add('selectedTextStyle', selectedTextStyle)
       ..add('selectedMaxLines', selectedMaxLines)
       ..add('moreIcon', moreIcon));
+  }
+}
+
+class SliderFieldTheme extends Equatable {
+  final SliderThemeData? sliderTheme;
+
+  const SliderFieldTheme({
+    this.sliderTheme,
+  });
+
+  @override
+  List<Object?> get props => [sliderTheme];
+
+  @override
+  String toString() {
+    return (ToString(runtimeType)..add('sliderTheme', sliderTheme)).toString();
   }
 }
 
