@@ -1,3 +1,5 @@
+# 0.29.3
+- fix checkbox style on  CheckboxFieldBlocBuilder 
 # 0.29.2
 - Added ChoiceChipFieldBlocBuilder , FilterChipFieldBlocBuilder and SliderFieldBlocBuilder
 - fix onStepCancel on StepperFormBlocBuilder
