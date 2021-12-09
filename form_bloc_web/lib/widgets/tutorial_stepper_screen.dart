@@ -58,14 +58,14 @@ class _TutorialStepperScreenState extends State<TutorialStepperScreen> {
             onStepContinue: () => _updateStep(currentStep + 1),
             onStepTapped: _updateStep,
             steps: _buildSteps(constraints),
-            controlsBuilder: (context, {onStepContinue, onStepCancel}) {
+            controlsBuilder: (context, controlsDetails) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: Row(
                   children: <Widget>[
                     if (currentStep < widget.steps.length - 1)
                       GradientElevatedButton(
-                        onPressed: onStepContinue,
+                        onPressed: controlsDetails.onStepContinue,
                         gradient: mainGradient,
                         child: const Text(
                           'NEXT',
@@ -79,7 +79,7 @@ class _TutorialStepperScreenState extends State<TutorialStepperScreen> {
                       SizedBox(width: 16.0),
                     if (currentStep > 0)
                       TextButton(
-                        onPressed: onStepCancel,
+                        onPressed: controlsDetails.onStepCancel,
                         child: const Text('PREVIOUS'),
                       ),
                   ],

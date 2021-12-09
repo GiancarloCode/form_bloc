@@ -1,6 +1,6 @@
 name: flutter_form_bloc
 description: Create Beautiful Forms in Flutter. The easiest way to Prefill, Async Validation, Update Form Fields, and Show Progress, Failures or Navigate by Reacting to the Form State.
-version: 0.29.0
+version: 0.29.2
 homepage: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc
 repository: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc
 issue_tracker: https://github.com/GiancarloCode/form_bloc/issues
@@ -14,6 +14,7 @@ dependencies:
 #  bloc: ^7.0.0
   flutter_bloc: ^8.0.0
   form_bloc: ^0.29.0
+  equatable: ^2.0.3
 #  form_bloc: ^0.20.7-alpha.1
   rxdart: ^0.27.3
   flutter_keyboard_visibility: ^5.0.2

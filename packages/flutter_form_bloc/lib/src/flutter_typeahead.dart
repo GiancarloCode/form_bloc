@@ -258,7 +258,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 library flutter_typeahead;
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -631,7 +630,8 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     // }
     this._suggestionsBox!.widgetMounted = false;
     WidgetsBinding.instance!.removeObserver(this);
-    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+
+    if (isWebMobile) {
       _keyboardSubscription.cancel();
     }
 
@@ -649,6 +649,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   }
 
   late final KeyboardVisibilityController keyboardVisibilityController;
+  late final isWebMobile;
   @override
   void initState() {
     super.initState();
@@ -662,10 +663,13 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     if (widget.textFieldConfiguration.focusNode == null) {
       this._focusNode = FocusNode();
     }
+    isWebMobile = kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.android);
     this._suggestionsBox =
         _SuggestionsBox(context, widget.direction, widget.autoFlipDirection);
     widget.suggestionsBoxController?._suggestionsBox = this._suggestionsBox;
-    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+    if (isWebMobile) {
       keyboardVisibilityController = KeyboardVisibilityController();
       _keyboardSubscription =
           keyboardVisibilityController.onChange.listen((bool visible) {

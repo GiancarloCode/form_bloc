@@ -10,7 +10,7 @@ void main() {
       () => runApp(App()),
       blocObserver: SuperBlocDelegate(),
     ),
-    blocObserver: FormBlocObserver(),
+    blocObserver: FormBlocObserver(child: SuperBlocDelegate()),
   );
 }
 

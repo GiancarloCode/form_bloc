@@ -1,3 +1,7 @@
+# 0.29.2
+- Added ChoiceChipFieldBlocBuilder , FilterChipFieldBlocBuilder and SliderFieldBlocBuilder
+- fix onStepCancel on StepperFormBlocBuilder
+
 # 0.29.0
 - Updated to `form_bloc: ^0.28.0`.
 - Simplification of the dropdown
