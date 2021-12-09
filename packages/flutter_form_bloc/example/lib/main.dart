@@ -48,6 +48,10 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
 
   final time1 = InputFieldBloc<TimeOfDay?, Object>(initialValue: null);
 
+  final double1 = InputFieldBloc<double, dynamic>(
+    initialValue: 0.5,
+  );
+
   AllFieldsFormBloc() {
     addFieldBlocs(fieldBlocs: [
       text1,
@@ -59,6 +63,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       date1,
       dateAndTime1,
       time1,
+      double1,
     ]);
   }
 
@@ -222,6 +227,12 @@ class AllFieldsForm extends StatelessWidget {
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean1,
                           body: const Text('CheckboxFieldBlocBuilder'),
+                        ),
+                        SliderFieldBlocBuilder(
+                          inputFieldBloc: formBloc.double1,
+                          divisions: 10,
+                          labelBuilder: (context, value) =>
+                              value.toStringAsFixed(2),
                         ),
                         ChoiceChipFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select1,

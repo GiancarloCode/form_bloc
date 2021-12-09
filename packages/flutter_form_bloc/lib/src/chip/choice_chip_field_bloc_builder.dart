@@ -173,7 +173,7 @@ class ChoiceChipFieldBlocBuilder<T> extends StatelessWidget {
 
   ChoiceChipFieldTheme themeOf(BuildContext context) {
     final formTheme = FormTheme.of(context);
-    final fieldTheme = formTheme.choiceChipFieldTheme;
+    final fieldTheme = formTheme.choiceChipTheme;
     final wrapTheme = fieldTheme.wrapTheme;
 
     return ChoiceChipFieldTheme(

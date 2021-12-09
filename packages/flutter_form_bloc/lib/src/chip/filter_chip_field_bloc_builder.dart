@@ -168,7 +168,7 @@ class FilterChipFieldBlocBuilder<T> extends StatelessWidget {
 
   FilterChipFieldTheme themeOf(BuildContext context) {
     final formTheme = FormTheme.of(context);
-    final fieldTheme = formTheme.filterChipFieldTheme;
+    final fieldTheme = formTheme.filterChipTheme;
     final wrapTheme = fieldTheme.wrapTheme;
 
     return FilterChipFieldTheme(
