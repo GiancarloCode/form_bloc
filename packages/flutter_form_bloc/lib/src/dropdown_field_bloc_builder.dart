@@ -210,14 +210,14 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
                       context: context,
                       fieldTheme: fieldTheme,
                       items: fieldState.items,
-                      isEnabled: isExpanded,
+                      isEnabled: isEnabled,
                       isSelected: false,
                     ),
                     selectedItemBuilder: (context) => _buildItems(
                       context: context,
                       fieldTheme: fieldTheme,
                       items: fieldState.items,
-                      isEnabled: isExpanded,
+                      isEnabled: isEnabled,
                       isSelected: true,
                     ),
                     icon: this.decoration.suffixIcon ??
