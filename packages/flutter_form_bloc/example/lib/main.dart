@@ -224,6 +224,31 @@ class AllFieldsForm extends StatelessWidget {
                           booleanFieldBloc: formBloc.boolean2,
                           body: const Text('SwitchFieldBlocBuilder'),
                         ),
+                        SwitchFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean2,
+                          body: const Text('SwitchFieldBlocBuilder color'),
+                          thumbColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.red;
+                            }
+                            return null;
+                          }),
+                          trackColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.amberAccent;
+                            }
+                            return null;
+                          }),
+                          overlayColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.green;
+                            }
+                            return null;
+                          }),
+                        ),
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean1,
                           body: const Text('CheckboxFieldBlocBuilder'),
