@@ -222,7 +222,7 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         SwitchFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean2,
-                          body: const Text('CheckboxFieldBlocBuilder'),
+                          body: const Text('SwitchFieldBlocBuilder'),
                         ),
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean1,
