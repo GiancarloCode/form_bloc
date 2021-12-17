@@ -106,30 +106,26 @@ class SliderFieldBlocBuilder extends StatelessWidget {
 
             return DefaultFieldBlocBuilderPadding(
               padding: padding,
-              child: Stack(
-                children: [
-                  InputDecorator(
-                    decoration: _buildDecoration(context, state, isEnabled),
-                    isEmpty: false,
-                    child: Slider(
-                      value: value,
-                      min: min,
-                      max: max,
-                      focusNode: focusNode,
-                      divisions: divisions,
-                      onChanged: fieldBlocBuilderOnChange<double>(
-                        isEnabled: isEnabled,
-                        readOnly: readOnly,
-                        nextFocusNode: nextFocusNode,
-                        onChanged: inputFieldBloc.updateValue,
-                      ),
-                      label: labelBuilder?.call(context, value),
-                      activeColor: activeColor,
-                      inactiveColor: inactiveColor,
-                      mouseCursor: mouseCursor,
-                    ),
+              child: InputDecorator(
+                decoration: _buildDecoration(context, state, isEnabled),
+                isEmpty: false,
+                child: Slider(
+                  value: value,
+                  min: min,
+                  max: max,
+                  focusNode: focusNode,
+                  divisions: divisions,
+                  onChanged: fieldBlocBuilderOnChange<double>(
+                    isEnabled: isEnabled,
+                    readOnly: readOnly,
+                    nextFocusNode: nextFocusNode,
+                    onChanged: inputFieldBloc.updateValue,
                   ),
-                ],
+                  label: labelBuilder?.call(context, value),
+                  activeColor: activeColor,
+                  inactiveColor: inactiveColor,
+                  mouseCursor: mouseCursor,
+                ),
               ),
             );
           },
