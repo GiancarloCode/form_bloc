@@ -125,7 +125,7 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
 
     return Theme(
       data: Theme.of(context).copyWith(
-        checkboxTheme: fieldTheme.checkboxTheme!,
+        checkboxTheme: fieldTheme.checkboxTheme,
       ),
       child: CanShowFieldBlocBuilder(
         fieldBloc: booleanFieldBloc,
