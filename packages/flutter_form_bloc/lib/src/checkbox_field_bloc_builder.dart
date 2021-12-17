@@ -123,8 +123,10 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeStyleOf(context);
 
-    return CheckboxTheme(
-      data: fieldTheme.checkboxTheme!,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        checkboxTheme: fieldTheme.checkboxTheme!,
+      ),
       child: CanShowFieldBlocBuilder(
         fieldBloc: booleanFieldBloc,
         animate: animateWhenCanShow,
@@ -182,16 +184,8 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
   }
 
   Checkbox _buildCheckbox(BuildContext context, BooleanFieldBlocState state) {
-    final fieldTheme = themeStyleOf(context);
     return Checkbox(
       value: state.value,
-      fillColor: fieldTheme.checkboxTheme?.checkColor,
-      side: fieldTheme.checkboxTheme?.side,
-      overlayColor: fieldTheme.checkboxTheme?.overlayColor,
-      materialTapTargetSize: fieldTheme.checkboxTheme?.materialTapTargetSize,
-      shape: fieldTheme.checkboxTheme?.shape,
-      splashRadius: fieldTheme.checkboxTheme?.splashRadius,
-      visualDensity: fieldTheme.checkboxTheme?.visualDensity,
       onChanged: fieldBlocBuilderOnChange<bool?>(
         isEnabled: isEnabled,
         nextFocusNode: nextFocusNode,

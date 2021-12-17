@@ -228,6 +228,37 @@ class AllFieldsForm extends StatelessWidget {
                           booleanFieldBloc: formBloc.boolean1,
                           body: const Text('CheckboxFieldBlocBuilder'),
                         ),
+                        CheckboxFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean1,
+                          body: const Text('CheckboxFieldBlocBuilder trailing'),
+                          controlAffinity:
+                              FieldBlocBuilderControlAffinity.trailing,
+                        ),
+                        CheckboxFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean1,
+                          body: const Text('CheckboxFieldBlocBuilder color'),
+                          checkColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.red;
+                            }
+                            return null;
+                          }),
+                          fillColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.amberAccent;
+                            }
+                            return null;
+                          }),
+                          overlayColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.green;
+                            }
+                            return null;
+                          }),
+                        ),
                         SliderFieldBlocBuilder(
                           inputFieldBloc: formBloc.double1,
                           divisions: 10,
