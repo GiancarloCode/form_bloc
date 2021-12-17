@@ -89,60 +89,55 @@ class SliderFieldBlocBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeOf(context);
 
-    final current = CanShowFieldBlocBuilder(
-      fieldBloc: inputFieldBloc,
-      animate: animateWhenCanShow,
-      builder: (context, _) {
-        return BlocBuilder<InputFieldBloc<double, dynamic>,
-            InputFieldBlocState<double, dynamic>>(
-          bloc: inputFieldBloc,
-          builder: (context, state) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: this.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: state,
-            );
-            final value = state.value;
+    return Theme(
+      data: Theme.of(context).copyWith(
+        sliderTheme: fieldTheme.sliderTheme,
+      ),
+      child: CanShowFieldBlocBuilder(
+        fieldBloc: inputFieldBloc,
+        animate: animateWhenCanShow,
+        builder: (context, _) {
+          return BlocBuilder<InputFieldBloc<double, dynamic>,
+              InputFieldBlocState<double, dynamic>>(
+            bloc: inputFieldBloc,
+            builder: (context, state) {
+              final isEnabled = fieldBlocIsEnabled(
+                isEnabled: this.isEnabled,
+                enableOnlyWhenFormBlocCanSubmit:
+                    enableOnlyWhenFormBlocCanSubmit,
+                fieldBlocState: state,
+              );
+              final value = state.value;
 
-            return DefaultFieldBlocBuilderPadding(
-              padding: padding,
-              child: InputDecorator(
-                decoration: _buildDecoration(context, state, isEnabled),
-                isEmpty: false,
-                child: Slider(
-                  value: value,
-                  min: min,
-                  max: max,
-                  focusNode: focusNode,
-                  divisions: divisions,
-                  onChanged: fieldBlocBuilderOnChange<double>(
-                    isEnabled: isEnabled,
-                    readOnly: readOnly,
-                    nextFocusNode: nextFocusNode,
-                    onChanged: inputFieldBloc.updateValue,
+              return DefaultFieldBlocBuilderPadding(
+                padding: padding,
+                child: InputDecorator(
+                  decoration: _buildDecoration(context, state, isEnabled),
+                  isEmpty: false,
+                  child: Slider(
+                    value: value,
+                    min: min,
+                    max: max,
+                    focusNode: focusNode,
+                    divisions: divisions,
+                    onChanged: fieldBlocBuilderOnChange<double>(
+                      isEnabled: isEnabled,
+                      readOnly: readOnly,
+                      nextFocusNode: nextFocusNode,
+                      onChanged: inputFieldBloc.updateValue,
+                    ),
+                    label: labelBuilder?.call(context, value),
+                    activeColor: activeColor,
+                    inactiveColor: inactiveColor,
+                    mouseCursor: mouseCursor,
                   ),
-                  label: labelBuilder?.call(context, value),
-                  activeColor: activeColor,
-                  inactiveColor: inactiveColor,
-                  mouseCursor: mouseCursor,
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
-
-    if (fieldTheme.sliderTheme != null) {
-      return Theme(
-        data: Theme.of(context).copyWith(
-          sliderTheme: fieldTheme.sliderTheme!,
-        ),
-        child: current,
-      );
-    }
-
-    return current;
   }
 
   InputDecoration _buildDecoration(
