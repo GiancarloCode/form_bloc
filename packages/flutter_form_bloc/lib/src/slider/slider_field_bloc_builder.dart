@@ -78,7 +78,11 @@ class SliderFieldBlocBuilder extends StatelessWidget {
   }) : super(key: key);
 
   SliderFieldTheme themeOf(BuildContext context) {
-    return FormTheme.of(context).sliderTheme;
+    final theme = Theme.of(context);
+    final formTheme = FormTheme.of(context);
+    final fieldTheme = formTheme.sliderTheme;
+    final sliderTheme = fieldTheme.sliderTheme ?? theme.sliderTheme;
+    return SliderFieldTheme(sliderTheme: sliderTheme);
   }
 
   @override
@@ -134,8 +138,10 @@ class SliderFieldBlocBuilder extends StatelessWidget {
     );
 
     if (fieldTheme.sliderTheme != null) {
-      return SliderTheme(
-        data: fieldTheme.sliderTheme!,
+      return Theme(
+        data: Theme.of(context).copyWith(
+          sliderTheme: fieldTheme.sliderTheme!,
+        ),
         child: current,
       );
     }

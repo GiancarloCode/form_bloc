@@ -290,6 +290,28 @@ class AllFieldsForm extends StatelessWidget {
                           labelBuilder: (context, value) =>
                               value.toStringAsFixed(2),
                         ),
+                        SliderFieldBlocBuilder(
+                          inputFieldBloc: formBloc.double1,
+                          divisions: 10,
+                          labelBuilder: (context, value) =>
+                              value.toStringAsFixed(2),
+                          activeColor: Colors.red,
+                          inactiveColor: Colors.green,
+                        ),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            sliderTheme: Theme.of(context).sliderTheme.copyWith(
+                                  activeTrackColor: Colors.red,
+                                  inactiveTrackColor: Colors.yellow,
+                                ),
+                          ),
+                          child: SliderFieldBlocBuilder(
+                            inputFieldBloc: formBloc.double1,
+                            divisions: 10,
+                            labelBuilder: (context, value) =>
+                                value.toStringAsFixed(2),
+                          ),
+                        ),
                         ChoiceChipFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select1,
                           itemBuilder: (context, value) => ChipFieldItem(
