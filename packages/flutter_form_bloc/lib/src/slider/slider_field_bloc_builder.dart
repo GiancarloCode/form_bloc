@@ -78,69 +78,66 @@ class SliderFieldBlocBuilder extends StatelessWidget {
   }) : super(key: key);
 
   SliderFieldTheme themeOf(BuildContext context) {
-    return FormTheme.of(context).sliderTheme;
+    final theme = Theme.of(context);
+    final formTheme = FormTheme.of(context);
+    final fieldTheme = formTheme.sliderTheme;
+    final sliderTheme = fieldTheme.sliderTheme ?? theme.sliderTheme;
+    return SliderFieldTheme(sliderTheme: sliderTheme);
   }
 
   @override
   Widget build(BuildContext context) {
     final fieldTheme = themeOf(context);
 
-    final current = CanShowFieldBlocBuilder(
-      fieldBloc: inputFieldBloc,
-      animate: animateWhenCanShow,
-      builder: (context, _) {
-        return BlocBuilder<InputFieldBloc<double, dynamic>,
-            InputFieldBlocState<double, dynamic>>(
-          bloc: inputFieldBloc,
-          builder: (context, state) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: this.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: state,
-            );
-            final value = state.value;
+    return Theme(
+      data: Theme.of(context).copyWith(
+        sliderTheme: fieldTheme.sliderTheme,
+      ),
+      child: CanShowFieldBlocBuilder(
+        fieldBloc: inputFieldBloc,
+        animate: animateWhenCanShow,
+        builder: (context, _) {
+          return BlocBuilder<InputFieldBloc<double, dynamic>,
+              InputFieldBlocState<double, dynamic>>(
+            bloc: inputFieldBloc,
+            builder: (context, state) {
+              final isEnabled = fieldBlocIsEnabled(
+                isEnabled: this.isEnabled,
+                enableOnlyWhenFormBlocCanSubmit:
+                    enableOnlyWhenFormBlocCanSubmit,
+                fieldBlocState: state,
+              );
+              final value = state.value;
 
-            return DefaultFieldBlocBuilderPadding(
-              padding: padding,
-              child: Stack(
-                children: [
-                  InputDecorator(
-                    decoration: _buildDecoration(context, state, isEnabled),
-                    isEmpty: false,
-                    child: Slider(
-                      value: value,
-                      min: min,
-                      max: max,
-                      focusNode: focusNode,
-                      divisions: divisions,
-                      onChanged: fieldBlocBuilderOnChange<double>(
-                        isEnabled: isEnabled,
-                        readOnly: readOnly,
-                        nextFocusNode: nextFocusNode,
-                        onChanged: inputFieldBloc.updateValue,
-                      ),
-                      label: labelBuilder?.call(context, value),
-                      activeColor: activeColor,
-                      inactiveColor: inactiveColor,
-                      mouseCursor: mouseCursor,
+              return DefaultFieldBlocBuilderPadding(
+                padding: padding,
+                child: InputDecorator(
+                  decoration: _buildDecoration(context, state, isEnabled),
+                  isEmpty: false,
+                  child: Slider(
+                    value: value,
+                    min: min,
+                    max: max,
+                    focusNode: focusNode,
+                    divisions: divisions,
+                    onChanged: fieldBlocBuilderOnChange<double>(
+                      isEnabled: isEnabled,
+                      readOnly: readOnly,
+                      nextFocusNode: nextFocusNode,
+                      onChanged: inputFieldBloc.updateValue,
                     ),
+                    label: labelBuilder?.call(context, value),
+                    activeColor: activeColor,
+                    inactiveColor: inactiveColor,
+                    mouseCursor: mouseCursor,
                   ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
-
-    if (fieldTheme.sliderTheme != null) {
-      return SliderTheme(
-        data: fieldTheme.sliderTheme!,
-        child: current,
-      );
-    }
-
-    return current;
   }
 
   InputDecoration _buildDecoration(

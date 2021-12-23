@@ -125,8 +125,10 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeStyleOf(context);
 
-    return CheckboxTheme(
-      data: fieldTheme.checkboxTheme!,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        checkboxTheme: fieldTheme.checkboxTheme,
+      ),
       child: CanShowFieldBlocBuilder(
         fieldBloc: multiSelectFieldBloc,
         animate: animateWhenCanShow,
@@ -179,14 +181,6 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
           decoration: Style.inputDecorationWithoutBorder.copyWith(
             prefixIcon: Checkbox(
               value: state.value.contains(state.items[index]),
-              fillColor: fieldTheme.checkboxTheme?.checkColor,
-              side: fieldTheme.checkboxTheme?.side,
-              overlayColor: fieldTheme.checkboxTheme?.overlayColor,
-              materialTapTargetSize:
-                  fieldTheme.checkboxTheme?.materialTapTargetSize,
-              shape: fieldTheme.checkboxTheme?.shape,
-              splashRadius: fieldTheme.checkboxTheme?.splashRadius,
-              visualDensity: fieldTheme.checkboxTheme?.visualDensity,
               onChanged: fieldBlocBuilderOnChange<bool?>(
                 isEnabled: isEnabled,
                 nextFocusNode: nextFocusNode,

@@ -222,17 +222,95 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         SwitchFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean2,
-                          body: const Text('CheckboxFieldBlocBuilder'),
+                          body: const Text('SwitchFieldBlocBuilder'),
+                        ),
+                        SwitchFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean2,
+                          body: const Text('SwitchFieldBlocBuilder color'),
+                          thumbColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.red;
+                            }
+                            return null;
+                          }),
+                          trackColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.amberAccent;
+                            }
+                            return null;
+                          }),
+                          overlayColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.green;
+                            }
+                            return null;
+                          }),
                         ),
                         CheckboxFieldBlocBuilder(
                           booleanFieldBloc: formBloc.boolean1,
                           body: const Text('CheckboxFieldBlocBuilder'),
+                        ),
+                        CheckboxFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean1,
+                          body: const Text('CheckboxFieldBlocBuilder trailing'),
+                          controlAffinity:
+                              FieldBlocBuilderControlAffinity.trailing,
+                        ),
+                        CheckboxFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.boolean1,
+                          body: const Text('CheckboxFieldBlocBuilder color'),
+                          checkColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.red;
+                            }
+                            return null;
+                          }),
+                          fillColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.amberAccent;
+                            }
+                            return null;
+                          }),
+                          overlayColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.green;
+                            }
+                            return null;
+                          }),
                         ),
                         SliderFieldBlocBuilder(
                           inputFieldBloc: formBloc.double1,
                           divisions: 10,
                           labelBuilder: (context, value) =>
                               value.toStringAsFixed(2),
+                        ),
+                        SliderFieldBlocBuilder(
+                          inputFieldBloc: formBloc.double1,
+                          divisions: 10,
+                          labelBuilder: (context, value) =>
+                              value.toStringAsFixed(2),
+                          activeColor: Colors.red,
+                          inactiveColor: Colors.green,
+                        ),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            sliderTheme: Theme.of(context).sliderTheme.copyWith(
+                                  activeTrackColor: Colors.red,
+                                  inactiveTrackColor: Colors.yellow,
+                                ),
+                          ),
+                          child: SliderFieldBlocBuilder(
+                            inputFieldBloc: formBloc.double1,
+                            divisions: 10,
+                            labelBuilder: (context, value) =>
+                                value.toStringAsFixed(2),
+                          ),
                         ),
                         ChoiceChipFieldBlocBuilder<String>(
                           selectFieldBloc: formBloc.select1,

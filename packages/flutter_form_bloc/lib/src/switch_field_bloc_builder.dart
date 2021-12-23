@@ -132,8 +132,10 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeStyleOf(context);
 
-    return SwitchTheme(
-      data: fieldTheme.switchTheme!,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        switchTheme: fieldTheme.switchTheme!,
+      ),
       child: CanShowFieldBlocBuilder(
         fieldBloc: booleanFieldBloc,
         animate: animateWhenCanShow,
