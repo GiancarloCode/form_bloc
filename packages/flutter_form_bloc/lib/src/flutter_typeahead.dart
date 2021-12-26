@@ -649,7 +649,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   }
 
   late final KeyboardVisibilityController keyboardVisibilityController;
-  late final isWebMobile;
+  late final bool isWebMobile;
   @override
   void initState() {
     super.initState();

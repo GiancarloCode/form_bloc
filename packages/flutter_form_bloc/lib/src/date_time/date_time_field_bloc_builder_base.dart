@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
+import 'package:flutter_form_bloc/src/theme/suffix_button_themes.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -43,9 +45,7 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
     this.textStyle,
     this.textColor,
     this.textAlign,
-  })  : assert(enableOnlyWhenFormBlocCanSubmit != null),
-        assert(isEnabled != null),
-        super(key: key);
+  }) : super(key: key);
 
   final DateTimeFieldBlocBuilderBaseType type;
 
@@ -61,10 +61,10 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
   final FieldBlocErrorBuilder? errorBuilder;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.enableOnlyWhenFormBlocCanSubmit}
-  final bool? enableOnlyWhenFormBlocCanSubmit;
+  final bool enableOnlyWhenFormBlocCanSubmit;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.isEnabled}
-  final bool? isEnabled;
+  final bool isEnabled;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.padding}
   final EdgeInsetsGeometry? padding;
@@ -115,6 +115,7 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
     final formTheme = FormTheme.of(context);
     final fieldTheme = formTheme.dateTimeTheme;
     final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
+    final cleanTheme = fieldTheme.clearSuffixButtonTheme;
 
     return DateTimeFieldTheme(
       decorationTheme: resolver.decorationTheme,
@@ -122,7 +123,14 @@ class DateTimeFieldBlocBuilderBase<T> extends StatefulWidget {
       textColor: textColor ?? resolver.textColor,
       textAlign: textAlign ?? fieldTheme.textAlign ?? TextAlign.start,
       showClearIcon: showClearIcon ?? fieldTheme.showClearIcon ?? true,
-      clearIcon: clearIcon ?? fieldTheme.clearIcon ?? const Icon(Icons.clear),
+      clearSuffixButtonTheme: ClearSuffixButtonTheme(
+        visibleWithoutValue: cleanTheme.visibleWithoutValue ??
+            formTheme.clearSuffixButtonTheme.visibleWithoutValue ??
+            false,
+        appearDuration: cleanTheme.appearDuration,
+        // ignore: deprecated_member_use_from_same_package
+        icon: clearIcon ?? cleanTheme.icon ?? fieldTheme.clearIcon,
+      ),
     );
   }
 }
@@ -171,7 +179,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     }
     if (result != null) {
       fieldBlocBuilderOnChange<T>(
-        isEnabled: widget.isEnabled ?? true,
+        isEnabled: widget.isEnabled,
         nextFocusNode: widget.nextFocusNode,
         onChanged: (value) {
           widget.dateTimeFieldBloc.updateValue(value);
@@ -197,7 +205,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
             bloc: widget.dateTimeFieldBloc,
             builder: (context, state) {
               final isEnabled = fieldBlocIsEnabled(
-                isEnabled: widget.isEnabled ?? true,
+                isEnabled: widget.isEnabled,
                 enableOnlyWhenFormBlocCanSubmit:
                     widget.enableOnlyWhenFormBlocCanSubmit,
                 fieldBlocState: state,
@@ -336,21 +344,20 @@ class _DateTimeFieldBlocBuilderBaseState<T>
       ),
       suffixIcon: decoration.suffixIcon ??
           (fieldTheme.showClearIcon!
-              ? AnimatedOpacity(
-                  duration: const Duration(milliseconds: 400),
-                  opacity:
-                      widget.dateTimeFieldBloc.state.value == null ? 0.0 : 1.0,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(25),
-                    child: fieldTheme.clearIcon!,
-                    onTap: widget.dateTimeFieldBloc.state.value == null
-                        ? null
-                        : widget.dateTimeFieldBloc.clear,
-                  ),
-                )
+              ? _buildClearSuffixButton(fieldTheme.clearSuffixButtonTheme)
               : null),
     );
 
     return decoration;
+  }
+
+  Widget _buildClearSuffixButton(ClearSuffixButtonTheme buttonTheme) {
+    return ClearSuffixButton(
+      singleFieldBloc: widget.dateTimeFieldBloc,
+      isEnabled: widget.isEnabled,
+      appearDuration: buttonTheme.appearDuration,
+      visibleWithoutValue: buttonTheme.visibleWithoutValue,
+      icon: buttonTheme.icon,
+    );
   }
 }

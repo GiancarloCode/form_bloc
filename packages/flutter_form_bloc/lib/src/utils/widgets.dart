@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
+import 'package:flutter_form_bloc/src/theme/material_states.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 
 class DefaultFieldBlocBuilderTextStyle extends StatelessWidget {

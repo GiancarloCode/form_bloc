@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/src/slider/slider_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme_provider.dart';
+import 'package:flutter_form_bloc/src/theme/suffix_button_themes.dart';
 import 'package:flutter_form_bloc/src/utils/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/utils/to_string.dart';
 
@@ -46,6 +47,10 @@ class FormTheme extends Equatable {
   /// The theme of [TextFieldBlocBuilder]
   final TextFieldTheme textTheme;
 
+  final ClearSuffixButtonTheme clearSuffixButtonTheme;
+
+  final ObscureSuffixButtonTheme obscureSuffixButtonTheme;
+
   /// Returns `EdgeInsets.symmetric(vertical: 8.0)`.
   static EdgeInsets defaultPadding = const EdgeInsets.symmetric(vertical: 8.0);
 
@@ -63,6 +68,8 @@ class FormTheme extends Equatable {
     this.switchTheme = const SwitchFieldTheme(),
     this.radioTheme = const RadioFieldTheme(),
     this.textTheme = const TextFieldTheme(),
+    this.clearSuffixButtonTheme = const ClearSuffixButtonTheme(),
+    this.obscureSuffixButtonTheme = const ObscureSuffixButtonTheme(),
   });
 
   static FormTheme of(BuildContext context) {
@@ -280,7 +287,10 @@ class DateTimeFieldTheme extends FieldTheme {
   /// The position of the text within the field
   final TextAlign? textAlign;
   final bool? showClearIcon;
+
   final Widget? clearIcon;
+
+  final ClearSuffixButtonTheme clearSuffixButtonTheme;
 
   const DateTimeFieldTheme({
     TextStyle? textStyle,
@@ -288,7 +298,8 @@ class DateTimeFieldTheme extends FieldTheme {
     InputDecorationTheme? decorationTheme,
     this.textAlign,
     this.showClearIcon,
-    this.clearIcon,
+    @Deprecated('Use clearSuffixButtonTheme.icon') this.clearIcon,
+    this.clearSuffixButtonTheme = const ClearSuffixButtonTheme(),
   }) : super(
           textStyle: textStyle,
           textColor: textColor,
@@ -301,27 +312,38 @@ class DateTimeFieldTheme extends FieldTheme {
     InputDecorationTheme? decorationTheme,
     bool? showClearIcon,
     Widget? clearIcon,
+    ClearSuffixButtonTheme? clearSuffixButtonTheme,
     TextAlign? textAlign,
   }) {
     return DateTimeFieldTheme(
       textStyle: textStyle ?? this.textStyle,
       textColor: textColor ?? this.textColor,
       decorationTheme: decorationTheme ?? this.decorationTheme,
-      clearIcon: clearIcon ?? this.clearIcon,
       showClearIcon: showClearIcon ?? this.showClearIcon,
+      // ignore: deprecated_member_use_from_same_package
+      clearIcon: clearIcon ?? this.clearIcon,
+      clearSuffixButtonTheme:
+          clearSuffixButtonTheme ?? this.clearSuffixButtonTheme,
       textAlign: textAlign ?? this.textAlign,
     );
   }
 
   @override
-  List<Object?> get props => [super.props, textAlign, showClearIcon, clearIcon];
+  List<Object?> get props => [
+        super.props,
+        textAlign,
+        showClearIcon,
+        clearIcon,
+        clearSuffixButtonTheme
+      ];
 
   @override
   String toString([ToString? toString]) {
     return super.toString(ToString(runtimeType)
       ..add('textAlign', textAlign)
       ..add('showClearIcon', showClearIcon)
-      ..add('clearIcon', clearIcon));
+      ..add('clearIcon', clearIcon)
+      ..add('clearSuffixButtonTheme', clearSuffixButtonTheme));
   }
 }
 
@@ -508,6 +530,10 @@ class TextFieldTheme extends FieldTheme {
 
   final Widget? clearIcon;
 
+  final ClearSuffixButtonTheme clearSuffixButtonTheme;
+
+  final ObscureSuffixButtonTheme obscureSuffixButtonTheme;
+
   final Widget? obscureTrueIcon;
 
   final Widget? obscureFalseIcon;
@@ -520,9 +546,11 @@ class TextFieldTheme extends FieldTheme {
     MaterialStateProperty<Color?>? textColor,
     InputDecorationTheme? decorationTheme,
     this.textAlign,
-    this.clearIcon,
-    this.obscureTrueIcon,
-    this.obscureFalseIcon,
+    @Deprecated('Use clearSuffixButtonTheme.icon') this.clearIcon,
+    this.clearSuffixButtonTheme = const ClearSuffixButtonTheme(),
+    @Deprecated('Use obscureSuffixButtonTheme.trueIcon') this.obscureTrueIcon,
+    @Deprecated('Use obscureSuffixButtonTheme.falseIcon') this.obscureFalseIcon,
+    this.obscureSuffixButtonTheme = const ObscureSuffixButtonTheme(),
     this.suggestionsTextStyle,
   }) : super(
           textStyle: textStyle,
@@ -536,8 +564,10 @@ class TextFieldTheme extends FieldTheme {
     InputDecorationTheme? decorationTheme,
     TextAlign? textAlign,
     Widget? clearIcon,
+    ClearSuffixButtonTheme? clearSuffixButtonTheme,
     Widget? obscureTrueIcon,
     Widget? obscureFalseIcon,
+    ObscureSuffixButtonTheme? obscureSuffixButtonTheme,
     TextStyle? suggestionsTextStyle,
   }) {
     return TextFieldTheme(
@@ -545,9 +575,16 @@ class TextFieldTheme extends FieldTheme {
       textColor: textColor ?? this.textColor,
       decorationTheme: decorationTheme ?? this.decorationTheme,
       textAlign: textAlign ?? this.textAlign,
+      // ignore: deprecated_member_use_from_same_package
       clearIcon: clearIcon ?? this.clearIcon,
+      clearSuffixButtonTheme:
+          clearSuffixButtonTheme ?? this.clearSuffixButtonTheme,
+      // ignore: deprecated_member_use_from_same_package
       obscureTrueIcon: obscureTrueIcon ?? this.obscureTrueIcon,
+      // ignore: deprecated_member_use_from_same_package
       obscureFalseIcon: obscureFalseIcon ?? this.obscureFalseIcon,
+      obscureSuffixButtonTheme:
+          obscureSuffixButtonTheme ?? this.obscureSuffixButtonTheme,
       suggestionsTextStyle: suggestionsTextStyle ?? this.suggestionsTextStyle,
     );
   }
@@ -557,8 +594,10 @@ class TextFieldTheme extends FieldTheme {
         super.props,
         textAlign,
         clearIcon,
+        clearSuffixButtonTheme,
         obscureTrueIcon,
         obscureFalseIcon,
+        obscureSuffixButtonTheme,
         suggestionsTextStyle
       ];
 
@@ -567,8 +606,10 @@ class TextFieldTheme extends FieldTheme {
     return super.toString(ToString(runtimeType)
       ..add('textAlign', textAlign)
       ..add('clearIcon', clearIcon)
+      ..add('clearSuffixButtonTheme', clearSuffixButtonTheme)
       ..add('obscureTrueIcon', obscureTrueIcon)
       ..add('obscureFalseIcon', obscureFalseIcon)
+      ..add('obscureSuffixButtonTheme', obscureSuffixButtonTheme)
       ..add('suggestionsTextStyle', suggestionsTextStyle));
   }
 }
