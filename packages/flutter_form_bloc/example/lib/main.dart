@@ -153,8 +153,7 @@ class AllFieldsForm extends StatelessWidget {
                       children: <Widget>[
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.text1,
-                          suffixButton: SuffixButton.clearText,
-                          obscureText: false,
+                          suffixButton: SuffixButton.obscureText,
                           decoration: const InputDecoration(
                             labelText: 'TextFieldBlocBuilder',
                             prefixIcon: Icon(Icons.text_fields),
