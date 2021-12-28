@@ -68,7 +68,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
     on<SubmitFormBloc>((event, emit) => _onSubmitFormBloc(emit));
     on<UpdateFormBlocState<SuccessResponse, FailureResponse>>(
         (event, emit) => emit(event.state));
-    on<ClearFormBloc>((event, emit) => _onClearFormBloc);
+    on<ClearFormBloc>((event, emit) => _onClearFormBloc());
     on<ReloadFormBloc>((event, emit) async {
       if (state is! FormBlocLoading) {
         emit(state.toLoading());
