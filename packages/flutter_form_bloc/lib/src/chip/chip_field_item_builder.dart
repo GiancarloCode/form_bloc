@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 typedef ChipFieldItemBuilder<T> = ChipFieldItem Function(
     BuildContext context, T value);

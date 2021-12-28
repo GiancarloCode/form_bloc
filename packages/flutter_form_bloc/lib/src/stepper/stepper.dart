@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const TextStyle _kStepStyle = TextStyle(
   fontSize: 12.0,

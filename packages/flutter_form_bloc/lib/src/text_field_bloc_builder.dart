@@ -1,14 +1,14 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
+import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
+import 'package:flutter_form_bloc/src/suffix_buttons/obscure_suffix_button.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
+import 'package:flutter_form_bloc/src/theme/suffix_button_themes.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -691,20 +691,32 @@ class TextFieldBlocBuilder extends StatefulWidget {
     final formTheme = FormTheme.of(context);
     final fieldTheme = formTheme.textTheme;
     final resolver = FieldThemeResolver(theme, formTheme, fieldTheme);
+    final cleanTheme = fieldTheme.clearSuffixButtonTheme;
+    final obscureTheme = fieldTheme.obscureSuffixButtonTheme;
 
     return TextFieldTheme(
       decorationTheme: resolver.decorationTheme,
       textStyle: textStyle ?? resolver.textStyle,
       textColor: textColor ?? resolver.textColor,
       textAlign: textAlign ?? fieldTheme.textAlign ?? TextAlign.start,
-      clearIcon:
-          clearTextIcon ?? fieldTheme.clearIcon ?? const Icon(Icons.clear),
-      obscureTrueIcon: obscureTextTrueIcon ??
-          fieldTheme.obscureTrueIcon ??
-          const Icon(Icons.visibility),
-      obscureFalseIcon: obscureTextFalseIcon ??
-          fieldTheme.obscureFalseIcon ??
-          const Icon(Icons.visibility_off),
+      clearSuffixButtonTheme: ClearSuffixButtonTheme(
+        visibleWithoutValue: cleanTheme.visibleWithoutValue ??
+            formTheme.clearSuffixButtonTheme.visibleWithoutValue ??
+            true,
+        appearDuration: cleanTheme.appearDuration,
+        // ignore: deprecated_member_use_from_same_package
+        icon: clearTextIcon ?? cleanTheme.icon ?? fieldTheme.clearIcon,
+      ),
+      obscureSuffixButtonTheme: ObscureSuffixButtonTheme(
+        trueIcon: obscureTextTrueIcon ??
+            obscureTheme.trueIcon ??
+            // ignore: deprecated_member_use_from_same_package
+            fieldTheme.obscureTrueIcon,
+        falseIcon: obscureTextFalseIcon ??
+            obscureTheme.falseIcon ??
+            // ignore: deprecated_member_use_from_same_package
+            fieldTheme.obscureFalseIcon,
+      ),
       suggestionsTextStyle: fieldTheme.suggestionsTextStyle ??
           theme.textTheme.subtitle1!.copyWith(
             color: ThemeData.estimateBrightnessForColor(theme.canvasColor) ==
@@ -721,31 +733,33 @@ class TextFieldBlocBuilder extends StatefulWidget {
 
 class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   late TextEditingController _controller;
-  bool? _obscureText;
-  late VoidCallback _controllerListener;
-  FocusNode? _focusNode;
+
+  late bool _obscureText;
 
   @override
   void initState() {
     super.initState();
 
-    _controllerListener = _textControllerListener;
     _controller = TextEditingController(text: widget.textFieldBloc.state.value);
 
-    _controller.addListener(_controllerListener);
+    _controller.addListener(_textControllerListener);
 
-    _obscureText = widget.suffixButton != null &&
-        widget.suffixButton == SuffixButton.obscureText;
-    if (widget.focusNode == null) {
-      _focusNode = FocusNode();
+    _obscureText = widget.suffixButton == SuffixButton.obscureText;
+  }
+
+  @override
+  void didUpdateWidget(covariant TextFieldBlocBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // You can manage the value of _obscureText from the outside
+    if (widget.obscureText != null) {
+      _obscureText = widget.obscureText!;
     }
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_controllerListener);
+    _controller.removeListener(_textControllerListener);
     _controller.dispose();
-    _focusNode?.dispose();
     super.dispose();
   }
 
@@ -767,9 +781,9 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     }
   }
 
-  void _fixControllerTextValue(String? value) async {
+  void _fixControllerTextValue(String value) async {
     _controller
-      ..text = value ?? ''
+      ..text = value
       ..selection = TextSelection.collapsed(offset: _controller.text.length);
 
     // TODO: Find out why the cursor returns to the beginning.
@@ -778,7 +792,9 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         TextSelection.collapsed(offset: _controller.text.length);
   }
 
-  FocusNode? get _effectiveFocusNode => widget.focusNode ?? _focusNode;
+  void obscureText(bool value) {
+    setState(() => _obscureText = value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -825,27 +841,16 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         case SuffixButton.obscureText:
           if (widget.obscureText == null) {
             decoration = decoration.copyWith(
-              suffixIcon: InkWell(
-                  borderRadius: BorderRadius.circular(25),
-                  child: _obscureText!
-                      ? fieldTheme.obscureTrueIcon!
-                      : fieldTheme.obscureFalseIcon!,
-                  onTap: () {
-                    setState(() {
-                      _obscureText = !_obscureText!;
-                    });
-                  }),
+              suffixIcon: _buildObscureSuffixButton(
+                buttonTheme: fieldTheme.obscureSuffixButtonTheme,
+              ),
             );
           }
           break;
         case SuffixButton.clearText:
           decoration = decoration.copyWith(
-            suffixIcon: InkWell(
-              borderRadius: BorderRadius.circular(25),
-              child: fieldTheme.clearIcon!,
-              onTap: () {
-                widget.textFieldBloc.clear();
-              },
+            suffixIcon: _buildClearSuffixButton(
+              buttonTheme: fieldTheme.clearSuffixButtonTheme,
             ),
           );
           break;
@@ -870,6 +875,31 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     );
 
     return decoration.applyDefaults(fieldTheme.decorationTheme!);
+  }
+
+  Widget _buildObscureSuffixButton({
+    required ObscureSuffixButtonTheme buttonTheme,
+  }) {
+    return ObscureSuffixButton(
+      singleFieldBloc: widget.textFieldBloc,
+      isEnabled: widget.isEnabled,
+      value: _obscureText,
+      onChanged: obscureText,
+      trueIcon: buttonTheme.trueIcon,
+      falseIcon: buttonTheme.falseIcon,
+    );
+  }
+
+  Widget _buildClearSuffixButton({
+    required ClearSuffixButtonTheme buttonTheme,
+  }) {
+    return ClearSuffixButton(
+      singleFieldBloc: widget.textFieldBloc,
+      isEnabled: widget.isEnabled,
+      appearDuration: buttonTheme.appearDuration,
+      visibleWithoutValue: buttonTheme.visibleWithoutValue,
+      icon: buttonTheme.icon,
+    );
   }
 
   Widget _buildTextField({
@@ -915,7 +945,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         cursorColor: widget.cursorColor,
         keyboardAppearance: widget.keyboardAppearance,
         scrollPadding: widget.scrollPadding,
-        focusNode: _effectiveFocusNode,
+        focusNode: widget.focusNode,
         buildCounter: widget.buildCounter,
         dragStartBehavior: widget.dragStartBehavior,
         enableInteractiveSelection: widget.enableInteractiveSelection,
