@@ -1,5 +1,20 @@
 part of 'field_bloc.dart';
 
+/// The common state interface of all field blocs
+mixin FieldBlocStateBase {
+  /// It is the string that identifies the [FieldBloc].
+  String get name;
+
+  bool get isValidating;
+
+  bool get isValid;
+
+  /// Identifies whether the FieldBloc has been added to the FormBloc
+  FormBloc? get formBloc;
+
+  bool get hasFormBloc => formBloc != null;
+}
+
 abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
     with FieldBlocStateBase {
   /// The current value of this state.
@@ -21,6 +36,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
   final Suggestions<Suggestion>? suggestions;
 
   /// It is the string that identifies the [FieldBloc].
+  @override
   final String name;
 
   /// Indicate if [value] was checked with the validators
@@ -29,6 +45,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
 
   /// Indicate if [value] is is being verified with any async validator
   /// of the [FieldBloc].
+  @override
   final bool isValidating;
 
   /// The current  [FormBloc] that contains this `FieldBloc`.
@@ -67,6 +84,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
   /// not has error (which means that the error is not `null`)
   /// and not is validating
   /// and is validated
+  @override
   bool get isValid => !hasError && !isValidating && isValidated;
 
   /// Indicates if [error] is not `null`.
@@ -122,5 +140,54 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
     _toString += '\n}';
 
     return _toString;
+  }
+}
+
+abstract class MultiFieldBlocState<ExtraData> extends Equatable
+    with FieldBlocStateBase {
+  @override
+  final FormBloc? formBloc;
+
+  @override
+  final String name;
+
+  @override
+  final bool isValidating;
+
+  @override
+  final bool isValid;
+
+  final ExtraData? extraData;
+
+  const MultiFieldBlocState({
+    required this.formBloc,
+    required this.name,
+    required this.isValidating,
+    required this.isValid,
+    required this.extraData,
+  });
+
+  Iterable<FieldBloc> get flatFieldBlocs;
+
+  MultiFieldBlocState<ExtraData> copyWith({
+    Param<FormBloc?>? formBloc,
+    bool? isValidating,
+    bool? isValid,
+    Param<ExtraData>? extraData,
+  });
+
+  @override
+  List<Object?> get props => [formBloc, name, isValidating, isValid, extraData];
+
+  @override
+  String toString([Object? other]) {
+    return '$runtimeType {'
+        ',\n  formBloc: $formBloc'
+        ',\n  name: $name'
+        ',\n  isValidating: $isValidating'
+        ',\n  isValid: $isValid'
+        ',\n  extraData: $extraData'
+        '${other ?? ''}'
+        '\n}';
   }
 }

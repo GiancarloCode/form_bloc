@@ -1,107 +1,70 @@
 part of '../field/field_bloc.dart';
 
-class GroupFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
-    with FieldBlocStateBase {
-  final String name;
+class GroupFieldBlocState<T extends FieldBloc, ExtraData>
+    extends MultiFieldBlocState<ExtraData> {
   final Map<String, T> fieldBlocs;
-  final ExtraData? extraData;
-  @override
-  final FormBloc? formBloc;
 
   GroupFieldBlocState({
-    required this.name,
-    required List<T> fieldBlocs,
-    required this.extraData,
-    required this.formBloc,
-  }) :
-        //ignore: prefer_for_elements_to_map_fromiterable
-        fieldBlocs = Map.fromIterable(
-          fieldBlocs,
-          key: (dynamic f) {
-            return f.state.name as String;
-          },
-          value: (dynamic f) {
-            return f as T;
-          },
+    required FormBloc? formBloc,
+    required String name,
+    required bool isValidating,
+    required bool isValid,
+    required ExtraData? extraData,
+    required Iterable<T> fieldBlocs,
+  })  : fieldBlocs = {
+          for (final fb in fieldBlocs) fb.state.name: fb,
+        },
+        super(
+          formBloc: formBloc,
+          name: name,
+          isValidating: isValidating,
+          isValid: isValid,
+          extraData: extraData,
         );
 
+  @override
   GroupFieldBlocState<T, ExtraData> copyWith({
-    Param<ExtraData>? extraData,
     Param<FormBloc?>? formBloc,
+    bool? isValidating,
+    bool? isValid,
+    Param<ExtraData>? extraData,
+    Iterable<T>? fieldBlocs,
   }) {
     return GroupFieldBlocState(
-      name: name,
-      fieldBlocs: fieldBlocs.values.toList(),
-      extraData: extraData == null ? this.extraData : extraData.value,
       formBloc: formBloc == null ? this.formBloc : formBloc.value,
+      name: name,
+      isValidating: isValidating ?? this.isValidating,
+      isValid: isValid ?? this.isValid,
+      extraData: extraData == null ? this.extraData : extraData.value,
+      fieldBlocs: fieldBlocs ?? this.fieldBlocs.values,
     );
   }
 
   @override
-  List<Object?> get props => [name, fieldBlocs, extraData, formBloc];
+  Iterable<FieldBloc> get flatFieldBlocs => fieldBlocs.values;
 
   @override
-  String toString() {
-    var _string = '';
-    _string += '$runtimeType {';
-    _string += ',\n  name: $name';
-    _string += ',\n  extraData: $extraData';
-    _string += ',\n  formBloc: $formBloc';
-    _string += ',\n  fieldBlocs: $fieldBlocs';
-    _string += '\n}';
-    return _string;
-  }
+  List<Object?> get props => [super.props, fieldBlocs];
+
+  @override
+  String toString([Object? other]) =>
+      super.toString(',\n  fieldBlocs: $fieldBlocs');
 }
 
 class GroupFieldBloc<T extends FieldBloc, ExtraData>
-    extends Cubit<GroupFieldBlocState<T, ExtraData>> with FieldBloc {
+    extends MultiFieldBloc<ExtraData, GroupFieldBlocState<T, ExtraData>> {
   GroupFieldBloc({
     String? name,
-    List<T>? fieldBlocs,
+    List<T> fieldBlocs = const [],
     ExtraData? extraData,
   }) : super(GroupFieldBlocState(
           name: name ?? Uuid().v1(),
-          fieldBlocs: fieldBlocs ?? const [],
+          isValid: MultiFieldBloc.areFieldBlocsValid(fieldBlocs),
+          isValidating: MultiFieldBloc.areFieldBlocsValidating(fieldBlocs),
           formBloc: null,
           extraData: extraData,
+          fieldBlocs: fieldBlocs,
         ));
-
-  void updateExtraData(ExtraData extraData) {
-    emit(state.copyWith(
-      extraData: Param(extraData),
-    ));
-  }
-
-  // ========== INTERNAL USE ==========
-
-  /// See [FieldBloc.updateFormBloc]
-  @override
-  void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
-    emit(state.copyWith(
-      formBloc: Param(formBloc),
-    ));
-
-    FormBlocUtils.updateFormBloc(
-      fieldBlocs: state.fieldBlocs.values,
-      formBloc: formBloc,
-      autoValidate: autoValidate,
-    );
-  }
-
-  /// See [FieldBloc.removeFormBloc]
-  @override
-  void removeFormBloc(FormBloc formBloc) {
-    if (state.formBloc == formBloc) {
-      emit(state.copyWith(
-        formBloc: Param(null),
-      ));
-
-      FormBlocUtils.removeFormBloc(
-        fieldBlocs: state.fieldBlocs.values,
-        formBloc: formBloc,
-      );
-    }
-  }
 
   @override
   String toString() {

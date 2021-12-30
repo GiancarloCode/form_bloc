@@ -2,15 +2,9 @@ import 'package:bloc/bloc.dart';
 
 class MyBlocObserver extends BlocObserver {
   @override
-  void onEvent(Bloc bloc, Object? event) {
-    super.onEvent(bloc, event);
-    _printWrapped('bloc: ${bloc.runtimeType}, event: $event');
-  }
-
-  @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-    _printWrapped('bloc: ${bloc.runtimeType}, transition: $transition');
+  void onChange(BlocBase bloc, Change change) {
+    super.onChange(bloc, change);
+    _printWrapped('bloc: ${bloc.runtimeType}, change: $change');
   }
 
   @override

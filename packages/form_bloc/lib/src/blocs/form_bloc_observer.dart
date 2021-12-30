@@ -21,6 +21,8 @@ import 'package:form_bloc/src/blocs/form/form_bloc.dart';
 /// );
 /// BlocOverrides.runZoned(_run, blocObserver: blocObserver)
 class FormBlocObserver extends BlocObserver {
+  // ========== FIELD BLOCS
+
   /// If is `true` every `create` of any
   /// [FieldBloc] will be notified
   /// to [child].
@@ -41,20 +43,17 @@ class FormBlocObserver extends BlocObserver {
   /// to [child].
   final bool notifyOnFieldBlocClose; // = false;
 
+  // ========== FORM BLOCS
+
   /// If is `true` every `create` of any
   /// [FormBloc] will be notified
   /// to [child].
   final bool notifyOnFormBlocCreate; // = false;
 
-  /// If is `true` every `transition` of any
+  /// If is `true` every `change` of any
   /// [FormBloc] will be notified
   /// to [child].
-  final bool notifyOnFormBlocTransition; // = false;
-
-  /// If is `true` every `event` of any
-  /// [FormBloc] will be notified
-  /// to [child].
-  final bool notifyOnFormBlocEvent; // = false;
+  final bool notifyOnFormBlocChange; // = false;
 
   /// If is `true` every `error` of any
   /// [FormBloc] will be notified
@@ -76,8 +75,7 @@ class FormBlocObserver extends BlocObserver {
     this.notifyOnFieldBlocError = true,
     this.notifyOnFieldBlocClose = false,
     this.notifyOnFormBlocCreate = false,
-    this.notifyOnFormBlocTransition = false,
-    this.notifyOnFormBlocEvent = false,
+    this.notifyOnFormBlocChange = false,
     this.notifyOnFormBlocError = true,
     this.notifyOnFormBlocClose = false,
     required this.child,
@@ -101,21 +99,6 @@ class FormBlocObserver extends BlocObserver {
   }
 
   @override
-  void onEvent(Bloc bloc, Object? event) {
-    super.onEvent(bloc, event);
-
-    var notify = true;
-
-    if (bloc is FormBloc && !notifyOnFormBlocEvent) {
-      notify = false;
-    }
-
-    if (notify) {
-      child.onEvent(bloc, event);
-    }
-  }
-
-  @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
 
@@ -123,28 +106,12 @@ class FormBlocObserver extends BlocObserver {
 
     if (bloc is FieldBloc && !notifyOnFieldBlocChange) {
       notify = false;
-    } else if (bloc is FormBloc) {
-      // Changes to the `FormBloc` can be listened to with onTransition
+    } else if (bloc is FormBloc && !notifyOnFormBlocChange) {
       notify = false;
     }
 
     if (notify) {
       child.onChange(bloc, change);
-    }
-  }
-
-  @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-
-    var notify = true;
-
-    if (bloc is FormBloc && !notifyOnFormBlocTransition) {
-      notify = false;
-    }
-
-    if (notify) {
-      child.onTransition(bloc, transition);
     }
   }
 

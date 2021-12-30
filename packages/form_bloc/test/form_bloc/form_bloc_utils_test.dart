@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:form_bloc/form_bloc.dart';
 import 'package:form_bloc/src/blocs/field/field_bloc.dart';
 import 'package:test/test.dart';
+
+import '../utils/states.dart';
 
 class GroupFieldBlocImpl extends GroupFieldBloc<FieldBloc, dynamic> {
   GroupFieldBlocImpl({
@@ -726,23 +726,21 @@ void main() {
 
     */
     // TODO: Add more tests
-    group('fieldBlocsToFieldBlocsStates', () {
-      test('nested fieldBlocs', () {
-        final fieldBlocs = <String, FieldBloc>{
-          groupFieldBloc2.state.name: groupFieldBloc2,
-          groupFieldBloc3.state.name: groupFieldBloc3,
-          booleanFieldBloc1.state.name: booleanFieldBloc1,
-          textFieldBloc1.state.name: textFieldBloc1,
-        };
-
-        final fieldBlocsStates =
-            FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
-
-        print(
-          fieldBlocsStates,
-        );
-      });
-    });
+    // group('fieldBlocsToFieldBlocsStates', () {
+    //   test('nested fieldBlocs', () {
+    //     final fieldBlocs = <String, FieldBloc>{
+    //       groupFieldBloc2.state.name: groupFieldBloc2,
+    //       groupFieldBloc3.state.name: groupFieldBloc3,
+    //       booleanFieldBloc1.state.name: booleanFieldBloc1,
+    //       textFieldBloc1.state.name: textFieldBloc1,
+    //     };
+    //
+    //     final fieldBlocsStates =
+    //         FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
+    //
+    //     print(fieldBlocsStates);
+    //   });
+    // });
 
     group('getFieldBlocStateFromPath', () {
       final fieldBlocs = <String, FieldBloc>{
@@ -765,36 +763,36 @@ void main() {
     });
 
     // TODO: Add more tests
-    group('fieldBlocsToJson', () {
-      test('nested fieldBlocs', () {
-        final fieldBlocs = <String, FieldBloc>{
-          groupFieldBloc2.state.name: groupFieldBloc2,
-          groupFieldBloc3.state.name: groupFieldBloc3,
-          textFieldBloc1.state.name: textFieldBloc1,
-        };
-
-        final fieldBlocsStates =
-            FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
-
-        print(
-          JsonEncoder.withIndent('    ').convert(
-            FormBlocUtils.fieldBlocsStatesToJson(fieldBlocsStates),
-          ),
-        );
-      });
-    });
+    // group('fieldBlocsToJson', () {
+    //   test('nested fieldBlocs', () {
+    //     final fieldBlocs = <String, FieldBloc>{
+    //       groupFieldBloc2.state.name: groupFieldBloc2,
+    //       groupFieldBloc3.state.name: groupFieldBloc3,
+    //       textFieldBloc1.state.name: textFieldBloc1,
+    //     };
+    //
+    //     final fieldBlocsStates =
+    //         FormBlocUtils.fieldBlocsToFieldBlocsStates(fieldBlocs);
+    //
+    //     print(
+    //       JsonEncoder.withIndent('    ').convert(
+    //         FormBlocUtils.fieldBlocsStatesToJson(fieldBlocsStates),
+    //       ),
+    //     );
+    //   });
+    // });
 
     // TODO: Add more tests
-    group('fieldBlocsToJsonList', () {
-      test('nested fieldBlocs', () {
-        final fieldBlocList = [
-          booleanFieldBloc1.state,
-          booleanFieldBloc2.state,
-        ];
-
-        print(FormBlocUtils.fieldBlocsStatesListToJsonList(fieldBlocList));
-      });
-    });
+    // group('fieldBlocsToJsonList', () {
+    //   test('nested fieldBlocs', () {
+    //     final fieldBlocList = [
+    //       booleanFieldBloc1.state,
+    //       booleanFieldBloc2.state,
+    //     ];
+    //
+    //     print(FormBlocUtils.fieldBlocsStatesListToJsonList(fieldBlocList));
+    //   });
+    // });
 
     group('addFormBlocAndAutoValidateToFieldBlocs & removeFormBlocToFieldBlocs',
         () {
@@ -854,11 +852,10 @@ void main() {
 
         expect(
           listFieldBloc.state,
-          ListFieldBlocState<FieldBloc, dynamic>(
+          createListState<FieldBloc, dynamic>(
             name: '',
             fieldBlocs: [],
             formBloc: formBloc,
-            extraData: null,
           ),
         );
 
@@ -869,11 +866,10 @@ void main() {
 
         expect(
           listFieldBloc.state,
-          ListFieldBlocState<FieldBloc, dynamic>(
+          createListState<FieldBloc, dynamic>(
             name: '',
             fieldBlocs: [],
             formBloc: null,
-            extraData: null,
           ),
         );
       });
@@ -891,11 +887,10 @@ void main() {
 
         expect(
           listFieldBloc.state,
-          GroupFieldBlocState<FieldBloc, dynamic>(
+          createGroupState<FieldBloc, dynamic>(
             name: '',
             fieldBlocs: [],
             formBloc: formBloc,
-            extraData: null,
           ),
         );
 
@@ -906,11 +901,10 @@ void main() {
 
         expect(
           listFieldBloc.state,
-          GroupFieldBlocState<FieldBloc, dynamic>(
+          createGroupState<FieldBloc, dynamic>(
             name: '',
             fieldBlocs: [],
             formBloc: null,
-            extraData: null,
           ),
         );
       });
