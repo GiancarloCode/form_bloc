@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/groups/widgets/group_view.dart';
+import 'package:flutter_form_bloc/src/groups/widgets/item_group_tile.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -28,8 +30,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.splashRadius,
     this.shape,
     this.side,
-    this.numberOfItemPerRow = 1,
-    this.itemHight = 60,
+    this.groupStyle = const FlexGroupStyle(),
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -65,15 +66,8 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.numberOfItemPerRow}
-  /// The number of checkbox button per row
-  /// default is 1
-  final int numberOfItemPerRow;
-
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemHight}
-  /// checkbox item max hight
-  /// default value is 60
-  final double itemHight;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.groupStyle}
+  final GroupStyle groupStyle;
 
   // ========== [Checkbox] ==========
 
@@ -149,7 +143,8 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
                 child: GroupInputDecorator(
                   decoration:
                       _buildDecoration(context, state, isEnabled, fieldTheme),
-                  child: _buildCheckboxes(state, isEnabled, fieldTheme),
+                  child:
+                      _buildCheckboxes(context, state, isEnabled, fieldTheme),
                 ),
               );
             },
@@ -160,27 +155,32 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   }
 
   Widget _buildCheckboxes(
+    BuildContext context,
     MultiSelectFieldBlocState<Value, dynamic> state,
     bool isFieldEnabled,
     CheckboxFieldTheme fieldTheme,
   ) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: numberOfItemPerRow,
-        mainAxisExtent: itemHight,
+    return DefaultTextStyle(
+      style: Style.resolveTextStyle(
+        isEnabled: isEnabled,
+        style: fieldTheme.textStyle!,
+        color: fieldTheme.textColor!,
       ),
-      physics: const ClampingScrollPhysics(),
-      itemCount: state.items.length,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        final item = state.items[index];
-        final fieldItem = itemBuilder(context, state.items[index]);
-        final isEnabled = isFieldEnabled && fieldItem.isEnabled;
+      child: GroupView(
+        style: groupStyle,
+        padding: Style.getGroupFieldBlocContentPadding(
+          isVisible: true,
+          decoration: decoration,
+        ),
+        count: state.items.length,
+        builder: (context, index) {
+          final item = state.items[index];
+          final fieldItem = itemBuilder(context, item);
+          final isEnabled = isFieldEnabled && fieldItem.isEnabled;
 
-        return InputDecorator(
-          decoration: Style.inputDecorationWithoutBorder.copyWith(
-            prefixIcon: Checkbox(
-              value: state.value.contains(state.items[index]),
+          return ItemGroupTile(
+            leading: Checkbox(
+              value: state.value.contains(item),
               onChanged: fieldBlocBuilderOnChange<bool?>(
                 isEnabled: isEnabled,
                 nextFocusNode: nextFocusNode,
@@ -194,17 +194,10 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
                 },
               ),
             ),
-          ),
-          child: DefaultTextStyle(
-            style: Style.resolveTextStyle(
-              isEnabled: isEnabled,
-              style: fieldTheme.textStyle!,
-              color: fieldTheme.textColor!,
-            ),
-            child: fieldItem,
-          ),
-        );
-      },
+            content: fieldItem,
+          );
+        },
+      ),
     );
   }
 
