@@ -708,6 +708,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         Stream.value(state),
         stream,
       ]).firstWhere((state) => state == newState);
+
+      fieldBloc.removeFormBloc(this);
     }
   }
 
@@ -773,7 +775,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse> extends Bloc<
         stream,
       ]).firstWhere((state) => state == newState);
 
-      FormBlocUtils.updateFormBloc(fieldBlocs: fieldBlocs, formBloc: this);
+      FormBlocUtils.removeFormBloc(fieldBlocs: fieldBlocs, formBloc: this);
     }
   }
 

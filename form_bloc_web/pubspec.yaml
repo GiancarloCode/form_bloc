@@ -12,7 +12,7 @@ dependencies:
   #   path: ../packages/form_bloc
   flutter_form_bloc:
     path: ../packages/flutter_form_bloc
-  #  flutter_form_bloc: ^0.20.0
+  #  flutter_form_bloc: ^0.20.1
   #  flutter_gradients: ^1.0.0+3
   gradients: ^0.1.1+1
 

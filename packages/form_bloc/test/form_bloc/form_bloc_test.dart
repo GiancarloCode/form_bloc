@@ -56,6 +56,9 @@ void main() {
           state.contains(text),
           isFalse,
         );
+
+        await Future.delayed(const Duration(milliseconds: 500), () {});
+        expect(text.state.formBloc, isNull);
       });
     });
 
@@ -75,6 +78,10 @@ void main() {
           !state.contains(text) && !state.contains(boolean),
           isTrue,
         );
+
+        await Future.delayed(const Duration(milliseconds: 500), () {});
+        expect(text.state.formBloc, isNull);
+        expect(boolean.state.formBloc, isNull);
       });
     });
   });
