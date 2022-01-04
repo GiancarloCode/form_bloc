@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:form_bloc/form_bloc.dart';
 import 'package:form_bloc/src/blocs/field/field_bloc.dart';
 import 'package:form_bloc/src/extension/extension.dart';
 import 'package:rxdart/rxdart.dart';
