@@ -38,6 +38,9 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
     items: [
       'Option 1',
       'Option 2',
+      'Option 3',
+      'Option 4',
+      'Option 5',
     ],
   );
   final file = InputFieldBloc<File?, String>(initialValue: null);
@@ -174,6 +177,7 @@ class AllFieldsForm extends StatelessWidget {
                           decoration: const InputDecoration(
                             labelText: 'RadioButtonGroupFieldBlocBuilder',
                           ),
+                          groupStyle: const FlexGroupStyle(),
                           itemBuilder: (context, item) => FieldItem(
                             child: Text(item),
                           ),
@@ -182,6 +186,10 @@ class AllFieldsForm extends StatelessWidget {
                           multiSelectFieldBloc: formBloc.multiSelect1,
                           decoration: const InputDecoration(
                             labelText: 'CheckboxGroupFieldBlocBuilder',
+                          ),
+                          groupStyle: const ListGroupStyle(
+                            scrollDirection: Axis.horizontal,
+                            height: 64,
                           ),
                           itemBuilder: (context, item) => FieldItem(
                             child: Text(item),

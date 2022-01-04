@@ -98,10 +98,6 @@ class GroupInputDecorator extends StatelessWidget {
               maxHeight: 0.0,
               maxWidth: 0.0,
             ),
-            contentPadding: Style.getGroupFieldBlocContentPadding(
-              isVisible: true,
-              decoration: decoration,
-            ),
           ),
           child: child,
         ),

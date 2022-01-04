@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/groups/widgets/group_view.dart';
+import 'package:flutter_form_bloc/src/groups/widgets/item_group_tile.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -26,8 +28,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.fillColor,
     this.overlayColor,
     this.splashRadius,
-    this.numberOfItemPerRow = 1,
-    this.itemHight = 60,
+    this.groupStyle = const FlexGroupStyle(),
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -67,15 +68,9 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.textColor}
   final MaterialStateProperty<Color?>? textColor;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.numberOfItemPerRow}
-  /// The number of radio button per row
-  /// default is 1
-  final int numberOfItemPerRow;
+  /// {@macro flutter_form_bloc.FieldBlocBuilder.groupStyle}
+  final GroupStyle groupStyle;
 
-  /// {@macro flutter_form_bloc.FieldBlocBuilder.itemHight}
-  /// radio item max hight
-  /// default value is 60
-  final double itemHight;
   // ========== [Radio] ==========
 
   /// [Radio.mouseCursor]
@@ -153,17 +148,22 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     RadioFieldTheme fieldTheme,
     bool isFieldEnabled,
   ) {
-    return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: numberOfItemPerRow,
-          mainAxisExtent: itemHight,
+    return DefaultTextStyle(
+      style: Style.resolveTextStyle(
+        isEnabled: isEnabled,
+        style: fieldTheme.textStyle!,
+        color: fieldTheme.textColor!,
+      ),
+      child: GroupView(
+        style: groupStyle,
+        padding: Style.getGroupFieldBlocContentPadding(
+          isVisible: true,
+          decoration: decoration,
         ),
-        physics: const ClampingScrollPhysics(),
-        itemCount: state.items.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
+        count: state.items.length,
+        builder: (context, index) {
           final item = state.items[index];
-          final fieldItem = itemBuilder(context, state.items[index]);
+          final fieldItem = itemBuilder(context, item);
           final isEnabled = isFieldEnabled && fieldItem.isEnabled;
 
           final onChanged = fieldBlocBuilderOnChange<Value?>(
@@ -174,28 +174,21 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
               fieldItem.onTap?.call();
             },
           );
-          return InputDecorator(
-            decoration: Style.inputDecorationWithoutBorder.copyWith(
-              prefixIcon: Radio<Value>(
-                value: item,
-                fillColor: fieldTheme.radioTheme?.fillColor,
-                overlayColor: fieldTheme.radioTheme?.overlayColor,
-                splashRadius: fieldTheme.radioTheme?.splashRadius,
-                groupValue: state.value,
-                toggleable: canDeselect,
-                onChanged: onChanged,
-              ),
+          return ItemGroupTile(
+            leading: Radio<Value>(
+              value: item,
+              fillColor: fieldTheme.radioTheme?.fillColor,
+              overlayColor: fieldTheme.radioTheme?.overlayColor,
+              splashRadius: fieldTheme.radioTheme?.splashRadius,
+              groupValue: state.value,
+              toggleable: canDeselect,
+              onChanged: onChanged,
             ),
-            child: DefaultTextStyle(
-              style: Style.resolveTextStyle(
-                isEnabled: isEnabled,
-                style: fieldTheme.textStyle!,
-                color: fieldTheme.textColor!,
-              ),
-              child: fieldItem,
-            ),
+            content: fieldItem,
           );
-        });
+        },
+      ),
+    );
   }
 
   InputDecoration _buildDecoration(

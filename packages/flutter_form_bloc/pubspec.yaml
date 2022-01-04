@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#  bloc: ^7.0.0
+
   flutter_bloc: ^8.0.0
   form_bloc: ^0.29.0
   equatable: ^2.0.3

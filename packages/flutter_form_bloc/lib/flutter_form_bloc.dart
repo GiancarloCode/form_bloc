@@ -5,7 +5,6 @@ export 'package:form_bloc/form_bloc.dart';
 
 export 'src/can_show_field_bloc_builder.dart';
 export 'src/checkbox_field_bloc_builder.dart';
-export 'src/checkbox_group_field_bloc_builder.dart';
 export 'src/chip/chip_field_item_builder.dart';
 export 'src/chip/choice_chip_field_bloc_builder.dart';
 export 'src/chip/filter_chip_field_bloc_builder.dart';
@@ -14,7 +13,9 @@ export 'src/date_time/time_field_bloc_builder.dart';
 export 'src/dropdown_field_bloc_builder.dart';
 export 'src/field_bloc_builder.dart';
 export 'src/form_bloc_listener.dart';
-export 'src/radio_button_group_field_bloc.dart';
+export 'src/groups/fields/checkbox_group_field_bloc_builder.dart';
+export 'src/groups/fields/radio_button_group_field_bloc.dart';
+export 'src/groups/widgets/group_view.dart';
 export 'src/slider/slider_field_bloc_builder.dart';
 export 'src/stepper/stepper_form_bloc_builder.dart';
 export 'src/suffix_buttons/clear_suffix_button.dart';
