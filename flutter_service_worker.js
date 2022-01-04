@@ -7,7 +7,7 @@ const RESOURCES = {
 "canvaskit/profiling/canvaskit.js": "f3bfccc993a1e0bfdd3440af60d99df4",
 "canvaskit/profiling/canvaskit.wasm": "a9610cf39260f60fbe7524a785c66101",
 "canvaskit/canvaskit.wasm": "04ed3c745ff1dee16504be01f9623498",
-"main.dart.js": "b54abbdbc898b18d9ba6441f5f8925aa",
+"main.dart.js": "0a663bddbceb3827401cacaec5529508",
 "version.json": "bc812a5405a1354acbf6b701a600966b",
 "manifest.json": "c45571e2d84148a6242f43f0b88a4ee1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
@@ -30,8 +30,8 @@ const RESOURCES = {
 "assets/assets/fonts/JosefinSans-Bold.ttf": "0fce6d85ecbbf3d97e0d848824454600",
 "assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
 "assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
-"index.html": "181aab1b4fd00e6d08d56cb0aa81a125",
-"/": "181aab1b4fd00e6d08d56cb0aa81a125",
+"index.html": "9702b948533d0e0a43ec92a154125b70",
+"/": "9702b948533d0e0a43ec92a154125b70",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796"
 };
 
