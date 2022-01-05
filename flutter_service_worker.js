@@ -30,8 +30,8 @@ const RESOURCES = {
 "assets/assets/fonts/JosefinSans-Bold.ttf": "0fce6d85ecbbf3d97e0d848824454600",
 "assets/assets/fonts/JosefinSans-Regular.ttf": "70e2eb768304d11812d28e33e91ecac5",
 "assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
-"index.html": "9702b948533d0e0a43ec92a154125b70",
-"/": "9702b948533d0e0a43ec92a154125b70",
+"index.html": "fae10e03dd69883589ecc4d4cb5191c7",
+"/": "fae10e03dd69883589ecc4d4cb5191c7",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796"
 };
 
