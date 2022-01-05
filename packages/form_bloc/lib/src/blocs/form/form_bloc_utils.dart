@@ -3,42 +3,30 @@ part of '../field/field_bloc.dart';
 class FormBlocUtils {
   FormBlocUtils._();
 
-  static List<SingleFieldBloc> getAllSingleFieldBlocs(
-      Iterable<FieldBloc?> fieldBlocs) {
-    final singleFieldBlocs = <SingleFieldBloc>[];
-    for (var fieldBloc in fieldBlocs) {
+  static Iterable<SingleFieldBloc> getAllSingleFieldBlocs(
+      Iterable<FieldBloc> fieldBlocs) {
+    return fieldBlocs.expand((fieldBloc) {
       if (fieldBloc is SingleFieldBloc) {
-        singleFieldBlocs.add(fieldBloc);
-      } else if (fieldBloc is GroupFieldBloc) {
-        singleFieldBlocs
-            .addAll(getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs.values));
-      } else if (fieldBloc is ListFieldBloc) {
-        singleFieldBlocs.addAll(
-          getAllSingleFieldBlocs(fieldBloc.state.fieldBlocs),
-        );
+        return [fieldBloc];
+      } else if (fieldBloc is MultiFieldBloc) {
+        return getAllSingleFieldBlocs(fieldBloc.flatFieldBlocs);
       }
-    }
-
-    return singleFieldBlocs;
+      return const <SingleFieldBloc>[];
+    });
   }
 
-  static List<FieldBloc> getAllFieldBlocs(Iterable<FieldBloc?> fieldBlocs) {
-    final _fieldBlocs = <FieldBloc>[];
-    for (var fieldBloc in fieldBlocs) {
-      if (fieldBloc is SingleFieldBloc) {
-        _fieldBlocs.add(fieldBloc);
-      } else if (fieldBloc is GroupFieldBloc) {
-        _fieldBlocs.add(fieldBloc);
-        _fieldBlocs.addAll(getAllFieldBlocs(fieldBloc.state.fieldBlocs.values));
-      } else if (fieldBloc is ListFieldBloc) {
-        _fieldBlocs.add(fieldBloc);
-        _fieldBlocs.addAll(
-          getAllFieldBlocs(fieldBloc.state.fieldBlocs),
-        );
+  static Iterable<FieldBloc> getAllFieldBlocs(Iterable<FieldBloc> fieldBlocs) {
+    return fieldBlocs.expand<FieldBloc>((fieldBloc) {
+      for (var fieldBloc in fieldBlocs) {
+        if (fieldBloc is SingleFieldBloc) {
+          return [fieldBloc];
+        } else if (fieldBloc is MultiFieldBloc) {
+          return <FieldBloc>[fieldBloc]
+              .followedBy(getAllFieldBlocs(fieldBloc.flatFieldBlocs));
+        }
       }
-    }
-
-    return _fieldBlocs;
+      return const <FieldBloc>[];
+    });
   }
 
   /// Returns the corresponding [FieldBloc] to the [path].

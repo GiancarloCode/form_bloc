@@ -855,8 +855,8 @@ void main() {
     });
 
     test(
-        'ValidateFieldBloc event verify the value in validators and asyncValidators.',
-        () {
+        'FieldBloc.validate: Verify the value in validators and asyncValidators.',
+        () async {
       final fieldBloc = InputFieldBloc<int?, dynamic>(
         name: 'fieldName',
         initialValue: null,
@@ -916,10 +916,12 @@ void main() {
       );
 
       fieldBloc.updateFormBloc(formBloc, autoValidate: false);
-      fieldBloc.validate(false);
-      fieldBloc.validate(true);
+      await expectLater(fieldBloc.validate(false), completion(equals(false)));
+      await expectLater(fieldBloc.validate(true), completion(equals(false)));
       fieldBloc.updateValue(2);
-      fieldBloc.validate(true);
+      await expectLater(fieldBloc.validate(true), completion(false));
+      fieldBloc.updateValue(1);
+      await expectLater(fieldBloc.validate(true), completion(true));
     });
 
     test('ResetFieldBlocStateIsValidated event.', () {

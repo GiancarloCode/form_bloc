@@ -1,62 +1,66 @@
 part of '../field/field_bloc.dart';
 
-class ListFieldBlocState<T extends FieldBloc, ExtraData> extends Equatable
-    with FieldBlocStateBase {
-  final String name;
+class ListFieldBlocState<T extends FieldBloc, ExtraData>
+    extends MultiFieldBlocState<ExtraData> {
   final List<T> fieldBlocs;
-  final ExtraData? extraData;
-  @override
-  final FormBloc? formBloc;
 
   ListFieldBlocState({
-    required this.name,
+    required FormBloc? formBloc,
+    required String name,
+    required bool isValidating,
+    required bool isValid,
+    required ExtraData? extraData,
     required this.fieldBlocs,
-    required this.extraData,
-    required this.formBloc,
-  });
+  }) : super(
+          formBloc: formBloc,
+          name: name,
+          isValidating: isValidating,
+          isValid: isValid,
+          extraData: extraData,
+        );
 
+  @override
   ListFieldBlocState<T, ExtraData> copyWith({
-    List<T>? fieldBlocs,
     Param<FormBloc?>? formBloc,
+    bool? isValidating,
+    bool? isValid,
     Param<ExtraData>? extraData,
+    List<T>? fieldBlocs,
   }) {
     return ListFieldBlocState(
-      name: name,
-      fieldBlocs: fieldBlocs ?? this.fieldBlocs,
-      extraData: extraData == null ? this.extraData : extraData.value,
       formBloc: formBloc == null ? this.formBloc : formBloc.value,
+      name: name,
+      isValidating: isValidating ?? this.isValidating,
+      isValid: isValid ?? this.isValid,
+      extraData: extraData == null ? this.extraData : extraData.value,
+      fieldBlocs: fieldBlocs ?? this.fieldBlocs,
     );
   }
 
   @override
-  List<Object?> get props => [name, fieldBlocs, extraData, formBloc];
+  Iterable<FieldBloc> get flatFieldBlocs => fieldBlocs;
 
   @override
-  String toString() {
-    var _string = '';
-    _string += '$runtimeType {';
-    _string += ',\n  name: $name';
-    _string += ',\n  extraData: $extraData';
-    _string += ',\n  formBloc: $formBloc';
-    _string += ',\n  fieldBlocs: $fieldBlocs';
-    _string += '\n}';
-    return _string;
-  }
+  List<Object?> get props => [super.props, fieldBlocs];
+
+  @override
+  String toString([Object? other]) =>
+      super.toString(',\n  fieldBlocs: $fieldBlocs');
 }
 
 class ListFieldBloc<T extends FieldBloc, ExtraData>
-    extends Cubit<ListFieldBlocState<T, ExtraData>> with FieldBloc {
-  bool _autoValidate = true;
-
+    extends MultiFieldBloc<ExtraData, ListFieldBlocState<T, ExtraData>> {
   ListFieldBloc({
     String? name,
-    List<T>? fieldBlocs,
+    List<T> fieldBlocs = const [],
     ExtraData? extraData,
   }) : super(ListFieldBlocState(
           name: name ?? Uuid().v1(),
-          fieldBlocs: fieldBlocs ?? const [],
           formBloc: null,
+          isValidating: MultiFieldBloc.areFieldBlocsValidating(fieldBlocs),
+          isValid: MultiFieldBloc.areFieldBlocsValid(fieldBlocs),
           extraData: extraData,
+          fieldBlocs: fieldBlocs,
         ));
 
   List<T> get value => state.fieldBlocs;
@@ -64,53 +68,54 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
   void addFieldBloc(T fieldBloc) => addFieldBlocs([fieldBloc]);
 
   void addFieldBlocs(List<T> fieldBlocs) {
-    final stateSnapshot = state;
     if (fieldBlocs.isNotEmpty) {
-      emit(stateSnapshot.copyWith(
-        fieldBlocs: [...stateSnapshot.fieldBlocs, ...fieldBlocs],
+      final nextFieldBlocs = [...state.fieldBlocs, ...fieldBlocs];
+
+      emit(state.copyWith(
+        isValidating: MultiFieldBloc.areFieldBlocsValidating(nextFieldBlocs),
+        isValid: MultiFieldBloc.areFieldBlocsValid(nextFieldBlocs),
+        fieldBlocs: nextFieldBlocs,
       ));
 
-      if (state.formBloc != null) {
-        FormBlocUtils.updateFormBloc(
-          fieldBlocs: fieldBlocs,
-          formBloc: state.formBloc,
-          autoValidate: _autoValidate,
-        );
-
-        state.formBloc!.add(RefreshFieldBlocsSubscription());
-      }
+      FormBlocUtils.updateFormBloc(
+        fieldBlocs: fieldBlocs,
+        formBloc: state.formBloc,
+        autoValidate: _autoValidate,
+      );
     }
   }
 
   /// Removes the [FieldBloc] in the [index].
   void removeFieldBlocAt(int index) {
-    final stateSnapshot = state;
+    if (state.fieldBlocs.length > index) {
+      final nextFieldBlocs = [...state.fieldBlocs];
+      final fieldBlocRemoved = nextFieldBlocs.removeAt(index);
 
-    if ((stateSnapshot.fieldBlocs.length > index)) {
-      final newFieldBlocs = [...stateSnapshot.fieldBlocs];
-      final removableFiled = newFieldBlocs.removeAt(index);
-      emit(state.copyWith(fieldBlocs: newFieldBlocs));
+      emit(state.copyWith(
+        isValidating: MultiFieldBloc.areFieldBlocsValidating(nextFieldBlocs),
+        isValid: MultiFieldBloc.areFieldBlocsValid(nextFieldBlocs),
+        fieldBlocs: nextFieldBlocs,
+      ));
 
-      if (state.formBloc != null) {
-        FormBlocUtils.removeFormBloc(
-          fieldBlocs: [removableFiled],
-          formBloc: state.formBloc,
-        );
-
-        state.formBloc!.add(RefreshFieldBlocsSubscription());
-      }
+      FormBlocUtils.removeFormBloc(
+        fieldBlocs: [fieldBlocRemoved],
+        formBloc: state.formBloc,
+      );
     }
   }
 
+  void removeFieldBloc(FieldBloc fieldBloc) =>
+      removeFieldBlocsWhere((fb) => fieldBloc == fb);
+
+  void removeFieldBlocs(Iterable<FieldBloc> fieldBlocs) =>
+      removeFieldBlocsWhere(fieldBlocs.contains);
+
   /// Removes all [FieldBloc]s that satisfy [test].
   void removeFieldBlocsWhere(bool Function(T element) test) {
-    final stateSnapshot = state;
-
-    final newFieldBlocs = [...stateSnapshot.fieldBlocs];
-
+    final nextFieldBlocs = [...state.fieldBlocs];
     final fieldBlocsRemoved = <T>[];
 
-    newFieldBlocs.removeWhere((e) {
+    nextFieldBlocs.removeWhere((e) {
       if (test(e)) {
         fieldBlocsRemoved.add(e);
         return true;
@@ -118,61 +123,20 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
       return false;
     });
 
-    emit(state.copyWith(
-      fieldBlocs: newFieldBlocs,
-    ));
-
-    if (state.formBloc != null) {
-      FormBlocUtils.removeFormBloc(
-        fieldBlocs: fieldBlocsRemoved,
-        formBloc: state.formBloc,
-      );
-
-      state.formBloc!.add(RefreshFieldBlocsSubscription());
-    }
-  }
-
-  void updateExtraData(ExtraData extraData) {
-    emit(state.copyWith(
-      extraData: Param(extraData),
-    ));
-  }
-
-  // ========== INTERNAL USE ==========
-
-  /// See [FieldBloc.updateFormBloc]
-  @override
-  void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
-    _autoValidate = autoValidate;
+    if (fieldBlocsRemoved.isEmpty) return;
 
     emit(state.copyWith(
-      formBloc: Param(formBloc),
+      isValidating: MultiFieldBloc.areFieldBlocsValidating(nextFieldBlocs),
+      isValid: MultiFieldBloc.areFieldBlocsValid(nextFieldBlocs),
+      fieldBlocs: nextFieldBlocs,
     ));
 
-    FormBlocUtils.updateFormBloc(
-      fieldBlocs: state.fieldBlocs,
-      formBloc: formBloc,
-      autoValidate: _autoValidate,
+    FormBlocUtils.removeFormBloc(
+      fieldBlocs: fieldBlocsRemoved,
+      formBloc: state.formBloc,
     );
   }
 
-  /// See [FieldBloc.removeFormBloc]
   @override
-  void removeFormBloc(FormBloc formBloc) {
-    if (state.formBloc == formBloc) {
-      emit(state.copyWith(
-        formBloc: Param(null),
-      ));
-
-      FormBlocUtils.removeFormBloc(
-        fieldBlocs: state.fieldBlocs,
-        formBloc: formBloc,
-      );
-    }
-  }
-
-  @override
-  String toString() {
-    return '$runtimeType';
-  }
+  String toString() => '$runtimeType';
 }
