@@ -170,7 +170,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
             isEnabled: isEnabled,
             nextFocusNode: nextFocusNode,
             onChanged: (value) {
-              selectFieldBloc.updateValue(value);
+              selectFieldBloc.changeValue(value);
               fieldItem.onTap?.call();
             },
           );

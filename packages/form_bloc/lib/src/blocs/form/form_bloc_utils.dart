@@ -374,4 +374,49 @@ class FormBlocUtils {
       fieldBloc.removeFormBloc(formBloc);
     }
   }
+
+  /// See [FormBloc.isValuesChanged]
+  static bool isValuesChanged(
+    Iterable<FieldBloc> fieldBlocs, {
+    bool fallback = false,
+  }) {
+    return fieldBlocs.any((fb) {
+      if (fb is SingleFieldBloc) {
+        return fb.isValueChanged;
+      } else if (fb is MultiFieldBloc) {
+        return fb.isValuesChanged;
+      }
+      return fallback;
+    });
+  }
+
+  /// See [FormBloc.hasInitialValues]
+  static bool hasInitialValues(
+    Iterable<FieldBloc> fieldBlocs, {
+    bool fallback = true,
+  }) {
+    return fieldBlocs.every((fb) {
+      if (fb is SingleFieldBloc) {
+        return fb.hasInitialValue;
+      } else if (fb is MultiFieldBloc) {
+        return fb.hasInitialValues;
+      }
+      return fallback;
+    });
+  }
+
+  /// See [FormBloc.hasUpdatedValues]
+  static bool hasUpdatedValues(
+    Iterable<FieldBloc> fieldBlocs, {
+    bool fallback = true,
+  }) {
+    return fieldBlocs.every((fb) {
+      if (fb is SingleFieldBloc) {
+        return fb.hasUpdatedValue;
+      } else if (fb is MultiFieldBloc) {
+        return fb.hasUpdatedValues;
+      }
+      return fallback;
+    });
+  }
 }

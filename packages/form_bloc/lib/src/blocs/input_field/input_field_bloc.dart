@@ -46,21 +46,19 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
     dynamic Function(Value value)? toJson,
     ExtraData? extraData,
   }) : super(
-          initialValue,
-          validators,
-          asyncValidators,
-          asyncValidatorDebounceTime,
-          suggestions,
-          name,
-          toJson,
-          extraData,
-          InputFieldBlocState(
+          validators: validators,
+          asyncValidators: asyncValidators,
+          asyncValidatorDebounceTime: asyncValidatorDebounceTime,
+          initialState: InputFieldBlocState(
+            isValueChanged: false,
+            initialValue: initialValue,
+            updatedValue: initialValue,
             value: initialValue,
             error: FieldBlocUtils.getInitialStateError(
               validators: validators,
               value: initialValue,
             ),
-            isInitial: true,
+            isDirty: false,
             suggestions: suggestions,
             isValidated: FieldBlocUtils.getInitialIsValidated(
               FieldBlocUtils.getInitialStateIsValidating(

@@ -20,5 +20,6 @@ dev_dependencies:
   test: ^1.20.1
   mocktail: ^0.2.0
   bloc_test: ^9.0.2
+  fire_line_diff: ^1.5.3
 
   lints: ^1.0.1

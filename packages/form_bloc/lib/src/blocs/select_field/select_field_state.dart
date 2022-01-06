@@ -5,9 +5,12 @@ class SelectFieldBlocState<Value, ExtraData>
   final List<Value> items;
 
   SelectFieldBlocState({
+    required bool isValueChanged,
+    required Value? initialValue,
+    required Value? updatedValue,
     required Value? value,
     required Object? error,
-    required bool isInitial,
+    required bool isDirty,
     required Suggestions<Value>? suggestions,
     required bool isValidated,
     required bool isValidating,
@@ -17,9 +20,12 @@ class SelectFieldBlocState<Value, ExtraData>
     dynamic Function(Value? value)? toJson,
     ExtraData? extraData,
   }) : super(
+          isValueChanged: isValueChanged,
+          initialValue: initialValue,
+          updatedValue: updatedValue,
           value: value,
           error: error,
-          isInitial: isInitial,
+          isDirty: isDirty,
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
@@ -31,9 +37,12 @@ class SelectFieldBlocState<Value, ExtraData>
 
   @override
   SelectFieldBlocState<Value, ExtraData> copyWith({
+    bool? isValueChanged,
+    Param<Value?>? initialValue,
+    Param<Value?>? updatedValue,
     Param<Value?>? value,
     Param<Object?>? error,
-    bool? isInitial,
+    bool? isDirty,
     Param<Suggestions<Value>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
@@ -42,9 +51,12 @@ class SelectFieldBlocState<Value, ExtraData>
     Param<ExtraData?>? extraData,
   }) {
     return SelectFieldBlocState(
+      isValueChanged: isValueChanged ?? this.isValueChanged,
+      initialValue: initialValue.or(this.initialValue),
+      updatedValue: updatedValue.or(this.updatedValue),
       value: value == null ? this.value : value.value,
       error: error == null ? this.error : error.value,
-      isInitial: isInitial ?? this.isInitial,
+      isDirty: isDirty ?? this.isDirty,
       suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
@@ -55,45 +67,11 @@ class SelectFieldBlocState<Value, ExtraData>
       extraData: extraData == null ? this.extraData : extraData.value,
     );
   }
-  // @override
-  // SelectFieldBlocState<Value, ExtraData> copyWith(
-  //     {Optional<List<Value>>? value,
-  //     Optional<String>? error,
-  //     bool? isInitial,
-  //     Optional<Suggestions<Value>>? suggestions,
-  //     bool? isValidated,
-  //     bool? isValidating,
-  //     FormBloc? formBloc,
-  //     Optional<List<Value>>? items,
-  //     Optional<ExtraData?>? extraData}) {
-  //   return SelectFieldBlocState(
-  //     value: value == null ? this.value : value.orNull,
-  //     error: error == null ? this.error : error.orNull,
-  //     isInitial: isInitial ?? this.isInitial,
-  //     suggestions: suggestions == null ? this.suggestions : suggestions.orNull,
-  //     isValidated: isValidated ?? this.isValidated,
-  //     isValidating: isValidating ?? this.isValidating,
-  //     formBloc: formBloc ?? this.formBloc,
-  //     name: name,
-  //     items: items == null ? this.items : items.orNull,
-  //     toJson: _toJson,
-  //     extraData: extraData == null ? this.extraData : extraData.orNull,
-  //   );
-  // }
 
   @override
-  String toString() => _toStringWith(',\n  items: $items');
+  String toString([String extra = '']) =>
+      super.toString(',\n  items: $items$extra');
 
   @override
-  List<Object?> get props => [
-        value,
-        error,
-        isInitial,
-        suggestions,
-        isValidated,
-        isValidating,
-        extraData,
-        formBloc,
-        items,
-      ];
+  List<Object?> get props => [super.props, items];
 }

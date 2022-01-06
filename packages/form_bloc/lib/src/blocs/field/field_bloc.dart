@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:collection' show LinkedHashSet;
 
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_bloc/src/blocs/field/field_bloc_utils.dart';
 import 'package:form_bloc/src/blocs/form/form_bloc.dart';
+import 'package:form_bloc/src/extension/extension.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
@@ -46,19 +48,26 @@ typedef Suggestions<Value> = Future<List<Value>> Function(String pattern);
 ///   * [BooleanFieldBloc].
 ///   * [SelectFieldBloc].
 ///   * [MultiSelectFieldBloc].
-/// * [GroupFieldBloc].
-/// * [ListFieldBloc].
+/// * [MultiFieldBloc]
+///   * [GroupFieldBloc].
+///   * [ListFieldBloc].
 mixin FieldBloc<State extends FieldBlocStateBase> on BlocBase<State> {
   String get name => state.name;
 
+  /// {@template form_bloc.FieldBloc.validate}
   /// Validate the field. If it contains more fields, it validates all children.
   /// Returns `true` if the field is valid otherwise `false`
+  /// {@endtemplate}
   Future<bool> validate();
 
+  /// {@template form_bloc.FieldBloc.updateFormBloc}
   /// Update the [formBloc] and [autoValidate] to the fieldBloc
+  /// {@endtemplate}
   void updateFormBloc(FormBloc formBloc, {bool autoValidate = false});
 
+  /// {@template form_bloc.FieldBloc.removeFormBloc}
   /// Remove the [formBloc] to the fieldBloc
+  /// {@endtemplate}
   void removeFormBloc(FormBloc formBloc);
 }
 
@@ -75,8 +84,6 @@ abstract class SingleFieldBloc<
     Suggestion,
     State extends FieldBlocState<Value, Suggestion, ExtraData>,
     ExtraData> extends Cubit<State> with FieldBloc {
-  Value _initialValue;
-
   bool _autoValidate = true;
 
   List<Validator<Value>> _validators;
@@ -99,18 +106,15 @@ abstract class SingleFieldBloc<
 
   StreamSubscription<void>? _revalidateFieldBlocsSubscription;
 
-  SingleFieldBloc(
-    this._initialValue,
-    List<Validator<Value>>? validators,
-    List<AsyncValidator<Value>>? asyncValidators,
-    this._asyncValidatorDebounceTime,
-    Suggestions<Suggestion>? suggestions,
-    String? name,
-    dynamic Function(Value value)? toJson,
-    ExtraData extraData,
-    State initialState,
-  )   : _validators = validators ?? [],
+  SingleFieldBloc({
+    Equality<Value> equality = const DefaultEquality<Never>(),
+    required List<Validator<Value>>? validators,
+    required List<AsyncValidator<Value>>? asyncValidators,
+    required Duration asyncValidatorDebounceTime,
+    required State initialState,
+  })  : _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
+        _asyncValidatorDebounceTime = asyncValidatorDebounceTime,
         super(initialState) {
     _setUpAsyncValidatorsSubscription();
   }
@@ -122,24 +126,24 @@ abstract class SingleFieldBloc<
   Stream<Suggestion> get selectedSuggestion =>
       _selectedSuggestionSubject.stream;
 
+  // ===========================================================================
+  // Utility
+  // ===========================================================================
+
   /// Returns the `value` of the current state.
   Value get value => state.value;
 
-  bool _isValidated(bool isValidating) => _autoValidate
-      ? isValidating
-          ? false
-          : true
-      : false;
+  /// {@macro flutter_field_bloc.FieldBloc.isValueChanged}
+  /// [FieldBlocState.isValueChanged]
+  bool get isValueChanged => state.isValueChanged;
 
-  @override
-  Future<void> close() async {
-    unawaited(_selectedSuggestionSubject.close());
-    unawaited(_asyncValidatorsSubject.close());
-    unawaited(_asyncValidatorsSubscription.cancel());
-    _revalidateFieldBlocsSubscription?.cancel();
+  /// {@macro flutter_field_bloc.FieldBloc.hasInitialValue}
+  /// [FieldBlocState.hasInitialValue]
+  bool get hasInitialValue => state.hasInitialValue;
 
-    unawaited(super.close());
-  }
+  /// {@macro flutter_field_bloc.FieldBloc.hasUpdatedValue}
+  /// [FieldBlocState.hasUpdatedValue]
+  bool get hasUpdatedValue => state.hasUpdatedValue;
 
   /// Returns a [StreamSubscription<R>],
   ///
@@ -175,21 +179,40 @@ abstract class SingleFieldBloc<
             _onFinish(list[0] as State, list[1] as State, list[2] as R));
   }
 
+  // ===========================================================================
+  // METHODS TO UPDATE STATE
+  // ===========================================================================
+
+  void changeValue(Value value) {
+    if (!_canUpdateValue(value: value, isInitialValue: false)) return;
+
+    final error = _getError(value: value);
+    final isValidating = _getAsyncValidatorsError(value: value, error: error);
+
+    emit(state.copyWith(
+      value: Param(value),
+      error: Param(error),
+      isValueChanged: true,
+      isValidated: _isValidated(isValidating),
+      isValidating: isValidating,
+    ) as State);
+  }
+
   /// Set [value] to the `value` of the current state.
   void updateValue(Value value) {
-    if (_canUpdateValue(value: value, isInitialValue: false)) {
-      final error = _getError(value);
+    if (!_canUpdateValue(value: value, isInitialValue: false)) return;
 
-      final isValidating = _getAsyncValidatorsError(value: value, error: error);
+    final error = _getError(value: value);
+    final isValidating = _getAsyncValidatorsError(value: value, error: error);
 
-      emit(state.copyWith(
-        value: Param(value),
-        error: Param(error),
-        isInitial: false,
-        isValidated: _isValidated(isValidating),
-        isValidating: isValidating,
-      ) as State);
-    }
+    emit(state.copyWith(
+      value: Param(value),
+      updatedValue: Param(value),
+      error: Param(error),
+      isValueChanged: false,
+      isValidated: _isValidated(isValidating),
+      isValidating: isValidating,
+    ) as State);
   }
 
   /// Set [value] to the `value` and set `isInitial` to `true`
@@ -197,27 +220,27 @@ abstract class SingleFieldBloc<
   ///
   /// {@macro form_bloc.field_bloc.update_value}
   void updateInitialValue(Value value) {
-    if (_canUpdateValue(value: value, isInitialValue: true)) {
-      _initialValue = value;
+    if (!_canUpdateValue(value: value, isInitialValue: true)) return;
 
-      final error = _getError(value);
+    final error = _getError(value: value);
+    final isValidating = _getAsyncValidatorsError(value: value, error: error);
 
-      final isValidating = _getAsyncValidatorsError(value: value, error: error);
-
-      emit(state.copyWith(
-        value: Param(value),
-        error: Param(error),
-        isInitial: true,
-        isValidated: _isValidated(isValidating),
-        isValidating: isValidating,
-      ) as State);
-    }
+    emit(state.copyWith(
+      value: Param(value),
+      initialValue: Param(value),
+      updatedValue: Param(value),
+      error: Param(error),
+      isDirty: false,
+      isValueChanged: false,
+      isValidated: _isValidated(isValidating),
+      isValidating: isValidating,
+    ) as State);
   }
 
-  /// Set the `value` to `null` of the current state.
+  /// Set the `value` to `initialValue` of the current state.
   ///
   /// {@macro form_bloc.field_bloc.update_value}
-  void clear() => updateInitialValue(_initialValue);
+  void clear() => updateInitialValue(state.initialValue);
 
   /// Add a [suggestion] to [selectedSuggestion].
   void selectSuggestion(Suggestion suggestion) {
@@ -228,61 +251,62 @@ abstract class SingleFieldBloc<
 
   /// Add [validators] to the current `validators` for check
   /// if `value` of the current state has an error.
-  void addValidators(List<Validator<Value>> validators,
-      [bool forceValidation = false]) {
+  void addValidators(
+    List<Validator<Value>> validators, {
+    bool forceValidation = false,
+  }) {
     _validators.addAll(validators);
-    if (_autoValidate || forceValidation) {
-      validate(false);
-    }
+
+    _maybeValidate(forceValidation);
   }
 
   /// Add [asyncValidators] to the current `validators` for check
   /// if `value` of the current state has an error.
-  void addAsyncValidators(List<AsyncValidator<Value>> asyncValidators) {
+  void addAsyncValidators(
+    List<AsyncValidator<Value>> asyncValidators, {
+    bool forceValidation = false,
+  }) {
     _asyncValidators.addAll(asyncValidators);
 
-    final error = _getError(state.value);
-
-    final isValidating =
-        _getAsyncValidatorsError(value: state.value, error: error);
-
-    emit(state.copyWith(
-      error: Param(error),
-      isValidated: _isValidated(isValidating),
-      isValidating: isValidating,
-    ) as State);
+    _maybeValidate(forceValidation);
   }
 
   /// Updates the current `validators` with [validators].
-  void updateValidators(List<Validator<Value>> validators) {
+  void updateValidators(List<Validator<Value>> validators,
+      {bool forceValidation = false}) {
     _validators = validators;
 
-    final error = _getError(state.value);
-
-    final isValidating =
-        _getAsyncValidatorsError(value: state.value, error: error);
-
-    emit(state.copyWith(
-      error: Param(error),
-      isValidated: _isValidated(isValidating),
-      isValidating: isValidating,
-    ) as State);
+    _maybeValidate(forceValidation);
   }
 
   /// Updates the current `asyncValidators` with [asyncValidators].
-  void updateAsyncValidators(List<AsyncValidator<Value>> asyncValidators) {
+  void updateAsyncValidators(
+    List<AsyncValidator<Value>> asyncValidators, {
+    bool forceValidation = false,
+  }) {
     _asyncValidators = asyncValidators;
 
-    final error = _getError(state.value);
+    _maybeValidate(forceValidation);
+  }
 
-    final isValidating =
-        _getAsyncValidatorsError(value: state.value, error: error);
+  /// Add [validators] to the current `validators` for check
+  /// if `value` of the current state has an error.
+  void removeValidators(List<Validator<Value>> validators,
+      {bool forceValidation = false}) {
+    _validators.removeAll(validators);
 
-    emit(state.copyWith(
-      error: Param(error),
-      isValidated: _isValidated(isValidating),
-      isValidating: isValidating,
-    ) as State);
+    _maybeValidate(forceValidation);
+  }
+
+  /// Add [asyncValidators] to the current `validators` for check
+  /// if `value` of the current state has an error.
+  void removeAsyncValidators(
+    List<AsyncValidator<Value>> asyncValidators, {
+    bool forceValidation = false,
+  }) {
+    _asyncValidators.removeAll(asyncValidators);
+
+    _maybeValidate(forceValidation);
   }
 
   /// Updates the `suggestions` of the current state.
@@ -301,6 +325,9 @@ abstract class SingleFieldBloc<
   /// with the password of other `fieldBloc`.
   void subscribeToFieldBlocs(List<FieldBloc> fieldBlocs) {
     _revalidateFieldBlocsSubscription?.cancel();
+    // TODO: When async validation is in progress and auto validate is off this method is broken
+    // because it emit a completed async validation
+    // TODO: It does not manage MultiFieldBloc fields
     if (fieldBlocs.isNotEmpty) {
       _revalidateFieldBlocsSubscription = Rx.combineLatest<dynamic, void>(
         fieldBlocs.whereType<SingleFieldBloc>().toList().map(
@@ -311,19 +338,21 @@ abstract class SingleFieldBloc<
         (_) {},
       ).listen((_) {
         if (_autoValidate) {
-          validate(false);
+          _validate();
         } else {
           emit(state.copyWith(
             isValidated: false,
+            isValidating: false,
           ) as State);
         }
       });
 
       if (_autoValidate) {
-        validate(false);
+        _validate();
       } else {
         emit(state.copyWith(
           isValidated: false,
+          isValidating: false,
         ) as State);
       }
     }
@@ -343,42 +372,65 @@ abstract class SingleFieldBloc<
       final wrongValue = value;
       addValidators(
         [(value) => value == wrongValue ? error : null],
-        true,
+        forceValidation: true,
       );
     } else {
       emit(state.copyWith(
         isValidated: false,
-        isInitial: false,
+        isDirty: true,
         error: Param(error),
       ) as State);
     }
   }
 
+  /// {@template form_bloc.FieldBloc.updateExtraData}
   /// Updates the `extraData` of the current state.
+  /// {@endtemplate form_bloc.FieldBloc.updateExtraData}
   void updateExtraData(ExtraData extraData) {
     emit(state.copyWith(
       extraData: Param(extraData),
     ) as State);
   }
 
-  // ========== INTERNAL ==========
-
-  /// Check the `value` of the current state in each `validator`
+  /// Check the [value] of the current state in each `validator`
   /// and if have an error, the `error` of the current state
   /// will be updated.
   ///
-  /// If [updateIsInitial] is `true`,
-  /// `isInitial` of the current state will be set to `false`.
-  ///
-  /// Else If [updateIsInitial] is `false`,
-  /// `isInitial` of the current state will not change.
+  /// Update state with [FieldBlocState.isDirty] to `true` to show a error
+  /// Not validate if field already validated and not has error
   @override
-  Future<bool> validate([bool updateIsInitial = true]) {
+  Future<bool> validate() {
+    if (state.isValidating) {
+      emit(state.copyWith(
+        isDirty: true,
+      ) as State);
+    } else if (state.hasError) {
+      _validate(shouldDirty: true);
+    }
+    return _isValid();
+  }
+
+  // ===========================================================================
+  // INTERNAL
+  // ===========================================================================
+
+  bool _isValidated(bool isValidating) => _autoValidate
+      ? isValidating
+          ? false
+          : true
+      : false;
+
+  /// Launch validation if it is [force] or field has [_autoValidate]
+  void _maybeValidate(bool force) {
+    if (_autoValidate || force) _validate(shouldDirty: force ? true : null);
+  }
+
+  /// Launch a validation
+  void _validate({bool? shouldDirty}) {
     final error = _getError(
-      state.value,
+      value: state.value,
       forceValidation: true,
     );
-
     final isValidating = _getAsyncValidatorsError(
       value: state.value,
       error: error,
@@ -387,18 +439,18 @@ abstract class SingleFieldBloc<
 
     emit(state.copyWith(
       error: Param(error),
-      isInitial: updateIsInitial ? false : state.isInitial,
+      isDirty: shouldDirty,
       isValidated: !isValidating,
       isValidating: isValidating,
     ) as State);
+  }
 
-    if (error != null) {
-      return Future.value(false);
-    }
-    if (isValidating) {
+  /// Returns current validation result
+  Future<bool> _isValid() {
+    if (state.isValidating) {
       return stream.firstWhere((s) => s.isValidated).then((s) => s.isValid);
     }
-    return Future.value(true);
+    return Future.value(state.isValid);
   }
 
   void resetStateIsValidated() {
@@ -413,8 +465,11 @@ abstract class SingleFieldBloc<
   /// or [forceValidation] is `true`.
   ///
   /// Else returns the error of the current state.
-  Object? _getError(Value value,
-      {bool isInitialState = false, bool forceValidation = false}) {
+  Object? _getError({
+    required Value value,
+    bool isInitialState = false,
+    bool forceValidation = false,
+  }) {
     Object? error;
 
     if (forceValidation || _autoValidate) {
@@ -454,7 +509,7 @@ abstract class SingleFieldBloc<
 
   /// Returns the error of the [_initialValue].
   Object? get _getInitialStateError =>
-      _getError(_initialValue, isInitialState: true);
+      _getError(value: state.initialValue, isInitialState: true);
 
   /// Returns the `isValidating` of the `initialState`.
   bool get _getInitialStateIsValidating {
@@ -491,6 +546,7 @@ abstract class SingleFieldBloc<
     }
   }
 
+  /// {@macro form_bloc.FieldBloc.updateFormBloc}
   /// See [FieldBloc.updateFormBloc]
   @override
   void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
@@ -509,6 +565,7 @@ abstract class SingleFieldBloc<
     }
   }
 
+  /// {@macro form_bloc.FieldBloc.removeFormBloc}
   /// See [FieldBloc.removeFormBloc]
   @override
   void removeFormBloc(FormBloc formBloc) {
@@ -546,9 +603,19 @@ abstract class SingleFieldBloc<
     if (_getInitialStateIsValidating) {
       _getAsyncValidatorsError(
         error: _getInitialStateError,
-        value: _initialValue,
+        value: state.initialValue,
       );
     }
+  }
+
+  @override
+  Future<void> close() async {
+    unawaited(_selectedSuggestionSubject.close());
+    unawaited(_asyncValidatorsSubject.close());
+    unawaited(_asyncValidatorsSubscription.cancel());
+    _revalidateFieldBlocsSubscription?.cancel();
+
+    unawaited(super.close());
   }
 
   @override
@@ -596,29 +663,43 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
 
   Iterable<FieldBloc> get flatFieldBlocs => state.flatFieldBlocs;
 
-  /// See [FieldBloc.validate]
+  // ===========================================================================
+  // UTILITY
+  // ===========================================================================
+
+  /// {@macro form_bloc.isValuesChanged}
+  /// See [FormBloc.isValuesChanged]
+  bool get isValuesChanged => FormBlocUtils.isValuesChanged(flatFieldBlocs);
+
+  /// {@macro form_bloc.hasInitialValues}
+  /// See [FormBloc.hasInitialValues]
+  bool get hasInitialValues => FormBlocUtils.hasInitialValues(flatFieldBlocs);
+
+  /// {@macro form_bloc.hasUpdatedValues}
+  /// See [FormBloc.hasUpdatedValues]
+  bool get hasUpdatedValues => FormBlocUtils.hasUpdatedValues(flatFieldBlocs);
+
+  // ===========================================================================
+  // METHODS TO UPDATE STATE
+  // ===========================================================================
+
+  /// Validate the field.
+  /// If does not contain [fieldBlocs] returns `true` otherwise
+  /// if one of them returns `false` it fails
   @override
-  Future<bool> validate() {
-    if (state.flatFieldBlocs.isEmpty) return Future.value(true);
+  Future<bool> validate() => validateAll(state.flatFieldBlocs);
 
-    final result = Completer<bool>.sync();
-    Future.wait(state.flatFieldBlocs.map((fb) {
-      return fb.validate().then((isValid) {
-        if (!isValid && !result.isCompleted) result.complete(false);
-      });
-    })).whenComplete(() {
-      if (!result.isCompleted) result.complete(true);
-    });
-    return result.future;
-  }
-
+  /// {@macro form_bloc.FieldBloc.updateExtraData}
+  /// See [SingleFieldBloc.updateExtraData]
   void updateExtraData(ExtraData extraData) {
     emit(state.copyWith(
       extraData: Param(extraData),
     ) as TState);
   }
 
-  // ========== INTERNAL USE ==========
+  // ===========================================================================
+  // INTERNAL
+  // ===========================================================================
 
   /// See [FieldBloc.updateFormBloc]
   @override
@@ -678,16 +759,12 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
     fieldBlocs = fieldBlocs.where((element) => !element.state.isValid);
 
     if (fieldBlocs.isEmpty) return Future.value(true);
-
-    final result = Completer<bool>.sync();
-    Future.wait(fieldBlocs.map((fb) {
-      return fb.validate().then((isValid) {
-        if (!isValid && !result.isCompleted) result.complete(false);
-      });
-    })).whenComplete(() {
-      if (!result.isCompleted) result.complete(true);
+    // Wait all field blocs validation to jump at first wrong field
+    return Future.wait(fieldBlocs.map((fb) {
+      return fb.validate();
+    })).then((areValid) {
+      return areValid.every((isValid) => isValid);
     });
-    return result.future;
   }
 
   static bool deepContains(Iterable<FieldBloc> fieldBlocs, FieldBloc target) {

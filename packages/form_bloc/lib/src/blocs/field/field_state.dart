@@ -2,6 +2,7 @@ part of 'field_bloc.dart';
 
 /// The common state interface of all field blocs
 mixin FieldBlocStateBase {
+  // TODO: Rename to `FieldBlocState`
   /// It is the string that identifies the [FieldBloc].
   String get name;
 
@@ -17,6 +18,15 @@ mixin FieldBlocStateBase {
 
 abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
     with FieldBlocStateBase {
+  /// {@template flutter_field_bloc.FieldBloc.isValueChanged}
+  /// Returns true when the value has been changed by [FieldBloc.changeValue].
+  /// {@endtemplate}
+  final bool isValueChanged;
+
+  final Value initialValue;
+
+  final Value updatedValue;
+
   /// The current value of this state.
   final Value value;
 
@@ -25,11 +35,12 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
   /// If doesn't have error it is `null`.
   final Object? error;
 
-  /// Indicate if this field was updated
-  /// after be instantiate by the [FieldBloc].
-  ///
-  /// Used by [canShowError].
-  final bool isInitial;
+  /// Indicate if this field was [value] updated by [SingleFieldBloc.changeValue] / [SingleFieldBloc.updateValue]
+  /// or receive a external validation by [SingleFieldBloc.validate].
+  final bool isDirty;
+  @Deprecated('In favour of [isValueChanged]')
+  bool get isInitial =>
+      !hasInitialValue && (isValueChanged || !hasUpdatedValue);
 
   /// Function that returns a list of suggestions
   /// which can be used to update the value.
@@ -48,7 +59,7 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
   @override
   final bool isValidating;
 
-  /// The current  [FormBloc] that contains this `FieldBloc`.
+  /// The current [FormBloc] that contains this `FieldBloc`.
   @override
   final FormBloc? formBloc;
 
@@ -68,9 +79,12 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
   final ExtraData extraData;
 
   FieldBlocState({
+    required this.isValueChanged,
+    required this.initialValue,
+    required this.updatedValue,
     required this.value,
     required this.error,
-    required this.isInitial,
+    required this.isDirty,
     required this.suggestions,
     required this.isValidated,
     required this.isValidating,
@@ -93,26 +107,41 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
   /// Indicates if [value] is not `null`.
   bool get hasValue => value != null;
 
+  /// {@template flutter_field_bloc.FieldBloc.hasInitialValue}
+  /// Indicate if this field has [value] from [FieldBloc.updateInitialValue] method.
+  /// {@endtemplate}
+  bool get hasInitialValue => initialValue == value;
+
+  /// {@template flutter_field_bloc.FieldBloc.hasUpdatedValue}
+  /// Indicate if this field has [value] from [FieldBloc.updateValue] method.
+  /// {@endtemplate}
+  bool get hasUpdatedValue => updatedValue == value;
+
+  bool get hasDirt => isDirty || isValueChanged || !hasInitialValue;
+
   /// Indicates if this state has error and is not initial.
   ///
-  /// Used for not show the error when [isInitial] is `false`.
+  /// Used for not show the error when [hasInitialValue] is `false`.
   /// Which mean that [value] was updated
   /// after be instantiate by the [FieldBloc] and has an error.
-  bool get canShowError => !isInitial && hasError;
+  bool get canShowError => hasDirt && hasError;
 
   /// Indicates if this state is validating and is not initial.
   ///
-  /// Used for not show the is validating when [isInitial] is `false`.
+  /// Used for not show the is validating when [isDirty] is `true`.
   /// Which mean that [value] was updated
   /// after be instantiate by the [FieldBloc] and is validating.
-  bool get canShowIsValidating => !isInitial && isValidating;
+  bool get canShowIsValidating => hasDirt && isValidating;
 
   /// Returns a copy of the current state by changing
   /// the values that are passed as parameters.
   FieldBlocState<Value, Suggestion, ExtraData> copyWith({
+    bool? isValueChanged,
+    Param<Value>? initialValue,
+    Param<Value>? updatedValue,
     Param<Value>? value,
     Param<Object?>? error,
-    bool? isInitial,
+    bool? isDirty,
     Param<Suggestions<Suggestion>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
@@ -121,26 +150,42 @@ abstract class FieldBlocState<Value, Suggestion, ExtraData> extends Equatable
   });
 
   @override
-  String toString() => _toStringWith();
-
-  String _toStringWith([String? extra]) {
+  String toString([String extra = '']) {
     var _toString = '';
 
     _toString += '$runtimeType {';
     _toString += '\n  name: $name';
+    _toString += ',\n  isValueChanged: $isValueChanged';
+    _toString += ',\n  updatedValue: $updatedValue';
+    _toString += ',\n  initialValue: $initialValue';
     _toString += ',\n  value: $value';
     _toString += ',\n  error: $error';
-    _toString += ',\n  isInitial: $isInitial';
+    _toString += ',\n  isDirty: $isDirty';
     _toString += ',\n  isValidated: $isValidated';
     _toString += ',\n  isValidating: $isValidating';
     _toString += ',\n  isValid: $isValid';
     _toString += ',\n  extraData: $extraData';
-    _toString += extra ?? '';
+    _toString += extra;
     _toString += ',\n  formBloc: $formBloc';
     _toString += '\n}';
 
     return _toString;
   }
+
+  @override
+  List<Object?> get props => [
+        isValueChanged,
+        updatedValue,
+        initialValue,
+        value,
+        error,
+        suggestions,
+        isDirty,
+        isValidated,
+        isValidating,
+        extraData,
+        formBloc,
+      ];
 }
 
 abstract class MultiFieldBlocState<ExtraData> extends Equatable

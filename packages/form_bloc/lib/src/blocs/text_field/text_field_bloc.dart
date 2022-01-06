@@ -46,21 +46,19 @@ class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
     Suggestions<String>? suggestions,
     ExtraData? extraData,
   }) : super(
-          initialValue,
-          validators,
-          asyncValidators,
-          asyncValidatorDebounceTime,
-          suggestions,
-          name,
-          (value) => value,
-          extraData,
-          TextFieldBlocState(
+          validators: validators,
+          asyncValidators: asyncValidators,
+          asyncValidatorDebounceTime: asyncValidatorDebounceTime,
+          initialState: TextFieldBlocState(
+            isValueChanged: false,
+            initialValue: initialValue,
+            updatedValue: initialValue,
             value: initialValue,
             error: FieldBlocUtils.getInitialStateError(
               validators: validators,
               value: initialValue,
             ),
-            isInitial: true,
+            isDirty: false,
             suggestions: suggestions,
             isValidated: FieldBlocUtils.getInitialIsValidated(
               FieldBlocUtils.getInitialStateIsValidating(
@@ -91,10 +89,4 @@ class TextFieldBloc<ExtraData> extends SingleFieldBloc<String, String,
   /// if the `value` is a `double` returns the parsed `value`,
   /// else returns `null`.
   double? get valueToDouble => state.valueToDouble;
-
-  /// Set the `value` to `''` of the current state.
-  ///
-  /// {@macro form_bloc.field_bloc.update_value}
-  @override
-  void clear() => updateInitialValue('');
 }

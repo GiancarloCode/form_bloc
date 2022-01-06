@@ -2,6 +2,8 @@ import 'package:form_bloc/form_bloc.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
+import '../utils/states.dart';
+
 void main() {
   group('SelectFieldBloc:', () {
     group('constructor:', () {
@@ -19,10 +21,10 @@ void main() {
           suggestions: suggestions,
         );
 
-        final state1 = SelectFieldBlocState<bool, dynamic>(
-          value: null,
+        final state1 = createSelectState<bool, dynamic>(
+          value: false,
           error: FieldBlocValidatorsErrors.required,
-          isInitial: true,
+          isDirty: false,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
@@ -30,9 +32,9 @@ void main() {
           items: [],
         );
         final state2 = state1.copyWith(
+          updatedValue: Param(true),
           value: Param(true),
           error: Param('error'),
-          isInitial: false,
         );
 
         final expectedStates = [
@@ -56,10 +58,10 @@ void main() {
         name: 'name',
       );
 
-      initialState = SelectFieldBlocState<bool, dynamic>(
+      initialState = createSelectState<bool, dynamic>(
         value: null,
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -81,10 +83,10 @@ void main() {
         items: [true, false],
       );
 
-      initialState = SelectFieldBlocState<bool, dynamic>(
+      initialState = createSelectState<bool, dynamic>(
         value: true,
         error: 'error',
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -103,10 +105,10 @@ void main() {
         name: 'name',
       );
 
-      final state1 = SelectFieldBlocState<bool, dynamic>(
+      final state1 = createSelectState<bool, dynamic>(
         value: null,
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -160,10 +162,10 @@ void main() {
         items: [true],
       );
 
-      final state1 = SelectFieldBlocState<bool, dynamic>(
+      final state1 = createSelectState<bool, dynamic>(
         value: null,
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -202,10 +204,10 @@ void main() {
         items: [true, false],
       );
 
-      final state1 = SelectFieldBlocState<bool, dynamic>(
+      final state1 = createSelectState<bool, dynamic>(
         value: null,
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,

@@ -3,9 +3,12 @@ part of '../field/field_bloc.dart';
 class TextFieldBlocState<ExtraData>
     extends FieldBlocState<String, String, ExtraData?> {
   TextFieldBlocState({
+    required bool isValueChanged,
+    required String initialValue,
+    required String updatedValue,
     required String value,
     required Object? error,
-    required bool isInitial,
+    required bool isDirty,
     required Suggestions<String>? suggestions,
     required bool isValidated,
     required bool isValidating,
@@ -14,9 +17,12 @@ class TextFieldBlocState<ExtraData>
     dynamic Function(String value)? toJson,
     ExtraData? extraData,
   }) : super(
+          isValueChanged: isValueChanged,
+          initialValue: initialValue,
+          updatedValue: updatedValue,
           value: value,
           error: error,
-          isInitial: isInitial,
+          isDirty: isDirty,
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
@@ -38,9 +44,12 @@ class TextFieldBlocState<ExtraData>
 
   @override
   TextFieldBlocState<ExtraData> copyWith({
+    bool? isValueChanged,
+    Param<String>? initialValue,
+    Param<String>? updatedValue,
     Param<String>? value,
     Param<Object?>? error,
-    bool? isInitial,
+    bool? isDirty,
     Param<Suggestions<String>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
@@ -48,9 +57,12 @@ class TextFieldBlocState<ExtraData>
     Param<ExtraData?>? extraData,
   }) {
     return TextFieldBlocState(
+      isValueChanged: isValueChanged ?? this.isValueChanged,
+      initialValue: initialValue.or(this.initialValue),
+      updatedValue: updatedValue.or(this.updatedValue),
       value: value == null ? this.value : value.value,
       error: error == null ? this.error : error.value,
-      isInitial: isInitial ?? this.isInitial,
+      isDirty: isDirty ?? this.isDirty,
       suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
@@ -60,16 +72,4 @@ class TextFieldBlocState<ExtraData>
       extraData: extraData == null ? this.extraData : extraData.value,
     );
   }
-
-  @override
-  List<Object?> get props => [
-        value,
-        error,
-        isInitial,
-        suggestions,
-        isValidated,
-        isValidating,
-        extraData,
-        formBloc,
-      ];
 }

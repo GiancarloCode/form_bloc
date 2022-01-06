@@ -189,7 +189,7 @@ class CheckboxFieldBlocBuilder extends StatelessWidget {
       onChanged: fieldBlocBuilderOnChange<bool?>(
         isEnabled: isEnabled,
         nextFocusNode: nextFocusNode,
-        onChanged: booleanFieldBloc.updateValue as void Function(bool?),
+        onChanged: booleanFieldBloc.changeValue as void Function(bool?),
       ),
     );
   }

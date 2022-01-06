@@ -26,19 +26,10 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
     }
   }
 
+  @Deprecated(
+      'In favour of [FormBloc.hasInitialValues] or [FormBloc.isValuesChanged].')
   bool isInitial([int? step]) {
-    if (step == null) {
-      return FormBlocUtils.flattenFieldBlocsStateList(_fieldBlocsStates.values)
-          .every((state) => state.isInitial);
-    }
-
-    if (!_fieldBlocsStatesByStepMap.containsKey(step)) {
-      return false;
-    }
-
-    return FormBlocUtils.flattenFieldBlocsStateList(
-            _fieldBlocsStatesByStepMap[step]!.values)
-        .every((state) => state.isInitial);
+    return FormBlocUtils.hasInitialValues(flatFieldBlocs(step) ?? const []);
   }
 
   /// It is usually used in forms that are used as CRUD,

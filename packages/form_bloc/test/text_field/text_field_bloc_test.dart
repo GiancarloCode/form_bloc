@@ -2,6 +2,8 @@ import 'package:form_bloc/form_bloc.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
+import '../utils/states.dart';
+
 void main() {
   group('TextFieldBloc:', () {
     group('constructor:', () {
@@ -20,18 +22,21 @@ void main() {
         );
 
         final state1 = TextFieldBlocState<dynamic>(
+          isValueChanged: false,
+          initialValue: '',
+          updatedValue: '',
           value: '',
           error: FieldBlocValidatorsErrors.required,
-          isInitial: true,
+          isDirty: false,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
           name: 'name',
         );
         final state2 = state1.copyWith(
+          updatedValue: Param('1'),
           value: Param('1'),
           error: Param('error'),
-          isInitial: false,
         );
 
         final expectedStates = [
@@ -55,10 +60,10 @@ void main() {
         name: 'name',
       );
 
-      initialState = TextFieldBlocState<dynamic>(
+      initialState = createTextState<dynamic>(
         value: '',
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -78,64 +83,10 @@ void main() {
         validators: [(value) => 'error'],
       );
 
-      initialState = TextFieldBlocState<dynamic>(
+      initialState = createTextState<dynamic>(
         value: 'a',
         error: 'error',
-        isInitial: true,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        name: 'name',
-      );
-
-      expect(
-        fieldBloc.state,
-        initialState,
-      );
-    });
-
-    test('clear method.', () {
-      final fieldBloc = TextFieldBloc<dynamic>(
-        name: 'name',
-        initialValue: '1',
-      );
-
-      final state1 = TextFieldBlocState<dynamic>(
-        value: '1',
-        error: null,
-        isInitial: true,
-        suggestions: null,
-        isValidated: true,
-        isValidating: false,
-        name: 'name',
-      );
-      final state2 = state1.copyWith(
-        value: Param(''),
-        isInitial: true,
-      );
-
-      final expectedStates = [
-        // state1,
-        state2,
-      ];
-      expect(
-        fieldBloc.stream,
-        emitsInOrder(expectedStates),
-      );
-
-      fieldBloc.clear();
-    });
-
-    test('if the initialValue is null, it will be an empty string', () {
-      TextFieldBloc fieldBloc;
-      TextFieldBlocState initialState;
-
-      fieldBloc = TextFieldBloc<dynamic>(name: 'name', initialValue: '');
-
-      initialState = TextFieldBlocState<dynamic>(
-        value: '',
-        error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,

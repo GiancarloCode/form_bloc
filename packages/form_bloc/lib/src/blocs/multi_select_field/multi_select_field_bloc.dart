@@ -40,7 +40,7 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
   /// * [items] : The list of items that can be selected to update the value.
   /// * [toJson] Transform [value] in a JSON value.
   /// By default returns [value].
-  /// This method is called when you use [FormBlocState.toJson]
+  /// This method is called when you use [FormBlocState.toJson]…
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   MultiSelectFieldBloc({
     String? name,
@@ -53,21 +53,20 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
     dynamic Function(List<Value> value)? toJson,
     ExtraData? extraData,
   }) : super(
-          initialValue,
-          validators,
-          asyncValidators,
-          asyncValidatorDebounceTime,
-          suggestions,
-          name,
-          toJson,
-          extraData,
-          MultiSelectFieldBlocState(
+          equality: const ListEquality<Never>(),
+          validators: validators,
+          asyncValidators: asyncValidators,
+          asyncValidatorDebounceTime: asyncValidatorDebounceTime,
+          initialState: MultiSelectFieldBlocState(
+            isValueChanged: false,
+            initialValue: initialValue,
+            updatedValue: initialValue,
             value: initialValue,
             error: FieldBlocUtils.getInitialStateError(
               validators: validators,
               value: initialValue,
             ),
-            isInitial: true,
+            isDirty: false,
             suggestions: suggestions,
             isValidated: FieldBlocUtils.getInitialIsValidated(
               FieldBlocUtils.getInitialStateIsValidating(
@@ -162,15 +161,14 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
     newValue =
         SingleFieldBloc._itemsWithoutDuplicates([...newValue, valueToSelect]);
     if (_canUpdateValue(value: newValue, isInitialValue: false)) {
-      final error = _getError(newValue);
-
+      final error = _getError(value: newValue);
       final isValidating =
           _getAsyncValidatorsError(value: newValue, error: error);
 
       emit(state.copyWith(
+        isValueChanged: true,
         value: Param(newValue),
         error: Param(error),
-        isInitial: false,
         isValidated: _isValidated(isValidating),
         isValidating: isValidating,
       ));
@@ -186,15 +184,15 @@ class MultiSelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<
     var newValue = state.value;
     newValue = [...newValue]..remove(valueToDeselect);
     if (_canUpdateValue(value: newValue, isInitialValue: false)) {
-      final error = _getError(newValue);
+      final error = _getError(value: newValue);
 
       final isValidating =
           _getAsyncValidatorsError(value: newValue, error: error);
 
       emit(state.copyWith(
+        isValueChanged: true,
         value: Param(newValue),
         error: Param(error),
-        isInitial: false,
         isValidated: _isValidated(isValidating),
         isValidating: isValidating,
       ));

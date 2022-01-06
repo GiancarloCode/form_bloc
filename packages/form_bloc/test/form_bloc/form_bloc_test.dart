@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import '../utils/my_bloc_delegate.dart';
+import '../utils/states.dart';
 import '../utils/when_bloc.dart';
 
 class _FormBlocImpl extends FormBloc<String, String> with Mock {
@@ -100,10 +101,10 @@ void main() {
 
           whenBloc(
             fieldBloc,
-            initialState: InputFieldBlocState<dynamic, dynamic>(
+            initialState: createInputState<dynamic, dynamic>(
               value: null,
               error: null,
-              isInitial: true,
+              isDirty: false,
               suggestions: null,
               isValidated: true,
               isValidating: false,
@@ -158,10 +159,10 @@ void main() {
 
           whenBloc(
             fieldBloc,
-            initialState: InputFieldBlocState<dynamic, dynamic>(
+            initialState: createInputState<dynamic, dynamic>(
               value: null,
               error: null,
-              isInitial: true,
+              isDirty: false,
               suggestions: null,
               isValidated: true,
               isValidating: false,
@@ -219,12 +220,18 @@ void main() {
 
       group('submit', () {
         test(
-            'cant submit when FormBlocState is not valid and emit FormBlocSubmissionFailed',
-            () {
+            'when autoValidate is true and step is invalid, call validate for each field bloc.',
+            () async {
           final formBloc = _FormBlocImpl();
 
           final expectedStates = [
             FormBlocLoaded<String, String>(
+              isValidByStep: {0: false},
+              fieldBlocs: fbs({
+                0: [formBloc.requiredField]
+              }),
+            ),
+            FormBlocSubmitting<String, String>(
               isValidByStep: {0: false},
               fieldBlocs: fbs({
                 0: [formBloc.requiredField]
@@ -244,11 +251,54 @@ void main() {
             ),
           ];
 
-          expect(formBloc.stream, emitsInOrder(expectedStates));
+          await expectBloc(
+            formBloc,
+            act: () {
+              formBloc.addFieldBloc(fieldBloc: formBloc.requiredField);
+              formBloc.submit();
+            },
+            stream: expectedStates,
+          );
+        });
 
-          formBloc.addFieldBloc(fieldBloc: formBloc.requiredField);
+        test(
+            'when autoValidate is true and step is valid, not call validate for each field bloc.',
+            () async {
+          final formBloc = _FormBlocImpl();
 
-          formBloc.submit();
+          when(() => formBloc.onSubmitting()).thenAnswer((_) {
+            formBloc.emitSuccess();
+          });
+
+          final expectedStates = [
+            FormBlocLoaded<String, String>(
+              isValidByStep: {0: true},
+              fieldBlocs: fbs({
+                0: [formBloc.optionalField]
+              }),
+            ),
+            FormBlocSubmitting<String, String>(
+              isValidByStep: {0: true},
+              fieldBlocs: fbs({
+                0: [formBloc.optionalField]
+              }),
+            ),
+            FormBlocSuccess<String, String>(
+              isValidByStep: {0: true},
+              fieldBlocs: fbs({
+                0: [formBloc.optionalField]
+              }),
+            ),
+          ];
+
+          await expectBloc(
+            formBloc,
+            act: () {
+              formBloc.addFieldBloc(fieldBloc: formBloc.optionalField);
+              formBloc.submit();
+            },
+            stream: expectedStates,
+          );
         });
 
         test(
@@ -321,37 +371,37 @@ void main() {
           final fieldBloc2 = _MockInputFieldBloc();
           final fieldBloc3 = _MockInputFieldBloc();
           final fieldBloc4 = _MockInputFieldBloc();
-          final initialState1 = InputFieldBlocState<dynamic, dynamic>(
+          final initialState1 = createInputState<dynamic, dynamic>(
             value: null,
             error: null,
-            isInitial: true,
+            isDirty: false,
             suggestions: null,
             isValidated: true,
             isValidating: false,
             name: '1',
           );
-          final initialState2 = InputFieldBlocState<dynamic, dynamic>(
+          final initialState2 = createInputState<dynamic, dynamic>(
             value: null,
             error: null,
-            isInitial: true,
+            isDirty: false,
             suggestions: null,
             isValidated: false,
             isValidating: false,
             name: '2',
           );
-          final initialState3 = InputFieldBlocState<dynamic, dynamic>(
+          final initialState3 = createInputState<dynamic, dynamic>(
             value: null,
             error: 'error',
-            isInitial: true,
+            isDirty: false,
             suggestions: null,
             isValidated: true,
             isValidating: false,
             name: '3',
           );
-          final initialState4 = InputFieldBlocState<dynamic, dynamic>(
+          final initialState4 = createInputState<dynamic, dynamic>(
             value: null,
             error: 'error',
-            isInitial: true,
+            isDirty: false,
             suggestions: null,
             isValidated: false,
             isValidating: false,
@@ -394,10 +444,10 @@ void main() {
       test('success clear.', () async {
         final formBloc = _FormBlocImpl();
         final fieldBloc = _MockInputFieldBloc();
-        final initialState = InputFieldBlocState<dynamic, dynamic>(
+        final initialState = createInputState<dynamic, dynamic>(
           value: null,
           error: null,
-          isInitial: true,
+          isDirty: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,

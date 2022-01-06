@@ -3,9 +3,12 @@ part of '../field/field_bloc.dart';
 class BooleanFieldBlocState<ExtraData>
     extends FieldBlocState<bool, bool, ExtraData?> {
   BooleanFieldBlocState({
+    required bool isValueChanged,
+    required bool initialValue,
+    required bool updatedValue,
     required bool value,
     required Object? error,
-    required bool isInitial,
+    required bool isDirty,
     required Suggestions<bool>? suggestions,
     required bool isValidated,
     required bool isValidating,
@@ -15,9 +18,12 @@ class BooleanFieldBlocState<ExtraData>
     dynamic Function(bool value)? toJson,
     ExtraData? extraData,
   }) : super(
+          isValueChanged: isValueChanged,
+          initialValue: initialValue,
+          updatedValue: updatedValue,
           value: value,
           error: error,
-          isInitial: isInitial,
+          isDirty: isDirty,
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
@@ -29,9 +35,12 @@ class BooleanFieldBlocState<ExtraData>
 
   @override
   BooleanFieldBlocState<ExtraData> copyWith({
+    bool? isValueChanged,
+    Param<bool>? initialValue,
+    Param<bool>? updatedValue,
     Param<bool>? value,
     Param<Object?>? error,
-    bool? isInitial,
+    bool? isDirty,
     Param<Suggestions<bool>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
@@ -39,10 +48,13 @@ class BooleanFieldBlocState<ExtraData>
     Param<ExtraData?>? extraData,
   }) {
     return BooleanFieldBlocState(
+      isValueChanged: isValueChanged ?? this.isValueChanged,
+      initialValue: initialValue.or(this.initialValue),
+      updatedValue: updatedValue.or(this.updatedValue),
       value: value == null ? this.value : value.value,
       error: error == null ? this.error : error.value,
-      isInitial: isInitial ?? this.isInitial,
       suggestions: suggestions == null ? this.suggestions : suggestions.value,
+      isDirty: isDirty ?? this.isDirty,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
       formBloc: formBloc == null ? this.formBloc : formBloc.value,
@@ -51,16 +63,4 @@ class BooleanFieldBlocState<ExtraData>
       extraData: extraData == null ? this.extraData : extraData.value,
     );
   }
-
-  @override
-  List<Object?> get props => [
-        value,
-        error,
-        isInitial,
-        suggestions,
-        isValidated,
-        isValidating,
-        extraData,
-        formBloc,
-      ];
 }

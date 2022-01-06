@@ -2,6 +2,8 @@ import 'package:form_bloc/form_bloc.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
+import '../utils/states.dart';
+
 void main() {
   group('BooleanFieldBloc:', () {
     group('constructor:', () {
@@ -17,18 +19,21 @@ void main() {
         );
 
         final state1 = BooleanFieldBlocState<dynamic>(
+          isValueChanged: false,
+          initialValue: false,
+          updatedValue: false,
           value: false,
           error: null,
-          isInitial: true,
+          isDirty: false,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
           name: 'name',
         );
         final state2 = state1.copyWith(
+          updatedValue: Param(true),
           value: Param(true),
           error: Param('error'),
-          isInitial: false,
         );
 
         final expectedStates = [
@@ -51,10 +56,10 @@ void main() {
           name: 'name',
         );
 
-        initialState = BooleanFieldBlocState<dynamic>(
+        initialState = createBooleanState<dynamic>(
           value: false,
           error: null,
-          isInitial: true,
+          isDirty: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -74,10 +79,10 @@ void main() {
           validators: [FieldBlocValidators.required, (value) => 'error'],
         );
 
-        initialState = BooleanFieldBlocState<dynamic>(
+        initialState = createBooleanState<dynamic>(
           value: true,
           error: 'error',
-          isInitial: true,
+          isDirty: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -89,16 +94,17 @@ void main() {
           initialState,
         );
       });
+
       test('if the initialValue is not passed, it will be false', () {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
 
         fieldBloc = BooleanFieldBloc<dynamic>(name: 'name');
 
-        initialState = BooleanFieldBlocState<dynamic>(
+        initialState = createBooleanState<dynamic>(
           value: false,
           error: null,
-          isInitial: true,
+          isDirty: false,
           suggestions: null,
           isValidated: true,
           isValidating: false,
@@ -110,39 +116,6 @@ void main() {
           initialState,
         );
       });
-
-      test('clear method.', () {
-        final fieldBloc = BooleanFieldBloc<dynamic>(
-          name: 'name',
-          initialValue: true,
-        );
-
-        final state1 = BooleanFieldBlocState<dynamic>(
-          value: false,
-          error: null,
-          isInitial: false,
-          suggestions: null,
-          isValidated: true,
-          isValidating: false,
-          name: 'name',
-        );
-        final state2 = state1.copyWith(
-          value: Param(false),
-          isInitial: true,
-        );
-
-        final expectedStates = [
-          state1,
-          state2,
-        ];
-        expect(
-          fieldBloc.stream,
-          emitsInOrder(expectedStates),
-        );
-
-        fieldBloc.updateValue(false);
-        fieldBloc.clear();
-      }, timeout: Timeout(Duration(minutes: 1)));
     });
 
     test('toJson return value', () async {

@@ -182,7 +182,7 @@ class _DateTimeFieldBlocBuilderBaseState<T>
         isEnabled: widget.isEnabled,
         nextFocusNode: widget.nextFocusNode,
         onChanged: (value) {
-          widget.dateTimeFieldBloc.updateValue(value);
+          widget.dateTimeFieldBloc.changeValue(value);
           // Used for hide keyboard
           // FocusScope.of(context).requestFocus(FocusNode());
         },
