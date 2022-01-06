@@ -162,6 +162,7 @@ abstract class SingleFieldBloc<
     final _onFinish = onFinish ?? (State p, State c, R r) {};
 
     return stream
+        .startWith(state)
         .distinct((p, c) => p.value == c.value)
         .pairwise()
         .doOnData((states) => _onStart(states.first, states.last))
