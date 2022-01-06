@@ -85,8 +85,6 @@ abstract class SingleFieldBloc<
 
   final Duration _asyncValidatorDebounceTime;
 
-  final State _initialState;
-
   /* Previously used to simplify initial state creation
 
   final Suggestions<Suggestion> _suggestions;
@@ -110,10 +108,10 @@ abstract class SingleFieldBloc<
     String? name,
     dynamic Function(Value value)? toJson,
     ExtraData extraData,
-    this._initialState,
+    State initialState,
   )   : _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
-        super(_initialState) {
+        super(initialState) {
     _setUpAsyncValidatorsSubscription();
   }
 
@@ -164,7 +162,7 @@ abstract class SingleFieldBloc<
     final _onFinish = onFinish ?? (State p, State c, R r) {};
 
     return stream
-        .startWith(_initialState)
+        .startWith(state)
         .distinct((p, c) => p.value == c.value)
         .pairwise()
         .doOnData((states) => _onStart(states.first, states.last))
