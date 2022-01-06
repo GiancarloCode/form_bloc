@@ -13,9 +13,10 @@ dependencies:
     sdk: flutter
 
   flutter_bloc: ^8.0.0
-  form_bloc: ^0.29.0
+#  form_bloc:
+#    path: ../form_bloc
+  form_bloc: ^0.29.1
   equatable: ^2.0.3
-#  form_bloc: ^0.20.7-alpha.1
   rxdart: ^0.27.3
   flutter_keyboard_visibility: ^5.0.2
   collection: ^1.15.0
