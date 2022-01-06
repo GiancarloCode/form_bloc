@@ -141,7 +141,8 @@ class ConditionalFieldsForm extends StatelessWidget {
                       children: <Widget>[
                         RadioButtonGroupFieldBlocBuilder(
                           selectFieldBloc: formBloc.doYouLikeFormBloc,
-                          itemBuilder: (context, dynamic value) => value,
+                          itemBuilder: (context, dynamic value) =>
+                              FieldItem(child: Text(value)),
                           decoration: InputDecoration(
                             labelText: 'Do you like form bloc?',
                             prefixIcon: SizedBox(),
