@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
@@ -155,10 +155,10 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeStyleOf(context);
 
-    return CanShowFieldBlocBuilder(
-      fieldBloc: selectFieldBloc,
-      animate: animateWhenCanShow,
-      builder: (_, __) {
+    return SimpleFieldBlocBuilder(
+      singleFieldBloc: selectFieldBloc,
+      animateWhenCanShow: animateWhenCanShow,
+      builder: (context, canShow) {
         return BlocBuilder<SelectFieldBloc<Value, dynamic>,
             SelectFieldBlocState<Value, dynamic>>(
           bloc: selectFieldBloc,

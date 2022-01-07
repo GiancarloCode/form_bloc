@@ -14,6 +14,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      ),
       builder: (context, child) {
         return FormThemeProvider(
           theme: FormTheme(
@@ -41,10 +48,12 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
 
   final select1 = SelectFieldBloc(
     items: ['Option 1', 'Option 2'],
+    validators: [FieldBlocValidators.required],
   );
 
   final select2 = SelectFieldBloc(
     items: ['Option 1', 'Option 2'],
+    validators: [FieldBlocValidators.required],
   );
 
   final multiSelect1 = MultiSelectFieldBloc<String, dynamic>(
@@ -68,7 +77,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
     initialValue: 0.5,
   );
 
-  AllFieldsFormBloc() {
+  AllFieldsFormBloc() : super(autoValidate: false) {
     addFieldBlocs(fieldBlocs: [
       text1,
       boolean1,
@@ -118,239 +127,190 @@ class AllFieldsForm extends StatelessWidget {
         builder: (context) {
           final formBloc = BlocProvider.of<AllFieldsFormBloc>(context);
 
-          return Theme(
-            data: Theme.of(context).copyWith(
-              inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+          return Scaffold(
+            appBar: AppBar(title: const Text('Built-in Widgets')),
+            floatingActionButton: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: formBloc.addErrors,
+                  icon: const Icon(Icons.error_outline),
+                  label: const Text('ADD ERRORS'),
                 ),
-              ),
+                const SizedBox(height: 12),
+                FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: formBloc.submit,
+                  icon: const Icon(Icons.send),
+                  label: const Text('SUBMIT'),
+                ),
+              ],
             ),
-            child: Scaffold(
-              appBar: AppBar(title: const Text('Built-in Widgets')),
-              floatingActionButton: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  FloatingActionButton.extended(
-                    heroTag: null,
-                    onPressed: formBloc.addErrors,
-                    icon: const Icon(Icons.error_outline),
-                    label: const Text('ADD ERRORS'),
-                  ),
-                  const SizedBox(height: 12),
-                  FloatingActionButton.extended(
-                    heroTag: null,
-                    onPressed: formBloc.submit,
-                    icon: const Icon(Icons.send),
-                    label: const Text('SUBMIT'),
-                  ),
-                ],
-              ),
-              body: FormBlocListener<AllFieldsFormBloc, String, String>(
-                onSubmitting: (context, state) {
-                  LoadingDialog.show(context);
-                },
-                onSuccess: (context, state) {
-                  LoadingDialog.hide(context);
+            body: FormBlocListener<AllFieldsFormBloc, String, String>(
+              onSubmitting: (context, state) {
+                LoadingDialog.show(context);
+              },
+              onSuccess: (context, state) {
+                LoadingDialog.hide(context);
 
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const SuccessScreen()));
-                },
-                onFailure: (context, state) {
-                  LoadingDialog.hide(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.failureResponse!)));
-                },
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
+              },
+              onFailure: (context, state) {
+                LoadingDialog.hide(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.failureResponse!)));
+              },
+              child: ScrollableFormBlocManager(
+                formBloc: formBloc,
                 child: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      children: <Widget>[
-                        TextFieldBlocBuilder(
-                          textFieldBloc: formBloc.text1,
-                          suffixButton: SuffixButton.obscureText,
-                          decoration: const InputDecoration(
-                            labelText: 'TextFieldBlocBuilder',
-                            prefixIcon: Icon(Icons.text_fields),
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: <Widget>[
+                      TextFieldBlocBuilder(
+                        textFieldBloc: formBloc.text1,
+                        suffixButton: SuffixButton.obscureText,
+                        decoration: const InputDecoration(
+                          labelText: 'TextFieldBlocBuilder',
+                          prefixIcon: Icon(Icons.text_fields),
+                        ),
+                      ),
+                      RadioButtonGroupFieldBlocBuilder<String>(
+                        selectFieldBloc: formBloc.select2,
+                        decoration: const InputDecoration(
+                          labelText: 'RadioButtonGroupFieldBlocBuilder',
+                        ),
+                        groupStyle: const FlexGroupStyle(),
+                        itemBuilder: (context, item) => FieldItem(
+                          child: Text(item),
+                        ),
+                      ),
+                      CheckboxGroupFieldBlocBuilder<String>(
+                        multiSelectFieldBloc: formBloc.multiSelect1,
+                        decoration: const InputDecoration(
+                          labelText: 'CheckboxGroupFieldBlocBuilder',
+                        ),
+                        groupStyle: const ListGroupStyle(
+                          scrollDirection: Axis.horizontal,
+                          height: 64,
+                        ),
+                        itemBuilder: (context, item) => FieldItem(
+                          child: Text(item),
+                        ),
+                      ),
+                      DateTimeFieldBlocBuilder(
+                        dateTimeFieldBloc: formBloc.date1,
+                        format: DateFormat('dd-MM-yyyy'),
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime(2100),
+                        decoration: const InputDecoration(
+                          labelText: 'DateTimeFieldBlocBuilder',
+                          prefixIcon: Icon(Icons.calendar_today),
+                          helperText: 'Date',
+                        ),
+                      ),
+                      DateTimeFieldBlocBuilder(
+                        dateTimeFieldBloc: formBloc.dateAndTime1,
+                        canSelectTime: true,
+                        format: DateFormat('dd-MM-yyyy  hh:mm'),
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime(2100),
+                        decoration: const InputDecoration(
+                          labelText: 'DateTimeFieldBlocBuilder',
+                          prefixIcon: Icon(Icons.date_range),
+                          helperText: 'Date and Time',
+                        ),
+                      ),
+                      TimeFieldBlocBuilder(
+                        timeFieldBloc: formBloc.time1,
+                        format: DateFormat('hh:mm a'),
+                        initialTime: TimeOfDay.now(),
+                        decoration: const InputDecoration(
+                          labelText: 'TimeFieldBlocBuilder',
+                          prefixIcon: Icon(Icons.access_time),
+                        ),
+                      ),
+                      SwitchFieldBlocBuilder(
+                        booleanFieldBloc: formBloc.boolean2,
+                        body: const Text('SwitchFieldBlocBuilder'),
+                      ),
+                      DropdownFieldBlocBuilder<String>(
+                        selectFieldBloc: formBloc.select1,
+                        decoration: const InputDecoration(
+                          labelText: 'DropdownFieldBlocBuilder',
+                        ),
+                        itemBuilder: (context, value) => FieldItem(
+                          isEnabled: value != 'Option 1',
+                          child: Text(value),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => formBloc.addFieldBloc(
+                                fieldBloc: formBloc.select1),
+                            icon: const Icon(Icons.add),
                           ),
-                        ),
-                        DropdownFieldBlocBuilder<String>(
-                          selectFieldBloc: formBloc.select1,
-                          decoration: const InputDecoration(
-                            labelText: 'DropdownFieldBlocBuilder',
+                          IconButton(
+                            onPressed: () => formBloc.removeFieldBloc(
+                                fieldBloc: formBloc.select1),
+                            icon: const Icon(Icons.delete),
                           ),
-                          itemBuilder: (context, value) => FieldItem(
-                            isEnabled: value != 'Option 1',
-                            child: Text(value),
-                          ),
+                        ],
+                      ),
+                      CheckboxFieldBlocBuilder(
+                        booleanFieldBloc: formBloc.boolean1,
+                        body: const Text('CheckboxFieldBlocBuilder'),
+                      ),
+                      CheckboxFieldBlocBuilder(
+                        booleanFieldBloc: formBloc.boolean1,
+                        body: const Text('CheckboxFieldBlocBuilder trailing'),
+                        controlAffinity:
+                            FieldBlocBuilderControlAffinity.trailing,
+                      ),
+                      SliderFieldBlocBuilder(
+                        inputFieldBloc: formBloc.double1,
+                        divisions: 10,
+                        labelBuilder: (context, value) =>
+                            value.toStringAsFixed(2),
+                      ),
+                      SliderFieldBlocBuilder(
+                        inputFieldBloc: formBloc.double1,
+                        divisions: 10,
+                        labelBuilder: (context, value) =>
+                            value.toStringAsFixed(2),
+                        activeColor: Colors.red,
+                        inactiveColor: Colors.green,
+                      ),
+                      SliderFieldBlocBuilder(
+                        inputFieldBloc: formBloc.double1,
+                        divisions: 10,
+                        labelBuilder: (context, value) =>
+                            value.toStringAsFixed(2),
+                      ),
+                      ChoiceChipFieldBlocBuilder<String>(
+                        selectFieldBloc: formBloc.select2,
+                        itemBuilder: (context, value) => ChipFieldItem(
+                          label: Text(value),
                         ),
-                        RadioButtonGroupFieldBlocBuilder<String>(
-                          selectFieldBloc: formBloc.select2,
-                          decoration: const InputDecoration(
-                            labelText: 'RadioButtonGroupFieldBlocBuilder',
-                          ),
-                          groupStyle: const FlexGroupStyle(),
-                          itemBuilder: (context, item) => FieldItem(
-                            child: Text(item),
-                          ),
+                      ),
+                      FilterChipFieldBlocBuilder<String>(
+                        multiSelectFieldBloc: formBloc.multiSelect1,
+                        itemBuilder: (context, value) => ChipFieldItem(
+                          label: Text(value),
                         ),
-                        CheckboxGroupFieldBlocBuilder<String>(
-                          multiSelectFieldBloc: formBloc.multiSelect1,
-                          decoration: const InputDecoration(
-                            labelText: 'CheckboxGroupFieldBlocBuilder',
-                          ),
-                          groupStyle: const TableGroupStyle(),
-                          itemBuilder: (context, item) => FieldItem(
-                            child: Text(item),
-                          ),
-                        ),
-                        DateTimeFieldBlocBuilder(
-                          dateTimeFieldBloc: formBloc.date1,
-                          format: DateFormat('dd-MM-yyyy'),
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                          decoration: const InputDecoration(
-                            labelText: 'DateTimeFieldBlocBuilder',
-                            prefixIcon: Icon(Icons.calendar_today),
-                            helperText: 'Date',
-                          ),
-                        ),
-                        DateTimeFieldBlocBuilder(
-                          dateTimeFieldBloc: formBloc.dateAndTime1,
-                          canSelectTime: true,
-                          format: DateFormat('dd-MM-yyyy  hh:mm'),
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                          decoration: const InputDecoration(
-                            labelText: 'DateTimeFieldBlocBuilder',
-                            prefixIcon: Icon(Icons.date_range),
-                            helperText: 'Date and Time',
-                          ),
-                        ),
-                        TimeFieldBlocBuilder(
-                          timeFieldBloc: formBloc.time1,
-                          format: DateFormat('hh:mm a'),
-                          initialTime: TimeOfDay.now(),
-                          decoration: const InputDecoration(
-                            labelText: 'TimeFieldBlocBuilder',
-                            prefixIcon: Icon(Icons.access_time),
-                          ),
-                        ),
-                        SwitchFieldBlocBuilder(
-                          booleanFieldBloc: formBloc.boolean2,
-                          body: const Text('SwitchFieldBlocBuilder'),
-                        ),
-                        SwitchFieldBlocBuilder(
-                          booleanFieldBloc: formBloc.boolean2,
-                          body: const Text('SwitchFieldBlocBuilder color'),
-                          thumbColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.red;
-                            }
-                            return null;
-                          }),
-                          trackColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.amberAccent;
-                            }
-                            return null;
-                          }),
-                          overlayColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.green;
-                            }
-                            return null;
-                          }),
-                        ),
-                        CheckboxFieldBlocBuilder(
-                          booleanFieldBloc: formBloc.boolean1,
-                          body: const Text('CheckboxFieldBlocBuilder'),
-                        ),
-                        CheckboxFieldBlocBuilder(
-                          booleanFieldBloc: formBloc.boolean1,
-                          body: const Text('CheckboxFieldBlocBuilder trailing'),
-                          controlAffinity:
-                              FieldBlocBuilderControlAffinity.trailing,
-                        ),
-                        CheckboxFieldBlocBuilder(
-                          booleanFieldBloc: formBloc.boolean1,
-                          body: const Text('CheckboxFieldBlocBuilder color'),
-                          checkColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.red;
-                            }
-                            return null;
-                          }),
-                          fillColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.amberAccent;
-                            }
-                            return null;
-                          }),
-                          overlayColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.green;
-                            }
-                            return null;
-                          }),
-                        ),
-                        SliderFieldBlocBuilder(
-                          inputFieldBloc: formBloc.double1,
-                          divisions: 10,
-                          labelBuilder: (context, value) =>
-                              value.toStringAsFixed(2),
-                        ),
-                        SliderFieldBlocBuilder(
-                          inputFieldBloc: formBloc.double1,
-                          divisions: 10,
-                          labelBuilder: (context, value) =>
-                              value.toStringAsFixed(2),
-                          activeColor: Colors.red,
-                          inactiveColor: Colors.green,
-                        ),
-                        Theme(
-                          data: Theme.of(context).copyWith(
-                            sliderTheme: Theme.of(context).sliderTheme.copyWith(
-                                  activeTrackColor: Colors.red,
-                                  inactiveTrackColor: Colors.yellow,
-                                ),
-                          ),
-                          child: SliderFieldBlocBuilder(
-                            inputFieldBloc: formBloc.double1,
-                            divisions: 10,
-                            labelBuilder: (context, value) =>
-                                value.toStringAsFixed(2),
-                          ),
-                        ),
-                        ChoiceChipFieldBlocBuilder<String>(
-                          selectFieldBloc: formBloc.select1,
-                          itemBuilder: (context, value) => ChipFieldItem(
-                            label: Text(value),
-                          ),
-                        ),
-                        FilterChipFieldBlocBuilder<String>(
-                          multiSelectFieldBloc: formBloc.multiSelect1,
-                          itemBuilder: (context, value) => ChipFieldItem(
-                            label: Text(value),
-                          ),
-                        ),
-                        BlocBuilder<InputFieldBloc<File?, String>,
-                                InputFieldBlocState<File?, String>>(
-                            bloc: formBloc.file,
-                            builder: (context, state) {
-                              return Container();
-                            })
-                      ],
-                    ),
+                      ),
+                      BlocBuilder<InputFieldBloc<File?, String>,
+                              InputFieldBlocState<File?, String>>(
+                          bloc: formBloc.file,
+                          builder: (context, state) {
+                            return Container();
+                          })
+                    ],
                   ),
                 ),
               ),

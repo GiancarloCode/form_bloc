@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/chip/chip_field_item_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
@@ -186,9 +186,9 @@ class FilterChipFieldBlocBuilder<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeOf(context);
 
-    final current = CanShowFieldBlocBuilder(
-      fieldBloc: multiSelectFieldBloc,
-      animate: animateWhenCanShow,
+    final current = SimpleFieldBlocBuilder(
+      singleFieldBloc: multiSelectFieldBloc,
+      animateWhenCanShow: animateWhenCanShow,
       builder: (_, __) {
         return BlocBuilder<MultiSelectFieldBloc<T, dynamic>,
             MultiSelectFieldBlocState<T, dynamic>>(

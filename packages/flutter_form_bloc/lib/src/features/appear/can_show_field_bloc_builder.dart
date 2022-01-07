@@ -12,8 +12,6 @@ class CanShowFieldBlocBuilder extends StatefulWidget {
 
   final FieldBloc fieldBloc;
   final bool animate;
-
-  /// [canShow] is not used if [animate] is true
   final Widget Function(BuildContext context, bool canShow) builder;
 
   @override
@@ -75,10 +73,11 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
 
   void _initVisibility() {
     final canShow = widget.fieldBloc.state.hasFormBloc;
+
+    _canShow = canShow;
+
     if (widget.animate) {
       _controller.value = canShow ? 1.0 : 0.0;
-    } else {
-      _canShow = canShow;
     }
   }
 
@@ -86,15 +85,24 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     if (!_showOnFirstFrame) return;
 
     if (widget.animate) {
-      if (canShow) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
+      _updateAnimation(canShow).whenComplete(() => _updateCanShow(canShow));
     } else {
-      setState(() {
-        _canShow = canShow;
-      });
+      _updateCanShow(canShow);
+    }
+  }
+
+  void _updateCanShow(bool canShow) {
+    if (_canShow == canShow) return;
+    setState(() {
+      _canShow = canShow;
+    });
+  }
+
+  TickerFuture _updateAnimation(bool canShow) {
+    if (canShow) {
+      return _controller.forward();
+    } else {
+      return _controller.reverse();
     }
   }
 

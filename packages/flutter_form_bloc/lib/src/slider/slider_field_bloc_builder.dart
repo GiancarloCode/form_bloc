@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
 import 'package:form_bloc/form_bloc.dart';
@@ -96,9 +96,9 @@ class SliderFieldBlocBuilder extends StatelessWidget {
       data: Theme.of(context).copyWith(
         sliderTheme: fieldTheme.sliderTheme,
       ),
-      child: CanShowFieldBlocBuilder(
-        fieldBloc: inputFieldBloc,
-        animate: animateWhenCanShow,
+      child: SimpleFieldBlocBuilder(
+        singleFieldBloc: inputFieldBloc,
+        animateWhenCanShow: animateWhenCanShow,
         builder: (context, _) {
           return BlocBuilder<InputFieldBloc<double, dynamic>,
               InputFieldBlocState<double, dynamic>>(

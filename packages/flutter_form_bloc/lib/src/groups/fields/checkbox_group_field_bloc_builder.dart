@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/groups/widgets/group_view.dart';
 import 'package:flutter_form_bloc/src/groups/widgets/item_group_tile.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
@@ -130,9 +130,9 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
       data: Theme.of(context).copyWith(
         checkboxTheme: fieldTheme.checkboxTheme,
       ),
-      child: CanShowFieldBlocBuilder(
-        fieldBloc: multiSelectFieldBloc,
-        animate: animateWhenCanShow,
+      child: SimpleFieldBlocBuilder(
+        singleFieldBloc: multiSelectFieldBloc,
+        animateWhenCanShow: animateWhenCanShow,
         builder: (_, __) {
           return BlocBuilder<MultiSelectFieldBloc<Value, dynamic>,
               MultiSelectFieldBlocState<Value, dynamic>>(
