@@ -143,12 +143,17 @@ class CheckboxFieldTheme extends FieldTheme {
   /// The position of the [Checkbox] inside the field
   final FieldBlocBuilderControlAffinity? controlAffinity;
 
+  /// Identifies whether the item tile is touchable
+  /// to change the status of the item
+  final bool canTapItemTile;
+
   const CheckboxFieldTheme({
     TextStyle? textStyle,
     MaterialStateProperty<Color?>? textColor,
     InputDecorationTheme? decorationTheme,
     this.checkboxTheme,
     this.controlAffinity,
+    this.canTapItemTile = false,
   }) : super(
           textStyle: textStyle,
           textColor: textColor,
@@ -161,6 +166,7 @@ class CheckboxFieldTheme extends FieldTheme {
     InputDecorationTheme? decorationTheme,
     CheckboxThemeData? checkboxTheme,
     FieldBlocBuilderControlAffinity? controlAffinity,
+    bool? canTapItemTile,
   }) {
     return CheckboxFieldTheme(
       textStyle: textStyle ?? this.textStyle,
@@ -168,17 +174,20 @@ class CheckboxFieldTheme extends FieldTheme {
       decorationTheme: decorationTheme ?? this.decorationTheme,
       checkboxTheme: checkboxTheme ?? this.checkboxTheme,
       controlAffinity: controlAffinity ?? this.controlAffinity,
+      canTapItemTile: canTapItemTile ?? this.canTapItemTile,
     );
   }
 
   @override
-  List<Object?> get props => [super.props, checkboxTheme, controlAffinity];
+  List<Object?> get props =>
+      [super.props, checkboxTheme, controlAffinity, canTapItemTile];
 
   @override
   String toString([ToString? toString]) {
     return super.toString(ToString(runtimeType)
       ..add('checkboxTheme', checkboxTheme)
-      ..add('controlAffinity', controlAffinity));
+      ..add('controlAffinity', controlAffinity)
+      ..add('canTapItemTile', canTapItemTile));
   }
 }
 
@@ -490,11 +499,21 @@ class RadioFieldTheme extends FieldTheme {
   /// The [Radio] theme inside the field
   final RadioThemeData? radioTheme;
 
+  /// Identifies whether the item tile is touchable
+  /// to change the status of the item
+  final bool canTapItemTile;
+
+  /// if `true` the radio button selected can
+  ///  be deselect by tapping.
+  final bool canDeselect;
+
   const RadioFieldTheme({
     TextStyle? textStyle,
     MaterialStateProperty<Color?>? textColor,
     InputDecorationTheme? decorationTheme,
     this.radioTheme,
+    this.canTapItemTile = false,
+    this.canDeselect = true,
   }) : super(
           textStyle: textStyle,
           textColor: textColor,
@@ -506,21 +525,33 @@ class RadioFieldTheme extends FieldTheme {
     MaterialStateProperty<Color?>? textColor,
     InputDecorationTheme? decorationTheme,
     RadioThemeData? radioTheme,
+    bool? canTapItemTile,
+    bool? canDeselect,
   }) {
     return RadioFieldTheme(
       textStyle: textStyle ?? this.textStyle,
       textColor: textColor ?? this.textColor,
       decorationTheme: decorationTheme ?? this.decorationTheme,
       radioTheme: radioTheme ?? this.radioTheme,
+      canTapItemTile: canTapItemTile ?? this.canTapItemTile,
+      canDeselect: canDeselect ?? this.canDeselect,
     );
   }
 
   @override
-  List<Object?> get props => [super.props, radioTheme];
+  List<Object?> get props => [
+        super.props,
+        radioTheme,
+        canTapItemTile,
+        canDeselect,
+      ];
 
   @override
   String toString([ToString? toString]) {
-    return super.toString(ToString(runtimeType)..add('radioTheme', radioTheme));
+    return super.toString(ToString(runtimeType)
+      ..add('radioTheme', radioTheme)
+      ..add('canTapItemTile', canTapItemTile)
+      ..add('canDeselect', canDeselect));
   }
 }
 

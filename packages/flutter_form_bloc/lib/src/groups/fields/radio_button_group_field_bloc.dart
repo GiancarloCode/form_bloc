@@ -19,7 +19,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.errorBuilder,
     this.padding,
     this.decoration = const InputDecoration(),
-    this.canDeselect = true,
+    this.canDeselect,
     this.nextFocusNode,
     this.animateWhenCanShow = true,
     this.textStyle,
@@ -29,6 +29,7 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.overlayColor,
     this.splashRadius,
     this.groupStyle = const FlexGroupStyle(),
+    this.canTapItemTile,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -51,7 +52,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   /// if `true` the radio button selected can
   ///  be deselect by tapping.
-  final bool canDeselect;
+  ///  Defaults `true`
+  final bool? canDeselect;
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.decoration}
   final InputDecoration decoration;
@@ -70,6 +72,11 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.groupStyle}
   final GroupStyle groupStyle;
+
+  /// Identifies whether the item tile is touchable
+  /// to change the status of the item
+  /// Defaults `false`
+  final bool? canTapItemTile;
 
   // ========== [Radio] ==========
 
@@ -102,6 +109,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
         overlayColor: overlayColor,
         splashRadius: splashRadius,
       ),
+      canDeselect: canDeselect ?? fieldTheme.canDeselect,
+      canTapItemTile: canTapItemTile ?? fieldTheme.canTapItemTile,
     );
   }
 
@@ -109,8 +118,10 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeStyleOf(context);
 
-    return RadioTheme(
-      data: fieldTheme.radioTheme!,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        radioTheme: fieldTheme.radioTheme,
+      ),
       child: CanShowFieldBlocBuilder(
         fieldBloc: selectFieldBloc,
         animate: animateWhenCanShow,
@@ -174,14 +185,23 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
               fieldItem.onTap?.call();
             },
           );
+
           return ItemGroupTile(
+            customBorder: Style.getInputBorder(
+              decoration: decoration,
+              decorationTheme: fieldTheme.decorationTheme!,
+            ),
+            onTap: fieldTheme.canTapItemTile && onChanged != null
+                ? () => onChanged(
+                    fieldTheme.canDeselect && state.value == item ? null : item)
+                : null,
             leading: Radio<Value>(
               value: item,
               fillColor: fieldTheme.radioTheme?.fillColor,
               overlayColor: fieldTheme.radioTheme?.overlayColor,
               splashRadius: fieldTheme.radioTheme?.splashRadius,
               groupValue: state.value,
-              toggleable: canDeselect,
+              toggleable: fieldTheme.canDeselect,
               onChanged: onChanged,
             ),
             content: fieldItem,

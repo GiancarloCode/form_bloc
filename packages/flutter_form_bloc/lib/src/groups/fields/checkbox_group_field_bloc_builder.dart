@@ -31,6 +31,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     this.shape,
     this.side,
     this.groupStyle = const FlexGroupStyle(),
+    this.canTapItemTile,
   }) : super(key: key);
 
   /// {@macro flutter_form_bloc.FieldBlocBuilder.fieldBloc}
@@ -69,6 +70,11 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   /// {@macro flutter_form_bloc.FieldBlocBuilder.groupStyle}
   final GroupStyle groupStyle;
 
+  /// Identifies whether the item tile is touchable
+  /// to change the status of the item
+  /// Defaults `false`
+  final bool? canTapItemTile;
+
   // ========== [Checkbox] ==========
 
   /// [Checkbox.mouseCursor]
@@ -100,9 +106,9 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
     final checkboxTheme = fieldTheme.checkboxTheme ?? theme.checkboxTheme;
 
     return CheckboxFieldTheme(
+      decorationTheme: resolver.decorationTheme,
       textStyle: textStyle ?? resolver.textStyle,
       textColor: textColor ?? resolver.textColor,
-      decorationTheme: fieldTheme.decorationTheme ?? resolver.decorationTheme,
       checkboxTheme: checkboxTheme.copyWith(
         mouseCursor: mouseCursor,
         fillColor: fillColor,
@@ -112,6 +118,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
         shape: shape,
         side: side,
       ),
+      canTapItemTile: canTapItemTile ?? fieldTheme.canTapItemTile,
     );
   }
 
@@ -178,21 +185,30 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
           final fieldItem = itemBuilder(context, item);
           final isEnabled = isFieldEnabled && fieldItem.isEnabled;
 
+          final onChanged = fieldBlocBuilderOnChange<bool?>(
+            isEnabled: isEnabled,
+            nextFocusNode: nextFocusNode,
+            onChanged: (isChecked) {
+              if (!isChecked!) {
+                multiSelectFieldBloc.deselect(item);
+              } else {
+                multiSelectFieldBloc.select(item);
+              }
+              fieldItem.onTap?.call();
+            },
+          );
+
           return ItemGroupTile(
+            customBorder: Style.getInputBorder(
+              decoration: decoration,
+              decorationTheme: fieldTheme.decorationTheme!,
+            ),
+            onTap: fieldTheme.canTapItemTile && onChanged != null
+                ? () => onChanged(!state.value.contains(item))
+                : null,
             leading: Checkbox(
               value: state.value.contains(item),
-              onChanged: fieldBlocBuilderOnChange<bool?>(
-                isEnabled: isEnabled,
-                nextFocusNode: nextFocusNode,
-                onChanged: (_) {
-                  if (state.value.contains(item)) {
-                    multiSelectFieldBloc.deselect(item);
-                  } else {
-                    multiSelectFieldBloc.select(item);
-                  }
-                  fieldItem.onTap?.call();
-                },
-              ),
+              onChanged: onChanged,
             ),
             content: fieldItem,
           );

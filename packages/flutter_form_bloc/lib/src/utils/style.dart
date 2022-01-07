@@ -57,12 +57,20 @@ class Style {
       return contentPadding.add(const EdgeInsets.only(
         top: 4.0,
         bottom: 4.0,
-        right: 15.0,
       ));
     } else {
       return contentPadding.add(const EdgeInsets.only(
         left: 15.0,
       ));
     }
+  }
+
+  static InputBorder getInputBorder({
+    required InputDecoration decoration,
+    required InputDecorationTheme decorationTheme,
+  }) {
+    return decoration.border ??
+        decorationTheme.border ??
+        const UnderlineInputBorder();
   }
 }

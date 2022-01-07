@@ -12,8 +12,21 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        return FormThemeProvider(
+          theme: FormTheme(
+            checkboxTheme: CheckboxFieldTheme(
+              canTapItemTile: true,
+            ),
+            radioTheme: RadioFieldTheme(
+              canTapItemTile: true,
+            ),
+          ),
+          child: child!,
+        );
+      },
       home: AllFieldsForm(),
     );
   }
@@ -187,10 +200,7 @@ class AllFieldsForm extends StatelessWidget {
                           decoration: const InputDecoration(
                             labelText: 'CheckboxGroupFieldBlocBuilder',
                           ),
-                          groupStyle: const ListGroupStyle(
-                            scrollDirection: Axis.horizontal,
-                            height: 64,
-                          ),
+                          groupStyle: const TableGroupStyle(),
                           itemBuilder: (context, item) => FieldItem(
                             child: Text(item),
                           ),
