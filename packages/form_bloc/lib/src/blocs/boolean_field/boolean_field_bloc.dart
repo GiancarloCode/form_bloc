@@ -43,21 +43,19 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
     Suggestions<bool>? suggestions,
     ExtraData? extraData,
   }) : super(
-          initialValue,
-          validators,
-          asyncValidators,
-          asyncValidatorDebounceTime,
-          suggestions,
-          name,
-          (value) => value,
-          extraData,
-          BooleanFieldBlocState(
+          validators: validators,
+          asyncValidators: asyncValidators,
+          asyncValidatorDebounceTime: asyncValidatorDebounceTime,
+          initialState: BooleanFieldBlocState(
+            isValueChanged: false,
+            initialValue: initialValue,
+            updatedValue: initialValue,
             value: initialValue,
             error: FieldBlocUtils.getInitialStateError(
               validators: validators,
               value: initialValue,
             ),
-            isInitial: true,
+            isDirty: false,
             suggestions: suggestions,
             isValidated: FieldBlocUtils.getInitialIsValidated(
               FieldBlocUtils.getInitialStateIsValidating(

@@ -2,6 +2,9 @@ import 'package:form_bloc/form_bloc.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:test/test.dart';
 
+import '../utils/states.dart';
+import '../utils/when_bloc.dart';
+
 void main() {
   group('MultiSelectFieldBloc:', () {
     group('constructor:', () {
@@ -19,10 +22,10 @@ void main() {
           suggestions: suggestions,
         );
 
-        final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+        final state1 = createMultiSelectState<bool, dynamic>(
           value: [],
           error: FieldBlocValidatorsErrors.required,
-          isInitial: true,
+          isDirty: false,
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
@@ -30,9 +33,9 @@ void main() {
           items: [],
         );
         final state2 = state1.copyWith(
+          updatedValue: Param([true]),
           value: Param([true]),
           error: Param('error'),
-          isInitial: false,
         );
 
         final expectedStates = [
@@ -56,10 +59,10 @@ void main() {
         name: 'name',
       );
 
-      initialState = MultiSelectFieldBlocState<bool, dynamic>(
+      initialState = createMultiSelectState<bool, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -81,10 +84,10 @@ void main() {
         items: [true, false],
       );
 
-      initialState = MultiSelectFieldBlocState<bool, dynamic>(
+      initialState = createMultiSelectState<bool, dynamic>(
         value: [true],
         error: 'error',
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -103,10 +106,10 @@ void main() {
 
       fieldBloc = MultiSelectFieldBloc<bool, dynamic>(name: 'name');
 
-      initialState = MultiSelectFieldBlocState<bool, dynamic>(
+      initialState = createMultiSelectState<bool, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -125,10 +128,10 @@ void main() {
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+      final state1 = createMultiSelectState<bool, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -162,10 +165,10 @@ void main() {
         items: [true],
       );
 
-      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+      final state1 = createMultiSelectState<bool, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -204,10 +207,10 @@ void main() {
         items: [true, false],
       );
 
-      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+      final state1 = createMultiSelectState<bool, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -241,10 +244,10 @@ void main() {
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+      final state1 = createMultiSelectState<bool, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -252,13 +255,15 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
+        updatedValue: Param([true]),
         value: Param([true]),
-        isInitial: false,
       );
       final state3 = state2.copyWith(
+        updatedValue: Param([false, true]),
         value: Param([false, true]),
       );
       final state4 = state3.copyWith(
+        updatedValue: Param([]),
         value: Param([]),
       );
 
@@ -283,10 +288,10 @@ void main() {
         name: 'name',
       );
 
-      final state1 = MultiSelectFieldBlocState<bool, dynamic>(
+      final state1 = createMultiSelectState<bool, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
@@ -294,14 +299,17 @@ void main() {
         items: [],
       );
       final state2 = state1.copyWith(
+        updatedValue: Param([true]),
         value: Param([true]),
-        isInitial: false,
       );
       final state3 = state2.copyWith(
+        initialValue: Param([false, true]),
+        updatedValue: Param([false, true]),
         value: Param([false, true]),
-        isInitial: true,
       );
       final state4 = state3.copyWith(
+        initialValue: Param([]),
+        updatedValue: Param([]),
         value: Param([]),
       );
 
@@ -324,30 +332,34 @@ void main() {
     test('select method SelectMultiSelectFieldBlocValue event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(
         name: 'name',
+        items: [null, false, true],
       );
 
-      final state1 = MultiSelectFieldBlocState<bool?, dynamic>(
+      final state1 = createMultiSelectState<bool?, dynamic>(
         value: [],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
         name: 'name',
-        items: [],
+        items: [null, false, true],
       );
       final state2 = state1.copyWith(
+        isValueChanged: true,
         error: Param(null),
         value: Param([true]),
-        isInitial: false,
       );
       final state3 = state2.copyWith(
         value: Param([true, false]),
       );
       final state4 = state3.copyWith(
+        isValueChanged: false,
+        updatedValue: Param([]),
         value: Param([]),
       );
       final state5 = state4.copyWith(
+        isValueChanged: true,
         error: Param(null),
         value: Param([false]),
       );
@@ -378,30 +390,36 @@ void main() {
 
     test('deselect method DeselectMultiSelectFieldBlocValue event.', () {
       final fieldBloc = MultiSelectFieldBloc<bool?, dynamic>(
-          name: 'name', initialValue: [true, false]);
+        name: 'name',
+        initialValue: [true, false],
+        items: [null, false, true],
+      );
 
-      final state1 = MultiSelectFieldBlocState<bool?, dynamic>(
+      final state1 = createMultiSelectState<bool?, dynamic>(
         value: [true, false],
         error: null,
-        isInitial: true,
+        isDirty: false,
         suggestions: null,
         isValidated: true,
         isValidating: false,
         name: 'name',
-        items: [],
+        items: [null, false, true],
       );
       final state2 = state1.copyWith(
+        isValueChanged: true,
         value: Param([false]),
-        isInitial: false,
       );
       final state3 = state2.copyWith(
         value: Param([]),
       );
       final state4 = state3.copyWith(
+        isValueChanged: false,
+        updatedValue: Param([true, false, null]),
         error: Param(null),
         value: Param([true, false, null]),
       );
       final state5 = state4.copyWith(
+        isValueChanged: true,
         value: Param([true, false]),
       );
       final state6 = state5.copyWith(
@@ -417,10 +435,7 @@ void main() {
         state6,
       ];
 
-      expect(
-        fieldBloc.stream,
-        emitsInOrder(expectedStates),
-      );
+      expectBloc(fieldBloc, stream: expectedStates);
 
       fieldBloc.deselect(true);
       fieldBloc.deselect(true);

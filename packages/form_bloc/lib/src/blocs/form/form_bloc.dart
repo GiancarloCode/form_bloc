@@ -291,6 +291,28 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   }
 
   // ===========================================================================
+  // UTILITY
+  // ===========================================================================
+
+  /// {@template form_bloc.isValuesChanged}
+  /// Check if all field blocs and their children have undergone a change in values
+  /// {@endtemplate}
+  bool isValuesChanged({int? step}) =>
+      FormBlocUtils.isValuesChanged(state.flatFieldBlocs(step) ?? const []);
+
+  /// {@template form_bloc.hasInitialValues}
+  /// Check if all field blocs and their children have initial values
+  /// {@endtemplate}
+  bool hasInitialValues({int? step}) =>
+      FormBlocUtils.hasInitialValues(state.flatFieldBlocs(step) ?? const []);
+
+  /// {@template form_bloc.hasUpdatedValues}
+  /// Check if all field blocs and their children have updated values
+  /// {@endtemplate}
+  bool hasUpdatedValues({int? step}) =>
+      FormBlocUtils.hasUpdatedValues(state.flatFieldBlocs(step) ?? const []);
+
+  // ===========================================================================
   // toString
   // ===========================================================================
   @override
@@ -316,19 +338,9 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
         currentStep: state.currentStep,
       ));
       emit(state.toLoaded()._copyWith(currentStep: notValidStep));
-    } else if (_autoValidate) {
-      // Auto validate is enabled, not required validate all field blocs
-
-      if (!state.isValid(state.currentStep)) {
-        emit(FormBlocSubmissionFailed(
-          isValidByStep: state._isValidByStep,
-          isEditing: state.isEditing,
-          fieldBlocs: state._fieldBlocs,
-          currentStep: state.currentStep,
-        ));
-        emit(state.toLoaded());
-        return;
-      }
+    } else if (_autoValidate && state.isValid(state.currentStep)) {
+      // Auto validate is enabled, required validate all field blocs
+      // if step isn't valid to show a error (if value is initial)
 
       emit(state.toSubmitting());
 

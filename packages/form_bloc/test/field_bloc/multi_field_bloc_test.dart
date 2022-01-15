@@ -124,11 +124,11 @@ void main() {
           fieldBlocs: [field],
           formBloc: formBloc,
         );
-        final expectedBoolUpdate = BooleanFieldBlocState<Object>(
+        final expectedBoolUpdate = createBooleanState<Object>(
           name: 'bool',
           value: false,
           error: null,
-          isInitial: true,
+          isDirty: false,
           suggestions: null,
           isValidated: false,
           isValidating: false,
@@ -163,11 +163,11 @@ void main() {
           fieldBlocs: [field],
           formBloc: formBloc,
         );
-        final expectedBoolUpdate = BooleanFieldBlocState<Object>(
+        final expectedBoolUpdate = createBooleanState<Object>(
           name: 'bool',
           value: false,
           error: null,
-          isInitial: true,
+          isDirty: false,
           suggestions: null,
           isValidated: false,
           isValidating: false,

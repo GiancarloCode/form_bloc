@@ -234,11 +234,7 @@ class ChoiceChipFieldBlocBuilder<T> extends StatelessWidget {
                         readOnly: readOnly,
                         nextFocusNode: nextFocusNode,
                         onChanged: (isSelected) {
-                          if (isSelected) {
-                            selectFieldBloc.updateValue(item);
-                          } else if (canDeselect) {
-                            selectFieldBloc.updateValue(null);
-                          }
+                          selectFieldBloc.changeValue(isSelected ? item : null);
                           fieldItem.onTap?.call();
                         },
                       ),

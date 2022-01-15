@@ -931,7 +931,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         maxLength: widget.maxLength,
         maxLengthEnforcement: widget.maxLengthEnforced,
         onChanged: (value) {
-          widget.textFieldBloc.updateValue(value);
+          widget.textFieldBloc.changeValue(value);
           if (widget.onChanged != null) {
             widget.onChanged!(value);
           }
@@ -1012,7 +1012,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         );
       },
       onSuggestionSelected: (value) {
-        widget.textFieldBloc.updateValue(value);
+        widget.textFieldBloc.changeValue(value);
         _onSubmitted(value);
       },
       animationDuration: widget.suggestionsAnimationDuration,

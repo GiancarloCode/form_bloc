@@ -49,21 +49,19 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
     dynamic Function(Value? value)? toJson,
     ExtraData? extraData,
   }) : super(
-          initialValue,
-          validators,
-          asyncValidators,
-          asyncValidatorDebounceTime,
-          suggestions,
-          name,
-          toJson,
-          extraData,
-          SelectFieldBlocState(
+          validators: validators,
+          asyncValidators: asyncValidators,
+          asyncValidatorDebounceTime: asyncValidatorDebounceTime,
+          initialState: SelectFieldBlocState(
+            isValueChanged: false,
+            initialValue: initialValue,
+            updatedValue: initialValue,
             value: initialValue,
             error: FieldBlocUtils.getInitialStateError(
               validators: validators,
               value: initialValue,
             ),
-            isInitial: true,
+            isDirty: false,
             suggestions: suggestions,
             isValidated: FieldBlocUtils.getInitialIsValidated(
               FieldBlocUtils.getInitialStateIsValidating(
@@ -102,9 +100,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
   /// of the current state.
   void addItem(Value item) {
     emit(state.copyWith(
-      items: SingleFieldBloc._itemsWithoutDuplicates(
-        List<Value>.from(state.items)..add(item),
-      ),
+      items: SingleFieldBloc._itemsWithoutDuplicates([...state.items, item]),
     ));
   }
 
@@ -113,8 +109,7 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
   void removeItem(Value item) {
     var items = state.items;
     if (items.isNotEmpty) {
-      items = SingleFieldBloc._itemsWithoutDuplicates(
-          List<Value>.from(items)..remove(item));
+      items = SingleFieldBloc._itemsWithoutDuplicates([...items]..remove(item));
       emit(state.copyWith(
         items: items,
         value: items.contains(value) ? null : Param(null),

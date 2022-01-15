@@ -201,7 +201,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
       onChanged: fieldBlocBuilderOnChange<bool>(
         isEnabled: isEnabled,
         nextFocusNode: nextFocusNode,
-        onChanged: booleanFieldBloc.updateValue,
+        onChanged: booleanFieldBloc.changeValue,
       ),
       activeThumbImage: activeThumbImage,
       autofocus: autofocus,

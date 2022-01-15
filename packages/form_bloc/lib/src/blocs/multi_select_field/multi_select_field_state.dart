@@ -5,9 +5,12 @@ class MultiSelectFieldBlocState<Value, ExtraData>
   final List<Value> items;
 
   MultiSelectFieldBlocState({
+    required bool isValueChanged,
+    required List<Value> initialValue,
+    required List<Value> updatedValue,
     required List<Value> value,
     required Object? error,
-    required bool isInitial,
+    required bool isDirty,
     required Suggestions<Value>? suggestions,
     required bool isValidated,
     required bool isValidating,
@@ -17,9 +20,12 @@ class MultiSelectFieldBlocState<Value, ExtraData>
     dynamic Function(List<Value> value)? toJson,
     ExtraData? extraData,
   }) : super(
-          value: value,
+          isValueChanged: isValueChanged,
+          initialValue: EquatableList(initialValue),
+          updatedValue: EquatableList(updatedValue),
+          value: EquatableList(value),
           error: error,
-          isInitial: isInitial,
+          isDirty: isDirty,
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
@@ -31,9 +37,12 @@ class MultiSelectFieldBlocState<Value, ExtraData>
 
   @override
   MultiSelectFieldBlocState<Value, ExtraData> copyWith({
+    bool? isValueChanged,
+    Param<List<Value>>? initialValue,
+    Param<List<Value>>? updatedValue,
     Param<List<Value>>? value,
     Param<Object?>? error,
-    bool? isInitial,
+    bool? isDirty,
     Param<Suggestions<Value>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
@@ -42,9 +51,12 @@ class MultiSelectFieldBlocState<Value, ExtraData>
     Param<ExtraData?>? extraData,
   }) {
     return MultiSelectFieldBlocState(
+      isValueChanged: isValueChanged ?? this.isValueChanged,
+      initialValue: initialValue.or(this.initialValue),
+      updatedValue: updatedValue.or(this.updatedValue),
       value: value == null ? this.value : value.value,
       error: error == null ? this.error : error.value,
-      isInitial: isInitial ?? this.isInitial,
+      isDirty: isDirty ?? this.isDirty,
       suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
@@ -57,18 +69,9 @@ class MultiSelectFieldBlocState<Value, ExtraData>
   }
 
   @override
-  String toString() => _toStringWith(',\n  items: $items');
+  String toString([String extra = '']) =>
+      super.toString(',\n  items: $items$extra');
 
   @override
-  List<Object?> get props => [
-        value,
-        error,
-        isInitial,
-        suggestions,
-        isValidated,
-        isValidating,
-        extraData,
-        formBloc,
-        items,
-      ];
+  List<Object?> get props => [super.props, items];
 }

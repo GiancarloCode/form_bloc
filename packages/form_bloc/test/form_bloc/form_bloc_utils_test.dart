@@ -808,12 +808,12 @@ void main() {
 
         expect(
           booleanFieldBloc.state,
-          BooleanFieldBlocState<dynamic>(
+          createBooleanState<dynamic>(
             name: '',
             formBloc: formBloc,
             value: false,
             error: null,
-            isInitial: true,
+            isDirty: false,
             suggestions: null,
             isValidated: false,
             isValidating: false,
@@ -827,12 +827,12 @@ void main() {
 
         expect(
           booleanFieldBloc.state,
-          BooleanFieldBlocState<dynamic>(
+          createBooleanState<dynamic>(
             name: '',
             formBloc: null,
             value: false,
             error: null,
-            isInitial: true,
+            isDirty: false,
             suggestions: null,
             isValidated: false,
             isValidating: false,
@@ -908,6 +908,39 @@ void main() {
           ),
         );
       });
+    });
+
+    test('isValuesChanged', () {
+      final singleFieldBloc = BooleanFieldBloc<dynamic>();
+      final multiFieldBloc = ListFieldBloc<FieldBloc, dynamic>(
+        fieldBlocs: [singleFieldBloc],
+      );
+
+      singleFieldBloc.changeValue(true);
+
+      expect(FormBlocUtils.isValuesChanged([multiFieldBloc]), true);
+    });
+
+    test('hasInitialValues', () {
+      final singleFieldBloc = BooleanFieldBloc<dynamic>();
+      final multiFieldBloc = ListFieldBloc<FieldBloc, dynamic>(
+        fieldBlocs: [singleFieldBloc],
+      );
+
+      singleFieldBloc.changeValue(true);
+
+      expect(FormBlocUtils.hasInitialValues([multiFieldBloc]), false);
+    });
+
+    test('hasUpdatedValues', () {
+      final singleFieldBloc = BooleanFieldBloc<dynamic>();
+      final multiFieldBloc = ListFieldBloc<FieldBloc, dynamic>(
+        fieldBlocs: [singleFieldBloc],
+      );
+
+      singleFieldBloc.changeValue(true);
+
+      expect(FormBlocUtils.hasInitialValues([multiFieldBloc]), false);
     });
   });
 }

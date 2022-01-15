@@ -127,7 +127,7 @@ class SliderFieldBlocBuilder extends StatelessWidget {
                       isEnabled: isEnabled,
                       readOnly: readOnly,
                       nextFocusNode: nextFocusNode,
-                      onChanged: inputFieldBloc.updateValue,
+                      onChanged: inputFieldBloc.changeValue,
                     ),
                     label: labelBuilder?.call(context, value),
                     activeColor: activeColor,
