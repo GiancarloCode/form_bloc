@@ -9,14 +9,14 @@ import 'package:form_bloc/form_bloc.dart';
 class SimpleFieldBlocBuilder extends StatelessWidget {
   final SingleFieldBloc singleFieldBloc;
   final bool animateWhenCanShow;
-  final bool scrollWhenIsWrong;
+  final bool focusOnValidationFailed;
   final Widget Function(BuildContext context, bool canShow) builder;
 
   const SimpleFieldBlocBuilder({
     Key? key,
     required this.singleFieldBloc,
     this.animateWhenCanShow = true,
-    this.scrollWhenIsWrong = true,
+    this.focusOnValidationFailed = true,
     required this.builder,
   }) : super(key: key);
 
@@ -34,7 +34,7 @@ class SimpleFieldBlocBuilder extends StatelessWidget {
 
         return ScrollableFieldBlocTarget(
           singleFieldBloc: singleFieldBloc,
-          canScroll: scrollWhenIsWrong,
+          canScroll: focusOnValidationFailed,
           child: field,
         );
       },
