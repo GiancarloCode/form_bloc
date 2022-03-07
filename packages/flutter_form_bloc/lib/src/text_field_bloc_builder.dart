@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/features/appear/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
 import 'package:flutter_form_bloc/src/suffix_buttons/obscure_suffix_button.dart';

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/src/slider/slider_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme_provider.dart';
+import 'package:flutter_form_bloc/src/theme/form_config.dart';
 import 'package:flutter_form_bloc/src/theme/suffix_button_themes.dart';
 import 'package:flutter_form_bloc/src/utils/field_bloc_builder_control_affinity.dart';
 import 'package:flutter_form_bloc/src/utils/to_string.dart';
@@ -51,6 +52,9 @@ class FormTheme extends Equatable {
 
   final ObscureSuffixButtonTheme obscureSuffixButtonTheme;
 
+  /// The theme of [ScrollableFormBlocManager]
+  final ScrollableFormTheme scrollableFormTheme;
+
   /// Returns `EdgeInsets.symmetric(vertical: 8.0)`.
   static EdgeInsets defaultPadding = const EdgeInsets.symmetric(vertical: 8.0);
 
@@ -70,6 +74,7 @@ class FormTheme extends Equatable {
     this.textTheme = const TextFieldTheme(),
     this.clearSuffixButtonTheme = const ClearSuffixButtonTheme(),
     this.obscureSuffixButtonTheme = const ObscureSuffixButtonTheme(),
+    this.scrollableFormTheme = const ScrollableFormTheme(),
   });
 
   static FormTheme of(BuildContext context) {

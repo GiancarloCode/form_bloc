@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
@@ -196,9 +196,9 @@ class _DateTimeFieldBlocBuilderBaseState<T>
 
     return Focus(
       focusNode: _effectiveFocusNode,
-      child: CanShowFieldBlocBuilder(
-        fieldBloc: widget.dateTimeFieldBloc,
-        animate: widget.animateWhenCanShow,
+      child: SimpleFieldBlocBuilder(
+        singleFieldBloc: widget.dateTimeFieldBloc,
+        animateWhenCanShow: widget.animateWhenCanShow,
         builder: (_, __) {
           return BlocBuilder<InputFieldBloc<T, dynamic>,
               InputFieldBlocState<T, dynamic>>(

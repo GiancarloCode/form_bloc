@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -136,9 +136,9 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
       data: Theme.of(context).copyWith(
         switchTheme: fieldTheme.switchTheme!,
       ),
-      child: CanShowFieldBlocBuilder(
-        fieldBloc: booleanFieldBloc,
-        animate: animateWhenCanShow,
+      child: SimpleFieldBlocBuilder(
+        singleFieldBloc: booleanFieldBloc,
+        animateWhenCanShow: animateWhenCanShow,
         builder: (_, __) {
           return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
             bloc: booleanFieldBloc,
