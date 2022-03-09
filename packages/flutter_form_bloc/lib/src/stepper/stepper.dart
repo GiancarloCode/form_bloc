@@ -695,12 +695,10 @@ class _StepperState extends State<Stepper> with TickerProviderStateMixin {
           ),
         ),
         if (!_isLast(i))
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              height: 1.0,
-              color: Colors.grey.shade400,
-            ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            height: 1.0,
+            color: Colors.grey.shade400,
           ),
       ],
     ];

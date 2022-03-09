@@ -1,3 +1,9 @@
+# 0.30.1
+- fix wizard form issues https://github.com/GiancarloCode/form_bloc/issues/285
+# 0.30.0
+* Improve FieldBloc.value management you can check more here https://github.com/GiancarloCode/form_bloc/pull/280
+* Added the ability to scroll to the first wrong field!
+* Fix themes in check box, slider and switch
 # 0.29.3
 - fix checkbox style on  CheckboxFieldBlocBuilder 
 # 0.29.2
