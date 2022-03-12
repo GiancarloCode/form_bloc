@@ -1,5 +1,13 @@
 
-
+# 0.30.0
+* Now FormBloc is a Cubit!
+  * Now you can implement your field blocs starting from FieldBloc abstract class!
+  * Now you can implement your own groups of field blocs starting from MultiFieldBloc abstract class!
+  * Now you can validate any field bloc even groups!
+  * Added to MultiFieldBlocState isValidating and isValid
+* Improve FieldBloc.value management you can check more here https://github.com/GiancarloCode/form_bloc/pull/280
+* Added the ability to scroll to the first wrong field! 
+* Fix themes in check box, slider and switch
 #0.29.0
 ## Breaking changes
 * Updated to `bloc: ^8.0.0`
