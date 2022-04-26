@@ -73,6 +73,9 @@ class LoginForm extends StatelessWidget {
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
               },
+              onSubmissionFailed: (context, state) {
+                LoadingDialog.hide(context);
+              },
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
 
