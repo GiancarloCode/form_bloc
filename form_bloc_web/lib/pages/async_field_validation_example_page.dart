@@ -9,12 +9,12 @@ class AsyncFieldValidationExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Async Field Validation Example',
-      demo: DeviceScreen(app: AsyncFieldValidationForm()),
+      demo: const DeviceScreen(app: AsyncFieldValidationForm()),
       code:
-          CodeScreen(codePath: 'lib/examples/async_field_validation_form.dart'),
+          const CodeScreen(codePath: 'lib/examples/async_field_validation_form.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 # 1. Create the field bloc        
 '''),
           CodeCard.main(

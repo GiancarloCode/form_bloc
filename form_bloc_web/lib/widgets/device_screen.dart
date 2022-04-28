@@ -27,14 +27,14 @@ class DeviceScreen extends StatelessWidget {
               alignment: Alignment.center,
               child: Transform.scale(
                 scale: kIsWeb ? 0.95 : 1.0,
-                child: Container(
+                child: SizedBox(
                   height: height,
                   width: width,
                   child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0)),
                     elevation: 2.0,
-                    margin: EdgeInsets.all(kIsWeb ? 0 : 15),
+                    margin: const EdgeInsets.all(kIsWeb ? 0 : 15),
                     child: MaterialApp(
                       home: app,
                       theme: ThemeData(

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AsyncFieldValidationForm(),
     );
@@ -21,7 +21,7 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
       FieldBlocValidators.required,
       _min4Char,
     ],
-    asyncValidatorDebounceTime: Duration(milliseconds: 300),
+    asyncValidatorDebounceTime: const Duration(milliseconds: 300),
   );
 
   AsyncFieldValidationFormBloc() {
@@ -40,7 +40,7 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
   }
 
   Future<String?> _checkUsername(String? username) async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 500));
     if (username?.toLowerCase() != 'flutter dev') {
       return 'That username is already taken';
     }
@@ -49,10 +49,10 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    print(username.value);
+    debugPrint(username.value);
 
     try {
-      await Future<void>.delayed(Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       emitSuccess();
     } catch (e) {
@@ -62,6 +62,8 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
 }
 
 class AsyncFieldValidationForm extends StatelessWidget {
+  const AsyncFieldValidationForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -72,17 +74,20 @@ class AsyncFieldValidationForm extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: Text('Async Field Validation')),
+            appBar: AppBar(title: const Text('Async Field Validation')),
             body:
                 FormBlocListener<AsyncFieldValidationFormBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
               },
+              onSubmissionFailed: (context, state) {
+                LoadingDialog.hide(context);
+              },
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
 
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => SuccessScreen()));
+                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
@@ -91,25 +96,25 @@ class AsyncFieldValidationForm extends StatelessWidget {
                     SnackBar(content: Text(state.failureResponse!)));
               },
               child: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 child: Column(
                   children: <Widget>[
                     TextFieldBlocBuilder(
                       textFieldBloc: formBloc.username,
                       suffixButton: SuffixButton.asyncValidating,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Username',
                         prefixIcon: Icon(Icons.person),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text('Only "Flutter Dev" is valid'),
                     ),
                     ElevatedButton(
                       onPressed: formBloc.submit,
-                      child: Text('SUBMIT'),
+                      child: const Text('SUBMIT'),
                     ),
                   ],
                 ),
@@ -132,7 +137,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -143,8 +148,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -153,7 +158,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -162,20 +167,20 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (_) => AsyncFieldValidationForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                      builder: (_) => const AsyncFieldValidationForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

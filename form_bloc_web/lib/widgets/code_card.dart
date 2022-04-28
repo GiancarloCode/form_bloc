@@ -11,7 +11,7 @@ class CodeCard extends StatelessWidget {
   final EdgeInsets? padding;
   final double? bottomPaddingCopyMessage;
 
-  CodeCard({
+  const CodeCard({
     Key? key,
     required this.code,
     this.fileName,
@@ -29,22 +29,22 @@ class CodeCard extends StatelessWidget {
             ),
       ),
       child: Padding(
-        padding: padding ?? EdgeInsets.all(0.0),
+        padding: padding ?? const EdgeInsets.all(0.0),
         child: Column(
           children: <Widget>[
             if (fileName != null)
               Container(
                 alignment: Alignment.centerLeft,
                 child: Card(
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(4.0),
                       topRight: Radius.circular(4.0),
                     ),
                   ),
-                  margin: EdgeInsets.all(0),
+                  margin: const EdgeInsets.all(0),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Text(
                       fileName!,
                       // style: TextStyle(fontSize: 18),
@@ -55,18 +55,18 @@ class CodeCard extends StatelessWidget {
             Stack(
               children: <Widget>[
                 Card(
-                  margin: EdgeInsets.all(0),
+                  margin: const EdgeInsets.all(0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(fileName != null ? 0.0 : 4.0),
-                      topRight: Radius.circular(4.0),
-                      bottomLeft: Radius.circular(4.0),
-                      bottomRight: Radius.circular(4.0),
+                      topRight: const Radius.circular(4.0),
+                      bottomLeft: const Radius.circular(4.0),
+                      bottomRight: const Radius.circular(4.0),
                     ),
                   ),
                   child: Container(
                     width: double.infinity,
-                    padding: EdgeInsets.fromLTRB(16, 28, 16, 28),
+                    padding: const EdgeInsets.fromLTRB(16, 28, 16, 28),
                     child: SelectableText.rich(
                       TextSpan(
                         // style: const TextStyle(fontSize: 18.0),
@@ -96,11 +96,11 @@ class CodeCard extends StatelessWidget {
                         );
                       },
                       elevation: 0.0,
-                      padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-                      borderRadius: BorderRadius.only(
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                      borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(4.0),
                           topRight: Radius.circular(4.0)),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           "COPY",
                           textAlign: TextAlign.center,
@@ -125,7 +125,7 @@ class CodeCard extends StatelessWidget {
       CodeCard(
         code: '''
 dependencies:
-  flutter_form_bloc: ^0.20.0${extraDependencies == null ? '' : '\n${extraDependencies.substring(0, extraDependencies.length - 1)}'}
+  flutter_form_bloc: ^0.30.1${extraDependencies == null ? '' : '\n${extraDependencies.substring(0, extraDependencies.length - 1)}'}
 ''',
         fileName: 'pubspec.yaml',
         showCopyButton: true,

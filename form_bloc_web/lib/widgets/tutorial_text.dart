@@ -22,19 +22,19 @@ class TutorialText extends StatelessWidget {
       data: text.trim(),
       padding: padding,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       styleSheet: MarkdownStyleSheet(
-        h1: TextStyle(
+        h1: const TextStyle(
           color: Colors.black87,
           fontSize: 24,
           fontFamily: 'JosefinSans',
         ),
-        listBullet: TextStyle(
+        listBullet: const TextStyle(
           color: Colors.black87,
           fontSize: 18,
           fontFamily: 'JosefinSans',
         ),
-        p: TextStyle(
+        p: const TextStyle(
           color: Colors.black87,
           fontSize: 18,
           fontFamily: 'JosefinSans',

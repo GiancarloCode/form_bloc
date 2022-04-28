@@ -7,7 +7,7 @@ import 'package:form_bloc_web/super_bloc_delegate.dart';
 void main() {
   BlocOverrides.runZoned(
     () => BlocOverrides.runZoned(
-      () => runApp(App()),
+      () => runApp(const App()),
       blocObserver: SuperBlocDelegate(),
     ),
     blocObserver: FormBlocObserver(child: SuperBlocDelegate()),
@@ -15,6 +15,8 @@ void main() {
 }
 
 class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,7 +30,7 @@ class App extends StatelessWidget {
       initialRoute: RouteNames.home,
       routes: routes,
       onUnknownRoute: (settings) =>
-          MaterialPageRoute(builder: (_) => HomePage()),
+          MaterialPageRoute(builder: (_) => const HomePage()),
     );
   }
 }

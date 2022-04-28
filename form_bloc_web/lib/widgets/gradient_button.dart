@@ -43,7 +43,7 @@ class GradientElevatedButton extends StatelessWidget {
           onTap: onPressed,
           borderRadius: _borderRadius,
           child: Container(
-            padding: padding ?? EdgeInsets.fromLTRB(24, 14, 24, 10),
+            padding: padding ?? const EdgeInsets.fromLTRB(24, 14, 24, 10),
             child: child,
           ),
         ),
