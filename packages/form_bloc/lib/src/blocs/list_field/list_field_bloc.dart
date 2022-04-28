@@ -166,26 +166,25 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
 
   /// Updates [FieldBloc]s.
   void updateFieldBlocs(List<T> fieldBlocs) {
-    if (fieldBlocs.isNotEmpty) {
-      final nextFieldBlocs = [...fieldBlocs];
+    final previousFieldBlocs = [...state.fieldBlocs];
+    final nextFieldBlocs = [...fieldBlocs];
 
-      FormBlocUtils.removeFormBloc(
-        fieldBlocs: state.fieldBlocs,
-        formBloc: state.formBloc,
-      );
+    FormBlocUtils.removeFormBloc(
+      fieldBlocs: previousFieldBlocs,
+      formBloc: state.formBloc,
+    );
 
-      emit(state.copyWith(
-        isValidating: MultiFieldBloc.areFieldBlocsValidating(nextFieldBlocs),
-        isValid: MultiFieldBloc.areFieldBlocsValid(nextFieldBlocs),
-        fieldBlocs: nextFieldBlocs,
-      ));
+    emit(state.copyWith(
+      isValidating: MultiFieldBloc.areFieldBlocsValidating(nextFieldBlocs),
+      isValid: MultiFieldBloc.areFieldBlocsValid(nextFieldBlocs),
+      fieldBlocs: nextFieldBlocs,
+    ));
 
-      FormBlocUtils.updateFormBloc(
-        fieldBlocs: fieldBlocs,
-        formBloc: state.formBloc,
-        autoValidate: _autoValidate,
-      );
-    }
+    FormBlocUtils.updateFormBloc(
+      fieldBlocs: fieldBlocs,
+      formBloc: state.formBloc,
+      autoValidate: _autoValidate,
+    );
   }
 
   /// Removes all [FieldBloc]s.
