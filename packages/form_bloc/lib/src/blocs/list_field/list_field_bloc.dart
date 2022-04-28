@@ -65,8 +65,10 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
 
   List<T> get value => state.fieldBlocs;
 
+  /// Add [FieldBloc].
   void addFieldBloc(T fieldBloc) => addFieldBlocs([fieldBloc]);
 
+  /// Add [FieldBloc]s.
   void addFieldBlocs(List<T> fieldBlocs) {
     if (fieldBlocs.isNotEmpty) {
       final nextFieldBlocs = [...state.fieldBlocs, ...fieldBlocs];
@@ -136,6 +138,53 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
       formBloc: state.formBloc,
     );
   }
+
+  /// Insert [FieldBloc] into index.
+  void insertFieldBloc(T fieldBloc, int index) =>
+      insertFieldBlocs([fieldBloc], index);
+
+  /// Insert [FieldBloc]s into index.
+  void insertFieldBlocs(List<T> fieldBlocs, int index) {
+    if (fieldBlocs.isNotEmpty) {
+      final nextFieldBlocs = [...state.fieldBlocs];
+
+      nextFieldBlocs.insertAll(index, fieldBlocs);
+
+      emit(state.copyWith(
+        isValidating: MultiFieldBloc.areFieldBlocsValidating(nextFieldBlocs),
+        isValid: MultiFieldBloc.areFieldBlocsValid(nextFieldBlocs),
+        fieldBlocs: nextFieldBlocs,
+      ));
+
+      FormBlocUtils.updateFormBloc(
+        fieldBlocs: fieldBlocs,
+        formBloc: state.formBloc,
+        autoValidate: _autoValidate,
+      );
+    }
+  }
+
+  /// Updates all [FieldBloc]s.
+  void updateAllFieldBlocs(List<T> fieldBlocs) {
+    if (fieldBlocs.isNotEmpty) {
+      final nextFieldBlocs = [...fieldBlocs];
+
+      emit(state.copyWith(
+        isValidating: MultiFieldBloc.areFieldBlocsValidating(nextFieldBlocs),
+        isValid: MultiFieldBloc.areFieldBlocsValid(nextFieldBlocs),
+        fieldBlocs: nextFieldBlocs,
+      ));
+
+      FormBlocUtils.updateFormBloc(
+        fieldBlocs: fieldBlocs,
+        formBloc: state.formBloc,
+        autoValidate: _autoValidate,
+      );
+    }
+  }
+
+  /// Removes all [FieldBloc]s.
+  void clearFieldBlocs() => removeFieldBlocsWhere((element) => true);
 
   @override
   String toString() => '$runtimeType';
