@@ -45,6 +45,10 @@ class ListFieldFormBloc extends FormBloc<String, String> {
     members.removeFieldBlocAt(index);
   }
 
+  void clearMember() {
+    members.clearFieldBlocs();
+  }
+
   void addHobbyToMember(int memberIndex) {
     members.value[memberIndex].hobbies.addFieldBloc(TextFieldBloc());
   }
@@ -52,6 +56,10 @@ class ListFieldFormBloc extends FormBloc<String, String> {
   void removeHobbyFromMember(
       {required int memberIndex, required int hobbyIndex}) {
     members.value[memberIndex].hobbies.removeFieldBlocAt(hobbyIndex);
+  }
+
+  void clearHobbyToMember(int memberIndex) {
+    members.value[memberIndex].hobbies.clearFieldBlocs();
   }
 
   @override
@@ -76,7 +84,7 @@ class ListFieldFormBloc extends FormBloc<String, String> {
     // With Serialization
     final clubV2 = Club.fromJson(state.toJson());
 
-    ('clubV2');
+    print('clubV2');
     print(clubV2);
 
     emitSuccess(
@@ -233,6 +241,8 @@ class ListFieldsForm extends StatelessWidget {
                                       formBloc.removeMember(i),
                                   onAddHobby: () =>
                                       formBloc.addHobbyToMember(i),
+                                  onClearHobby: () =>
+                                      formBloc.clearHobbyToMember(i),
                                 );
                               },
                             );
@@ -240,9 +250,21 @@ class ListFieldsForm extends StatelessWidget {
                           return Container();
                         },
                       ),
-                      ElevatedButton(
-                        onPressed: formBloc.addMember,
-                        child: Text('ADD MEMBER'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: formBloc.addMember,
+                            child: Text('ADD MEMBER'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                            ),
+                            onPressed: formBloc.clearMember,
+                            child: Text('CLEAR MEMBER'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -262,6 +284,7 @@ class MemberCard extends StatelessWidget {
 
   final VoidCallback onRemoveMember;
   final VoidCallback onAddHobby;
+  final VoidCallback onClearHobby;
 
   const MemberCard({
     Key? key,
@@ -269,6 +292,7 @@ class MemberCard extends StatelessWidget {
     required this.memberField,
     required this.onRemoveMember,
     required this.onAddHobby,
+    required this.onClearHobby,
   }) : super(key: key);
 
   @override
@@ -345,9 +369,18 @@ class MemberCard extends StatelessWidget {
                 return Container();
               },
             ),
-            TextButton(
-              onPressed: onAddHobby,
-              child: Text('ADD HOBBY'),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: onAddHobby,
+                  child: Text('ADD HOBBY'),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(primary: Colors.red),
+                  onPressed: onClearHobby,
+                  child: Text('CLEAR HOBBY'),
+                ),
+              ],
             ),
           ],
         ),
