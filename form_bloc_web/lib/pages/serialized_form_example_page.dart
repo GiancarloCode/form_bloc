@@ -9,11 +9,11 @@ class SerializedFormExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Serialized Form',
-      demo: DeviceScreen(app: SerializedForm()),
-      code: CodeScreen(codePath: 'lib/examples/serialized_form.dart'),
+      demo: const DeviceScreen(app: SerializedForm()),
+      code: const CodeScreen(codePath: 'lib/examples/serialized_form.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 It is very common to want to have all the values ​​of a form in JSON format, in the case of Dart language it would be Map<String, dynamic>.
 
 With form bloc it is quite simple.   

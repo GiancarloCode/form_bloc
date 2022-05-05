@@ -7,7 +7,7 @@ class AllFieldsExamplePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExampleScaffold(
+    return const ExampleScaffold(
       title: 'Built-in Widgets',
       demo: DeviceScreen(app: AllFieldsForm()),
       code: CodeScreen(codePath: 'lib/examples/all_fields_form.dart'),

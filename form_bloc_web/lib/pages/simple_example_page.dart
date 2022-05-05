@@ -12,8 +12,8 @@ class SimpleExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Simple Example',
-      demo: DeviceScreen(app: LoginForm()),
-      code: CodeScreen(codePath: 'lib/examples/simple_form.dart'),
+      demo: const DeviceScreen(app: LoginForm()),
+      code: const CodeScreen(codePath: 'lib/examples/simple_form.dart'),
       tutorial: TutorialScreen(
         children: children(),
       ),
@@ -61,7 +61,7 @@ class SimpleExamplePage extends StatelessWidget {
     return TutorialStep(
       title: 'Import it',
       children: [
-        TutorialText('''
+        const TutorialText('''
     
 But also import material library.
 '''),
@@ -79,7 +79,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
     return TutorialStep(
       title: 'Create a form bloc',
       children: [
-        TutorialText('''
+        const TutorialText('''
 You need to create a class that extends `FormBloc<SuccessResponse, FailureResponse>`
 * `SuccessResponse` is the type of the successful response, used when the form is submitted successfully.
 * `FailureResponse` is the type of the failed response, used when the form fails to submit.
@@ -103,7 +103,7 @@ class LoginFormBloc extends FormBloc<String, String> {
     return TutorialStep(
       title: 'Create the field blocs',
       children: [
-        TutorialText('''
+        const TutorialText('''
 Each form bloc is made up of field blocs.
 
 You can create:
@@ -163,7 +163,7 @@ This validators are already included in the library, but you can add several val
     return TutorialStep(
       title: 'Add the field blocs to the form bloc',
       children: [
-        TutorialText('''
+        const TutorialText('''
 Once you have created all the field blocs, you must add them to the form bloc using the `addFieldBlocs` method.        
 '''),
         CodeCard.main(
@@ -188,7 +188,7 @@ Once you have created all the field blocs, you must add them to the form bloc us
     return TutorialStep(
       title: 'Implement onSubmitting method',
       children: [
-        TutorialText('''
+        const TutorialText('''
 This method will be called every time you call the `submit` method only if all the fields are valid.
 
 When this method is called the state of the form will be `FormBlocSubmitting`. 
@@ -253,7 +253,7 @@ Now we are going to create the user interface.
     return TutorialStep(
       title: 'Create a form widget',
       children: [
-        TutorialText('''
+        const TutorialText('''
 You need to create a widget with access to the form bloc`.
 
 The recommended way is to use a `BlocProvider` as this will take care of close / dispose the form bloc, and will allow any child widget to access the form bloc.     
@@ -308,7 +308,7 @@ Then we create a simple scaffold.
     return TutorialStep(
       title: 'Add FormBlocListener for manage form state changes',
       children: [
-        TutorialText('''
+        const TutorialText('''
 This widget will listen to the state of the form bloc and offer you functions to react to the different states.
 
 It should be used for functionality that needs to occur only in response to a state change such as navigation, showing a SnackBar, showing a Dialog, etc.
@@ -316,6 +316,7 @@ It should be used for functionality that needs to occur only in response to a st
 In this example:
 
 * I will show a loading dialog when the state is loading.
+* I will hide the dialog when the state is not validate.
 * I will hide the dialog when the state is success, and navigate to success screen.
 * I will hide the dialog when the state is failure, and show a snackBar with the error. 
 '''),
@@ -325,6 +326,9 @@ In this example:
             body: FormBlocListener<LoginFormBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
+              },
+              onSubmissionFailed: (context, state) {
+                LoadingDialog.hide(context);
               },
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
@@ -424,7 +428,7 @@ class SuccessScreen extends StatelessWidget {
     return TutorialStep(
       title: 'Connect the Field Blocs with Field Blocs Builders',
       children: [
-        TutorialText('''
+        const TutorialText('''
 You can easily connect any field bloc with any widget you want using a `BlocBuilder`, but flutter_form_bloc offers you some widgets.
 * TextFieldBlocBuilder
 * DropdownFieldBlocBuilder
@@ -488,7 +492,7 @@ To use them you simply have to assign a field bloc.
     return TutorialStep(
       title: 'Add a widget for submit the FormBloc',
       children: [
-        TutorialText('''
+        const TutorialText('''
 You must create a widget that can call the `submit` method of the form bloc.
 
 In our case we will do it with a ElevatedButton.        

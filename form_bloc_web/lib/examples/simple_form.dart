@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginForm(),
     );
@@ -43,11 +43,11 @@ class LoginFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    print(email.value);
-    print(password.value);
-    print(showSuccessResponse.value);
+    debugPrint(email.value);
+    debugPrint(password.value);
+    debugPrint(showSuccessResponse.value.toString());
 
-    await Future<void>.delayed(Duration(seconds: 1));
+    await Future<void>.delayed(const Duration(seconds: 1));
 
     if (showSuccessResponse.value) {
       emitSuccess();
@@ -58,6 +58,8 @@ class LoginFormBloc extends FormBloc<String, String> {
 }
 
 class LoginForm extends StatelessWidget {
+  const LoginForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -68,16 +70,19 @@ class LoginForm extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: Text('Login')),
+            appBar: AppBar(title: const Text('Login')),
             body: FormBlocListener<LoginFormBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
+              },
+              onSubmissionFailed: (context, state) {
+                LoadingDialog.hide(context);
               },
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
 
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => SuccessScreen()));
+                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
@@ -86,17 +91,17 @@ class LoginForm extends StatelessWidget {
                     SnackBar(content: Text(state.failureResponse!)));
               },
               child: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 child: AutofillGroup(
                   child: Column(
                     children: <Widget>[
                       TextFieldBlocBuilder(
                         textFieldBloc: loginFormBloc.email,
                         keyboardType: TextInputType.emailAddress,
-                        autofillHints: [
+                        autofillHints: const [
                           AutofillHints.username,
                         ],
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Email',
                           prefixIcon: Icon(Icons.email),
                         ),
@@ -104,8 +109,8 @@ class LoginForm extends StatelessWidget {
                       TextFieldBlocBuilder(
                         textFieldBloc: loginFormBloc.password,
                         suffixButton: SuffixButton.obscureText,
-                        autofillHints: [AutofillHints.password],
-                        decoration: InputDecoration(
+                        autofillHints: const [AutofillHints.password],
+                        decoration: const InputDecoration(
                           labelText: 'Password',
                           prefixIcon: Icon(Icons.lock),
                         ),
@@ -116,13 +121,13 @@ class LoginForm extends StatelessWidget {
                           booleanFieldBloc: loginFormBloc.showSuccessResponse,
                           body: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text('Show success response'),
+                            child: const Text('Show success response'),
                           ),
                         ),
                       ),
                       ElevatedButton(
                         onPressed: loginFormBloc.submit,
-                        child: Text('LOGIN'),
+                        child: const Text('LOGIN'),
                       ),
                     ],
                   ),
@@ -146,7 +151,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -157,8 +162,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -167,7 +172,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -176,19 +181,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => LoginForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const LoginForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

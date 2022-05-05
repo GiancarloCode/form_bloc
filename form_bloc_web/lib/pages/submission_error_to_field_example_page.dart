@@ -10,12 +10,12 @@ class SubmissionErrorToFieldExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Submission Error to Field',
-      demo: DeviceScreen(app: SubmissionErrorToFieldForm()),
-      code: CodeScreen(
+      demo: const DeviceScreen(app: SubmissionErrorToFieldForm()),
+      code: const CodeScreen(
           codePath: 'lib/examples/submission_error_to_field_form.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 You can add an error to field bloc from anywhere using the `addFieldError` method.
 
 It is usually used to add an error that we get from the server.

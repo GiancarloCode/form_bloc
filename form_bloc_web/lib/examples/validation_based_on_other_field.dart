@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ValidationBasedOnOtherFieldForm(),
     );
@@ -51,16 +51,18 @@ class ValidationBasedOnOtherFieldFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    print(password.value);
-    print(confirmPassword.value);
+    debugPrint(password.value);
+    debugPrint(confirmPassword.value);
 
-    await Future<void>.delayed(Duration(seconds: 1));
+    await Future<void>.delayed(const Duration(seconds: 1));
 
     emitSuccess();
   }
 }
 
 class ValidationBasedOnOtherFieldForm extends StatelessWidget {
+  const ValidationBasedOnOtherFieldForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -72,17 +74,20 @@ class ValidationBasedOnOtherFieldForm extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: Text('Validation based on other field')),
+            appBar: AppBar(title: const Text('Validation based on other field')),
             body: FormBlocListener<ValidationBasedOnOtherFieldFormBloc, String,
                 String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
               },
+              onSubmissionFailed: (context, state) {
+                LoadingDialog.hide(context);
+              },
               onSuccess: (context, state) {
                 LoadingDialog.hide(context);
 
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => SuccessScreen()));
+                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
@@ -90,28 +95,28 @@ class ValidationBasedOnOtherFieldForm extends StatelessWidget {
                     SnackBar(content: Text(state.failureResponse!)));
               },
               child: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 child: Column(
                   children: <Widget>[
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.password,
-                      autofillHints: [AutofillHints.password],
+                      autofillHints: const [AutofillHints.password],
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Password',
                         prefixIcon: Icon(Icons.lock_outline),
                       ),
                     ),
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.confirmPassword,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Confirm Password',
                         prefixIcon: Icon(Icons.lock),
                       ),
                     ),
                     ElevatedButton(
                       onPressed: loginFormBloc.submit,
-                      child: Text('SUBMIT'),
+                      child: const Text('SUBMIT'),
                     ),
                   ],
                 ),
@@ -134,7 +139,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +150,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -155,7 +160,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -164,20 +169,20 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (_) => ValidationBasedOnOtherFieldForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                      builder: (_) => const ValidationBasedOnOtherFieldForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

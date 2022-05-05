@@ -6,26 +6,24 @@ class UnderConstruction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Icon(
-              Icons.sentiment_very_satisfied,
-              size: 140,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(
+            Icons.sentiment_very_satisfied,
+            size: 140,
+            color: Colors.black.withAlpha(180),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Under Construction',
+            style: TextStyle(
+              fontSize: 35,
               color: Colors.black.withAlpha(180),
             ),
-            SizedBox(height: 12),
-            Text(
-              'Under Construction',
-              style: TextStyle(
-                fontSize: 35,
-                color: Colors.black.withAlpha(180),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

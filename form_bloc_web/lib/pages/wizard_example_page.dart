@@ -9,11 +9,11 @@ class WizardExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Wizard Example',
-      demo: DeviceScreen(app: WizardForm()),
-      code: CodeScreen(codePath: 'lib/examples/wizard_form.dart'),
+      demo: const DeviceScreen(app: WizardForm()),
+      code: const CodeScreen(codePath: 'lib/examples/wizard_form.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 # 1. Create the field blocs
 '''),
           CodeCard.main(

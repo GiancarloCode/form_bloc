@@ -12,11 +12,11 @@ class TutorialScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           children: <Widget>[
             ...children,
-            ShowAllCodeButton(),
+            const ShowAllCodeButton(),
           ],
         ),
       ),

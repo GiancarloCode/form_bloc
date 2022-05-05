@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -13,7 +13,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: ListFieldsForm(),
+      home: const ListFieldsForm(),
     );
   }
 }
@@ -70,18 +70,18 @@ class ListFieldFormBloc extends FormBloc<String, String> {
       }).toList(),
     );
 
-    print('clubV1');
-    print(clubV1);
+    debugPrint('clubV1');
+    debugPrint(clubV1.toJson().toString());
 
     // With Serialization
     final clubV2 = Club.fromJson(state.toJson());
 
-    ('clubV2');
-    print(clubV2);
+    debugPrint('clubV2');
+    debugPrint(clubV2.toJson().toString());
 
     emitSuccess(
       canSubmitAgain: true,
-      successResponse: JsonEncoder.withIndent('    ').convert(
+      successResponse: const JsonEncoder.withIndent('    ').convert(
         state.toJson(),
       ),
     );
@@ -118,10 +118,10 @@ class Club {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['clubName'] = this.clubName;
-    if (this.members != null) {
-      data['members'] = this.members!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['clubName'] = clubName;
+    if (members != null) {
+      data['members'] = members!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -147,10 +147,10 @@ class Member {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['hobbies'] = this.hobbies;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['firstName'] = firstName;
+    data['lastName'] = lastName;
+    data['hobbies'] = hobbies;
     return data;
   }
 
@@ -163,6 +163,8 @@ class Member {
 }
 
 class ListFieldsForm extends StatelessWidget {
+  const ListFieldsForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -181,10 +183,10 @@ class ListFieldsForm extends StatelessWidget {
             ),
             child: Scaffold(
               resizeToAvoidBottomInset: false,
-              appBar: AppBar(title: Text('List and Group Fields')),
+              appBar: AppBar(title: const Text('List and Group Fields')),
               floatingActionButton: FloatingActionButton(
                 onPressed: formBloc.submit,
-                child: Icon(Icons.send),
+                child: const Icon(Icons.send),
               ),
               body: FormBlocListener<ListFieldFormBloc, String, String>(
                 onSubmitting: (context, state) {
@@ -196,7 +198,7 @@ class ListFieldsForm extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: SingleChildScrollView(
                         child: Text(state.successResponse!)),
-                    duration: Duration(milliseconds: 1500),
+                    duration: const Duration(milliseconds: 1500),
                   ));
                 },
                 onFailure: (context, state) {
@@ -206,12 +208,12 @@ class ListFieldsForm extends StatelessWidget {
                       SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
                       TextFieldBlocBuilder(
                         textFieldBloc: formBloc.clubName,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Club Name',
                           prefixIcon: Icon(Icons.sentiment_satisfied),
                         ),
@@ -242,7 +244,7 @@ class ListFieldsForm extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: formBloc.addMember,
-                        child: Text('ADD MEMBER'),
+                        child: const Text('ADD MEMBER'),
                       ),
                     ],
                   ),
@@ -287,24 +289,24 @@ class MemberCard extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Member #${memberIndex + 1}',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: onRemoveMember,
                 ),
               ],
             ),
             TextFieldBlocBuilder(
               textFieldBloc: memberField.firstName,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'First Name',
               ),
             ),
             TextFieldBlocBuilder(
               textFieldBloc: memberField.lastName,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Last Name',
               ),
             ),
@@ -315,7 +317,7 @@ class MemberCard extends StatelessWidget {
                 if (state.fieldBlocs.isNotEmpty) {
                   return ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: state.fieldBlocs.length,
                     itemBuilder: (context, i) {
                       final hobbyFieldBloc = state.fieldBlocs[i];
@@ -332,7 +334,7 @@ class MemberCard extends StatelessWidget {
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.delete),
+                              icon: const Icon(Icons.delete),
                               onPressed: () =>
                                   memberField.hobbies.removeFieldBlocAt(i),
                             ),
@@ -347,7 +349,7 @@ class MemberCard extends StatelessWidget {
             ),
             TextButton(
               onPressed: onAddHobby,
-              child: Text('ADD HOBBY'),
+              child: const Text('ADD HOBBY'),
             ),
           ],
         ),
@@ -366,7 +368,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -377,8 +379,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -387,7 +389,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -396,19 +398,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => ListFieldsForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const ListFieldsForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

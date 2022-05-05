@@ -9,12 +9,12 @@ class LoadingAndInitializingExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Loading and Initializing Example',
-      demo: DeviceScreen(app: LoadingForm()),
-      code: CodeScreen(
+      demo: const DeviceScreen(app: LoadingForm()),
+      code: const CodeScreen(
           codePath: 'lib/examples/loading_and_initializing_form.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 # 1. Create the field blocs         
 '''),
           CodeCard.main(
@@ -72,7 +72,7 @@ And in case you have not been able to initialize the field blocs, for example a 
 In our case the first time `onLoading` is called, it will fail, so we will use `emitLoadFailed` and the second time they will be initialized successfully, so we will use `emitLoaded.
 '''),
           CodeCard.main(
-            nestedPath: 'WizardFormBloc > onLoading',
+            nestedPath: 'LoadingFormBloc > onLoading',
             code: '''
   var _throwException = true;
 
@@ -111,7 +111,7 @@ In our case:
 * FormBlocLoaded and the remaining states: let's show the fields
 '''),
           CodeCard.main(
-            nestedPath: 'WizardForm > build',
+            nestedPath: 'LoadingFormBloc > build',
             code: '''
               child: BlocBuilder<LoadingFormBloc, FormBlocState>(
                 builder: (context, state) {
@@ -132,13 +132,13 @@ That would be all, but if we want to optimize the number of rebuilds, the builde
 In our case we want it to be rebuilt only when the state type changes, or in case the previous state and the current state are `FormBlocLoading` since the progress has changed, because you can add progress :).
 '''),
           CodeCard.main(
-            nestedPath: 'WizardForm > build',
+            nestedPath: 'LoadingFormBloc > build',
             code: '''
               child: BlocBuilder<LoadingFormBloc, FormBlocState>(
                 condition: (previous, current) =>
                     previous.runtimeType != current.runtimeType ||
                     previous is FormBlocLoading && current is FormBlocLoading,
-                builder: (context, state) {
+                    builder: (context, state) {
 
                 },
               ),

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 
 class SuperBlocDelegate extends BlocObserver {
   @override
@@ -32,17 +33,17 @@ class SuperBlocDelegate extends BlocObserver {
   }
 
   @override
-  void onError(BlocBase cubit, Object error, StackTrace stacktrace) {
-    super.onError(cubit, error, stacktrace);
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    super.onError(bloc, error, stackTrace);
     _printWrapped(
-      'bloc: ${cubit.runtimeType}, error: $error, stacktrace: $stacktrace',
+      'bloc: ${bloc.runtimeType}, error: $error, stacktrace: $stackTrace',
     );
   }
 
   void _printWrapped(String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
-    print('\n');
-    pattern.allMatches(text).forEach((match) => print('${match.group(0)}'));
-    print('\n');
+    debugPrint('\n');
+    pattern.allMatches(text).forEach((match) => debugPrint('${match.group(0)}'));
+    debugPrint('\n');
   }
 }

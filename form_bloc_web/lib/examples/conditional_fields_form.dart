@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ConditionalFieldsForm(),
     );
@@ -83,13 +83,13 @@ class ConditionalFieldsFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    print(doYouLikeFormBloc.value);
-    print(whyNotYouLikeFormBloc.value);
-    print(showSecretField.value);
-    print(secretField.value);
+    debugPrint(doYouLikeFormBloc.value);
+    debugPrint(whyNotYouLikeFormBloc.value);
+    debugPrint(showSecretField.value.toString());
+    debugPrint(secretField.value);
 
     try {
-      await Future<void>.delayed(Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       emitSuccess();
     } catch (e) {
@@ -99,6 +99,8 @@ class ConditionalFieldsFormBloc extends FormBloc<String, String> {
 }
 
 class ConditionalFieldsForm extends StatelessWidget {
+  const ConditionalFieldsForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -116,16 +118,19 @@ class ConditionalFieldsForm extends StatelessWidget {
               ),
             ),
             child: Scaffold(
-              appBar: AppBar(title: Text('Conditional Fields')),
+              appBar: AppBar(title: const Text('Conditional Fields')),
               body: FormBlocListener<ConditionalFieldsFormBloc, String, String>(
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
+                },
+                onSubmissionFailed: (context, state) {
+                  LoadingDialog.hide(context);
                 },
                 onSuccess: (context, state) {
                   LoadingDialog.hide(context);
 
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => SuccessScreen()));
+                      MaterialPageRoute(builder: (_) => const SuccessScreen()));
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
@@ -134,7 +139,7 @@ class ConditionalFieldsForm extends StatelessWidget {
                       SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -143,7 +148,7 @@ class ConditionalFieldsForm extends StatelessWidget {
                           selectFieldBloc: formBloc.doYouLikeFormBloc,
                           itemBuilder: (context, dynamic value) =>
                               FieldItem(child: Text(value)),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Do you like form bloc?',
                             prefixIcon: SizedBox(),
                           ),
@@ -152,7 +157,7 @@ class ConditionalFieldsForm extends StatelessWidget {
                           textFieldBloc: formBloc.whyNotYouLikeFormBloc,
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Why?',
                             prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
                           ),
@@ -165,21 +170,21 @@ class ConditionalFieldsForm extends StatelessWidget {
                                 FieldBlocBuilderControlAffinity.trailing,
                             body: Container(
                               alignment: Alignment.center,
-                              child: Text('Do you want to see a secret field?'),
+                              child: const Text('Do you want to see a secret field?'),
                             ),
                           ),
                         ),
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.secretField,
                           keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Secret field',
                             prefixIcon: Icon(Icons.sentiment_very_satisfied),
                           ),
                         ),
                         ElevatedButton(
                           onPressed: formBloc.submit,
-                          child: Text('SUBMIT'),
+                          child: const Text('SUBMIT'),
                         ),
                       ],
                     ),
@@ -204,7 +209,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -215,8 +220,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -225,7 +230,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -234,19 +239,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => ConditionalFieldsForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const ConditionalFieldsForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

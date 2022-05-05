@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_gradients/flutter_gradients.dart';
-import 'package:gradients/gradients.dart';
 
 final colors = <Color>[Colors.indigo, Colors.deepPurpleAccent];
 final colors2 = <Color>[
@@ -9,12 +6,12 @@ final colors2 = <Color>[
   Colors.deepPurpleAccent.withAlpha(10),
 ];
 
-final mainGradient = LinearGradientPainter(colors: colors);
+final mainGradient = LinearGradient(colors: colors);
 
 final drawerBodyGradient =
-    LinearGradientPainter(colors: colors2, colorSpace: ColorSpace.cmyk);
+    LinearGradient(colors: colors2);
 
-final scaffoldBodyGradient = LinearGradientPainter(colors: colors);
+final scaffoldBodyGradient = LinearGradient(colors: colors);
 
 bool displayMobileLayout(BuildContext context) =>
     MediaQuery.of(context).size.width < 720;
