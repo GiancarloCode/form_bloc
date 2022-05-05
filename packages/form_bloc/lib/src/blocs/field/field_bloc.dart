@@ -788,7 +788,7 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
       fieldBlocs.every(_isFieldBlocValid);
 
   static bool areFieldBlocsValidating(Iterable<FieldBloc> fieldBlocs) =>
-      fieldBlocs.every(_isFieldBlocValidating);
+      fieldBlocs.isEmpty ? false : fieldBlocs.every(_isFieldBlocValidating);
 
   static bool _isFieldBlocValid(FieldBloc field) => field.state.isValid;
 
