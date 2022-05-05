@@ -10,7 +10,7 @@ class ShowAllCodeButton extends StatelessWidget {
       padding: const EdgeInsets.only(top: 24.0),
       child: GradientElevatedButton(
         onPressed: () => DefaultTabController.of(context)!.animateTo(2),
-        child: Text(
+        child: const Text(
           'SHOW ALL CODE',
           style: TextStyle(
             color: Colors.white,

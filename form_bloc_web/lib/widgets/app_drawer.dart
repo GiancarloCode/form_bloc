@@ -57,7 +57,7 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
       child: Drawer(
         elevation: widget.permanentlyDisplay ? 0.0 : 16,
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               // gradient: drawerBodyGradient,
               ),
           child: Column(
@@ -65,7 +65,7 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
               _buildHeader(),
               Expanded(
                 child: ListView(
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   padding: EdgeInsets.zero,
                   children: [
                     ..._buildItems(),
@@ -81,7 +81,7 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
 
   List<Widget> _buildItems() {
     return [
-      SizedBox(height: 16.0),
+      const SizedBox(height: 16.0),
       _buildDrawerItem(
         title: 'Home',
         routeName: RouteNames.home,
@@ -89,49 +89,49 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
       _buildSubHeader(),
       _buildDrawerItem(
         title: 'Simple',
-        routeName: RouteNames.simple_example,
+        routeName: RouteNames.simpleExample,
       ),
       _buildDrawerItem(
         title: 'Loading and Initializing',
-        routeName: RouteNames.loading_and_initializing_example,
+        routeName: RouteNames.loadingAndInitializingExample,
       ),
       _buildDrawerItem(
         title: 'Async Field Validation',
-        routeName: RouteNames.async_field_validation_example,
+        routeName: RouteNames.asyncFieldValidationExample,
       ),
       _buildDrawerItem(
         title: 'Validation Based on other Field',
-        routeName: RouteNames.validation_based_on_other_field_example,
+        routeName: RouteNames.validationBasedOnOtherFieldExample,
       ),
       _buildDrawerItem(
         title: 'Submission Error to Field',
-        routeName: RouteNames.submission_error_to_field_example,
+        routeName: RouteNames.submissionErrorToFieldExample,
       ),
       _buildDrawerItem(
         title: 'Wizard',
-        routeName: RouteNames.wizard_example,
+        routeName: RouteNames.wizardExample,
       ),
       _buildDrawerItem(
         title: 'Conditional Fields',
-        routeName: RouteNames.conditional_fields_example,
+        routeName: RouteNames.conditionalFieldsExample,
       ),
       _buildDrawerItem(
         title: 'Submission Progress',
-        routeName: RouteNames.submission_progress_example,
+        routeName: RouteNames.submissionProgressExample,
       ),
       _buildDrawerItem(
         title: 'List and Group Fields',
-        routeName: RouteNames.list_fields_example,
+        routeName: RouteNames.listFieldsExample,
       ),
       _buildDrawerItem(
         title: 'Serialized Form',
-        routeName: RouteNames.serialized_form_example,
+        routeName: RouteNames.serializedFormExample,
       ),
       _buildDrawerItem(
         title: 'Built-in Widgets',
-        routeName: RouteNames.built_in_widgets_example,
+        routeName: RouteNames.builtInWidgetsExample,
       ),
-      SizedBox(height: 16),
+      const SizedBox(height: 16),
     ];
   }
 
@@ -151,7 +151,7 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
     return Container(
       // color: Colors.white,
       height: 42,
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       alignment: Alignment.centerLeft,
       child: Text(
         'Examples',
@@ -175,10 +175,10 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
             children: <Widget>[
               Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.only(right: 55),
+                padding: const EdgeInsets.only(right: 55),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
+                  children: const <Widget>[
                     Text(
                       'form_bloc',
                       style: TextStyle(
@@ -217,15 +217,15 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
                         child: Card(
                           elevation: 2.0,
                           color: Colors.transparent,
-                          margin: EdgeInsets.all(8),
+                          margin: const EdgeInsets.all(8),
                           child: Container(
-                            padding: EdgeInsets.fromLTRB(32, 6, 32, 6),
+                            padding: const EdgeInsets.fromLTRB(32, 6, 32, 6),
                             decoration: BoxDecoration(
                               gradient: drawerBodyGradient,
                             ),
                             height: 28,
                             width: 200,
-                            child: Text(
+                            child: const Text(
                               'GitHub',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -263,7 +263,7 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
 }
 
 class DrawerItem extends StatefulWidget {
-  DrawerItem({
+  const DrawerItem({
     Key? key,
     required this.title,
     required this.routeName,
@@ -284,7 +284,7 @@ class DrawerItem extends StatefulWidget {
 }
 
 class _DrawerItemState extends State<DrawerItem> {
-  final _borderRadius = BorderRadius.only(
+  final _borderRadius = const BorderRadius.only(
     topRight: Radius.circular(25),
     bottomRight: Radius.circular(25),
   );
@@ -300,7 +300,7 @@ class _DrawerItemState extends State<DrawerItem> {
               gradient: widget.isCurrentRoute ? mainGradient : null,
               borderRadius: _borderRadius,
             ),
-            child: ListTile(),
+            child: const ListTile(),
           ),
         ),
         Material(

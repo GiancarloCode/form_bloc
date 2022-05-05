@@ -9,11 +9,11 @@ class ConditionalFieldsExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Conditional Fields',
-      demo: DeviceScreen(app: ConditionalFieldsForm()),
-      code: CodeScreen(codePath: 'lib/examples/conditional_fields_form.dart'),
+      demo: const DeviceScreen(app: ConditionalFieldsForm()),
+      code: const CodeScreen(codePath: 'lib/examples/conditional_fields_form.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 # 1. Create the field blocs
 
 You must create all the field blocs including the conditional fields.       

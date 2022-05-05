@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SerializedForm(),
     );
@@ -47,7 +47,7 @@ class SerializedFormBloc extends FormBloc<String, String> {
   void onSubmitting() async {
     emitSuccess(
       canSubmitAgain: true,
-      successResponse: JsonEncoder.withIndent('    ').convert(
+      successResponse: const JsonEncoder.withIndent('    ').convert(
         state.toJson(),
       ),
     );
@@ -55,6 +55,8 @@ class SerializedFormBloc extends FormBloc<String, String> {
 }
 
 class SerializedForm extends StatelessWidget {
+  const SerializedForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -73,20 +75,20 @@ class SerializedForm extends StatelessWidget {
             ),
             child: Scaffold(
               resizeToAvoidBottomInset: false,
-              appBar: AppBar(title: Text('Serialized Form')),
+              appBar: AppBar(title: const Text('Serialized Form')),
               floatingActionButton: FloatingActionButton(
                 onPressed: formBloc.submit,
-                child: Icon(Icons.send),
+                child: const Icon(Icons.send),
               ),
               body: FormBlocListener<SerializedFormBloc, String, String>(
                 onSuccess: (context, state) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(state.successResponse!),
-                    duration: Duration(seconds: 2),
+                    duration: const Duration(seconds: 2),
                   ));
                 },
                 child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -94,7 +96,7 @@ class SerializedForm extends StatelessWidget {
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.name,
                           keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Name',
                             prefixIcon: Icon(Icons.people),
                           ),
@@ -104,7 +106,7 @@ class SerializedForm extends StatelessWidget {
                           itemBuilder: (context, value) => FieldItem(
                               child: Text(
                                   value[0].toUpperCase() + value.substring(1))),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Gender',
                             prefixIcon: SizedBox(),
                           ),
@@ -115,7 +117,7 @@ class SerializedForm extends StatelessWidget {
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Date of Birth',
                             prefixIcon: Icon(Icons.calendar_today),
                           ),
@@ -143,7 +145,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -154,8 +156,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -164,7 +166,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -173,19 +175,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => SerializedForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const SerializedForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

@@ -9,11 +9,11 @@ class ListFieldsExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'List and Group Fields',
-      demo: DeviceScreen(app: ListFieldsForm()),
-      code: CodeScreen(codePath: 'lib/examples/list_fields_form.dart'),
+      demo: const DeviceScreen(app: ListFieldsForm()),
+      code: const CodeScreen(codePath: 'lib/examples/list_fields_form.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 # List Field Bloc
 
 It is a field that allows you to have a collection of field blocs, in such a way that you can add and remove fields from it, and the state of the list field bloc will be updated.
@@ -31,7 +31,7 @@ It is a field that allows you to have a collection of field blocs, in such a way
 * To remove a field bloc you use the `removeFieldBlocAt` method and pass it the index of the field bloc to remove.
 
 '''),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           CodeCard.main(
             nestedPath: 'MyForm',
             code: '''

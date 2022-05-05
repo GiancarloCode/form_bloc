@@ -37,7 +37,7 @@ class ExampleScaffold extends StatelessWidget {
                         ? Builder(
                             builder: (context) {
                               return IconButton(
-                                  icon: Icon(Icons.menu),
+                                  icon: const Icon(Icons.menu),
                                   onPressed: () {
                                     Scaffold.of(context).openDrawer();
                                   });
@@ -48,7 +48,7 @@ class ExampleScaffold extends StatelessWidget {
                     toolbarHeight: displayMobileLayout(context) ? null : 61,
                     title: Text(title),
                     backgroundColor: Colors.deepPurpleAccent,
-                    bottom: TabBar(
+                    bottom: const TabBar(
                       indicatorColor: Colors.white,
                       indicatorWeight: 4.0,
                       tabs: [
@@ -74,11 +74,11 @@ class ExampleScaffold extends StatelessWidget {
                     // decoration: BoxDecoration(
                     //   gradient: scaffoldBodyGradient,
                     // ),
-                    color: Color(0xFFF5F5F5),
+                    color: const Color(0xFFF5F5F5),
                     child: TabBarView(
                       children: [
                         AppTab(child: demo),
-                        AppTab(child: tutorial ?? UnderConstruction()),
+                        AppTab(child: tutorial ?? const UnderConstruction()),
                         AppTab(child: code),
                       ],
                     ),

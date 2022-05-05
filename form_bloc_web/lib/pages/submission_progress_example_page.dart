@@ -9,8 +9,8 @@ class SubmissionProgressExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Submission Progress',
-      demo: DeviceScreen(app: SubmissionProgressForm()),
-      code: CodeScreen(
+      demo: const DeviceScreen(app: SubmissionProgressForm()),
+      code: const CodeScreen(
         codePath: 'lib/examples/submission_progress_form.dart',
         extraDependencies: '''
   liquid_progress_indicator: ^0.3.2
@@ -19,7 +19,7 @@ class SubmissionProgressExamplePage extends StatelessWidget {
       ),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 When you want to add a progress when it is submitting, you can emit a submitting state and assign to the progress parameter a value between 0.0 and 1.0 that will indicate the progress.       
 '''),
           CodeCard.main(

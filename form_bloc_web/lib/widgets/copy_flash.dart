@@ -8,7 +8,7 @@ void showCopyFlash({
 }) =>
     showFlash(
       context: context,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
       builder: (_, controller) {
         return Flash(
           controller: controller,
@@ -20,8 +20,8 @@ void showCopyFlash({
           alignment: Alignment.bottomRight,
           backgroundGradient: mainGradient,
           onTap: () => controller.dismiss(),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
+          child: const Padding(
+            padding: EdgeInsets.all(12.0),
             child: DefaultTextStyle(
               style: TextStyle(color: Colors.white),
               child: Text(

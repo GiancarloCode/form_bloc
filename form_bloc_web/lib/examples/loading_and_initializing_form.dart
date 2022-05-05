@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoadingForm(),
     );
@@ -31,7 +31,7 @@ class LoadingFormBloc extends FormBloc<String, String> {
   @override
   void onLoading() async {
     try {
-      await Future<void>.delayed(Duration(milliseconds: 1500));
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
 
       if (_throwException) {
         // Simulate network error
@@ -54,11 +54,11 @@ class LoadingFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    print(text.value);
-    print(select.value);
+    debugPrint(text.value);
+    debugPrint(select.value);
 
     try {
-      await Future<void>.delayed(Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       emitSuccess();
     } catch (e) {
@@ -68,6 +68,8 @@ class LoadingFormBloc extends FormBloc<String, String> {
 }
 
 class LoadingForm extends StatelessWidget {
+  const LoadingForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -85,7 +87,7 @@ class LoadingForm extends StatelessWidget {
               ),
             ),
             child: Scaffold(
-              appBar: AppBar(title: Text('Loading and Initializing')),
+              appBar: AppBar(title: const Text('Loading and Initializing')),
               body: FormBlocListener<LoadingFormBloc, String, String>(
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
@@ -94,7 +96,7 @@ class LoadingForm extends StatelessWidget {
                   LoadingDialog.hide(context);
 
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => SuccessScreen()));
+                      MaterialPageRoute(builder: (_) => const SuccessScreen()));
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
@@ -108,28 +110,28 @@ class LoadingForm extends StatelessWidget {
                       previous is FormBlocLoading && current is FormBlocLoading,
                   builder: (context, state) {
                     if (state is FormBlocLoading) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state is FormBlocLoadFailed) {
                       return Center(
                         child: SingleChildScrollView(
                           child: Column(
                             children: <Widget>[
-                              Icon(Icons.sentiment_dissatisfied, size: 70),
-                              SizedBox(height: 20),
+                              const Icon(Icons.sentiment_dissatisfied, size: 70),
+                              const SizedBox(height: 20),
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
                                 alignment: Alignment.center,
                                 child: Text(
                                   state.failureResponse ??
                                       'An error has occurred please try again later',
-                                  style: TextStyle(fontSize: 25),
+                                  style: const TextStyle(fontSize: 25),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: loadingFormBloc.reload,
-                                child: Text('RETRY'),
+                                child: const Text('RETRY'),
                               ),
                             ],
                           ),
@@ -137,14 +139,14 @@ class LoadingForm extends StatelessWidget {
                       );
                     } else {
                       return SingleChildScrollView(
-                        physics: ClampingScrollPhysics(),
+                        physics: const ClampingScrollPhysics(),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: <Widget>[
                               TextFieldBlocBuilder(
                                 textFieldBloc: loadingFormBloc.text,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: 'Prefilled text field',
                                   prefixIcon:
                                       Icon(Icons.sentiment_very_satisfied),
@@ -155,14 +157,14 @@ class LoadingForm extends StatelessWidget {
                                 itemBuilder: (context, item) => FieldItem(
                                   child: Text(item),
                                 ),
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: 'Prefilled select field',
                                   prefixIcon: SizedBox(),
                                 ),
                               ),
                               ElevatedButton(
                                 onPressed: loadingFormBloc.submit,
-                                child: Text('SUBMIT'),
+                                child: const Text('SUBMIT'),
                               ),
                             ],
                           ),
@@ -190,7 +192,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -201,8 +203,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -211,7 +213,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -220,19 +222,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => LoadingForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const LoadingForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

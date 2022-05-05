@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SubmissionErrorToFieldForm(),
     );
@@ -28,9 +28,9 @@ class SubmissionErrorToFieldFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    print(username.value);
+    debugPrint(username.value);
 
-    await Future<void>.delayed(Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
 
     if (username.value.toLowerCase() == 'dev') {
       username.addFieldError(
@@ -48,6 +48,8 @@ class SubmissionErrorToFieldFormBloc extends FormBloc<String, String> {
 }
 
 class SubmissionErrorToFieldForm extends StatelessWidget {
+  const SubmissionErrorToFieldForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -66,7 +68,7 @@ class SubmissionErrorToFieldForm extends StatelessWidget {
               ),
             ),
             child: Scaffold(
-              appBar: AppBar(title: Text('Submission Error to Field')),
+              appBar: AppBar(title: const Text('Submission Error to Field')),
               body: FormBlocListener<SubmissionErrorToFieldFormBloc, String,
                   String>(
                 onSubmitting: (context, state) {
@@ -76,7 +78,7 @@ class SubmissionErrorToFieldForm extends StatelessWidget {
                   LoadingDialog.hide(context);
 
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => SuccessScreen()));
+                      MaterialPageRoute(builder: (_) => const SuccessScreen()));
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
@@ -85,7 +87,7 @@ class SubmissionErrorToFieldForm extends StatelessWidget {
                       SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -93,18 +95,18 @@ class SubmissionErrorToFieldForm extends StatelessWidget {
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.username,
                           keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Username',
                             prefixIcon: Icon(Icons.sentiment_very_satisfied),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Text('"dev" will add a cached error'),
                         ),
                         ElevatedButton(
                           onPressed: formBloc.submit,
-                          child: Text('SUBMIT'),
+                          child: const Text('SUBMIT'),
                         ),
                       ],
                     ),
@@ -129,7 +131,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -140,8 +142,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -150,7 +152,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -159,20 +161,20 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (_) => SubmissionErrorToFieldForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                      builder: (_) => const SubmissionErrorToFieldForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

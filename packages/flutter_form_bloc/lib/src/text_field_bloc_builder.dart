@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_form_bloc/src/features/appear/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
@@ -138,6 +139,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.toolbarOptions,
     this.enableSuggestions = true,
     this.animateWhenCanShow = true,
+    this.focusOnValidationFailed = true,
     this.obscureTextTrueIcon,
     this.obscureTextFalseIcon,
     this.clearTextIcon,
@@ -649,6 +651,11 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// {@endtemplate}
   final bool animateWhenCanShow;
 
+  /// {@template flutter_form_bloc.FieldBlocBuilder.focusOnValidationFailed}
+  /// Set to `true` if you want to focus field when has error on submitting
+  /// {@endtemplate}
+  final bool focusOnValidationFailed;
+
   /// When [suffixButton] is [SuffixButton.obscureText],
   /// this icon will be displayed when obscure text is `true`.
   ///
@@ -800,9 +807,10 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   Widget build(BuildContext context) {
     final fieldTheme = widget.themeStyleOf(context);
 
-    return CanShowFieldBlocBuilder(
-      fieldBloc: widget.textFieldBloc,
-      animate: widget.animateWhenCanShow,
+    return SimpleFieldBlocBuilder(
+      singleFieldBloc: widget.textFieldBloc,
+      animateWhenCanShow: widget.animateWhenCanShow,
+      focusOnValidationFailed: widget.focusOnValidationFailed,
       builder: (_, __) {
         return BlocBuilder<TextFieldBloc, TextFieldBlocState>(
           bloc: widget.textFieldBloc,

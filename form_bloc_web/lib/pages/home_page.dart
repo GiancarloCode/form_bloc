@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
             ? Builder(
                 builder: (context) {
                   return IconButton(
-                      icon: Icon(Icons.menu),
+                      icon: const Icon(Icons.menu),
                       onPressed: () {
                         Scaffold.of(context).openDrawer();
                       });
@@ -30,9 +30,9 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: SingleChildScrollView(
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           child: Container(
-            padding: EdgeInsets.all(32),
+            padding: const EdgeInsets.all(32),
             alignment: Alignment.center,
             child: Column(
               children: <Widget>[
@@ -46,34 +46,25 @@ class HomePage extends StatelessWidget {
                   ),
                   maxLines: 1,
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 _buildText('Easy Form State Management using BLoC pattern.'),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 _buildText(
                     'Separate the form state and Business Logic from the User Interface.'),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 _buildText('form_bloc uses '),
                 _buildText('Bloc Library', url: 'https://bloclibrary.dev/'),
-                /*     SizedBox(height: 12),
-                Text(
-                  'It would be great if you were familiar with it.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white.withAlpha(225),
-                  ),
-                ), */
-                SizedBox(height: 40),
-                Container(
+                const SizedBox(height: 40),
+                SizedBox(
                   height: 50,
                   width: 250,
                   child: TextButton(
                     onPressed: () => Navigator.of(context)
-                        .pushReplacementNamed(RouteNames.simple_example),
+                        .pushReplacementNamed(RouteNames.simpleExample),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
-                      child: Text(
+                      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                      child: const Text(
                         'GET STARTED',
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -87,7 +78,7 @@ class HomePage extends StatelessWidget {
                       primary: Colors.black38,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(
+                        side: const BorderSide(
                           width: 2,
                           color: Colors.white,
                         ),
@@ -95,26 +86,6 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                /*  GradientElevatedButton(
-                  onPressed: () => Navigator.of(context)
-                      .pushReplacementNamed(RouteNames.simple_example),
-                  gradient: drawerBodyGradient,
-                  padding: EdgeInsets.fromLTRB(16, 5, 16, 0),
-                  borderRadius: 20,
-                  width: 250,
-                  height: 50,
-                  child: Center(
-                    child: Text(
-                      'GET STARTED',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.black.withAlpha(170),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ) */
               ],
             ),
           ),

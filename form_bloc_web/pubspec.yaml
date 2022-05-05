@@ -8,31 +8,25 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # form_bloc:
-  #   path: ../packages/form_bloc
-  flutter_form_bloc:
-    path: ../packages/flutter_form_bloc
-  #  flutter_form_bloc: ^0.20.0
-  #  flutter_gradients: ^1.0.0+3
-  gradients: ^0.1.1+1
-
+#  form_bloc:
+#    path: ../packages/form_bloc
+#  flutter_form_bloc:
+#    path: ../packages/flutter_form_bloc
+  flutter_form_bloc: ^0.30.1
+  animations: ^2.0.2
   flutter_syntax_view: ^4.0.0
   flash: ^1.5.2
   url_launcher: ^6.0.2
-  flutter_markdown: ^0.6.1
-  # flutter_particle_background: any
-  simple_animations: ^3.1.1
+  flutter_markdown: ^0.6.10
   auto_size_text: ^3.0.0-nullsafety.0
-  flutter_fadein: ^2.0.0
-  liquid_progress_indicator:
-    git:
-      url: https://github.com/explodus/liquid_progress_indicator
+  liquid_progress_indicator: ^0.4.0
   rxdart: ^0.27.0
-  google_fonts: ^2.1.0
+  google_fonts: ^2.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^1.0.4
 
 flutter:
   uses-material-design: true

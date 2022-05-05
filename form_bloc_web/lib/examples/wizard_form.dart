@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: WizardForm(),
     );
@@ -73,7 +73,7 @@ class WizardFormBloc extends FormBloc<String, String> {
   @override
   void onSubmitting() async {
     if (state.currentStep == 0) {
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
 
       if (_showEmailTakenError) {
         _showEmailTakenError = false;
@@ -87,7 +87,7 @@ class WizardFormBloc extends FormBloc<String, String> {
     } else if (state.currentStep == 1) {
       emitSuccess();
     } else if (state.currentStep == 2) {
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
 
       emitSuccess();
     }
@@ -95,6 +95,8 @@ class WizardFormBloc extends FormBloc<String, String> {
 }
 
 class WizardForm extends StatefulWidget {
+  const WizardForm({Key? key}) : super(key: key);
+
   @override
   _WizardFormState createState() => _WizardFormState();
 }
@@ -129,7 +131,7 @@ class _WizardFormState extends State<WizardForm> {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
-                title: Text('Wizard'),
+                title: const Text('Wizard'),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(_type == StepperType.horizontal
@@ -141,12 +143,13 @@ class _WizardFormState extends State<WizardForm> {
               body: SafeArea(
                 child: FormBlocListener<WizardFormBloc, String, String>(
                   onSubmitting: (context, state) => LoadingDialog.show(context),
+                  onSubmissionFailed: (context, state) => LoadingDialog.hide(context),
                   onSuccess: (context, state) {
                     LoadingDialog.hide(context);
 
                     if (state.stepCompleted == state.lastStep) {
                       Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => SuccessScreen()));
+                          MaterialPageRoute(builder: (_) => const SuccessScreen()));
                     }
                   },
                   onFailure: (context, state) {
@@ -155,7 +158,7 @@ class _WizardFormState extends State<WizardForm> {
                   child: StepperFormBlocBuilder<WizardFormBloc>(
                     formBloc: context.read<WizardFormBloc>(),
                     type: _type,
-                    physics: ClampingScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     stepsBuilder: (formBloc) {
                       return [
                         _accountStep(formBloc!),
@@ -175,14 +178,14 @@ class _WizardFormState extends State<WizardForm> {
 
   FormBlocStep _accountStep(WizardFormBloc wizardFormBloc) {
     return FormBlocStep(
-      title: Text('Account'),
+      title: const Text('Account'),
       content: Column(
         children: <Widget>[
           TextFieldBlocBuilder(
             textFieldBloc: wizardFormBloc.username,
             keyboardType: TextInputType.emailAddress,
             enableOnlyWhenFormBlocCanSubmit: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Username',
               prefixIcon: Icon(Icons.person),
             ),
@@ -190,7 +193,7 @@ class _WizardFormState extends State<WizardForm> {
           TextFieldBlocBuilder(
             textFieldBloc: wizardFormBloc.email,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Email',
               prefixIcon: Icon(Icons.email),
             ),
@@ -199,7 +202,7 @@ class _WizardFormState extends State<WizardForm> {
             textFieldBloc: wizardFormBloc.password,
             keyboardType: TextInputType.emailAddress,
             suffixButton: SuffixButton.obscureText,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Password',
               prefixIcon: Icon(Icons.lock),
             ),
@@ -211,13 +214,13 @@ class _WizardFormState extends State<WizardForm> {
 
   FormBlocStep _personalStep(WizardFormBloc wizardFormBloc) {
     return FormBlocStep(
-      title: Text('Personal'),
+      title: const Text('Personal'),
       content: Column(
         children: <Widget>[
           TextFieldBlocBuilder(
             textFieldBloc: wizardFormBloc.firstName,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'First Name',
               prefixIcon: Icon(Icons.person),
             ),
@@ -225,7 +228,7 @@ class _WizardFormState extends State<WizardForm> {
           TextFieldBlocBuilder(
             textFieldBloc: wizardFormBloc.lastName,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Last Name',
               prefixIcon: Icon(Icons.person),
             ),
@@ -235,7 +238,7 @@ class _WizardFormState extends State<WizardForm> {
             itemBuilder: (context, value) => FieldItem(
               child: Text(value),
             ),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Gender',
               prefixIcon: SizedBox(),
             ),
@@ -246,7 +249,7 @@ class _WizardFormState extends State<WizardForm> {
             initialDate: DateTime.now(),
             lastDate: DateTime.now(),
             format: DateFormat('yyyy-MM-dd'),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Date of Birth',
               prefixIcon: Icon(Icons.cake),
             ),
@@ -258,13 +261,13 @@ class _WizardFormState extends State<WizardForm> {
 
   FormBlocStep _socialStep(WizardFormBloc wizardFormBloc) {
     return FormBlocStep(
-      title: Text('Social'),
+      title: const Text('Social'),
       content: Column(
         children: <Widget>[
           TextFieldBlocBuilder(
             textFieldBloc: wizardFormBloc.github,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Github',
               prefixIcon: Icon(Icons.sentiment_satisfied),
             ),
@@ -272,7 +275,7 @@ class _WizardFormState extends State<WizardForm> {
           TextFieldBlocBuilder(
             textFieldBloc: wizardFormBloc.twitter,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Twitter',
               prefixIcon: Icon(Icons.sentiment_satisfied),
             ),
@@ -280,7 +283,7 @@ class _WizardFormState extends State<WizardForm> {
           TextFieldBlocBuilder(
             textFieldBloc: wizardFormBloc.facebook,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Facebook',
               prefixIcon: Icon(Icons.sentiment_satisfied),
             ),
@@ -301,7 +304,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -312,8 +315,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -322,7 +325,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -331,19 +334,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => WizardForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const WizardForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),

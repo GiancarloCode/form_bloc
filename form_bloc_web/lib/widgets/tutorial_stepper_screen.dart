@@ -3,7 +3,7 @@ import 'package:form_bloc_web/constants/style.dart';
 import 'package:form_bloc_web/widgets/gradient_button.dart';
 
 class TutorialStepperScreen extends StatefulWidget {
-  TutorialStepperScreen({Key? key, required this.steps}) : super(key: key);
+  const TutorialStepperScreen({Key? key, required this.steps}) : super(key: key);
 
   final List<TutorialStep> steps;
 
@@ -28,11 +28,11 @@ class _TutorialStepperScreenState extends State<TutorialStepperScreen> {
       final step = widget.steps[i];
       steps.add(
         Step(
-            title: Container(
+            title: SizedBox(
               width: constraints.maxWidth - 90,
               child: Text(
                 step.title,
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
             ),
             subtitle: step.subtitle != null ? Text(step.subtitle!) : null,
@@ -51,7 +51,7 @@ class _TutorialStepperScreenState extends State<TutorialStepperScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Stepper(
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             currentStep: currentStep,
             onStepCancel: () => _updateStep(currentStep - 1),
             onStepContinue: () => _updateStep(currentStep + 1),
@@ -75,7 +75,7 @@ class _TutorialStepperScreenState extends State<TutorialStepperScreen> {
                       ),
                     if (currentStep > 0 &&
                         currentStep < widget.steps.length - 1)
-                      SizedBox(width: 16.0),
+                      const SizedBox(width: 16.0),
                     if (currentStep > 0)
                       TextButton(
                         onPressed: controlsDetails.onStepCancel,

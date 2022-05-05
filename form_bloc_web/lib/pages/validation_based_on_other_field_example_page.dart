@@ -9,12 +9,12 @@ class ValidationBasedOnOtherFieldExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Validation based on other field',
-      demo: DeviceScreen(app: ValidationBasedOnOtherFieldForm()),
-      code: CodeScreen(
+      demo: const DeviceScreen(app: ValidationBasedOnOtherFieldForm()),
+      code: const CodeScreen(
           codePath: 'lib/examples/validation_based_on_other_field.dart'),
       tutorial: TutorialScreen(
         children: <Widget>[
-          TutorialText('''
+          const TutorialText('''
 # 1. Create the field blocs   
 '''),
           CodeCard.main(

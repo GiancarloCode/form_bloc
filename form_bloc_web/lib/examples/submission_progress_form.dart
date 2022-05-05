@@ -5,14 +5,14 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:rxdart/rxdart.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SubmissionProgressForm(),
     );
@@ -31,12 +31,12 @@ class SubmissionProgressFormBloc extends FormBloc<String, String> {
     );
   }
 
-  List<FakeUpload> _fakeUploads = [];
-  List<StreamSubscription<double>> _fakeUploadProgressSubscriptions = [];
+  final List<FakeUpload> _fakeUploads = [];
+  final List<StreamSubscription<double>> _fakeUploadProgressSubscriptions = [];
 
   @override
   void onSubmitting() async {
-    print(username.value);
+    debugPrint(username.value);
 
     final int _currentUploadIndex = _fakeUploads.length;
     _fakeUploads.add(FakeUpload());
@@ -49,7 +49,7 @@ class SubmissionProgressFormBloc extends FormBloc<String, String> {
         },
         onDone: () async {
           if (!_fakeUploads[_currentUploadIndex]._isCancelled) {
-            await Future<void>.delayed(Duration(milliseconds: 400));
+            await Future<void>.delayed(const Duration(milliseconds: 400));
             emitSuccess();
           }
         },
@@ -61,11 +61,11 @@ class SubmissionProgressFormBloc extends FormBloc<String, String> {
   void onCancelingSubmission() async {
     _fakeUploads.last.cancel();
 
-    await Future<void>.delayed(Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 400));
 
     emitSubmitting(progress: 0.0);
 
-    await Future<void>.delayed(Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 400));
 
     emitSubmissionCancelled();
   }
@@ -107,6 +107,8 @@ class FakeUpload {
 }
 
 class SubmissionProgressForm extends StatelessWidget {
+  const SubmissionProgressForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -117,25 +119,25 @@ class SubmissionProgressForm extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: Text('Submission Progress')),
+            appBar: AppBar(title: const Text('Submission Progress')),
             body: FormBlocListener<SubmissionProgressFormBloc, String, String>(
               onSuccess: (context, state) {
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => SuccessScreen()));
+                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
               },
               child: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 child: Column(
                   children: <Widget>[
                     BlocBuilder<SubmissionProgressFormBloc, FormBlocState>(
                       builder: (context, state) {
                         return AnimatedContainer(
-                          duration: Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 500),
                           height: state is FormBlocSubmitting ||
                                   state is FormBlocSuccess
                               ? 46
                               : 0,
-                          padding: EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.only(bottom: 16),
                           child: LiquidLinearProgressIndicatorWithText(
                             percent: state is FormBlocSubmitting
                                 ? state.progress
@@ -148,12 +150,12 @@ class SubmissionProgressForm extends StatelessWidget {
                     ),
                     TextFieldBlocBuilder(
                       textFieldBloc: formBloc.username,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'username',
                         prefixIcon: Icon(Icons.account_circle),
                       ),
                     ),
-                    SubmitButton(),
+                    const SubmitButton(),
                   ],
                 ),
               ),
@@ -166,6 +168,8 @@ class SubmissionProgressForm extends StatelessWidget {
 }
 
 class SubmitButton extends StatelessWidget {
+  const SubmitButton({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final formBloc = context.read<SubmissionProgressFormBloc>();
@@ -175,7 +179,7 @@ class SubmitButton extends StatelessWidget {
         if (state is FormBlocSubmitting || state is FormBlocSuccess) {
           return WillPopScope(
               onWillPop: () async {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text(
                         'Can\'t close, please wait until form is submitted, or cancel the submission.')));
 
@@ -185,16 +189,16 @@ class SubmitButton extends StatelessWidget {
                       (state is FormBlocSubmitting && !state.isCanceling)
                   ? ElevatedButton(
                       onPressed: formBloc.cancelSubmission,
-                      child: Text('CANCEL'),
+                      child: const Text('CANCEL'),
                     )
-                  : ElevatedButton(
-                      onPressed: () => null,
+                  : const ElevatedButton(
+                      onPressed: null,
                       child: Text('CANCELING'),
                     ));
         } else {
           return ElevatedButton(
             onPressed: formBloc.submit,
-            child: Text('SUBMIT'),
+            child: const Text('SUBMIT'),
           );
         }
       },
@@ -205,7 +209,7 @@ class SubmitButton extends StatelessWidget {
 class LiquidLinearProgressIndicatorWithText extends ImplicitlyAnimatedWidget {
   final double percent;
 
-  LiquidLinearProgressIndicatorWithText({
+  const LiquidLinearProgressIndicatorWithText({
     Key? key,
     required this.percent,
     Duration duration = const Duration(milliseconds: 300),
@@ -233,7 +237,7 @@ class _LiquidLinearProgressIndicatorWithTextState
       borderRadius: 0,
       center: Text(
         '${((_tween!.evaluate(animation)! as double) * 100).ceil().toString()}%',
-        style: TextStyle(color: Colors.black87, fontSize: 16),
+        style: const TextStyle(color: Colors.black87, fontSize: 16),
       ),
     );
   }
@@ -254,7 +258,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key? key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -265,8 +269,8 @@ class LoadingDialog extends StatelessWidget {
           child: Container(
             width: 80,
             height: 80,
-            padding: EdgeInsets.all(12.0),
-            child: CircularProgressIndicator(),
+            padding: const EdgeInsets.all(12.0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),
@@ -275,7 +279,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -284,19 +288,19 @@ class SuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
+            const Icon(Icons.tag_faces, size: 100),
+            const SizedBox(height: 10),
+            const Text(
               'Success',
               style: TextStyle(fontSize: 54, color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => SubmissionProgressForm())),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
+                  MaterialPageRoute(builder: (_) => const SubmissionProgressForm())),
+              icon: const Icon(Icons.replay),
+              label: const Text('AGAIN'),
             ),
           ],
         ),
