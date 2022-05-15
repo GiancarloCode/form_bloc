@@ -235,7 +235,7 @@ abstract class MultiFieldBlocState<ExtraData> extends Equatable
   });
 
   @override
-  List<Object?> get props => [isValidating, isValid, extraData];
+  List<Object?> get props => [extraData];
 
   @override
   String toString([Object? other]) {

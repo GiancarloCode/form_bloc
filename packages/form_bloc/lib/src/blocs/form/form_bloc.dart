@@ -187,13 +187,13 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   /// TODO: Fix
   /// You can set [insertAt] of this fields, by default is `0`.
   void addStep(FieldBloc fieldBloc, {int? insertAt}) =>
-      _onAddStep(step: insertAt, fieldBlocs: fieldBloc);
+      _onAddStep(step: insertAt, fieldBloc: fieldBloc);
 
   /// Adds [fieldBloc] to the [FormBloc].
   ///
   /// You can set [at] of this fields, by default is `0`.
   void updateStep(int at, FieldBloc fieldBloc) =>
-      _onUpdateStep(step: at, fieldBlocs: fieldBloc);
+      _onUpdateStep(step: at, fieldBloc: fieldBloc);
 
   // /// Adds [fieldBlocs] to the [FormBloc].
   // ///
@@ -433,32 +433,36 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
 
   void _onAddStep({
     int? step,
-    required FieldBloc fieldBlocs,
+    required FieldBloc fieldBloc,
   }) {
     assert(step == null || step > 0 && step <= state._fieldBlocs.length);
 
-    if (state._fieldBlocs[step] == fieldBlocs) return;
+    if (state._fieldBlocs[step] == fieldBloc) return;
+
+    fieldBloc.updateAutoValidation(_autoValidate);
 
     emit(state._copyWith(
       fieldBlocs: {
         ...state._fieldBlocs,
-        step ?? state._fieldStates.length: fieldBlocs,
+        step ?? state._fieldStates.length: fieldBloc,
       },
     ));
   }
 
   void _onUpdateStep({
     required int step,
-    required FieldBloc fieldBlocs,
+    required FieldBloc fieldBloc,
   }) {
     assert(step > 0 && step <= state._fieldBlocs.length);
 
-    if (state._fieldBlocs[step] == fieldBlocs) return;
+    if (state._fieldBlocs[step] == fieldBloc) return;
+
+    fieldBloc.updateAutoValidation(_autoValidate);
 
     emit(state._copyWith(
       fieldBlocs: {
         ...state._fieldBlocs,
-        step: fieldBlocs,
+        step: fieldBloc,
       },
     ));
   }

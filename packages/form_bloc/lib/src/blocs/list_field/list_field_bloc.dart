@@ -44,7 +44,7 @@ class ListFieldBlocState<T extends FieldBloc, ExtraData>
   Iterable<FieldBlocStateBase> get flatFieldStates => fieldStates;
 
   @override
-  List<Object?> get props => [super.props, fieldBlocs];
+  List<Object?> get props => [super.props, fieldBlocs, fieldStates];
 
   @override
   String toString([Object? other]) =>
@@ -84,7 +84,7 @@ class ListFieldBloc<T extends FieldBloc, ExtraData>
   void addFieldBloc(T fieldBloc) => addFieldBlocs([fieldBloc]);
 
   /// Add [FieldBloc]s.
-  void addFieldBlocs(List<T> fieldBlocs, {bool inherit = true}) {
+  void addFieldBlocs(List<T> fieldBlocs) {
     if (fieldBlocs.isNotEmpty) {
       final nextFieldBlocs = [...state.fieldBlocs, ...fieldBlocs];
 

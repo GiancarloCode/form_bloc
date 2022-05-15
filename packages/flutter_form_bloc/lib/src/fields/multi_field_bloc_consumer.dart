@@ -57,6 +57,36 @@ class ListFieldBlocConsumer<TFieldBloc extends FieldBloc, TExtraData>
 
   static bool fieldBlocsChanges(
       ListFieldBlocState prev, ListFieldBlocState curr) {
-    return prev.fieldBlocs.equals(curr.fieldBlocs);
+    return !prev.fieldBlocs.equals(curr.fieldBlocs);
   }
+}
+
+class MapFieldBlocConsumer<TKey, TFieldBloc extends FieldBloc, TExtraData>
+    extends MultiFieldBlocConsumer<TFieldBloc,
+        MapFieldBlocState<TKey, TFieldBloc, TExtraData>> {
+  const MapFieldBlocConsumer({
+    Key? key,
+    required MapFieldBloc<TKey, TFieldBloc, TExtraData> mapFieldBloc,
+    CubitCondition<MapFieldBlocState<TKey, TFieldBloc, TExtraData>>? listenWhen,
+    CubitListener<MapFieldBlocState<TKey, TFieldBloc, TExtraData>>? listener,
+    CubitCondition<MapFieldBlocState<TKey, TFieldBloc, TExtraData>>? buildWhen =
+        fieldBlocsChanges,
+    Widget? child,
+    CubitBuilder<MapFieldBlocState<TKey, TFieldBloc, TExtraData>>? builder,
+  }) : super(
+          key: key,
+          multiFieldBloc: mapFieldBloc,
+          listener: listener,
+          builder: builder,
+          child: child,
+        );
+
+  static bool fieldBlocsChanges(
+      MapFieldBlocState prev, MapFieldBlocState curr) {
+    return !prev.fieldBlocs.equals(curr.fieldBlocs);
+  }
+}
+
+extension<K, V> on Map<K, V> {
+  bool equals(Map<K, V> other) => const MapEquality().equals(this, other);
 }

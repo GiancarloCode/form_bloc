@@ -1,17 +1,23 @@
 part of '../field/field_bloc.dart';
 
-class GroupFieldBlocState<T extends FieldBloc, ExtraData>
+typedef GroupFieldBlocState<TFieldBloc extends FieldBloc, TExtraData>
+    = MapFieldBlocState<String, TFieldBloc, TExtraData>;
+
+typedef GroupFieldBloc<TFieldBloc extends FieldBloc, TExtraData>
+    = MapFieldBloc<String, TFieldBloc, TExtraData>;
+
+class MapFieldBlocState<TKey, TFieldBloc extends FieldBloc, ExtraData>
     extends MultiFieldBlocState<ExtraData> {
-  final Map<String, T> fieldBlocs;
-  final Map<String, FieldBlocStateBase> fieldStates;
+  final Map<TKey, TFieldBloc> fieldBlocs;
+  final Map<TKey, FieldBlocStateBase> fieldStates;
 
   @override
-  late final Map<String, dynamic> value =
-      fieldStates.map<String, dynamic>((name, state) {
-    return MapEntry<String, dynamic>(name, state.value);
+  late final Map<TKey, dynamic> value =
+      fieldStates.map<TKey, dynamic>((name, state) {
+    return MapEntry<TKey, dynamic>(name, state.value);
   });
 
-  GroupFieldBlocState({
+  MapFieldBlocState({
     required this.fieldBlocs,
     required this.fieldStates,
     required ExtraData? extraData,
@@ -20,19 +26,19 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData>
         );
 
   @override
-  Map<String, dynamic> toJson() {
-    return fieldStates.map<String, dynamic>((key, value) {
-      return MapEntry<String, dynamic>(key, value.toJson());
+  Map<TKey, dynamic> toJson() {
+    return fieldStates.map<TKey, dynamic>((key, value) {
+      return MapEntry<TKey, dynamic>(key, value.toJson());
     });
   }
 
   @override
-  GroupFieldBlocState<T, ExtraData> copyWith({
+  MapFieldBlocState<TKey, TFieldBloc, ExtraData> copyWith({
     Param<ExtraData>? extraData,
-    Map<String, T>? fieldBlocs,
-    Map<String, FieldBlocStateBase>? fieldStates,
+    Map<TKey, TFieldBloc>? fieldBlocs,
+    Map<TKey, FieldBlocStateBase>? fieldStates,
   }) {
-    return GroupFieldBlocState(
+    return MapFieldBlocState(
       extraData: extraData == null ? this.extraData : extraData.value,
       fieldBlocs: fieldBlocs ?? this.fieldBlocs,
       fieldStates: fieldStates ??
@@ -48,23 +54,24 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData>
   Iterable<FieldBlocStateBase> get flatFieldStates => fieldStates.values;
 
   @override
-  List<Object?> get props => [super.props, fieldBlocs];
+  List<Object?> get props => [super.props, fieldBlocs, fieldStates];
 
   @override
   String toString([Object? other]) =>
       super.toString(',\n  fieldBlocs: $fieldBlocs');
 }
 
-class GroupFieldBloc<T extends FieldBloc, ExtraData>
-    extends MultiFieldBloc<ExtraData, GroupFieldBlocState<T, ExtraData>> {
+class MapFieldBloc<TKey, TFieldBloc extends FieldBloc, ExtraData>
+    extends MultiFieldBloc<ExtraData,
+        MapFieldBlocState<TKey, TFieldBloc, ExtraData>> {
   late final StreamSubscription _onValidationStatus;
 
-  GroupFieldBloc({
-    Map<String, T> fieldBlocs = const {},
+  MapFieldBloc({
+    Map<TKey, TFieldBloc> fieldBlocs = const {},
     bool autoValidate = true,
     ExtraData? extraData,
   }) : super(
-            GroupFieldBlocState(
+            MapFieldBlocState(
               extraData: extraData,
               fieldBlocs: fieldBlocs,
               fieldStates:
@@ -86,6 +93,26 @@ class GroupFieldBloc<T extends FieldBloc, ExtraData>
       ));
     });
   }
+
+  void addAll(Map<TKey, TFieldBloc> fieldBlocs) {
+    for (final fieldBloc in fieldBlocs.values) {
+      fieldBloc.updateAutoValidation(_autoValidate);
+    }
+
+    emit(state.copyWith(
+      fieldBlocs: {...state.fieldBlocs, ...fieldBlocs},
+    ));
+  }
+
+  void add(TKey key, TFieldBloc fieldBloc) => addAll({key: fieldBloc});
+
+  void removeWhere(bool Function(TKey key, TFieldBloc fieldBloc) predicate) {
+    emit(state.copyWith(
+      fieldBlocs: state.fieldBlocs.where((k, v) => !predicate(k, v)),
+    ));
+  }
+
+  void remove(TKey key) => removeWhere((k, fb) => k == key);
 
   @override
   Future<void> close() async {

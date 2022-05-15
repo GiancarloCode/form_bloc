@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/src/cubit_consumer.dart';
 import 'package:flutter_form_bloc/src/features/appear/can_show_field_bloc_builder.dart';
-import 'package:flutter_form_bloc/src/features/appear/form_bloc_provider.dart';
 import 'package:flutter_form_bloc/src/features/scroll/scrollable_field_bloc_target.dart';
+import 'package:flutter_form_bloc/src/form/form_bloc_provider.dart';
 import 'package:form_bloc/form_bloc.dart';
 
 class FieldBlocBuilderData extends Equatable {

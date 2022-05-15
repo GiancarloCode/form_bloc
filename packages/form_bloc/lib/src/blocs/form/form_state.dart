@@ -532,6 +532,9 @@ abstract class FormBlocState<SuccessResponse, FailureResponse> extends Equatable
   }
 
   @override
+  List<Object?> get props => [fieldBlocs, fieldStates, isEditing, currentStep];
+
+  @override
   String toString() => _toStringWith();
 
   String _toStringWith([String? extra]) {
@@ -610,10 +613,7 @@ class FormBlocLoading<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
+        super.props,
         progress,
       ];
 
@@ -654,11 +654,8 @@ class FormBlocLoadFailed<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
+        super.props,
         failureResponse,
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
       ];
 
   @override
@@ -686,14 +683,6 @@ class FormBlocLoaded<SuccessResponse, FailureResponse>
           fieldStates: fieldStates,
           currentStep: currentStep,
         );
-
-  @override
-  List<Object?> get props => [
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
-      ];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmitting}
@@ -733,12 +722,9 @@ class FormBlocSubmitting<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
+        super.props,
         progress,
         isCanceling,
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
       ];
 
   @override
@@ -783,12 +769,9 @@ class FormBlocSuccess<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
+        super.props,
         successResponse,
-        isEditing,
         canSubmitAgain,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
         stepCompleted,
       ];
 
@@ -830,11 +813,8 @@ class FormBlocFailure<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
+        super.props,
         failureResponse,
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
       ];
 
   @override
@@ -864,14 +844,6 @@ class FormBlocSubmissionCancelled<SuccessResponse, FailureResponse>
           fieldStates: fieldStates,
           currentStep: currentStep,
         );
-
-  @override
-  List<Object?> get props => [
-        _fieldStates,
-        isEditing,
-        _fieldBlocs,
-        currentStep,
-      ];
 }
 
 /// {@template form_bloc.form_state.FormBlocSubmissionFailed}
@@ -891,14 +863,6 @@ class FormBlocSubmissionFailed<SuccessResponse, FailureResponse>
           fieldBlocs: fieldBlocs,
           currentStep: currentStep,
         );
-
-  @override
-  List<Object?> get props => [
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
-      ];
 }
 
 /// {@template form_bloc.form_state.FormBlocDeleting}
@@ -925,10 +889,7 @@ class FormBlocDeleting<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
+        super.props,
         progress,
       ];
 
@@ -969,11 +930,8 @@ class FormBlocDeleteFailed<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
+        super.props,
         failureResponse,
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
       ];
 
   @override
@@ -1013,11 +971,8 @@ class FormBlocDeleteSuccessful<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
-        _fieldStates,
+        super.props,
         successResponse,
-        isEditing,
-        _fieldBlocs,
-        currentStep,
       ];
 
   @override
@@ -1057,10 +1012,7 @@ class FormBlocUpdatingFields<SuccessResponse, FailureResponse>
 
   @override
   List<Object?> get props => [
-        isEditing,
-        _fieldBlocs,
-        _fieldStates,
-        currentStep,
+        super.props,
         progress,
       ];
 

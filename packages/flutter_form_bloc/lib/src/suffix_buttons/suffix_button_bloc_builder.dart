@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/src/cubit_consumer.dart';
-import 'package:flutter_form_bloc/src/features/appear/form_bloc_provider.dart';
+import 'package:flutter_form_bloc/src/form/form_bloc_provider.dart';
 import 'package:form_bloc/form_bloc.dart';
 
 typedef BlocChildBuilder<FieldBlocState> = Widget Function(
