@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_bloc/src/blocs/field/field_bloc.dart';
+import 'package:form_bloc/src/extension/extension.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'form_state.dart';
@@ -11,8 +13,9 @@ part 'form_state.dart';
 ///
 /// See complex examples here: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc/example/lib/forms
 abstract class FormBloc<SuccessResponse, FailureResponse>
-    extends Cubit<FormBlocState<SuccessResponse, FailureResponse>> {
-  /// See: [_setupStepValidationSubs].
+    extends Cubit<FormBlocState<SuccessResponse, FailureResponse>>
+    implements FieldBloc<FormBlocState<SuccessResponse, FailureResponse>> {
+  /// See: [_mapFieldStates].
   /// Each [FormBlocState.currentStep] has its own subscription
   final Map<int, StreamSubscription> _stepValidationSubs = {};
 
@@ -32,7 +35,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   bool _canSubmit = true;
 
   /// Indicates if the [_fieldBlocs] must be autoValidated.
-  final bool _autoValidate;
+  bool _autoValidate;
 
   late final StreamSubscription _setupAreAllFieldsValidSubscriptionSubscription;
 
@@ -59,7 +62,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
     _formBlocStateSubscription?.cancel();
     _isValidDone = null;
 
-    for (final fieldBloc in state.flatFieldBlocs()!) {
+    for (final fieldBloc in state.fieldBlocs.values) {
       fieldBloc.close();
     }
 
@@ -70,34 +73,32 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
 
   void _initStepValidationSubs() {
     _setupAreAllFieldsValidSubscriptionSubscription = stream
-        .map((state) => state._flatFieldBlocsStepped())
+        .map((state) => state._fieldBlocs)
         .debounceTime(const Duration(milliseconds: 5))
-        .distinct()
-        .listen(_setupStepValidationSubs);
+        .distinct(const MapEquality<dynamic, dynamic>().equals)
+        .switchMap(_mapFieldStates)
+        .listen((fieldStates) {
+      emit(state._copyWith(
+        fieldStates: fieldStates,
+      ));
+    });
   }
 
   /// Init the subscription to the state of each
   /// `fieldBloc` in [FieldBlocs] to update [FormBlocState._isValidByStep]
   /// when any `fieldBloc` changes it state.
-  void _setupStepValidationSubs(
-    Map<int, Iterable<FieldBloc>> allFieldBlocs,
-  ) {
-    for (final sub in _stepValidationSubs.values) {
-      sub.cancel();
-    }
+  Stream<Map<int, FieldBlocStateBase>> _mapFieldStates(
+    Map<int, FieldBloc> fieldBlocs,
+  ) async* {
+    final fieldStatesStream = Rx.combineLatestList(fieldBlocs.entries.map((e) {
+      final step = e.key;
+      final fb = e.value;
+      return fb.hotStream.map((fs) => MapEntry(step, fs));
+    })).skip(1);
 
-    allFieldBlocs.forEach((step, fieldBlocs) {
-      _stepValidationSubs[step] =
-          MultiFieldBloc.onValidationStatus(fieldBlocs).listen((status) {
-        if (_autoValidate) {
-          _canSubmit = !status.isValidating;
-        }
-        _updateValidStep(
-          isValid: status.isValid,
-          step: step,
-        );
-      });
-    });
+    await for (final fieldStates in fieldStatesStream) {
+      yield Map.fromEntries(fieldStates.map((e) => MapEntry(e.key, e.value)));
+    }
   }
 
   /// If [isLoading] is `true`, [OnLoading]
@@ -158,6 +159,11 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   /// [onSubmitting] will be called.
   void submit() => _onSubmit();
 
+  @override
+  Future<bool> validate() async {
+    return await state.fieldBloc(state.currentStep).validate();
+  }
+
   /// Call `clear` method for each [FieldBloc] in [FieldBlocs].
   void clear() => _onClearFormBloc();
 
@@ -178,15 +184,22 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
 
   /// Adds [fieldBloc] to the [FormBloc].
   ///
-  /// You can set [step] of this fields, by default is `0`.
-  void addFieldBloc({int step = 0, required FieldBloc fieldBloc}) =>
-      _onAddFieldBlocs(step: step, fieldBlocs: [fieldBloc]);
+  /// TODO: Fix
+  /// You can set [insertAt] of this fields, by default is `0`.
+  void addStep(FieldBloc fieldBloc, {int? insertAt}) =>
+      _onAddStep(step: insertAt, fieldBlocs: fieldBloc);
 
-  /// Adds [fieldBlocs] to the [FormBloc].
+  /// Adds [fieldBloc] to the [FormBloc].
   ///
-  /// You can set [step] of this fields, by default is `0`.
-  void addFieldBlocs({int step = 0, required List<FieldBloc> fieldBlocs}) =>
-      _onAddFieldBlocs(step: step, fieldBlocs: fieldBlocs);
+  /// You can set [at] of this fields, by default is `0`.
+  void updateStep(int at, FieldBloc fieldBloc) =>
+      _onUpdateStep(step: at, fieldBlocs: fieldBloc);
+
+  // /// Adds [fieldBlocs] to the [FormBloc].
+  // ///
+  // /// You can set [step] of this fields, by default is `0`.
+  // void addFieldBlocs({int step = 0, required List<FieldBloc> fieldBlocs}) =>
+  //     _onAddFieldBlocs(step: step, fieldBlocs: fieldBlocs);
 
   void previousStep() => _onPreviousStep();
 
@@ -195,12 +208,19 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   void updateCurrentStep(int step) => _onUpdateCurrentStep(step: step);
 
   /// Removes a [FieldBloc] from the [FormBloc]
-  void removeFieldBloc({int? step, required FieldBloc fieldBloc}) =>
-      _onRemoveFieldBlocs(step: step, fieldBlocs: [fieldBloc]);
+  void removeStep(int at) => _onRemoveStep(step: at);
 
-  /// Removes a [FieldBlocs] from the [FormBloc]
-  void removeFieldBlocs({int? step, required List<FieldBloc> fieldBlocs}) =>
-      _onRemoveFieldBlocs(step: step, fieldBlocs: fieldBlocs);
+  /// Removes a [FieldBloc] from the [FormBloc]
+  void removeStepBy(FieldBloc fieldBloc, {int? at}) =>
+      _onRemoveStepBy(at: at, fieldBlocs: fieldBloc);
+
+  @override
+  void updateAutoValidation(bool isEnabled) {
+    if (_autoValidate == isEnabled) return;
+    for (final fieldBloc in state._fieldBlocs.values) {
+      fieldBloc.updateAutoValidation(isEnabled);
+    }
+  }
 
   // ===========================================================================
   // METHODS TO UPDATE STATE
@@ -298,19 +318,19 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   /// Check if all field blocs and their children have undergone a change in values
   /// {@endtemplate}
   bool isValuesChanged({int? step}) =>
-      FormBlocUtils.isValuesChanged(state.flatFieldBlocs(step) ?? const []);
+      FormBlocUtils.isValuesChanged(state.fieldBlocs.values);
 
   /// {@template form_bloc.hasInitialValues}
   /// Check if all field blocs and their children have initial values
   /// {@endtemplate}
   bool hasInitialValues({int? step}) =>
-      FormBlocUtils.hasInitialValues(state.flatFieldBlocs(step) ?? const []);
+      FormBlocUtils.hasInitialValues(state.fieldBlocs.values);
 
   /// {@template form_bloc.hasUpdatedValues}
   /// Check if all field blocs and their children have updated values
   /// {@endtemplate}
   bool hasUpdatedValues({int? step}) =>
-      FormBlocUtils.hasUpdatedValues(state.flatFieldBlocs(step) ?? const []);
+      FormBlocUtils.hasUpdatedValues(state.fieldBlocs.values);
 
   // ===========================================================================
   // toString
@@ -331,14 +351,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
         notValidStep != null &&
         notValidStep != state.lastStep) {
       // go to the first step invalid
-      emit(FormBlocSubmissionFailed(
-        isValidByStep: state._isValidByStep,
-        isEditing: state.isEditing,
-        fieldBlocs: state._fieldBlocs,
-        currentStep: state.currentStep,
-      ));
-      emit(state.toLoaded()._copyWith(currentStep: notValidStep));
-    } else if (_autoValidate && state.isValid(state.currentStep)) {
+
+      emit(state.toSubmissionFailed());
+      emit(state.toLoaded());
+    } else if (_autoValidate && state.isValidStep(state.currentStep)) {
       // Auto validate is enabled, required validate all field blocs
       // if step isn't valid to show a error (if value is initial)
 
@@ -354,54 +370,30 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
 
   void _validateAndSubmit() async {
     // get field blocs of the current step and validate
-    final currentFieldBlocs = state.fieldBlocs(state.currentStep)?.values ?? [];
-
     final isValidDone =
-        _isValidDone = MultiFieldBloc.validateAll(currentFieldBlocs);
+        _isValidDone = state.fieldBloc(state.currentStep).validate();
     final isValid = await isValidDone;
 
     if (_isValidDone != isValidDone) return;
 
     if (!isValid) {
-      emit(FormBlocSubmissionFailed(
-        isValidByStep: {
-          ...state._isValidByStep,
-          state.currentStep: false,
-        },
-        isEditing: state.isEditing,
+      emit(state.toFailure(
         fieldBlocs: state._fieldBlocs,
-        currentStep: state.currentStep,
       ));
       emit(state.toLoaded());
       return;
     }
 
     emit(state._copyWith(
-      isValidByStep: {
-        ...state._isValidByStep,
-        state.currentStep: true,
-      },
+      fieldBlocs: state._fieldBlocs,
     ));
 
     _callInBlocContext(onSubmitting);
   }
 
-  void _updateValidStep({
-    required bool isValid,
-    required int step,
-  }) async {
-    emit(state._copyWith(
-      isValidByStep: {
-        ...state._isValidByStep,
-        step: isValid,
-      },
-      fieldBlocs: state._fieldBlocs,
-    ));
-  }
-
   void _onClearFormBloc() {
     final allSingleFieldBlocs =
-        FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs()!.values);
+        FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs.values);
 
     for (var fieldBloc in allSingleFieldBlocs) {
       fieldBloc.clear();
@@ -413,13 +405,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
     if (stateSnapshot is FormBlocSubmitting<SuccessResponse, FailureResponse> &&
         !stateSnapshot.isCanceling) {
       _isValidDone = null;
-      emit(FormBlocSubmitting<SuccessResponse, FailureResponse>(
-        isCanceling: true,
-        isValidByStep: stateSnapshot._isValidByStep,
-        progress: stateSnapshot.progress,
-        isEditing: stateSnapshot.isEditing,
-        fieldBlocs: stateSnapshot._fieldBlocs,
-        currentStep: stateSnapshot.currentStep,
+      emit(state.toSubmitting(
+        isCancelling: true,
       ));
 
       _callInBlocContext(onCancelingSubmission);
@@ -427,13 +414,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   }
 
   void _onDeleteFormBloc() {
-    emit(FormBlocDeleting(
-      isValidByStep: state._isValidByStep,
-      isEditing: state.isEditing,
-      fieldBlocs: state._fieldBlocs,
-      currentStep: state.currentStep,
-      progress: 0.0,
-    ));
+    emit(state.toDeleting());
     _callInBlocContext(onDeleting);
   }
 
@@ -450,84 +431,64 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
     }
   }
 
-  void _onAddFieldBlocs({
-    int step = 0,
-    required Iterable<FieldBloc> fieldBlocs,
+  void _onAddStep({
+    int? step,
+    required FieldBloc fieldBlocs,
   }) {
-    fieldBlocs = fieldBlocs.where((fieldBloc) {
-      return !state.contains(fieldBloc, step: step, deep: false);
-    });
+    assert(step == null || step > 0 && step <= state._fieldBlocs.length);
 
-    if (fieldBlocs.isEmpty) return;
-
-    for (final fieldBloc in fieldBlocs) {
-      fieldBloc.updateFormBloc(this, autoValidate: _autoValidate);
-    }
+    if (state._fieldBlocs[step] == fieldBlocs) return;
 
     emit(state._copyWith(
       fieldBlocs: {
         ...state._fieldBlocs,
-        step: {
-          ...?state._fieldBlocs[step],
-          for (final fieldBloc in fieldBlocs) fieldBloc.state.name: fieldBloc,
-        },
-      },
-      isValidByStep: {
-        ...state._isValidByStep,
-        step: MultiFieldBloc.areFieldBlocsValid(
-            fieldBlocs.followedBy(state.flatFieldBlocs(step) ?? const [])),
+        step ?? state._fieldStates.length: fieldBlocs,
       },
     ));
   }
 
-  void _onRemoveFieldBlocs({
-    int? step,
-    required Iterable<FieldBloc> fieldBlocs,
-  }) async {
-    fieldBlocs = fieldBlocs.where((fieldBloc) {
-      return state.contains(fieldBloc, step: step, deep: false);
-    });
+  void _onUpdateStep({
+    required int step,
+    required FieldBloc fieldBlocs,
+  }) {
+    assert(step > 0 && step <= state._fieldBlocs.length);
 
-    if (fieldBlocs.isEmpty) return;
+    if (state._fieldBlocs[step] == fieldBlocs) return;
 
-    for (final fieldBloc in fieldBlocs) {
-      fieldBloc.removeFormBloc(this);
-    }
-
-    Map<int, Map<String, FieldBloc>> nextFieldBlocs;
-    if (step == null) {
-      nextFieldBlocs = {
+    emit(state._copyWith(
+      fieldBlocs: {
         ...state._fieldBlocs,
-        for (final step in state._fieldBlocs.keys)
-          step: {
-            for (final fieldBloc in state.flatFieldBlocs(step)!)
-              if (!fieldBlocs
-                  .any((fb) => fieldBloc.state.name == fb.state.name))
-                fieldBloc.state.name: fieldBloc,
-          },
-      };
-    } else {
-      final fieldBlocsInStep = state.flatFieldBlocs(step);
-      if (fieldBlocsInStep == null) return;
-      nextFieldBlocs = {
-        ...state._fieldBlocs,
-        step: {
-          for (final fieldBloc in fieldBlocsInStep)
-            if (!fieldBlocs.any((fb) => fieldBloc.state.name == fb.state.name))
-              fieldBloc.state.name: fieldBloc,
-        },
-      };
-    }
+        step: fieldBlocs,
+      },
+    ));
+  }
 
-    // Remove empty steps
-    nextFieldBlocs.removeWhere((_, fieldBlocs) => fieldBlocs.isEmpty);
+  void _onRemoveStep({required int step}) async {
+    if (!state._fieldBlocs.containsKey(step)) return;
+
+    final nextFieldBlocs = state._fieldBlocs.entries
+        .where((element) => element.key != step)
+        .map((e) => e.value)
+        .toList()
+        .asMap();
 
     emit(state._copyWith(
       fieldBlocs: nextFieldBlocs,
-      isValidByStep: {
-        for (final e in nextFieldBlocs.entries)
-          e.key: MultiFieldBloc.areFieldBlocsValid(e.value.values),
-      },
+    ));
+  }
+
+  void _onRemoveStepBy({
+    int? at,
+    required FieldBloc fieldBlocs,
+  }) async {
+    if (!state._fieldBlocs.containsValue(fieldBlocs)) return;
+
+    final nextFieldBlocs = state._fieldBlocs.where((key, value) {
+      return !((at == null || at == key) && fieldBlocs == value);
+    });
+
+    emit(state._copyWith(
+      fieldBlocs: nextFieldBlocs,
     ));
   }
 }

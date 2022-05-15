@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/groups/widgets/group_view.dart';
 import 'package:flutter_form_bloc/src/groups/widgets/item_group_tile.dart';
@@ -130,31 +129,21 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
       data: Theme.of(context).copyWith(
         checkboxTheme: fieldTheme.checkboxTheme,
       ),
-      child: SimpleFieldBlocBuilder(
-        singleFieldBloc: multiSelectFieldBloc,
+      child: SimpleFieldBlocBuilder<MultiSelectFieldBlocState<Value, dynamic>>(
+        fieldBloc: multiSelectFieldBloc,
         animateWhenCanShow: animateWhenCanShow,
-        builder: (_, __) {
-          return BlocBuilder<MultiSelectFieldBloc<Value, dynamic>,
-              MultiSelectFieldBlocState<Value, dynamic>>(
-            bloc: multiSelectFieldBloc,
-            builder: (context, state) {
-              final isEnabled = fieldBlocIsEnabled(
-                isEnabled: this.isEnabled,
-                enableOnlyWhenFormBlocCanSubmit:
-                    enableOnlyWhenFormBlocCanSubmit,
-                fieldBlocState: state,
-              );
-
-              return DefaultFieldBlocBuilderPadding(
-                padding: padding,
-                child: GroupInputDecorator(
-                  decoration:
-                      _buildDecoration(context, state, isEnabled, fieldTheme),
-                  child:
-                      _buildCheckboxes(context, state, isEnabled, fieldTheme),
-                ),
-              );
-            },
+        enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+        isEnabled: isEnabled,
+        // TODO: Implement readOnly
+        readOnly: false,
+        nextFocusNode: nextFocusNode,
+        builder: (context, state, data) {
+          return DefaultFieldBlocBuilderPadding(
+            padding: padding,
+            child: GroupInputDecorator(
+              decoration: _buildDecoration(context, state, data, fieldTheme),
+              child: _buildCheckboxes(context, state, data, fieldTheme),
+            ),
           );
         },
       ),
@@ -164,7 +153,7 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   Widget _buildCheckboxes(
     BuildContext context,
     MultiSelectFieldBlocState<Value, dynamic> state,
-    bool isFieldEnabled,
+    FieldBlocBuilderData data,
     CheckboxFieldTheme fieldTheme,
   ) {
     return DefaultTextStyle(
@@ -183,11 +172,9 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
         builder: (context, index) {
           final item = state.items[index];
           final fieldItem = itemBuilder(context, item);
-          final isEnabled = isFieldEnabled && fieldItem.isEnabled;
 
-          final onChanged = fieldBlocBuilderOnChange<bool?>(
+          final onChanged = data.buildOnChange<bool?>(
             isEnabled: isEnabled,
-            nextFocusNode: nextFocusNode,
             onChanged: (isChecked) {
               if (!isChecked!) {
                 multiSelectFieldBloc.deselect(item);
@@ -220,13 +207,13 @@ class CheckboxGroupFieldBlocBuilder<Value> extends StatelessWidget {
   InputDecoration _buildDecoration(
     BuildContext context,
     MultiSelectFieldBlocState<Value, dynamic> state,
-    bool isEnabled,
+    FieldBlocBuilderData data,
     CheckboxFieldTheme fieldTheme,
   ) {
     var decoration = this.decoration;
 
     decoration = decoration.copyWith(
-      enabled: isEnabled,
+      enabled: data.isEnabled,
       errorText: Style.getErrorText(
         context: context,
         errorBuilder: errorBuilder,

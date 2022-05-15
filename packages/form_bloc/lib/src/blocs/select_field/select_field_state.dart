@@ -1,7 +1,6 @@
 part of '../field/field_bloc.dart';
 
-class SelectFieldBlocState<Value, ExtraData>
-    extends FieldBlocState<Value?, Value, ExtraData?> {
+class SelectFieldBlocState<Value, ExtraData> extends FieldBlocState<Value?, Value, ExtraData?> {
   final List<Value> items;
 
   SelectFieldBlocState({
@@ -14,8 +13,6 @@ class SelectFieldBlocState<Value, ExtraData>
     required Suggestions<Value>? suggestions,
     required bool isValidated,
     required bool isValidating,
-    FormBloc? formBloc,
-    required String name,
     this.items = const [],
     dynamic Function(Value? value)? toJson,
     ExtraData? extraData,
@@ -29,8 +26,6 @@ class SelectFieldBlocState<Value, ExtraData>
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
-          formBloc: formBloc,
-          name: name,
           toJson: toJson,
           extraData: extraData,
         );
@@ -46,7 +41,6 @@ class SelectFieldBlocState<Value, ExtraData>
     Param<Suggestions<Value>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    Param<FormBloc?>? formBloc,
     List<Value>? items,
     Param<ExtraData?>? extraData,
   }) {
@@ -60,8 +54,6 @@ class SelectFieldBlocState<Value, ExtraData>
       suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc == null ? this.formBloc : formBloc.value,
-      name: name,
       items: items ?? this.items,
       toJson: _toJson,
       extraData: extraData == null ? this.extraData : extraData.value,
@@ -69,8 +61,7 @@ class SelectFieldBlocState<Value, ExtraData>
   }
 
   @override
-  String toString([String extra = '']) =>
-      super.toString(',\n  items: $items$extra');
+  String toString([String extra = '']) => super.toString(',\n  items: $items$extra');
 
   @override
   List<Object?> get props => [super.props, items];

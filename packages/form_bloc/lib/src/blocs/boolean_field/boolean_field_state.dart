@@ -1,7 +1,6 @@
 part of '../field/field_bloc.dart';
 
-class BooleanFieldBlocState<ExtraData>
-    extends FieldBlocState<bool, bool, ExtraData?> {
+class BooleanFieldBlocState<ExtraData> extends FieldBlocState<bool, bool, ExtraData?> {
   BooleanFieldBlocState({
     required bool isValueChanged,
     required bool initialValue,
@@ -12,8 +11,6 @@ class BooleanFieldBlocState<ExtraData>
     required Suggestions<bool>? suggestions,
     required bool isValidated,
     required bool isValidating,
-    FormBloc? formBloc,
-    required String name,
     List additionalProps = const <dynamic>[],
     dynamic Function(bool value)? toJson,
     ExtraData? extraData,
@@ -27,8 +24,6 @@ class BooleanFieldBlocState<ExtraData>
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
-          formBloc: formBloc,
-          name: name,
           toJson: toJson,
           extraData: extraData,
         );
@@ -44,7 +39,6 @@ class BooleanFieldBlocState<ExtraData>
     Param<Suggestions<bool>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    Param<FormBloc?>? formBloc,
     Param<ExtraData?>? extraData,
   }) {
     return BooleanFieldBlocState(
@@ -57,8 +51,6 @@ class BooleanFieldBlocState<ExtraData>
       isDirty: isDirty ?? this.isDirty,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc == null ? this.formBloc : formBloc.value,
-      name: name,
       toJson: _toJson,
       extraData: extraData == null ? this.extraData : extraData.value,
     );

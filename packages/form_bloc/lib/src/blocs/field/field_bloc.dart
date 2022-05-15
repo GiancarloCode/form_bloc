@@ -10,7 +10,6 @@ import 'package:form_bloc/src/extension/extension.dart';
 import 'package:form_bloc/src/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:uuid/uuid.dart';
 
 part '../boolean_field/boolean_field_bloc.dart';
 part '../boolean_field/boolean_field_state.dart';
@@ -52,23 +51,13 @@ typedef Suggestions<Value> = Future<List<Value>> Function(String pattern);
 ///   * [GroupFieldBloc].
 ///   * [ListFieldBloc].
 mixin FieldBloc<State extends FieldBlocStateBase> on BlocBase<State> {
-  String get name => state.name;
-
   /// {@template form_bloc.FieldBloc.validate}
   /// Validate the field. If it contains more fields, it validates all children.
   /// Returns `true` if the field is valid otherwise `false`
   /// {@endtemplate}
   Future<bool> validate();
 
-  /// {@template form_bloc.FieldBloc.updateFormBloc}
-  /// Update the [formBloc] and [autoValidate] to the fieldBloc
-  /// {@endtemplate}
-  void updateFormBloc(FormBloc formBloc, {bool autoValidate = false});
-
-  /// {@template form_bloc.FieldBloc.removeFormBloc}
-  /// Remove the [formBloc] to the fieldBloc
-  /// {@endtemplate}
-  void removeFormBloc(FormBloc formBloc);
+  void updateAutoValidation(bool isEnabled);
 }
 
 /// The base class with the common behavior
@@ -84,7 +73,7 @@ abstract class SingleFieldBloc<
     Suggestion,
     State extends FieldBlocState<Value, Suggestion, ExtraData>,
     ExtraData> extends Cubit<State> with FieldBloc {
-  bool _autoValidate = true;
+  bool _autoValidate;
 
   List<Validator<Value>> _validators;
 
@@ -108,11 +97,13 @@ abstract class SingleFieldBloc<
 
   SingleFieldBloc({
     Equality<Value> equality = const DefaultEquality<Never>(),
+    bool autoValidate = true,
     required List<Validator<Value>>? validators,
     required List<AsyncValidator<Value>>? asyncValidators,
     required Duration asyncValidatorDebounceTime,
     required State initialState,
-  })  : _validators = validators ?? [],
+  })  : _autoValidate = autoValidate,
+        _validators = validators ?? [],
         _asyncValidators = asyncValidators ?? [],
         _asyncValidatorDebounceTime = asyncValidatorDebounceTime,
         super(initialState) {
@@ -327,16 +318,12 @@ abstract class SingleFieldBloc<
     _revalidateFieldBlocsSubscription?.cancel();
     // TODO: When async validation is in progress and auto validate is off this method is broken
     // because it emit a completed async validation
-    // TODO: It does not manage MultiFieldBloc fields
     if (fieldBlocs.isNotEmpty) {
-      _revalidateFieldBlocsSubscription = Rx.combineLatest<dynamic, void>(
-        fieldBlocs.whereType<SingleFieldBloc>().toList().map(
-          (state) {
-            return state.stream.map<dynamic>((state) => state.value).distinct();
-          },
-        ),
-        (_) {},
-      ).listen((_) {
+      _revalidateFieldBlocsSubscription = Rx.merge<void>(fieldBlocs.map((e) {
+        return e.stream.map<void>((event) {
+          event.value;
+        }).distinct(DeepCollectionEquality().equals);
+      })).listen((_) {
         if (_autoValidate) {
           _validate();
         } else {
@@ -546,34 +533,13 @@ abstract class SingleFieldBloc<
     }
   }
 
-  /// {@macro form_bloc.FieldBloc.updateFormBloc}
-  /// See [FieldBloc.updateFormBloc]
+  // Launch validate if previous auto validation is disable and current is enabled
   @override
-  void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
-    _autoValidate = autoValidate;
-    if (!_autoValidate) {
-      emit(state.copyWith(
-        error: Param(null),
-        isValidated: false,
-        isValidating: false,
-        formBloc: Param(formBloc),
-      ) as State);
-    } else {
-      emit(state.copyWith(
-        formBloc: Param(formBloc),
-      ) as State);
-    }
-  }
-
-  /// {@macro form_bloc.FieldBloc.removeFormBloc}
-  /// See [FieldBloc.removeFormBloc]
-  @override
-  void removeFormBloc(FormBloc formBloc) {
-    if (state.formBloc == formBloc) {
-      emit(state.copyWith(
-        formBloc: Param(null),
-      ) as State);
-    }
+  void updateAutoValidation(bool isEnabled) {
+    if (_autoValidate == isEnabled) return;
+    _autoValidate = isEnabled;
+    if (!_autoValidate || state.isValidated) return;
+    _validate();
   }
 
   /// {@template form_bloc.field_bloc.itemsWithoutDuplicates}
@@ -624,42 +590,13 @@ abstract class SingleFieldBloc<
   }
 }
 
-class ValidationStatus extends Equatable {
-  final bool isValidating;
-  final bool isValid;
-
-  const ValidationStatus({
-    required this.isValidating,
-    required this.isValid,
-  });
-
-  @override
-  List<Object?> get props => [isValidating, isValid];
-
-  @override
-  String toString() {
-    return 'ValidationStatus{isValidating: $isValidating, isValid: $isValid}';
-  }
-}
-
 class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
     extends Cubit<TState> with FieldBloc<TState> {
-  late final StreamSubscription _onValidationStatus;
+  bool _autoValidate;
 
-  bool _autoValidate = false;
-
-  bool get autoValidate => _autoValidate;
-
-  MultiFieldBloc(TState initialState) : super(initialState) {
-    _onValidationStatus = stream.switchMap((state) {
-      return MultiFieldBloc.onValidationStatus(state.flatFieldBlocs);
-    }).listen((validationStatus) {
-      emit(state.copyWith(
-        isValidating: validationStatus.isValidating,
-        isValid: validationStatus.isValid,
-      ) as TState);
-    });
-  }
+  MultiFieldBloc(TState initialState, {required bool autoValidate})
+      : _autoValidate = autoValidate,
+        super(initialState);
 
   Iterable<FieldBloc> get flatFieldBlocs => state.flatFieldBlocs;
 
@@ -701,57 +638,19 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
   // INTERNAL
   // ===========================================================================
 
-  /// See [FieldBloc.updateFormBloc]
   @override
-  void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
-    _autoValidate = autoValidate;
-
-    emit(state.copyWith(
-      formBloc: Param(formBloc),
-    ) as TState);
-
-    FormBlocUtils.updateFormBloc(
-      fieldBlocs: state.flatFieldBlocs,
-      formBloc: formBloc,
-      autoValidate: _autoValidate,
-    );
-  }
-
-  /// See [FieldBloc.removeFormBloc]
-  @override
-  void removeFormBloc(FormBloc formBloc) {
-    if (state.formBloc == formBloc) {
-      emit(state.copyWith(
-        formBloc: Param(null),
-      ) as TState);
-
-      FormBlocUtils.removeFormBloc(
-        fieldBlocs: state.flatFieldBlocs,
-        formBloc: formBloc,
-      );
-    }
-  }
-
-  @override
-  Future<void> close() {
-    _onValidationStatus.cancel();
+  void updateAutoValidation(bool isEnabled) {
+    if (_autoValidate == isEnabled) return;
+    _autoValidate = isEnabled;
     for (final fieldBloc in state.flatFieldBlocs) {
-      fieldBloc.close();
+      fieldBloc.updateAutoValidation(isEnabled);
     }
-    return super.close();
   }
 
-  static Stream<ValidationStatus> onValidationStatus(
-    Iterable<FieldBloc> fieldBlocs,
-  ) {
-    return Rx.combineLatestList(fieldBlocs.map((fieldBloc) {
-      return Rx.merge([Stream.value(fieldBloc.state), fieldBloc.stream]);
-    })).map((fieldStates) {
-      return ValidationStatus(
-        isValidating: fieldStates.any((fieldState) => fieldState.isValidating),
-        isValid: fieldStates.every((fieldState) => fieldState.isValid),
-      );
-    }).distinct();
+  @override
+  Future<void> close() async {
+    await Future.wait(state.flatFieldBlocs.map((e) => e.close()));
+    return super.close();
   }
 
   static Future<bool> validateAll(Iterable<FieldBloc> fieldBlocs) async {
@@ -766,32 +665,4 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
       return areValid.every((isValid) => isValid);
     });
   }
-
-  static bool deepContains(Iterable<FieldBloc> fieldBlocs, FieldBloc target) {
-    if (fieldBlocs.isEmpty) return false;
-
-    for (final fieldBloc in fieldBlocs) {
-      if (fieldBloc is MultiFieldBloc) {
-        final contains =
-            MultiFieldBloc.deepContains(fieldBloc.state.flatFieldBlocs, target);
-        if (contains) {
-          return true;
-        }
-      } else if (fieldBloc.state.name == target.state.name) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  static bool areFieldBlocsValid(Iterable<FieldBloc> fieldBlocs) =>
-      fieldBlocs.every(_isFieldBlocValid);
-
-  static bool areFieldBlocsValidating(Iterable<FieldBloc> fieldBlocs) =>
-      fieldBlocs.every(_isFieldBlocValidating);
-
-  static bool _isFieldBlocValid(FieldBloc field) => field.state.isValid;
-
-  static bool _isFieldBlocValidating(FieldBloc field) =>
-      field.state.isValidating;
 }

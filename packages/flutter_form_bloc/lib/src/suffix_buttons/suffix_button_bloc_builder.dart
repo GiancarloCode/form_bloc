@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/utils/functions.dart';
+import 'package:flutter_form_bloc/src/cubit_consumer.dart';
+import 'package:flutter_form_bloc/src/features/appear/form_bloc_provider.dart';
 import 'package:form_bloc/form_bloc.dart';
 
 typedef BlocChildBuilder<FieldBlocState> = Widget Function(
@@ -33,10 +33,10 @@ class SuffixButtonBuilderBase extends StatelessWidget {
   }
 
   Widget _buildButton(BuildContext context, FieldBlocState state) {
-    final isEnabled = fieldBlocIsEnabled(
-      isEnabled: this.isEnabled,
-      fieldBlocState: state,
-    );
+    final formBloc = FormBlocProvider.maybeOf(context);
+
+    final isEnabled =
+        this.isEnabled && !(formBloc?.state.isValidating ?? false);
 
     return InkWell(
       borderRadius: const BorderRadius.all(Radius.circular(25.0)),
@@ -48,9 +48,9 @@ class SuffixButtonBuilderBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExcludeFocus(
-      child: BlocBuilder<SingleFieldBloc, FieldBlocState>(
-        bloc: singleFieldBloc,
-        builder: (context, state) {
+      child: SourceConsumer<FieldBlocState>(
+        source: singleFieldBloc,
+        builder: (context, state, _) {
           Widget current = _buildButton(context, state);
 
           if (!visibleWithoutValue) {

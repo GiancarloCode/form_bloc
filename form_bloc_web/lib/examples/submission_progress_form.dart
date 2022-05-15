@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:rxdart/rxdart.dart';
@@ -26,9 +27,7 @@ class SubmissionProgressFormBloc extends FormBloc<String, String> {
   );
 
   SubmissionProgressFormBloc() {
-    addFieldBlocs(
-      fieldBlocs: [username],
-    );
+    addStep(username);
   }
 
   final List<FakeUpload> _fakeUploads = [];
@@ -120,7 +119,8 @@ class SubmissionProgressForm extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(title: const Text('Submission Progress')),
-            body: FormBlocListener<SubmissionProgressFormBloc, String, String>(
+            body: FormBlocListener<String, String>(
+              formBloc: formBloc,
               onSuccess: (context, state) {
                 Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (_) => const SuccessScreen()));
@@ -298,7 +298,8 @@ class SuccessScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const SubmissionProgressForm())),
+                  MaterialPageRoute(
+                      builder: (_) => const SubmissionProgressForm())),
               icon: const Icon(Icons.replay),
               label: const Text('AGAIN'),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -19,11 +20,7 @@ class SubmissionErrorToFieldFormBloc extends FormBloc<String, String> {
   final username = TextFieldBloc();
 
   SubmissionErrorToFieldFormBloc() {
-    addFieldBlocs(
-      fieldBlocs: [
-        username,
-      ],
-    );
+    addStep(username);
   }
 
   @override
@@ -69,8 +66,8 @@ class SubmissionErrorToFieldForm extends StatelessWidget {
             ),
             child: Scaffold(
               appBar: AppBar(title: const Text('Submission Error to Field')),
-              body: FormBlocListener<SubmissionErrorToFieldFormBloc, String,
-                  String>(
+              body: FormBlocListener<String, String>(
+                formBloc: formBloc,
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
                 },

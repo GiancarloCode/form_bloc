@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/cubit_consumer.dart';
 import 'package:form_bloc/form_bloc.dart';
 
 class CanShowFieldBlocBuilder extends StatefulWidget {
   const CanShowFieldBlocBuilder({
     Key? key,
+    required this.formBloc,
     required this.fieldBloc,
     required this.builder,
     this.animate = true,
   }) : super(key: key);
 
-  final FieldBloc fieldBloc;
+  final FieldBloc formBloc;
+  final FieldBloc<FieldBlocStateBase> fieldBloc;
   final bool animate;
   final Widget Function(BuildContext context, bool canShow) builder;
 
@@ -36,7 +38,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
       duration: const Duration(milliseconds: 300),
     );
 
-    if (widget.fieldBloc.state.hasFormBloc) {
+    if (widget.formBloc.state.contains(widget.fieldBloc)) {
       _showOnFirstFrame = true;
       _initVisibility();
     } else {
@@ -59,8 +61,8 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     if (widget.animate != oldWidget.animate) {
       _initVisibility();
     }
-    if (widget.fieldBloc.state.hasFormBloc !=
-        oldWidget.fieldBloc.state.hasFormBloc) {
+    if (widget.formBloc.state.contains(widget.fieldBloc) !=
+        widget.formBloc.state.contains(oldWidget.fieldBloc)) {
       _initVisibility();
     }
   }
@@ -72,7 +74,7 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
   }
 
   void _initVisibility() {
-    final canShow = widget.fieldBloc.state.hasFormBloc;
+    final canShow = widget.formBloc.state.contains(widget.fieldBloc);
 
     _canShow = canShow;
 
@@ -126,10 +128,12 @@ class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
       );
     }
 
-    return BlocListener<FieldBloc, FieldBlocStateBase>(
-      bloc: widget.fieldBloc,
-      listenWhen: (prev, curr) => prev.hasFormBloc != curr.hasFormBloc,
-      listener: (context, state) => _changeVisibility(state.hasFormBloc),
+    return SourceConsumer<FieldBlocStateBase>(
+      source: widget.formBloc,
+      listenWhen: (prev, curr) =>
+          prev.contains(widget.fieldBloc) != curr.contains(widget.fieldBloc),
+      listener: (context, state) =>
+          _changeVisibility(state.contains(widget.fieldBloc)),
       child: child,
     );
   }

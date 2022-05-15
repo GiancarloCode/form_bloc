@@ -6,14 +6,13 @@ import '../utils/states.dart';
 
 class GroupFieldBlocImpl extends GroupFieldBloc<FieldBloc, dynamic> {
   GroupFieldBlocImpl({
-    required String name,
-    required List<FieldBloc> fieldBlocs,
+    required Map<String, FieldBloc> fieldBlocs,
     required dynamic extraData,
-  }) : super(fieldBlocs: fieldBlocs, name: name, extraData: extraData);
+  }) : super(fieldBlocs: fieldBlocs, extraData: extraData);
 
   @override
   String toString() {
-    return '$runtimeType: ${state.name}';
+    return '$runtimeType';
   }
 }
 
@@ -26,43 +25,33 @@ void main() {
   group('FormBlocUtils:', () {
     group('getAllSingleFieldBlocs:', () {
       final textFieldBloc1 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc1',
         initialValue: 'text1',
       );
       final textFieldBloc2 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc2',
         initialValue: 'text2',
       );
 
       final textFieldBloc3 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc3',
         initialValue: 'text3',
       );
       final textFieldBloc4 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc4',
         initialValue: 'text4',
       );
 
       final textFieldBloc5 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc5',
         initialValue: 'text5',
       );
       final textFieldBloc6 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc6',
         initialValue: 'text6',
       );
-
       final textFieldBloc7 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc7',
         initialValue: 'text7',
       );
       final textFieldBloc8 = TextFieldBloc<dynamic>(
-        name: 'textFieldBloc8',
         initialValue: 'text8',
       );
 
       final groupFieldWithSingleFieldBlocs1 = GroupFieldBlocImpl(
-        name: 'groupFieldWithSingleFieldBlocs1',
         fieldBlocs: [
           textFieldBloc3,
           textFieldBloc4,
@@ -71,7 +60,6 @@ void main() {
       );
 
       final groupFieldWithSingleFieldBlocs2 = GroupFieldBlocImpl(
-        name: 'groupFieldWithSingleFieldBlocs2',
         fieldBlocs: [
           textFieldBloc5,
           textFieldBloc6,
@@ -80,7 +68,6 @@ void main() {
       );
 
       final groupFieldBlocWithGroupAndSingleFieldBlocs1 = GroupFieldBlocImpl(
-        name: 'groupFieldBlocWithGroupAndSingleFieldBlocs',
         fieldBlocs: [
           groupFieldWithSingleFieldBlocs2,
           textFieldBloc7,
@@ -89,33 +76,25 @@ void main() {
         extraData: null,
       );
 
-      final booleanFieldBloc1 =
-          BooleanFieldBloc<dynamic>(name: 'booleanFieldBloc1');
-      final booleanFieldBloc2 =
-          BooleanFieldBloc<dynamic>(name: 'booleanFieldBloc2');
+      final booleanFieldBloc1 = BooleanFieldBloc<dynamic>();
+      final booleanFieldBloc2 = BooleanFieldBloc<dynamic>();
 
       final fieldBlocListWithSingleFieldBlocs1 =
           ListFieldBloc<FieldBloc, dynamic>(
-        name: 'fieldBlocListWithSingleFieldBlocs1',
         fieldBlocs: [
           booleanFieldBloc1,
           booleanFieldBloc2,
         ],
       );
 
-      final selectFieldBloc1 =
-          SelectFieldBloc<String, dynamic>(name: 'selectFieldBloc1');
-      final multiSelectFieldBloc1 =
-          MultiSelectFieldBloc<String, dynamic>(name: 'multiSelectFieldBloc1');
+      final selectFieldBloc1 = SelectFieldBloc<String, dynamic>();
+      final multiSelectFieldBloc1 = MultiSelectFieldBloc<String, dynamic>();
 
-      final multiSelectFieldBloc3 =
-          MultiSelectFieldBloc<String, dynamic>(name: 'booleanFieldBloc3');
-      final textFieldBloc9 = TextFieldBloc<dynamic>(name: 'textFieldBloc9');
-      final inputFieldBloc1 = InputFieldBloc<int?, dynamic>(
-          name: 'inputFieldBloc1', initialValue: null);
+      final multiSelectFieldBloc3 = MultiSelectFieldBloc<String, dynamic>();
+      final textFieldBloc9 = TextFieldBloc<dynamic>();
+      final inputFieldBloc1 = InputFieldBloc<int?, dynamic>(initialValue: null);
 
       final groupFieldBlocWithAll1 = GroupFieldBlocImpl(
-        name: 'groupFieldBlocWithAll1',
         fieldBlocs: [
           selectFieldBloc1,
           multiSelectFieldBloc1,
@@ -128,7 +107,6 @@ void main() {
       );
 
       final fieldBlocListWithAll1 = ListFieldBloc<FieldBloc, dynamic>(
-        name: 'fieldBlocListWithAll1',
         fieldBlocs: [
           selectFieldBloc1,
           multiSelectFieldBloc1,
@@ -140,7 +118,6 @@ void main() {
       );
 
       final fieldBlocListWithAll2 = ListFieldBloc<FieldBloc, dynamic>(
-        name: 'fieldBlocListWithAll2',
         fieldBlocs: [
           selectFieldBloc1,
           multiSelectFieldBloc1,
@@ -152,7 +129,6 @@ void main() {
       );
 
       final fieldBlocListWithAll3 = ListFieldBloc<FieldBloc, dynamic>(
-        name: 'fieldBlocListWithAll3',
         fieldBlocs: [
           fieldBlocListWithAll1,
           fieldBlocListWithAll2,
@@ -232,8 +208,7 @@ void main() {
       });
 
       test('Empty FieldBlocList', () {
-        final fieldBlocList21 =
-            ListFieldBloc<FieldBloc, dynamic>(name: 'list21');
+        final fieldBlocList21 = ListFieldBloc<FieldBloc, dynamic>();
 
         final fieldBlocs = <FieldBloc>[
           fieldBlocList21,
@@ -251,7 +226,6 @@ void main() {
 
       test('FieldBlocList with SingleFieldBlocs', () {
         final fieldBlocList21 = ListFieldBloc<FieldBloc, dynamic>(
-          name: 'list21',
           fieldBlocs: [
             textFieldBloc1,
             booleanFieldBloc1,
@@ -321,7 +295,6 @@ void main() {
 
       test('FieldBlocList with GroupFieldBlocs', () {
         final fieldBlocList21 = ListFieldBloc<FieldBloc, dynamic>(
-          name: 'list21',
           fieldBlocs: [
             groupFieldWithSingleFieldBlocs1,
           ],
@@ -345,34 +318,32 @@ void main() {
       });
     });
 
-    final booleanFieldBloc1 = BooleanFieldBloc<dynamic>(name: 'boolean1');
-    final textFieldBloc1 =
-        TextFieldBloc<dynamic>(name: 'textFieldBloc1', initialValue: 'text1');
+    final booleanFieldBloc1 = BooleanFieldBloc<dynamic>();
+    final textFieldBloc1 = TextFieldBloc<dynamic>(initialValue: 'text1');
 
-    final booleanFieldBloc2 = BooleanFieldBloc<dynamic>(name: 'boolean2');
-    final textFieldBloc2 =
-        TextFieldBloc<dynamic>(name: 'textFieldBloc2', initialValue: 'text2');
+    final booleanFieldBloc2 = BooleanFieldBloc<dynamic>();
+    final textFieldBloc2 = TextFieldBloc<dynamic>(initialValue: 'text2');
 
-    final groupFieldBloc1 = GroupFieldBlocImpl(
-        name: 'group1', fieldBlocs: [booleanFieldBloc1], extraData: null);
+    final groupFieldBloc1 =
+        GroupFieldBlocImpl(fieldBlocs: [booleanFieldBloc1], extraData: null);
 
     final fieldBlocList1 = ListFieldBloc<FieldBloc, dynamic>(
-        name: 'list1', fieldBlocs: [booleanFieldBloc1, textFieldBloc1]);
+        fieldBlocs: [booleanFieldBloc1, textFieldBloc1]);
 
     final fieldBlocList2 = ListFieldBloc<FieldBloc, dynamic>(
-        name: 'list2', fieldBlocs: [booleanFieldBloc2, textFieldBloc2]);
+        fieldBlocs: [booleanFieldBloc2, textFieldBloc2]);
 
     final fieldBlocList3 = ListFieldBloc<FieldBloc, dynamic>(
-        name: 'list3', fieldBlocs: [fieldBlocList1, fieldBlocList2]);
+        fieldBlocs: [fieldBlocList1, fieldBlocList2]);
 
-    final groupFieldBloc2 = GroupFieldBlocImpl(
-        name: 'group2', fieldBlocs: [fieldBlocList3], extraData: null);
+    final groupFieldBloc2 =
+        GroupFieldBlocImpl(fieldBlocs: [fieldBlocList3], extraData: null);
 
-    final groupFieldBloc3 = GroupFieldBlocImpl(
-        name: 'group3', fieldBlocs: [groupFieldBloc2], extraData: null);
+    final groupFieldBloc3 =
+        GroupFieldBlocImpl(fieldBlocs: [groupFieldBloc2], extraData: null);
 
-    final fieldBlocList4 = ListFieldBloc<FieldBloc, dynamic>(
-        name: 'list4', fieldBlocs: [groupFieldBloc3]);
+    final fieldBlocList4 =
+        ListFieldBloc<FieldBloc, dynamic>(fieldBlocs: [groupFieldBloc3]);
     group('getFieldBlocFromPath', () {
       test('First name of path is a SingleFieldBloc', () {
         final fieldBlocs = <String, FieldBloc>{
@@ -799,7 +770,7 @@ void main() {
       test('SingleFieldBloc', () async {
         final formBloc = FormBlocImpl();
 
-        final booleanFieldBloc = BooleanFieldBloc<dynamic>(name: '');
+        final booleanFieldBloc = BooleanFieldBloc<dynamic>();
 
         FormBlocUtils.updateFormBloc(
           fieldBlocs: [booleanFieldBloc],
@@ -843,7 +814,7 @@ void main() {
       test('ListFieldBloc', () async {
         final formBloc = FormBlocImpl();
 
-        final listFieldBloc = ListFieldBloc<FieldBloc, dynamic>(name: '');
+        final listFieldBloc = ListFieldBloc<FieldBloc, dynamic>();
 
         FormBlocUtils.updateFormBloc(
           fieldBlocs: [listFieldBloc],
@@ -878,7 +849,7 @@ void main() {
         final formBloc = FormBlocImpl();
 
         final listFieldBloc =
-            GroupFieldBlocImpl(name: '', fieldBlocs: [], extraData: null);
+            GroupFieldBlocImpl(fieldBlocs: [], extraData: null);
 
         FormBlocUtils.updateFormBloc(
           fieldBlocs: [listFieldBloc],

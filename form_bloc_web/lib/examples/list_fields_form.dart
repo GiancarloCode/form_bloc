@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -19,25 +20,22 @@ class App extends StatelessWidget {
 }
 
 class ListFieldFormBloc extends FormBloc<String, String> {
-  final clubName = TextFieldBloc(name: 'clubName');
+  final clubName = TextFieldBloc();
 
-  final members = ListFieldBloc<MemberFieldBloc, dynamic>(name: 'members');
+  final members = ListFieldBloc<MemberFieldBloc, dynamic>();
 
   ListFieldFormBloc() {
-    addFieldBlocs(
-      fieldBlocs: [
-        clubName,
-        members,
-      ],
-    );
+    addStep(ListFieldBloc<FieldBloc, dynamic>(fieldBlocs: [
+      clubName,
+      members,
+    ]));
   }
 
   void addMember() {
     members.addFieldBloc(MemberFieldBloc(
-      name: 'member',
-      firstName: TextFieldBloc(name: 'firstName'),
-      lastName: TextFieldBloc(name: 'lastName'),
-      hobbies: ListFieldBloc(name: 'hobbies'),
+      firstName: TextFieldBloc(),
+      lastName: TextFieldBloc(),
+      hobbies: ListFieldBloc(),
     ));
   }
 
@@ -82,7 +80,7 @@ class ListFieldFormBloc extends FormBloc<String, String> {
     debugPrint(clubV1.toJson().toString());
 
     // With Serialization
-    final clubV2 = Club.fromJson(state.toJson());
+    final clubV2 = Club.fromJson(state.toJson()[0]!);
 
     debugPrint('clubV2');
     debugPrint(clubV2.toJson().toString());
@@ -105,35 +103,34 @@ class MemberFieldBloc extends GroupFieldBloc {
     required this.firstName,
     required this.lastName,
     required this.hobbies,
-    String? name,
-  }) : super(name: name, fieldBlocs: [firstName, lastName, hobbies]);
+  }) : super(
+          fieldBlocs: {
+            'firstName': firstName,
+            'lastName': lastName,
+            'hobbies': hobbies,
+          },
+        );
 }
 
 class Club {
-  String? clubName;
-  List<Member>? members;
+  final String clubName;
+  final List<Member> members;
 
-  Club({this.clubName, this.members});
-
-  Club.fromJson(Map<String, dynamic> json) {
-    clubName = json['clubName'];
-    if (json['members'] != null) {
-      members = <Member>[];
-      json['members'].forEach((v) {
-        members!.add(Member.fromJson(v));
-      });
-    }
-  }
+  Club({required this.clubName, required this.members});
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['clubName'] = clubName;
-    if (members != null) {
-      data['members'] = members!.map((v) => v.toJson()).toList();
-    }
-    return data;
+    return {
+      'clubName': clubName,
+      'members': members,
+    };
   }
 
+  factory Club.fromJson(Map<String, dynamic> map) {
+    return Club(
+      clubName: map['clubName'] as String,
+      members: map['members'] as List<Member>,
+    );
+  }
   @override
   String toString() => '''Club {
   clubName: $clubName,
@@ -142,24 +139,30 @@ class Club {
 }
 
 class Member {
-  String? firstName;
-  String? lastName;
-  List<String?>? hobbies;
+  final String firstName;
+  final String lastName;
+  final List<String> hobbies;
 
-  Member({this.firstName, this.lastName, this.hobbies});
-
-  Member.fromJson(Map<String, dynamic> json) {
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    hobbies = json['hobbies'].cast<String>();
-  }
+  Member({
+    required this.firstName,
+    required this.lastName,
+    required this.hobbies,
+  });
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['firstName'] = firstName;
-    data['lastName'] = lastName;
-    data['hobbies'] = hobbies;
-    return data;
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'hobbies': hobbies,
+    };
+  }
+
+  factory Member.fromJson(Map<String, dynamic> map) {
+    return Member(
+      firstName: map['firstName'] as String,
+      lastName: map['lastName'] as String,
+      hobbies: map['hobbies'] as List<String>,
+    );
   }
 
   @override
@@ -196,7 +199,8 @@ class ListFieldsForm extends StatelessWidget {
                 onPressed: formBloc.submit,
                 child: const Icon(Icons.send),
               ),
-              body: FormBlocListener<ListFieldFormBloc, String, String>(
+              body: FormBlocListener<String, String>(
+                formBloc: formBloc,
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
                 },

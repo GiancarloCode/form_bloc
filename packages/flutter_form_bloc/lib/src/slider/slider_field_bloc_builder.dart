@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
@@ -96,47 +95,37 @@ class SliderFieldBlocBuilder extends StatelessWidget {
       data: Theme.of(context).copyWith(
         sliderTheme: fieldTheme.sliderTheme,
       ),
-      child: SimpleFieldBlocBuilder(
-        singleFieldBloc: inputFieldBloc,
+      child: SimpleFieldBlocBuilder<InputFieldBlocState<double, dynamic>>(
+        fieldBloc: inputFieldBloc,
         animateWhenCanShow: animateWhenCanShow,
-        builder: (context, _) {
-          return BlocBuilder<InputFieldBloc<double, dynamic>,
-              InputFieldBlocState<double, dynamic>>(
-            bloc: inputFieldBloc,
-            builder: (context, state) {
-              final isEnabled = fieldBlocIsEnabled(
-                isEnabled: this.isEnabled,
-                enableOnlyWhenFormBlocCanSubmit:
-                    enableOnlyWhenFormBlocCanSubmit,
-                fieldBlocState: state,
-              );
-              final value = state.value;
+        enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+        isEnabled: isEnabled,
+        readOnly: readOnly,
+        nextFocusNode: nextFocusNode,
+        builder: (context, state, data) {
+          final value = state.value;
 
-              return DefaultFieldBlocBuilderPadding(
-                padding: padding,
-                child: InputDecorator(
-                  decoration: _buildDecoration(context, state, isEnabled),
-                  isEmpty: false,
-                  child: Slider(
-                    value: value,
-                    min: min,
-                    max: max,
-                    focusNode: focusNode,
-                    divisions: divisions,
-                    onChanged: fieldBlocBuilderOnChange<double>(
-                      isEnabled: isEnabled,
-                      readOnly: readOnly,
-                      nextFocusNode: nextFocusNode,
-                      onChanged: inputFieldBloc.changeValue,
-                    ),
-                    label: labelBuilder?.call(context, value),
-                    activeColor: activeColor,
-                    inactiveColor: inactiveColor,
-                    mouseCursor: mouseCursor,
-                  ),
+          return DefaultFieldBlocBuilderPadding(
+            padding: padding,
+            child: InputDecorator(
+              decoration: _buildDecoration(context, state, data),
+              isEmpty: false,
+              child: Slider(
+                value: value,
+                min: min,
+                max: max,
+                focusNode: focusNode,
+                divisions: divisions,
+                onChanged: data.buildOnChange<double>(
+                  isEnabled: isEnabled,
+                  onChanged: inputFieldBloc.changeValue,
                 ),
-              );
-            },
+                label: labelBuilder?.call(context, value),
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                mouseCursor: mouseCursor,
+              ),
+            ),
           );
         },
       ),
@@ -146,7 +135,7 @@ class SliderFieldBlocBuilder extends StatelessWidget {
   InputDecoration _buildDecoration(
     BuildContext context,
     FieldBlocState state,
-    bool isEnabled,
+    FieldBlocBuilderData data,
   ) {
     return decoration.copyWith(
       enabled: isEnabled,

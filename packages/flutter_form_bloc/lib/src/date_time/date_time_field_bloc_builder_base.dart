@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
@@ -162,6 +161,8 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     }
   }
 
+  late FieldBlocBuilderData _data;
+
   void _showPicker(BuildContext context) async {
     FocusScope.of(context).requestFocus(FocusNode());
     dynamic result;
@@ -177,16 +178,10 @@ class _DateTimeFieldBlocBuilderBaseState<T>
     } else if (widget.type == DateTimeFieldBlocBuilderBaseType.time) {
       result = await _showTimePicker(context);
     }
-    if (result != null) {
-      fieldBlocBuilderOnChange<T>(
-        isEnabled: widget.isEnabled,
-        nextFocusNode: widget.nextFocusNode,
-        onChanged: (value) {
-          widget.dateTimeFieldBloc.changeValue(value);
-          // Used for hide keyboard
-          // FocusScope.of(context).requestFocus(FocusNode());
-        },
-      )!(result);
+    if (result != null && _data.canChange(isEnabled: widget.isEnabled)) {
+      widget.dateTimeFieldBloc.changeValue(result);
+      // Used for hide keyboard
+      // FocusScope.of(context).requestFocus(FocusNode());
     }
   }
 
@@ -196,66 +191,61 @@ class _DateTimeFieldBlocBuilderBaseState<T>
 
     return Focus(
       focusNode: _effectiveFocusNode,
-      child: SimpleFieldBlocBuilder(
-        singleFieldBloc: widget.dateTimeFieldBloc,
+      child: SimpleFieldBlocBuilder<InputFieldBlocState<T, dynamic>>(
+        fieldBloc: widget.dateTimeFieldBloc,
         animateWhenCanShow: widget.animateWhenCanShow,
-        builder: (_, __) {
-          return BlocBuilder<InputFieldBloc<T, dynamic>,
-              InputFieldBlocState<T, dynamic>>(
-            bloc: widget.dateTimeFieldBloc,
-            builder: (context, state) {
-              final isEnabled = fieldBlocIsEnabled(
-                isEnabled: widget.isEnabled,
-                enableOnlyWhenFormBlocCanSubmit:
-                    widget.enableOnlyWhenFormBlocCanSubmit,
-                fieldBlocState: state,
-              );
+        enableOnlyWhenFormBlocCanSubmit: widget.enableOnlyWhenFormBlocCanSubmit,
+        isEnabled: widget.isEnabled,
+        // TODO: Implement readOnly
+        readOnly: false,
+        nextFocusNode: widget.nextFocusNode,
+        builder: (context, state, data) {
+          // TODO: Improve the handling of the data field
+          _data = data;
 
-              Widget child;
+          final isEnabled = data.isEnabled;
 
-              if (state.value == null && widget.decoration.hintText != null) {
-                child = Text(
-                  widget.decoration.hintText!,
-                  maxLines: widget.decoration.hintMaxLines,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: fieldTheme.textAlign,
-                  style: Style.resolveTextStyle(
-                    isEnabled: isEnabled,
-                    style: widget.decoration.hintStyle ?? fieldTheme.textStyle!,
-                    color: fieldTheme.textColor!,
-                  ),
-                );
-              } else {
-                child = Text(
-                  state.value != null
-                      ? _tryFormat(state.value, widget.format)
-                      : '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  textAlign: fieldTheme.textAlign,
-                  style: Style.resolveTextStyle(
-                    isEnabled: isEnabled,
-                    style: fieldTheme.textStyle!,
-                    color: fieldTheme.textColor!,
-                  ),
-                );
-              }
+          Widget child;
 
-              return DefaultFieldBlocBuilderPadding(
-                padding: widget.padding,
-                child: GestureDetector(
-                  onTap: !isEnabled ? null : () => _showPicker(context),
-                  child: InputDecorator(
-                    decoration:
-                        _buildDecoration(context, fieldTheme, state, isEnabled),
-                    isEmpty: state.value == null &&
-                        widget.decoration.hintText == null,
-                    child: child,
-                  ),
-                ),
-              );
-            },
+          if (state.value == null && widget.decoration.hintText != null) {
+            child = Text(
+              widget.decoration.hintText!,
+              maxLines: widget.decoration.hintMaxLines,
+              overflow: TextOverflow.ellipsis,
+              textAlign: fieldTheme.textAlign,
+              style: Style.resolveTextStyle(
+                isEnabled: isEnabled,
+                style: widget.decoration.hintStyle ?? fieldTheme.textStyle!,
+                color: fieldTheme.textColor!,
+              ),
+            );
+          } else {
+            child = Text(
+              state.value != null ? _tryFormat(state.value, widget.format) : '',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              textAlign: fieldTheme.textAlign,
+              style: Style.resolveTextStyle(
+                isEnabled: isEnabled,
+                style: fieldTheme.textStyle!,
+                color: fieldTheme.textColor!,
+              ),
+            );
+          }
+
+          return DefaultFieldBlocBuilderPadding(
+            padding: widget.padding,
+            child: GestureDetector(
+              onTap: !isEnabled ? null : () => _showPicker(context),
+              child: InputDecorator(
+                decoration:
+                    _buildDecoration(context, fieldTheme, state, isEnabled),
+                isEmpty:
+                    state.value == null && widget.decoration.hintText == null,
+                child: child,
+              ),
+            ),
           );
         },
       ),

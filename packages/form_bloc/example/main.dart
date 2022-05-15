@@ -15,11 +15,13 @@ class LoginFormBloc extends FormBloc<String, String> {
   );
 
   LoginFormBloc() {
-    addFieldBlocs(
-      fieldBlocs: [
-        email,
-        password,
-      ],
+    addStep(
+      fieldBloc: ListFieldBloc<FieldBloc, dynamic>(
+        fieldBlocs: [
+          email,
+          password,
+        ],
+      ),
     );
   }
 

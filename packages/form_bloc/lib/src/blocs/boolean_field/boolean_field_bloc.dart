@@ -35,7 +35,6 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
   /// the value using [updateValue].
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   BooleanFieldBloc({
-    String? name,
     bool initialValue = false,
     List<Validator<bool>>? validators,
     List<AsyncValidator<bool>>? asyncValidators,
@@ -69,7 +68,6 @@ class BooleanFieldBloc<ExtraData> extends SingleFieldBloc<bool, bool,
               validators: validators,
               value: initialValue,
             ),
-            name: FieldBlocUtils.generateName(name),
             toJson: (value) => value,
             extraData: extraData,
           ),

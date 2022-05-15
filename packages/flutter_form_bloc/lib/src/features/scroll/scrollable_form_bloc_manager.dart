@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/cubit_consumer.dart';
 import 'package:flutter_form_bloc/src/features/scroll/scrollable_field_bloc_target.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
 import 'package:form_bloc/form_bloc.dart';
@@ -62,8 +62,8 @@ class ScrollableFormBlocManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FormBloc, FormBlocState>(
-      bloc: formBloc,
+    return SourceConsumer<FormBlocState>(
+      source: formBloc,
       listenWhen: (prev, curr) => prev.runtimeType != curr.runtimeType,
       listener: _onFormBlocState,
       child: child,

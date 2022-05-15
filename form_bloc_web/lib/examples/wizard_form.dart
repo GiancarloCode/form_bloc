@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -54,18 +55,15 @@ class WizardFormBloc extends FormBloc<String, String> {
   final facebook = TextFieldBloc();
 
   WizardFormBloc() {
-    addFieldBlocs(
-      step: 0,
+    addStep(ListFieldBloc<FieldBloc, dynamic>(
       fieldBlocs: [username, email, password],
-    );
-    addFieldBlocs(
-      step: 1,
+    ));
+    addStep(ListFieldBloc<FieldBloc, dynamic>(
       fieldBlocs: [firstName, lastName, gender, birthDate],
-    );
-    addFieldBlocs(
-      step: 2,
+    ));
+    addStep(ListFieldBloc<FieldBloc, dynamic>(
       fieldBlocs: [github, twitter, facebook],
-    );
+    ));
   }
 
   bool _showEmailTakenError = true;
@@ -120,6 +118,8 @@ class _WizardFormState extends State<WizardForm> {
       create: (context) => WizardFormBloc(),
       child: Builder(
         builder: (context) {
+          final formBloc = context.read<WizardFormBloc>();
+
           return Theme(
             data: Theme.of(context).copyWith(
               inputDecorationTheme: InputDecorationTheme(
@@ -141,15 +141,17 @@ class _WizardFormState extends State<WizardForm> {
                 ],
               ),
               body: SafeArea(
-                child: FormBlocListener<WizardFormBloc, String, String>(
+                child: FormBlocListener<String, String>(
+                  formBloc: formBloc,
                   onSubmitting: (context, state) => LoadingDialog.show(context),
-                  onSubmissionFailed: (context, state) => LoadingDialog.hide(context),
+                  onSubmissionFailed: (context, state) =>
+                      LoadingDialog.hide(context),
                   onSuccess: (context, state) {
                     LoadingDialog.hide(context);
 
                     if (state.stepCompleted == state.lastStep) {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => const SuccessScreen()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (_) => const SuccessScreen()));
                     }
                   },
                   onFailure: (context, state) {

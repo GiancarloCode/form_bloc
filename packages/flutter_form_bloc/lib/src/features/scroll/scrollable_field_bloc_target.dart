@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/cubit_consumer.dart';
 import 'package:form_bloc/form_bloc.dart';
 
 /// Mark the widget as a possible scroll target
 class ScrollableFieldBlocTarget extends StatefulWidget {
-  final SingleFieldBloc singleFieldBloc;
+  final FieldBloc singleFieldBloc;
 
   /// Enable auto scroll when the field has an error
   final bool canScroll;
@@ -43,8 +43,7 @@ class ScrollableFieldBlocTarget extends StatefulWidget {
   }
 
   @override
-  State<ScrollableFieldBlocTarget> createState() =>
-      ScrollableFieldBlocTargetState();
+  State<ScrollableFieldBlocTarget> createState() => ScrollableFieldBlocTargetState();
 }
 
 class ScrollableFieldBlocTargetState extends State<ScrollableFieldBlocTarget> {
@@ -56,8 +55,8 @@ class ScrollableFieldBlocTargetState extends State<ScrollableFieldBlocTarget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SingleFieldBloc, FieldBlocState>(
-      bloc: widget.singleFieldBloc,
+    return SourceConsumer<FieldBlocStateBase>(
+      source: widget.singleFieldBloc,
       listenWhen: (prev, curr) => prev.hasError != curr.hasError,
       listener: (context, state) {
         _hasError = state.hasError;

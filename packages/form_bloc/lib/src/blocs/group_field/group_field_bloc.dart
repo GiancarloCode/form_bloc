@@ -3,45 +3,49 @@ part of '../field/field_bloc.dart';
 class GroupFieldBlocState<T extends FieldBloc, ExtraData>
     extends MultiFieldBlocState<ExtraData> {
   final Map<String, T> fieldBlocs;
+  final Map<String, FieldBlocStateBase> fieldStates;
+
+  @override
+  late final Map<String, dynamic> value =
+      fieldStates.map<String, dynamic>((name, state) {
+    return MapEntry<String, dynamic>(name, state.value);
+  });
 
   GroupFieldBlocState({
-    required FormBloc? formBloc,
-    required String name,
-    required bool isValidating,
-    required bool isValid,
+    required this.fieldBlocs,
+    required this.fieldStates,
     required ExtraData? extraData,
-    required Iterable<T> fieldBlocs,
-  })  : fieldBlocs = {
-          for (final fb in fieldBlocs) fb.state.name: fb,
-        },
-        super(
-          formBloc: formBloc,
-          name: name,
-          isValidating: isValidating,
-          isValid: isValid,
+  }) : super(
           extraData: extraData,
         );
 
   @override
+  Map<String, dynamic> toJson() {
+    return fieldStates.map<String, dynamic>((key, value) {
+      return MapEntry<String, dynamic>(key, value.toJson());
+    });
+  }
+
+  @override
   GroupFieldBlocState<T, ExtraData> copyWith({
-    Param<FormBloc?>? formBloc,
-    bool? isValidating,
-    bool? isValid,
     Param<ExtraData>? extraData,
-    Iterable<T>? fieldBlocs,
+    Map<String, T>? fieldBlocs,
+    Map<String, FieldBlocStateBase>? fieldStates,
   }) {
     return GroupFieldBlocState(
-      formBloc: formBloc == null ? this.formBloc : formBloc.value,
-      name: name,
-      isValidating: isValidating ?? this.isValidating,
-      isValid: isValid ?? this.isValid,
       extraData: extraData == null ? this.extraData : extraData.value,
-      fieldBlocs: fieldBlocs ?? this.fieldBlocs.values,
+      fieldBlocs: fieldBlocs ?? this.fieldBlocs,
+      fieldStates: fieldStates ??
+          fieldBlocs?.map((step, fb) => MapEntry(step, fb.state)) ??
+          this.fieldStates,
     );
   }
 
   @override
   Iterable<FieldBloc> get flatFieldBlocs => fieldBlocs.values;
+
+  @override
+  Iterable<FieldBlocStateBase> get flatFieldStates => fieldStates.values;
 
   @override
   List<Object?> get props => [super.props, fieldBlocs];
@@ -53,21 +57,42 @@ class GroupFieldBlocState<T extends FieldBloc, ExtraData>
 
 class GroupFieldBloc<T extends FieldBloc, ExtraData>
     extends MultiFieldBloc<ExtraData, GroupFieldBlocState<T, ExtraData>> {
+  late final StreamSubscription _onValidationStatus;
+
   GroupFieldBloc({
-    String? name,
-    List<T> fieldBlocs = const [],
+    Map<String, T> fieldBlocs = const {},
+    bool autoValidate = true,
     ExtraData? extraData,
-  }) : super(GroupFieldBlocState(
-          name: name ?? Uuid().v1(),
-          isValid: MultiFieldBloc.areFieldBlocsValid(fieldBlocs),
-          isValidating: MultiFieldBloc.areFieldBlocsValidating(fieldBlocs),
-          formBloc: null,
-          extraData: extraData,
-          fieldBlocs: fieldBlocs,
-        ));
+  }) : super(
+            GroupFieldBlocState(
+              extraData: extraData,
+              fieldBlocs: fieldBlocs,
+              fieldStates:
+                  fieldBlocs.map((name, fb) => MapEntry(name, fb.state)),
+            ),
+            autoValidate: autoValidate) {
+    _onValidationStatus = stream
+        .map((event) => event.fieldBlocs)
+        .distinct(const MapEquality<dynamic, dynamic>().equals)
+        .switchMap((fieldBlocs) {
+      return Rx.combineLatestList(fieldBlocs.entries.map((entry) {
+        return entry.value.hotStream.map((state) => MapEntry(entry.key, state));
+      })).skip(1);
+    }).listen((fieldStates) {
+      final effectiveFieldStates = Map.fromEntries(fieldStates);
+
+      emit(state.copyWith(
+        fieldStates: effectiveFieldStates,
+      ));
+    });
+  }
 
   @override
-  String toString() {
-    return '$runtimeType';
+  Future<void> close() async {
+    await _onValidationStatus.cancel();
+    return super.close();
   }
+
+  @override
+  String toString() => '$runtimeType';
 }

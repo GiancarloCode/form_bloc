@@ -1,7 +1,6 @@
 part of '../field/field_bloc.dart';
 
-class TextFieldBlocState<ExtraData>
-    extends FieldBlocState<String, String, ExtraData?> {
+class TextFieldBlocState<ExtraData> extends FieldBlocState<String, String, ExtraData?> {
   TextFieldBlocState({
     required bool isValueChanged,
     required String initialValue,
@@ -12,8 +11,6 @@ class TextFieldBlocState<ExtraData>
     required Suggestions<String>? suggestions,
     required bool isValidated,
     required bool isValidating,
-    FormBloc? formBloc,
-    required String name,
     dynamic Function(String value)? toJson,
     ExtraData? extraData,
   }) : super(
@@ -26,8 +23,6 @@ class TextFieldBlocState<ExtraData>
           suggestions: suggestions,
           isValidated: isValidated,
           isValidating: isValidating,
-          formBloc: formBloc,
-          name: name,
           toJson: toJson,
           extraData: extraData,
         );
@@ -53,7 +48,6 @@ class TextFieldBlocState<ExtraData>
     Param<Suggestions<String>?>? suggestions,
     bool? isValidated,
     bool? isValidating,
-    Param<FormBloc?>? formBloc,
     Param<ExtraData?>? extraData,
   }) {
     return TextFieldBlocState(
@@ -66,8 +60,6 @@ class TextFieldBlocState<ExtraData>
       suggestions: suggestions == null ? this.suggestions : suggestions.value,
       isValidated: isValidated ?? this.isValidated,
       isValidating: isValidating ?? this.isValidating,
-      formBloc: formBloc == null ? this.formBloc : formBloc.value,
-      name: name,
       toJson: _toJson,
       extraData: extraData == null ? this.extraData : extraData.value,
     );

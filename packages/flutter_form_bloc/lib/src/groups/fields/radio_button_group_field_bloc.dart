@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/src/features/appear/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/groups/widgets/group_view.dart';
 import 'package:flutter_form_bloc/src/groups/widgets/item_group_tile.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
@@ -122,31 +121,21 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
       data: Theme.of(context).copyWith(
         radioTheme: fieldTheme.radioTheme,
       ),
-      child: CanShowFieldBlocBuilder(
+      child: SimpleFieldBlocBuilder<SelectFieldBlocState<Value, dynamic>>(
         fieldBloc: selectFieldBloc,
-        animate: animateWhenCanShow,
-        builder: (_, __) {
-          return BlocBuilder<SelectFieldBloc<Value, dynamic>,
-              SelectFieldBlocState<Value, dynamic>>(
-            bloc: selectFieldBloc,
-            builder: (context, state) {
-              final isEnabled = fieldBlocIsEnabled(
-                isEnabled: this.isEnabled,
-                enableOnlyWhenFormBlocCanSubmit:
-                    enableOnlyWhenFormBlocCanSubmit,
-                fieldBlocState: state,
-              );
-
-              return DefaultFieldBlocBuilderPadding(
-                padding: padding,
-                child: GroupInputDecorator(
-                  decoration:
-                      _buildDecoration(context, fieldTheme, state, isEnabled),
-                  child:
-                      _buildRadioButtons(context, state, fieldTheme, isEnabled),
-                ),
-              );
-            },
+        animateWhenCanShow: animateWhenCanShow,
+        enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+        isEnabled: isEnabled,
+        // TODO: Implement readOnly
+        readOnly: false,
+        nextFocusNode: nextFocusNode,
+        builder: (context, state, data) {
+          return DefaultFieldBlocBuilderPadding(
+            padding: padding,
+            child: GroupInputDecorator(
+              decoration: _buildDecoration(context, state, data, fieldTheme),
+              child: _buildRadioButtons(context, state, data, fieldTheme),
+            ),
           );
         },
       ),
@@ -156,8 +145,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
   Widget _buildRadioButtons(
     BuildContext context,
     SelectFieldBlocState<Value, dynamic> state,
+    FieldBlocBuilderData data,
     RadioFieldTheme fieldTheme,
-    bool isFieldEnabled,
   ) {
     return DefaultTextStyle(
       style: Style.resolveTextStyle(
@@ -175,11 +164,8 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
         builder: (context, index) {
           final item = state.items[index];
           final fieldItem = itemBuilder(context, item);
-          final isEnabled = isFieldEnabled && fieldItem.isEnabled;
 
-          final onChanged = fieldBlocBuilderOnChange<Value?>(
-            isEnabled: isEnabled,
-            nextFocusNode: nextFocusNode,
+          final onChanged = data.buildOnChange<Value?>(
             onChanged: (value) {
               selectFieldBloc.changeValue(value);
               fieldItem.onTap?.call();
@@ -213,14 +199,14 @@ class RadioButtonGroupFieldBlocBuilder<Value> extends StatelessWidget {
 
   InputDecoration _buildDecoration(
     BuildContext context,
-    RadioFieldTheme fieldTheme,
     SelectFieldBlocState<Value, dynamic> state,
-    bool isEnable,
+    FieldBlocBuilderData data,
+    RadioFieldTheme fieldTheme,
   ) {
     var decoration = this.decoration;
 
     decoration = decoration.copyWith(
-      enabled: isEnable,
+      enabled: data.isEnabled,
       errorText: Style.getErrorText(
         context: context,
         errorBuilder: errorBuilder,

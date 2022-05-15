@@ -13,9 +13,7 @@ void main() {
   group('MultiFieldBloc:', () {
     group('validate', () {
       test('Success empty validation', () async {
-        final multiField = ListFieldBloc<BooleanFieldBloc<Object>, String>(
-          name: 'list',
-        );
+        final multiField = ListFieldBloc<BooleanFieldBloc<Object>, String>();
 
         final expected = createListState<BooleanFieldBloc<Object>, String>(
           name: 'list',
@@ -27,10 +25,9 @@ void main() {
       });
 
       test('Success validation', () async {
-        final field = BooleanFieldBloc<Object>(name: 'bool');
+        final field = BooleanFieldBloc<Object>();
 
         final multiField = ListFieldBloc<BooleanFieldBloc<Object>, String>(
-          name: 'list',
           fieldBlocs: [field],
         );
 
@@ -46,12 +43,10 @@ void main() {
 
       test('Failed validation', () async {
         final field = BooleanFieldBloc<Object>(
-          name: 'bool',
           validators: [FieldBlocValidators.required],
         );
 
         final multiField = ListFieldBloc<BooleanFieldBloc<Object>, String>(
-          name: 'list',
           fieldBlocs: [field],
         );
 
@@ -68,9 +63,7 @@ void main() {
 
     group('updateExtraData', () {
       test('update', () {
-        final list = ListFieldBloc<BooleanFieldBloc<Object>, String>(
-          name: 'list',
-        );
+        final list = ListFieldBloc<BooleanFieldBloc<Object>, String>();
 
         final expected = createListState<BooleanFieldBloc<Object>, String>(
           name: 'list',
@@ -90,9 +83,7 @@ void main() {
       final formBloc = _FakeFormBloc();
 
       test('Success update and remove formBloc', () {
-        final list = ListFieldBloc<BooleanFieldBloc<Object>, String>(
-          name: 'list',
-        );
+        final list = ListFieldBloc<BooleanFieldBloc<Object>, String>();
 
         final expectedUpdate =
             createListState<BooleanFieldBloc<Object>, String>(
@@ -112,9 +103,8 @@ void main() {
       });
 
       test('Success update the fieldBlocs with the new FormBloc', () {
-        final field = BooleanFieldBloc<Object>(name: 'bool');
+        final field = BooleanFieldBloc<Object>();
         final list = ListFieldBloc<BooleanFieldBloc<Object>, String>(
-          name: 'list',
           fieldBlocs: [field],
         );
 
@@ -151,9 +141,8 @@ void main() {
       });
 
       test('Failure to remove formBloc because it is not theirs', () {
-        final field = BooleanFieldBloc<Object>(name: 'bool');
+        final field = BooleanFieldBloc<Object>();
         final list = ListFieldBloc<BooleanFieldBloc<Object>, String>(
-          name: 'list',
           fieldBlocs: [field],
         );
 

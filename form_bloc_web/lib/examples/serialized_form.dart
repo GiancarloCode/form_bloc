@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -18,29 +19,25 @@ class App extends StatelessWidget {
 }
 
 class SerializedFormBloc extends FormBloc<String, String> {
-  final name = TextFieldBloc(
-    name: 'name',
-  );
+  final name = TextFieldBloc();
 
   final gender = SelectFieldBloc(
-    name: 'gender',
     items: ['male', 'female'],
   );
 
   final birthDate = InputFieldBloc<DateTime?, Object>(
-    name: 'birthDate',
     initialValue: null,
     toJson: (value) => value!.toUtc().toIso8601String(),
   );
 
   SerializedFormBloc() {
-    addFieldBlocs(
+    addStep(ListFieldBloc<FieldBloc, dynamic>(
       fieldBlocs: [
         name,
         gender,
         birthDate,
       ],
-    );
+    ));
   }
 
   @override
@@ -80,7 +77,8 @@ class SerializedForm extends StatelessWidget {
                 onPressed: formBloc.submit,
                 child: const Icon(Icons.send),
               ),
-              body: FormBlocListener<SerializedFormBloc, String, String>(
+              body: FormBlocListener<String, String>(
+                formBloc: formBloc,
                 onSuccess: (context, state) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(state.successResponse!),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -35,9 +36,9 @@ class ValidationBasedOnOtherFieldFormBloc extends FormBloc<String, String> {
   }
 
   ValidationBasedOnOtherFieldFormBloc() {
-    addFieldBlocs(
+    addStep(ListFieldBloc<FieldBloc, dynamic>(
       fieldBlocs: [password, confirmPassword],
-    );
+    ));
 
     confirmPassword
       ..addValidators([_confirmPassword(password)])
@@ -74,9 +75,10 @@ class ValidationBasedOnOtherFieldForm extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('Validation based on other field')),
-            body: FormBlocListener<ValidationBasedOnOtherFieldFormBloc, String,
-                String>(
+            appBar:
+                AppBar(title: const Text('Validation based on other field')),
+            body: FormBlocListener<String, String>(
+              formBloc: loginFormBloc,
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
               },

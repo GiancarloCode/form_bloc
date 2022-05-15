@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
@@ -136,56 +135,51 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
       data: Theme.of(context).copyWith(
         switchTheme: fieldTheme.switchTheme!,
       ),
-      child: SimpleFieldBlocBuilder(
-        singleFieldBloc: booleanFieldBloc,
+      child: SimpleFieldBlocBuilder<BooleanFieldBlocState>(
+        fieldBloc: booleanFieldBloc,
         animateWhenCanShow: animateWhenCanShow,
-        builder: (_, __) {
-          return BlocBuilder<BooleanFieldBloc, BooleanFieldBlocState>(
-            bloc: booleanFieldBloc,
-            builder: (context, state) {
-              final isEnabled = fieldBlocIsEnabled(
-                isEnabled: this.isEnabled,
-                enableOnlyWhenFormBlocCanSubmit:
-                    enableOnlyWhenFormBlocCanSubmit,
-                fieldBlocState: state,
-              );
+        enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+        isEnabled: isEnabled,
+        // TODO: Implement readOnly
+        readOnly: false,
+        nextFocusNode: nextFocusNode,
+        builder: (context, state, data) {
+          final isEnabled = data.isEnabled;
 
-              return DefaultFieldBlocBuilderPadding(
-                padding: padding,
-                child: InputDecorator(
-                  decoration: Style.inputDecorationWithoutBorder.copyWith(
-                    prefixIcon: fieldTheme.controlAffinity ==
-                            FieldBlocBuilderControlAffinity.leading
-                        ? _buildSwitch(context, state)
-                        : null,
-                    suffixIcon: fieldTheme.controlAffinity ==
-                            FieldBlocBuilderControlAffinity.trailing
-                        ? _buildSwitch(context, state)
-                        : null,
-                    errorText: Style.getErrorText(
-                      context: context,
-                      errorBuilder: errorBuilder,
-                      fieldBlocState: state,
-                      fieldBloc: booleanFieldBloc,
-                    ),
-                  ),
-                  child: DefaultTextStyle(
-                    style: Style.resolveTextStyle(
-                      isEnabled: isEnabled,
-                      style: fieldTheme.textStyle!,
-                      color: fieldTheme.textColor!,
-                    ),
-                    child: Container(
-                      constraints: const BoxConstraints(
-                        minHeight: kMinInteractiveDimension,
-                      ),
-                      alignment: alignment,
-                      child: body,
-                    ),
-                  ),
+          return DefaultFieldBlocBuilderPadding(
+            padding: padding,
+            child: InputDecorator(
+              decoration: Style.inputDecorationWithoutBorder.copyWith(
+                prefixIcon: fieldTheme.controlAffinity ==
+                        FieldBlocBuilderControlAffinity.leading
+                    ? _buildSwitch(context, state, data)
+                    : null,
+                suffixIcon: fieldTheme.controlAffinity ==
+                        FieldBlocBuilderControlAffinity.trailing
+                    ? _buildSwitch(context, state, data)
+                    : null,
+                errorText: Style.getErrorText(
+                  context: context,
+                  errorBuilder: errorBuilder,
+                  fieldBlocState: state,
+                  fieldBloc: booleanFieldBloc,
                 ),
-              );
-            },
+              ),
+              child: DefaultTextStyle(
+                style: Style.resolveTextStyle(
+                  isEnabled: isEnabled,
+                  style: fieldTheme.textStyle!,
+                  color: fieldTheme.textColor!,
+                ),
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minHeight: kMinInteractiveDimension,
+                  ),
+                  alignment: alignment,
+                  child: body,
+                ),
+              ),
+            ),
           );
         },
       ),
@@ -195,12 +189,11 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
   Switch _buildSwitch(
     BuildContext context,
     BooleanFieldBlocState state,
+    FieldBlocBuilderData data,
   ) {
     return Switch(
       value: state.value,
-      onChanged: fieldBlocBuilderOnChange<bool>(
-        isEnabled: isEnabled,
-        nextFocusNode: nextFocusNode,
+      onChanged: data.buildOnChange<bool>(
         onChanged: booleanFieldBloc.changeValue,
       ),
       activeThumbImage: activeThumbImage,

@@ -20,7 +20,6 @@ void main() {
           isDirty: false,
           isValidated: false,
           isValidating: false,
-          name: 'fieldName',
         );
 
         expectState(
@@ -45,7 +44,6 @@ void main() {
             isDirty: true,
             isValidated: true,
             isValidating: true,
-            name: 'fieldName',
           ),
         );
       });
@@ -61,7 +59,6 @@ void main() {
           isDirty: true,
           isValidated: true,
           isValidating: true,
-          name: 'fieldName',
         );
 
         expectState(
@@ -86,7 +83,6 @@ void main() {
             isDirty: false,
             isValidated: false,
             isValidating: false,
-            name: 'fieldName',
           ),
         );
       });
@@ -102,7 +98,6 @@ void main() {
           isDirty: true,
           isValidated: true,
           isValidating: true,
-          name: 'fieldName',
         );
 
         expectState(

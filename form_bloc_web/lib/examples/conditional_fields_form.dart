@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:form_bloc_web/widgets/app_form_bloc_provider.dart';
 
 void main() => runApp(const App());
 
@@ -16,6 +17,8 @@ class App extends StatelessWidget {
 }
 
 class ConditionalFieldsFormBloc extends FormBloc<String, String> {
+  final _step = ListFieldBloc();
+
   final doYouLikeFormBloc = SelectFieldBloc(
     validators: [FieldBlocValidators.required],
     items: ['No', 'Yes'],
@@ -32,38 +35,30 @@ class ConditionalFieldsFormBloc extends FormBloc<String, String> {
   );
 
   ConditionalFieldsFormBloc() {
-    addFieldBlocs(
-      fieldBlocs: [
-        doYouLikeFormBloc,
-      ],
-    );
+    addStep(_step..addFieldBloc(doYouLikeFormBloc));
 
     showSecretField.onValueChanges(
       onData: (previous, current) async* {
         if (current.value) {
-          addFieldBlocs(fieldBlocs: [secretField]);
+          _step.addFieldBloc(secretField);
         } else {
-          removeFieldBlocs(fieldBlocs: [secretField]);
+          _step.removeFieldBloc(secretField);
         }
       },
     );
 
     doYouLikeFormBloc.onValueChanges(
       onData: (previous, current) async* {
-        removeFieldBlocs(
-          fieldBlocs: [
-            whyNotYouLikeFormBloc,
-            showSecretField,
-            secretField,
-          ],
-        );
+        _step.removeFieldBlocs([
+          whyNotYouLikeFormBloc,
+          showSecretField,
+          secretField,
+        ]);
 
         if (current.value == 'No') {
-          addFieldBlocs(fieldBlocs: [
-            whyNotYouLikeFormBloc,
-          ]);
+          _step.addFieldBloc(whyNotYouLikeFormBloc);
         } else if (current.value == 'Yes') {
-          addFieldBlocs(fieldBlocs: [
+          _step.addFieldBlocs([
             showSecretField,
             if (showSecretField.value) secretField,
           ]);
@@ -88,13 +83,9 @@ class ConditionalFieldsFormBloc extends FormBloc<String, String> {
     debugPrint(showSecretField.value.toString());
     debugPrint(secretField.value);
 
-    try {
-      await Future<void>.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
 
-      emitSuccess();
-    } catch (e) {
-      emitFailure();
-    }
+    emitSuccess();
   }
 }
 
@@ -103,98 +94,97 @@ class ConditionalFieldsForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return AppFormBlocProvider<ConditionalFieldsFormBloc>(
       create: (context) => ConditionalFieldsFormBloc(),
-      child: Builder(
-        builder: (context) {
-          final formBloc = BlocProvider.of<ConditionalFieldsFormBloc>(context);
-
-          return Theme(
-            data: Theme.of(context).copyWith(
-              inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
+      builder: (context, formBloc) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
             ),
-            child: Scaffold(
-              appBar: AppBar(title: const Text('Conditional Fields')),
-              body: FormBlocListener<ConditionalFieldsFormBloc, String, String>(
-                onSubmitting: (context, state) {
-                  LoadingDialog.show(context);
-                },
-                onSubmissionFailed: (context, state) {
-                  LoadingDialog.hide(context);
-                },
-                onSuccess: (context, state) {
-                  LoadingDialog.hide(context);
+          ),
+          child: Scaffold(
+            appBar: AppBar(title: const Text('Conditional Fields')),
+            body: FormBlocListener<String, String>(
+              formBloc: formBloc,
+              onSubmitting: (context, state) {
+                LoadingDialog.show(context);
+              },
+              onSubmissionFailed: (context, state) {
+                LoadingDialog.hide(context);
+              },
+              onSuccess: (context, state) {
+                LoadingDialog.hide(context);
 
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const SuccessScreen()));
-                },
-                onFailure: (context, state) {
-                  LoadingDialog.hide(context);
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
+              },
+              onFailure: (context, state) {
+                LoadingDialog.hide(context);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.failureResponse!)));
-                },
-                child: SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: <Widget>[
-                        RadioButtonGroupFieldBlocBuilder(
-                          selectFieldBloc: formBloc.doYouLikeFormBloc,
-                          itemBuilder: (context, dynamic value) =>
-                              FieldItem(child: Text(value)),
-                          decoration: const InputDecoration(
-                            labelText: 'Do you like form bloc?',
-                            prefixIcon: SizedBox(),
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('${state.failureResponse}'),
+                ));
+              },
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      RadioButtonGroupFieldBlocBuilder(
+                        selectFieldBloc: formBloc.doYouLikeFormBloc,
+                        itemBuilder: (context, dynamic value) =>
+                            FieldItem(child: Text(value)),
+                        decoration: const InputDecoration(
+                          labelText: 'Do you like form bloc?',
+                          prefixIcon: SizedBox(),
+                        ),
+                      ),
+                      TextFieldBlocBuilder(
+                        textFieldBloc: formBloc.whyNotYouLikeFormBloc,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 1,
+                        decoration: const InputDecoration(
+                          labelText: 'Why?',
+                          prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: CheckboxFieldBlocBuilder(
+                          booleanFieldBloc: formBloc.showSecretField,
+                          controlAffinity:
+                              FieldBlocBuilderControlAffinity.trailing,
+                          body: Container(
+                            alignment: Alignment.center,
+                            child: const Text(
+                                'Do you want to see a secret field?'),
                           ),
                         ),
-                        TextFieldBlocBuilder(
-                          textFieldBloc: formBloc.whyNotYouLikeFormBloc,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 1,
-                          decoration: const InputDecoration(
-                            labelText: 'Why?',
-                            prefixIcon: Icon(Icons.sentiment_very_dissatisfied),
-                          ),
+                      ),
+                      TextFieldBlocBuilder(
+                        textFieldBloc: formBloc.secretField,
+                        keyboardType: TextInputType.multiline,
+                        decoration: const InputDecoration(
+                          labelText: 'Secret field',
+                          prefixIcon: Icon(Icons.sentiment_very_satisfied),
                         ),
-                        SizedBox(
-                          width: 200,
-                          child: CheckboxFieldBlocBuilder(
-                            booleanFieldBloc: formBloc.showSecretField,
-                            controlAffinity:
-                                FieldBlocBuilderControlAffinity.trailing,
-                            body: Container(
-                              alignment: Alignment.center,
-                              child: const Text('Do you want to see a secret field?'),
-                            ),
-                          ),
-                        ),
-                        TextFieldBlocBuilder(
-                          textFieldBloc: formBloc.secretField,
-                          keyboardType: TextInputType.multiline,
-                          decoration: const InputDecoration(
-                            labelText: 'Secret field',
-                            prefixIcon: Icon(Icons.sentiment_very_satisfied),
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: formBloc.submit,
-                          child: const Text('SUBMIT'),
-                        ),
-                      ],
-                    ),
+                      ),
+                      ElevatedButton(
+                        onPressed: formBloc.submit,
+                        child: const Text('SUBMIT'),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -249,7 +239,8 @@ class SuccessScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const ConditionalFieldsForm())),
+                  MaterialPageRoute(
+                      builder: (_) => const ConditionalFieldsForm())),
               icon: const Icon(Icons.replay),
               label: const Text('AGAIN'),
             ),

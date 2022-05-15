@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -21,9 +22,9 @@ class LoadingFormBloc extends FormBloc<String, String> {
   final select = SelectFieldBloc<String, dynamic>();
 
   LoadingFormBloc() : super(isLoading: true) {
-    addFieldBlocs(
+    addStep(ListFieldBloc<FieldBloc, dynamic>(
       fieldBlocs: [text, select],
-    );
+    ));
   }
 
   var _throwException = true;
@@ -88,7 +89,8 @@ class LoadingForm extends StatelessWidget {
             ),
             child: Scaffold(
               appBar: AppBar(title: const Text('Loading and Initializing')),
-              body: FormBlocListener<LoadingFormBloc, String, String>(
+              body: FormBlocListener<String, String>(
+                formBloc: loadingFormBloc,
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
                 },
@@ -116,10 +118,12 @@ class LoadingForm extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: Column(
                             children: <Widget>[
-                              const Icon(Icons.sentiment_dissatisfied, size: 70),
+                              const Icon(Icons.sentiment_dissatisfied,
+                                  size: 70),
                               const SizedBox(height: 20),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
                                 alignment: Alignment.center,
                                 child: Text(
                                   state.failureResponse ??

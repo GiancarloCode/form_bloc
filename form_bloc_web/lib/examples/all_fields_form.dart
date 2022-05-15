@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -44,7 +45,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   final time1 = InputFieldBloc<TimeOfDay?, Object>(initialValue: null);
 
   AllFieldsFormBloc() {
-    addFieldBlocs(fieldBlocs: [
+    addStep(ListFieldBloc<FieldBloc, dynamic>(fieldBlocs: [
       text1,
       boolean1,
       boolean2,
@@ -54,7 +55,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       date1,
       dateAndTime1,
       time1,
-    ]);
+    ]));
   }
 
   @override
@@ -90,7 +91,8 @@ class AllFieldsForm extends StatelessWidget {
             ),
             child: Scaffold(
               appBar: AppBar(title: const Text('Built-in Widgets')),
-              body: FormBlocListener<AllFieldsFormBloc, String, String>(
+              body: FormBlocListener<String, String>(
+                formBloc: formBloc,
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
                 },
