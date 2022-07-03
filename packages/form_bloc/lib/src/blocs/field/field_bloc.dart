@@ -320,9 +320,9 @@ abstract class SingleFieldBloc<
     // because it emit a completed async validation
     if (fieldBlocs.isNotEmpty) {
       _revalidateFieldBlocsSubscription = Rx.merge<void>(fieldBlocs.map((e) {
-        return e.stream.map<void>((event) {
-          event.value;
-        }).distinct(DeepCollectionEquality().equals);
+        return e.stream
+            .map<dynamic>((state) => state.value)
+            .distinct(DeepCollectionEquality().equals);
       })).listen((_) {
         if (_autoValidate) {
           _validate();
