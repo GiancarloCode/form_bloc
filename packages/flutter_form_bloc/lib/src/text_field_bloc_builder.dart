@@ -1,9 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:flutter_form_bloc/src/features/appear/can_show_field_bloc_builder.dart';
+import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
 import 'package:flutter_form_bloc/src/suffix_buttons/obscure_suffix_button.dart';
@@ -770,12 +768,13 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
     super.dispose();
   }
 
+  late FieldBlocBuilderData _data;
+
   /// Disable editing when the state of the FormBloc is [FormBlocSubmitting].
   void _textControllerListener() {
-    if (widget.textFieldBloc.state.formBloc?.state is FormBlocSubmitting) {
-      if (_controller.text != (widget.textFieldBloc.value)) {
-        _fixControllerTextValue(widget.textFieldBloc.value);
-      }
+    if (!_data.isReadonly) return;
+    if (_controller.text != (widget.textFieldBloc.value)) {
+      _fixControllerTextValue(widget.textFieldBloc.value);
     }
   }
 
@@ -807,33 +806,26 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   Widget build(BuildContext context) {
     final fieldTheme = widget.themeStyleOf(context);
 
-    return SimpleFieldBlocBuilder(
-      singleFieldBloc: widget.textFieldBloc,
+    return SimpleFieldBlocBuilder<TextFieldBlocState>(
+      fieldBloc: widget.textFieldBloc,
       animateWhenCanShow: widget.animateWhenCanShow,
       focusOnValidationFailed: widget.focusOnValidationFailed,
-      builder: (_, __) {
-        return BlocBuilder<TextFieldBloc, TextFieldBlocState>(
-          bloc: widget.textFieldBloc,
-          builder: (context, state) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: widget.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit:
-                  widget.enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: state,
-            );
-
-            if (_controller.text != state.value) {
-              _fixControllerTextValue(state.value);
-            }
-            return DefaultFieldBlocBuilderPadding(
-              padding: widget.padding,
-              child: _buildTextField(
-                state: state,
-                isEnabled: isEnabled,
-                fieldTheme: fieldTheme,
-              ),
-            );
-          },
+      enableOnlyWhenFormBlocCanSubmit: widget.enableOnlyWhenFormBlocCanSubmit,
+      isEnabled: widget.isEnabled,
+      readOnly: widget.readOnly,
+      nextFocusNode: widget.nextFocusNode,
+      builder: (context, state, data) {
+        _data = data;
+        if (_controller.text != state.value) {
+          _fixControllerTextValue(state.value);
+        }
+        return DefaultFieldBlocBuilderPadding(
+          padding: widget.padding,
+          child: _buildTextField(
+            state: state,
+            data: data,
+            fieldTheme: fieldTheme,
+          ),
         );
       },
     );
@@ -913,7 +905,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   Widget _buildTextField({
     required TextFieldTheme fieldTheme,
     required TextFieldBlocState state,
-    required bool isEnabled,
+    required FieldBlocBuilderData data,
   }) {
     return TypeAheadField<String>(
       textFieldConfiguration: TextFieldConfiguration<String>(
@@ -925,7 +917,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
             (widget.nextFocusNode != null ? TextInputAction.next : null),
         textCapitalization: widget.textCapitalization,
         style: Style.resolveTextStyle(
-          isEnabled: isEnabled,
+          isEnabled: data.isEnabled,
           style: fieldTheme.textStyle!,
           color: fieldTheme.textColor!,
         ),
@@ -947,7 +939,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         onEditingComplete: widget.onEditingComplete,
         onSubmitted: _onSubmitted,
         inputFormatters: widget.inputFormatters,
-        enabled: isEnabled,
+        enabled: data.isEnabled,
         cursorWidth: widget.cursorWidth,
         cursorRadius: widget.cursorRadius,
         cursorColor: widget.cursorColor,

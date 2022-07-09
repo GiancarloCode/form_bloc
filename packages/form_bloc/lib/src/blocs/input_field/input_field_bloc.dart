@@ -1,8 +1,8 @@
 part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used for any type, for example `DateTime` or `File`.
-class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
-    InputFieldBlocState<Value, ExtraData>, ExtraData?> {
+class InputFieldBloc<Value, ExtraData>
+    extends SingleFieldBloc<Value, Value, InputFieldBlocState<Value, ExtraData>, ExtraData?> {
   /// ## InputFieldBloc<Value, ExtraData>
   ///
   /// ### Properties:
@@ -37,7 +37,6 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
   /// This method is called when you use [FormBlocState.toJson]
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   InputFieldBloc({
-    String? name,
     required Value initialValue,
     List<Validator<Value>>? validators,
     List<AsyncValidator<Value>>? asyncValidators,
@@ -72,7 +71,6 @@ class InputFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value, Value,
               validators: validators,
               value: initialValue,
             ),
-            name: FieldBlocUtils.generateName(name),
             toJson: toJson,
             extraData: extraData,
           ),

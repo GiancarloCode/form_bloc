@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  flutter_bloc:
   flutter_form_bloc:
     path:
       ../

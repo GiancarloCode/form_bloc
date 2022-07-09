@@ -1,6 +1,5 @@
 library flutter_form_bloc;
 
-export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:form_bloc/form_bloc.dart';
 
 export 'src/checkbox_field_bloc_builder.dart';
@@ -15,6 +14,7 @@ export 'src/features/scroll/scrollable_field_bloc_target.dart';
 export 'src/features/scroll/scrollable_form_bloc_manager.dart';
 export 'src/field_bloc_builder.dart';
 export 'src/fields/simple_field_bloc_builder.dart';
+export 'src/form/form_bloc_provider.dart';
 export 'src/form_bloc_listener.dart';
 export 'src/groups/fields/checkbox_group_field_bloc_builder.dart';
 export 'src/groups/fields/radio_button_group_field_bloc.dart';

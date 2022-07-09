@@ -12,7 +12,6 @@ void main() {
         final validators = [(bool? value) => value! ? 'error' : null];
 
         final fieldBloc = BooleanFieldBloc<dynamic>(
-          name: 'name',
           initialValue: false,
           validators: validators,
           suggestions: suggestions,
@@ -28,7 +27,6 @@ void main() {
           suggestions: suggestions,
           isValidated: true,
           isValidating: false,
-          name: 'name',
         );
         final state2 = state1.copyWith(
           updatedValue: Param(true),
@@ -52,9 +50,7 @@ void main() {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
 
-        fieldBloc = BooleanFieldBloc<dynamic>(
-          name: 'name',
-        );
+        fieldBloc = BooleanFieldBloc<dynamic>();
 
         initialState = createBooleanState<dynamic>(
           value: false,
@@ -74,7 +70,6 @@ void main() {
         fieldBloc.close();
 
         fieldBloc = BooleanFieldBloc<dynamic>(
-          name: 'name',
           initialValue: true,
           validators: [FieldBlocValidators.required, (value) => 'error'],
         );
@@ -99,7 +94,7 @@ void main() {
         BooleanFieldBloc fieldBloc;
         BooleanFieldBlocState initialState;
 
-        fieldBloc = BooleanFieldBloc<dynamic>(name: 'name');
+        fieldBloc = BooleanFieldBloc<dynamic>();
 
         initialState = createBooleanState<dynamic>(
           value: false,

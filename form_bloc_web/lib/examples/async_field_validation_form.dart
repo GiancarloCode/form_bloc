@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -25,7 +26,7 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
   );
 
   AsyncFieldValidationFormBloc() {
-    addFieldBlocs(fieldBlocs: [username]);
+    addStep(username);
 
     username.addAsyncValidators(
       [_checkUsername],
@@ -75,8 +76,8 @@ class AsyncFieldValidationForm extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(title: const Text('Async Field Validation')),
-            body:
-                FormBlocListener<AsyncFieldValidationFormBloc, String, String>(
+            body: FormBlocListener<String, String>(
+              formBloc: formBloc,
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
               },

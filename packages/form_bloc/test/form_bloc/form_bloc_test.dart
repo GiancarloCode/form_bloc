@@ -66,7 +66,7 @@ void main() {
         test('check fieldBloc was added with valid formBloc state', () async {
           final formBloc = _FormBlocImpl();
 
-          formBloc.addFieldBloc(fieldBloc: formBloc.optionalField);
+          formBloc.addStep(fieldBloc: formBloc.optionalField);
 
           expect(
             formBloc.state,
@@ -82,7 +82,7 @@ void main() {
         test('fieldBloc was added  with invalid formBloc state', () async {
           final formBloc = _FormBlocImpl();
 
-          formBloc.addFieldBloc(fieldBloc: formBloc.requiredField);
+          formBloc.addStep(fieldBloc: formBloc.requiredField);
 
           expect(
             formBloc.state,
@@ -112,7 +112,7 @@ void main() {
             ),
           );
 
-          formBloc.addFieldBloc(fieldBloc: fieldBloc);
+          formBloc.addStep(fieldBloc: fieldBloc);
 
           verify(() => fieldBloc.updateFormBloc(formBloc, autoValidate: true));
         });
@@ -122,8 +122,8 @@ void main() {
         test('fieldBloc and step was removed from formBloc', () async {
           final formBloc = _FormBlocImpl();
 
-          formBloc.addFieldBloc(fieldBloc: formBloc.requiredField);
-          formBloc.removeFieldBloc(fieldBloc: formBloc.requiredField);
+          formBloc.addStep(fieldBloc: formBloc.requiredField);
+          formBloc.removeStep(fieldBloc: formBloc.requiredField);
 
           expect(
             formBloc.state,
@@ -140,7 +140,7 @@ void main() {
           formBloc.addFieldBlocs(
             fieldBlocs: [formBloc.requiredField, formBloc.optionalField],
           );
-          formBloc.removeFieldBloc(fieldBloc: formBloc.requiredField);
+          formBloc.removeStep(fieldBloc: formBloc.requiredField);
 
           expect(
             formBloc.state,
@@ -170,8 +170,8 @@ void main() {
             ),
           );
 
-          formBloc.addFieldBloc(fieldBloc: fieldBloc);
-          formBloc.removeFieldBloc(fieldBloc: fieldBloc);
+          formBloc.addStep(fieldBloc: fieldBloc);
+          formBloc.removeStep(fieldBloc: fieldBloc);
 
           verify(() => fieldBloc.removeFormBloc(formBloc));
         });
@@ -213,7 +213,7 @@ void main() {
 
         expect(formBloc.stream, emitsInOrder(expectedStates));
 
-        formBloc.addFieldBloc(fieldBloc: formBloc.requiredField);
+        formBloc.addStep(fieldBloc: formBloc.requiredField);
 
         formBloc.requiredField.updateValue('x');
       });
@@ -254,7 +254,7 @@ void main() {
           await expectBloc(
             formBloc,
             act: () {
-              formBloc.addFieldBloc(fieldBloc: formBloc.requiredField);
+              formBloc.addStep(fieldBloc: formBloc.requiredField);
               formBloc.submit();
             },
             stream: expectedStates,
@@ -294,7 +294,7 @@ void main() {
           await expectBloc(
             formBloc,
             act: () {
-              formBloc.addFieldBloc(fieldBloc: formBloc.optionalField);
+              formBloc.addStep(fieldBloc: formBloc.optionalField);
               formBloc.submit();
             },
             stream: expectedStates,
@@ -357,7 +357,7 @@ void main() {
 
           expect(formBloc.stream, emitsInOrder(expectedStates));
 
-          formBloc.addFieldBloc(fieldBloc: formBloc.optionalField);
+          formBloc.addStep(fieldBloc: formBloc.optionalField);
 
           formBloc.submit();
         });
@@ -459,7 +459,7 @@ void main() {
           initialState: initialState,
         );
 
-        formBloc.addFieldBloc(fieldBloc: fieldBloc);
+        formBloc.addStep(fieldBloc: fieldBloc);
         formBloc.clear();
 
         verify(() => fieldBloc.clear());
@@ -520,7 +520,7 @@ void main() {
 
         expect(formBloc.stream, emitsInOrder(expectedStates));
 
-        formBloc.addFieldBloc(fieldBloc: formBloc.optionalField);
+        formBloc.addStep(fieldBloc: formBloc.optionalField);
 
         formBloc.cancelSubmission();
         formBloc.submit();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' hide Stepper, Step;
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/src/cubit_consumer.dart';
 import 'package:flutter_form_bloc/src/stepper/stepper.dart';
 import 'package:form_bloc/form_bloc.dart';
 
@@ -51,10 +51,11 @@ class FormBlocStep {
   final bool? isActive;
 }
 
-class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
+class StepperFormBlocBuilder<TFormBloc extends FormBloc>
+    extends StatelessWidget {
   const StepperFormBlocBuilder({
     Key? key,
-    this.formBloc,
+    required this.formBloc,
     required this.stepsBuilder,
     this.physics,
     this.type = StepperType.vertical,
@@ -64,12 +65,12 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
     this.controlsBuilder,
   }) : super(key: key);
 
-  final T? formBloc;
+  final TFormBloc formBloc;
 
   /// The steps of the stepper whose titles, subtitles, icons always get shown.
   ///
   /// The length of [stepsBuilder] must not change.
-  final List<FormBlocStep> Function(T? formBloc) stepsBuilder;
+  final List<FormBlocStep> Function(TFormBloc? formBloc) stepsBuilder;
 
   /// How the stepper's scroll view should respond to user input.
   ///
@@ -158,12 +159,12 @@ class StepperFormBlocBuilder<T extends FormBloc> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<T, FormBlocState>(
-      bloc: formBloc,
+    return SourceConsumer<FormBlocState>(
+      source: formBloc,
       buildWhen: (p, c) =>
           p.numberOfSteps != c.numberOfSteps || p.currentStep != c.currentStep,
-      builder: (context, state) {
-        final formBloc = this.formBloc ?? context.read<T>();
+      builder: (context, state, _) {
+        final formBloc = this.formBloc;
 
         final formBlocSteps = stepsBuilder(formBloc);
         return Stepper(

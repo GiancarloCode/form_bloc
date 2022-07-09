@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
@@ -155,79 +154,72 @@ class DropdownFieldBlocBuilder<Value> extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeStyleOf(context);
 
-    return SimpleFieldBlocBuilder(
-      singleFieldBloc: selectFieldBloc,
+    return SimpleFieldBlocBuilder<SelectFieldBlocState<Value, dynamic>>(
+      fieldBloc: selectFieldBloc,
       animateWhenCanShow: animateWhenCanShow,
-      builder: (context, canShow) {
-        return BlocBuilder<SelectFieldBloc<Value, dynamic>,
-            SelectFieldBlocState<Value, dynamic>>(
-          bloc: selectFieldBloc,
-          builder: (context, fieldState) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: this.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: fieldState,
-            );
+      enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+      isEnabled: isEnabled,
+      // TODO: implement readOnly
+      readOnly: false,
+      nextFocusNode: nextFocusNode,
+      builder: (context, fieldState, data) {
+        final isEnabled = data.isEnabled;
 
-            final decoration =
-                _buildDecoration(context, fieldTheme, fieldState, isEnabled);
+        final decoration =
+            _buildDecoration(context, fieldTheme, fieldState, isEnabled);
 
-            return DefaultFieldBlocBuilderPadding(
-              padding: padding,
-              child: InputDecorator(
-                decoration: decoration,
-                textAlign: textAlign,
-                isEmpty:
-                    fieldState.value == null && decoration.hintText == null,
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<Value>(
-                    value: fieldState.value,
-                    focusNode: focusNode,
-                    hint: hint,
-                    isExpanded: isExpanded,
-                    isDense: true,
-                    disabledHint: disabledHint ??
-                        (decoration.hintText != null
-                            ? DefaultTextStyle(
-                                style: Style.resolveTextStyle(
-                                  isEnabled: isEnabled,
-                                  style: decoration.hintStyle ??
-                                      fieldTheme.textStyle!,
-                                  color: fieldTheme.textColor!,
-                                ),
-                                child: Text(decoration.hintText!),
-                              )
-                            : null),
-                    onChanged: fieldBlocBuilderOnChange<Value?>(
-                      isEnabled: isEnabled,
-                      nextFocusNode: nextFocusNode,
-                      onChanged: (value) {
-                        selectFieldBloc.changeValue(value);
-                        onChanged?.call(value);
-                      },
-                    ),
-                    items: _buildItems(
-                      context: context,
-                      fieldTheme: fieldTheme,
-                      items: fieldState.items,
-                      isEnabled: isEnabled,
-                      isSelected: false,
-                    ),
-                    selectedItemBuilder: (context) => _buildItems(
-                      context: context,
-                      fieldTheme: fieldTheme,
-                      items: fieldState.items,
-                      isEnabled: isEnabled,
-                      isSelected: true,
-                    ),
-                    icon: this.decoration.suffixIcon ??
-                        fieldTheme.moreIcon ??
-                        const Icon(Icons.arrow_drop_down),
-                  ),
+        return DefaultFieldBlocBuilderPadding(
+          padding: padding,
+          child: InputDecorator(
+            decoration: decoration,
+            textAlign: textAlign,
+            isEmpty: fieldState.value == null && decoration.hintText == null,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<Value>(
+                value: fieldState.value,
+                focusNode: focusNode,
+                hint: hint,
+                isExpanded: isExpanded,
+                isDense: true,
+                disabledHint: disabledHint ??
+                    (decoration.hintText != null
+                        ? DefaultTextStyle(
+                            style: Style.resolveTextStyle(
+                              isEnabled: isEnabled,
+                              style:
+                                  decoration.hintStyle ?? fieldTheme.textStyle!,
+                              color: fieldTheme.textColor!,
+                            ),
+                            child: Text(decoration.hintText!),
+                          )
+                        : null),
+                onChanged: data.buildOnChange<Value?>(
+                  isEnabled: isEnabled,
+                  onChanged: (value) {
+                    selectFieldBloc.changeValue(value);
+                    onChanged?.call(value);
+                  },
                 ),
+                items: _buildItems(
+                  context: context,
+                  fieldTheme: fieldTheme,
+                  items: fieldState.items,
+                  isEnabled: isEnabled,
+                  isSelected: false,
+                ),
+                selectedItemBuilder: (context) => _buildItems(
+                  context: context,
+                  fieldTheme: fieldTheme,
+                  items: fieldState.items,
+                  isEnabled: isEnabled,
+                  isSelected: true,
+                ),
+                icon: this.decoration.suffixIcon ??
+                    fieldTheme.moreIcon ??
+                    const Icon(Icons.arrow_drop_down),
               ),
-            );
-          },
+            ),
+          ),
         );
       },
     );

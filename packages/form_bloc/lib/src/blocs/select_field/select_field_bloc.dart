@@ -2,8 +2,8 @@ part of '../field/field_bloc.dart';
 
 /// A `FieldBloc` used to select one item
 /// from multiple items.
-class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
-    SelectFieldBlocState<Value, ExtraData>, ExtraData?> {
+class SelectFieldBloc<Value, ExtraData>
+    extends SingleFieldBloc<Value?, Value, SelectFieldBlocState<Value, ExtraData>, ExtraData?> {
   /// ## SelectFieldBloc<Value, ExtraData>
   ///
   /// ### Properties:
@@ -39,7 +39,6 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
   /// This method is called when you use [FormBlocState.toJson]
   /// * [extraData] : It is an object that you can use to add extra data, it will be available in the state [FieldBlocState.extraData].
   SelectFieldBloc({
-    String? name,
     Value? initialValue,
     List<Validator<Value?>>? validators,
     List<AsyncValidator<Value?>>? asyncValidators,
@@ -75,7 +74,6 @@ class SelectFieldBloc<Value, ExtraData> extends SingleFieldBloc<Value?, Value,
               validators: validators,
               value: initialValue,
             ),
-            name: FieldBlocUtils.generateName(name),
             items: SingleFieldBloc._itemsWithoutDuplicates(items),
             toJson: toJson,
             extraData: extraData,

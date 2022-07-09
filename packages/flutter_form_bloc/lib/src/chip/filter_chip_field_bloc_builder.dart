@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/src/chip/chip_field_item_builder.dart';
 import 'package:flutter_form_bloc/src/fields/simple_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
@@ -186,84 +185,77 @@ class FilterChipFieldBlocBuilder<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final fieldTheme = themeOf(context);
 
-    final current = SimpleFieldBlocBuilder(
-      singleFieldBloc: multiSelectFieldBloc,
+    final current =
+        SimpleFieldBlocBuilder<MultiSelectFieldBlocState<T, dynamic>>(
+      fieldBloc: multiSelectFieldBloc,
       animateWhenCanShow: animateWhenCanShow,
-      builder: (_, __) {
-        return BlocBuilder<MultiSelectFieldBloc<T, dynamic>,
-            MultiSelectFieldBlocState<T, dynamic>>(
-          bloc: multiSelectFieldBloc,
-          builder: (context, state) {
-            final isEnabled = fieldBlocIsEnabled(
-              isEnabled: this.isEnabled,
-              enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
-              fieldBlocState: state,
-            );
+      enableOnlyWhenFormBlocCanSubmit: enableOnlyWhenFormBlocCanSubmit,
+      isEnabled: isEnabled,
+      readOnly: readOnly,
+      nextFocusNode: nextFocusNode,
+      builder: (context, state, data) {
+        final isEnabled = data.isEnabled;
 
-            final values = state.value;
-            final items = state.items;
+        final values = state.value;
+        final items = state.items;
 
-            return DefaultFieldBlocBuilderPadding(
-              padding: padding,
-              child: InputDecorator(
-                decoration: _buildDecoration(context, state, isEnabled),
-                isEmpty: false,
-                child: Wrap(
-                  direction: direction,
-                  alignment: alignment,
-                  spacing: fieldTheme.wrapTheme.spacing!,
-                  runAlignment: runAlignment,
-                  runSpacing: fieldTheme.wrapTheme.runSpacing!,
-                  crossAxisAlignment: crossAxisAlignment,
-                  textDirection: textDirection,
-                  verticalDirection: verticalDirection,
-                  children: items.map((item) {
-                    final fieldItem = itemBuilder(context, item);
+        return DefaultFieldBlocBuilderPadding(
+          padding: padding,
+          child: InputDecorator(
+            decoration: _buildDecoration(context, state, isEnabled),
+            isEmpty: false,
+            child: Wrap(
+              direction: direction,
+              alignment: alignment,
+              spacing: fieldTheme.wrapTheme.spacing!,
+              runAlignment: runAlignment,
+              runSpacing: fieldTheme.wrapTheme.runSpacing!,
+              crossAxisAlignment: crossAxisAlignment,
+              textDirection: textDirection,
+              verticalDirection: verticalDirection,
+              children: items.map((item) {
+                final fieldItem = itemBuilder(context, item);
 
-                    return FilterChip(
-                      focusNode: focusNode,
-                      autofocus: autofocus,
-                      selected: values.contains(item),
-                      onSelected: fieldBlocBuilderOnChange<bool>(
-                        isEnabled: isEnabled && fieldItem.isEnabled,
-                        readOnly: readOnly,
-                        nextFocusNode: nextFocusNode,
-                        onChanged: (isSelected) {
-                          if (isSelected) {
-                            multiSelectFieldBloc.select(item);
-                          } else {
-                            multiSelectFieldBloc.deselect(item);
-                          }
-                          fieldItem.onTap?.call();
-                        },
-                      ),
-                      labelStyle: labelStyle,
-                      labelPadding: labelPadding,
-                      pressElevation: pressElevation,
-                      disabledColor: disabledColor,
-                      selectedColor: selectedColor,
-                      side: side,
-                      shape: shape,
-                      clipBehavior: clipBehavior,
-                      backgroundColor: backgroundColor,
-                      padding: chipPadding,
-                      visualDensity: visualDensity,
-                      materialTapTargetSize: materialTapTargetSize,
-                      elevation: elevation,
-                      shadowColor: shadowColor,
-                      selectedShadowColor: selectedShadowColor,
-                      showCheckmark: showCheckmark,
-                      checkmarkColor: checkmarkColor,
-                      avatarBorder: avatarBorder,
-                      tooltip: fieldItem.tooltip,
-                      avatar: fieldItem.avatar,
-                      label: fieldItem.label,
-                    );
-                  }).toList(),
-                ),
-              ),
-            );
-          },
+                return FilterChip(
+                  focusNode: focusNode,
+                  autofocus: autofocus,
+                  selected: values.contains(item),
+                  onSelected: data.buildOnChange<bool>(
+                    isEnabled: fieldItem.isEnabled,
+                    onChanged: (isSelected) {
+                      if (isSelected) {
+                        multiSelectFieldBloc.select(item);
+                      } else {
+                        multiSelectFieldBloc.deselect(item);
+                      }
+                      fieldItem.onTap?.call();
+                    },
+                  ),
+                  labelStyle: labelStyle,
+                  labelPadding: labelPadding,
+                  pressElevation: pressElevation,
+                  disabledColor: disabledColor,
+                  selectedColor: selectedColor,
+                  side: side,
+                  shape: shape,
+                  clipBehavior: clipBehavior,
+                  backgroundColor: backgroundColor,
+                  padding: chipPadding,
+                  visualDensity: visualDensity,
+                  materialTapTargetSize: materialTapTargetSize,
+                  elevation: elevation,
+                  shadowColor: shadowColor,
+                  selectedShadowColor: selectedShadowColor,
+                  showCheckmark: showCheckmark,
+                  checkmarkColor: checkmarkColor,
+                  avatarBorder: avatarBorder,
+                  tooltip: fieldItem.tooltip,
+                  avatar: fieldItem.avatar,
+                  label: fieldItem.label,
+                );
+              }).toList(),
+            ),
+          ),
         );
       },
     );

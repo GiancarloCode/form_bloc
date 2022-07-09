@@ -3,8 +3,7 @@ part of '../field/field_bloc.dart';
 class FormBlocUtils {
   FormBlocUtils._();
 
-  static Iterable<SingleFieldBloc> getAllSingleFieldBlocs(
-      Iterable<FieldBloc> fieldBlocs) {
+  static Iterable<SingleFieldBloc> getAllSingleFieldBlocs(Iterable<FieldBloc> fieldBlocs) {
     return fieldBlocs.expand((fieldBloc) {
       if (fieldBloc is SingleFieldBloc) {
         return [fieldBloc];
@@ -21,8 +20,7 @@ class FormBlocUtils {
         if (fieldBloc is SingleFieldBloc) {
           return [fieldBloc];
         } else if (fieldBloc is MultiFieldBloc) {
-          return <FieldBloc>[fieldBloc]
-              .followedBy(getAllFieldBlocs(fieldBloc.flatFieldBlocs));
+          return <FieldBloc>[fieldBloc].followedBy(getAllFieldBlocs(fieldBloc.flatFieldBlocs));
         }
       }
       return const <FieldBloc>[];
@@ -33,7 +31,7 @@ class FormBlocUtils {
   /// if it does not exist, return `null`.
   static FieldBloc? getFieldBlocFromPath({
     required String path,
-    required Map<String, FieldBloc> fieldBlocs,
+    required Map<int, FieldBloc> fieldBlocs,
   }) {
     var names = path.split('/');
 
@@ -189,8 +187,7 @@ class FormBlocUtils {
     }
   } */
 
-  static Map<String, dynamic> fieldBlocsStatesToJson(
-      Map<String, dynamic> fieldBlocsStates) {
+  static Map<String, dynamic> fieldBlocsStatesToJson(Map<String, dynamic> fieldBlocsStates) {
     final json = <String, dynamic>{};
 
     fieldBlocsStates.forEach((name, dynamic fieldBlocState) {
@@ -206,8 +203,7 @@ class FormBlocUtils {
     return json;
   }
 
-  static List<dynamic> fieldBlocsStatesListToJsonList(
-      List<dynamic> fieldBlocsStatesList) {
+  static List<dynamic> fieldBlocsStatesListToJsonList(List<dynamic> fieldBlocsStatesList) {
     final list = <dynamic>[];
 
     for (var fieldBlocState in fieldBlocsStatesList) {
@@ -222,8 +218,7 @@ class FormBlocUtils {
     return list;
   }
 
-  static Map<String, dynamic> fieldBlocsToFieldBlocsStates(
-      Map<String, FieldBloc> fieldBlocs) {
+  static Map<String, dynamic> fieldBlocsToFieldBlocsStates(Map<String, FieldBloc> fieldBlocs) {
     final json = <String, dynamic>{};
 
     fieldBlocs.forEach((name, fieldBloc) {
@@ -239,8 +234,7 @@ class FormBlocUtils {
     return json;
   }
 
-  static List<dynamic> fieldBlocListToFieldBlocsStatesList(
-      ListFieldBloc fieldBlocList) {
+  static List<dynamic> fieldBlocListToFieldBlocsStatesList(ListFieldBloc fieldBlocList) {
     final list = <dynamic>[];
 
     for (var fieldBloc in fieldBlocList.state.fieldBlocs) {
@@ -255,8 +249,7 @@ class FormBlocUtils {
     return list;
   }
 
-  static Iterable<FieldBlocState> flattenFieldBlocsStateList(
-      Iterable<dynamic> fieldBlocStateList) {
+  static Iterable<FieldBlocState> flattenFieldBlocsStateList(Iterable<dynamic> fieldBlocStateList) {
     final list = <FieldBlocState>[];
 
     for (var fieldBlocState in fieldBlocStateList) {
@@ -306,8 +299,7 @@ class FormBlocUtils {
           currentFieldBlocState = fieldBlocsStates[name];
         }
       } else {
-        if (currentFieldBlocState == null ||
-            currentFieldBlocState is FieldBlocState) {
+        if (currentFieldBlocState == null || currentFieldBlocState is FieldBlocState) {
           return null;
         }
 
@@ -338,8 +330,8 @@ class FormBlocUtils {
     required String path,
     required Map<String, dynamic> fieldBlocsStates,
   }) {
-    final dynamic fieldBlocState = FormBlocUtils.getFieldBlocStateFromPath(
-        path: path, fieldBlocsStates: fieldBlocsStates);
+    final dynamic fieldBlocState =
+        FormBlocUtils.getFieldBlocStateFromPath(path: path, fieldBlocsStates: fieldBlocsStates);
 
     if (fieldBlocState is FieldBlocState) {
       return fieldBlocState.value;
@@ -352,28 +344,28 @@ class FormBlocUtils {
     }
   }
 
-  static void updateFormBloc({
-    required Iterable<FieldBloc> fieldBlocs,
-    required FormBloc? formBloc,
-    bool autoValidate = false,
-  }) {
-    if (formBloc == null) return;
-
-    for (final fieldBloc in fieldBlocs) {
-      fieldBloc.updateFormBloc(formBloc, autoValidate: autoValidate);
-    }
-  }
-
-  static void removeFormBloc({
-    required Iterable<FieldBloc> fieldBlocs,
-    required FormBloc? formBloc,
-  }) {
-    if (formBloc == null) return;
-
-    for (final fieldBloc in fieldBlocs) {
-      fieldBloc.removeFormBloc(formBloc);
-    }
-  }
+  // static void updateFormBloc({
+  //   required Iterable<FieldBloc> fieldBlocs,
+  //   required FormBloc? formBloc,
+  //   bool autoValidate = false,
+  // }) {
+  //   if (formBloc == null) return;
+  //
+  //   for (final fieldBloc in fieldBlocs) {
+  //     fieldBloc.updateFormBloc(formBloc, autoValidate: autoValidate);
+  //   }
+  // }
+  //
+  // static void removeFormBloc({
+  //   required Iterable<FieldBloc> fieldBlocs,
+  //   required FormBloc? formBloc,
+  // }) {
+  //   if (formBloc == null) return;
+  //
+  //   for (final fieldBloc in fieldBlocs) {
+  //     fieldBloc.removeFormBloc(formBloc);
+  //   }
+  // }
 
   /// See [FormBloc.isValuesChanged]
   static bool isValuesChanged(

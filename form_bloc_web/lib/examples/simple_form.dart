@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() => runApp(const App());
@@ -32,13 +33,13 @@ class LoginFormBloc extends FormBloc<String, String> {
   final showSuccessResponse = BooleanFieldBloc();
 
   LoginFormBloc() {
-    addFieldBlocs(
+    addStep(ListFieldBloc<FieldBloc, dynamic>(
       fieldBlocs: [
         email,
         password,
         showSuccessResponse,
       ],
-    );
+    ));
   }
 
   @override
@@ -71,7 +72,8 @@ class LoginForm extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(title: const Text('Login')),
-            body: FormBlocListener<LoginFormBloc, String, String>(
+            body: FormBlocListener<String, String>(
+              formBloc: loginFormBloc,
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
               },

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 void main() {
@@ -40,6 +41,21 @@ class App extends StatelessWidget {
 }
 
 class AllFieldsFormBloc extends FormBloc<String, String> {
+  late final step = ListFieldBloc<FieldBloc, dynamic>(
+    fieldBlocs: [
+      text1,
+      boolean1,
+      boolean2,
+      select1,
+      select2,
+      multiSelect1,
+      date1,
+      dateAndTime1,
+      time1,
+      double1,
+    ],
+  );
+
   final text1 = TextFieldBloc();
 
   final boolean1 = BooleanFieldBloc();
@@ -78,18 +94,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   );
 
   AllFieldsFormBloc() : super(autoValidate: false) {
-    addFieldBlocs(fieldBlocs: [
-      text1,
-      boolean1,
-      boolean2,
-      select1,
-      select2,
-      multiSelect1,
-      date1,
-      dateAndTime1,
-      time1,
-      double1,
-    ]);
+    addStep(step);
   }
 
   void addErrors() {
@@ -147,7 +152,8 @@ class AllFieldsForm extends StatelessWidget {
                 ),
               ],
             ),
-            body: FormBlocListener<AllFieldsFormBloc, String, String>(
+            body: FormBlocListener<String, String>(
+              formBloc: formBloc,
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
               },
@@ -251,13 +257,13 @@ class AllFieldsForm extends StatelessWidget {
                       Row(
                         children: [
                           IconButton(
-                            onPressed: () => formBloc.addFieldBloc(
-                                fieldBloc: formBloc.select1),
+                            onPressed: () =>
+                                formBloc.step.addFieldBloc(formBloc.select1),
                             icon: const Icon(Icons.add),
                           ),
                           IconButton(
-                            onPressed: () => formBloc.removeFieldBloc(
-                                fieldBloc: formBloc.select1),
+                            onPressed: () =>
+                                formBloc.step.removeFieldBloc(formBloc.select1),
                             icon: const Icon(Icons.delete),
                           ),
                         ],
