@@ -33,3 +33,4 @@ export 'src/utils/field_bloc_builder_control_affinity.dart';
 export 'src/utils/field_item.dart';
 export 'src/utils/style.dart';
 export 'src/utils/typedefs.dart';
+export 'src/theme/field_theme_resolver.dart';
