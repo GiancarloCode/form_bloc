@@ -196,7 +196,7 @@ class SwitchFieldBlocBuilder extends StatelessWidget {
     BuildContext context,
     BooleanFieldBlocState state,
   ) {
-    return Switch(
+    return Switch.adaptive(
       value: state.value,
       onChanged: fieldBlocBuilderOnChange<bool>(
         isEnabled: isEnabled,
