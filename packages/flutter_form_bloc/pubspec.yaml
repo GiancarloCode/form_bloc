@@ -6,7 +6,7 @@ repository: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flut
 issue_tracker: https://github.com/GiancarloCode/form_bloc/issues
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -20,10 +20,10 @@ dependencies:
   rxdart: ^0.27.3
   flutter_keyboard_visibility: ^5.0.2
   collection: ^1.15.0
-  intl: ^0.17.0
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.1

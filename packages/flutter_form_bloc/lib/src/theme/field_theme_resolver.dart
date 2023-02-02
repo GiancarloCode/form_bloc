@@ -21,14 +21,14 @@ class FieldThemeResolver {
   TextStyle get textStyle {
     return fieldTheme?.textStyle ??
         formTheme.textStyle ??
-        theme.textTheme.subtitle1!;
+        theme.textTheme.titleMedium!;
   }
 
   MaterialStateProperty<Color?> get textColor {
     return fieldTheme?.textColor ??
         formTheme.textColor ??
         SimpleMaterialStateProperty(
-          normal: theme.textTheme.subtitle1!.color,
+          normal: theme.textTheme.titleMedium!.color,
           disabled: theme.disabledColor,
         );
   }

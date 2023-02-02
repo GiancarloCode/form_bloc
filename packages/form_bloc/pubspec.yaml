@@ -6,7 +6,7 @@ repository: 'https://github.com/GiancarloCode/form_bloc/tree/master/packages/for
 issue_tracker: 'https://github.com/GiancarloCode/form_bloc/issues'
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
+  sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
   meta: ^1.7.0
@@ -18,8 +18,8 @@ dependencies:
 
 dev_dependencies:
   test: ^1.20.1
-  mocktail: ^0.2.0
+  mocktail: ^0.3.0
   bloc_test: ^9.0.2
   fire_line_diff: ^1.5.3
 
-  lints: ^1.0.1
+  lints: ^2.0.1

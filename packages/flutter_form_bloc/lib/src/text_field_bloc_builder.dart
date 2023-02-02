@@ -1,17 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:flutter_form_bloc/src/features/appear/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
-import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
-import 'package:flutter_form_bloc/src/suffix_buttons/obscure_suffix_button.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
-import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
-import 'package:flutter_form_bloc/src/theme/suffix_button_themes.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
-import 'package:form_bloc/form_bloc.dart';
 
 export 'package:flutter/services.dart'
     show TextInputType, TextInputAction, TextCapitalization;
@@ -725,7 +718,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
             fieldTheme.obscureFalseIcon,
       ),
       suggestionsTextStyle: fieldTheme.suggestionsTextStyle ??
-          theme.textTheme.subtitle1!.copyWith(
+          theme.textTheme.titleMedium!.copyWith(
             color: ThemeData.estimateBrightnessForColor(theme.canvasColor) ==
                     Brightness.dark
                 ? Colors.white
