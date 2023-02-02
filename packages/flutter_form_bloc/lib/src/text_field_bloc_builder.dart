@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -147,6 +149,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
         ),
       ),
     ),
+    this.debounceDuration = const Duration(milliseconds: 0),
   })  : assert(maxLines == null || maxLines > 0),
         assert(minLines == null || minLines > 0),
         assert(
@@ -686,6 +689,15 @@ class TextFieldBlocBuilder extends StatefulWidget {
   final Widget asyncValidatingIcon;
   final Iterable<String>? autofillHints;
 
+  /// The duration to wait after the user stops typing before calling
+  /// [widget.textFieldBloc.changeValue].
+  ///
+  /// This is useful, because, if not set, a request for validation will be
+  /// made for each character typed, which can result in bad format messages
+  ///
+  /// This duration is set by default to 0 milliseconds.
+  final Duration debounceDuration;
+
   TextFieldTheme themeStyleOf(BuildContext context) {
     final theme = Theme.of(context);
     final formTheme = FormTheme.of(context);
@@ -735,6 +747,8 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   late TextEditingController _controller;
 
   late bool _obscureText;
+
+  Timer? debounce;
 
   @override
   void initState() {
@@ -932,10 +946,13 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         maxLength: widget.maxLength,
         maxLengthEnforcement: widget.maxLengthEnforced,
         onChanged: (value) {
-          widget.textFieldBloc.changeValue(value);
-          if (widget.onChanged != null) {
-            widget.onChanged!(value);
-          }
+          if (debounce?.isActive ?? false) debounce!.cancel();
+          debounce = Timer(widget.debounceDuration, () async {
+            widget.textFieldBloc.changeValue(value);
+            if (widget.onChanged != null) {
+              widget.onChanged!(value);
+            }
+          });
         },
         onEditingComplete: widget.onEditingComplete,
         onSubmitted: _onSubmitted,
