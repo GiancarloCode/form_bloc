@@ -590,10 +590,10 @@ class TypeAheadField<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
+  TypeAheadFieldState<T> createState() => TypeAheadFieldState<T>();
 }
 
-class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
+class TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     with WidgetsBindingObserver {
   FocusNode? _focusNode;
   TextEditingController? _textEditingController;
@@ -704,8 +704,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
 
         ScrollableState? scrollableState = Scrollable.of(context);
         scrollableState.position.isScrollingNotifier.addListener(() {
-          bool isScrolling =
-              scrollableState.position.isScrollingNotifier.value;
+          bool isScrolling = scrollableState.position.isScrollingNotifier.value;
           _resizeOnScrollTimer?.cancel();
           if (isScrolling) {
             // Scroll started
@@ -863,7 +862,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         showCursor: widget.textFieldConfiguration.showCursor,
         strutStyle: widget.textFieldConfiguration.strutStyle,
         textAlignVertical: widget.textFieldConfiguration.textAlignVertical,
-        toolbarOptions: widget.textFieldConfiguration.toolbarOptions,
+        contextMenuBuilder: widget.textFieldConfiguration.contextMenuBuilder,
       ),
     );
   }
@@ -1246,7 +1245,6 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
       }
 
       return InkWell(
-        child: widget.itemBuilder!(context, suggestion),
         borderRadius: borderRadius,
         onLongPress: widget.onSuggestionRemoved == null ||
                 !widget.removeSuggestionOnLongPress
@@ -1267,6 +1265,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
         onTap: () {
           widget.onSuggestionSelected!(suggestion);
         },
+        child: widget.itemBuilder!(context, suggestion),
       );
     }
 
@@ -1555,7 +1554,7 @@ class TextFieldConfiguration<T> {
   /// If not set, select all and paste will default to be enabled. Copy and cut
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
-  final ToolbarOptions? toolbarOptions;
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
   final Iterable<String>? autofillHints;
 
   /// Creates a TextFieldConfiguration
@@ -1598,7 +1597,7 @@ class TextFieldConfiguration<T> {
     this.showCursor,
     this.scrollPhysics,
     this.textAlignVertical,
-    this.toolbarOptions,
+    this.contextMenuBuilder,
   });
 
   /// Copies the [TextFieldConfiguration] and only changes the specified

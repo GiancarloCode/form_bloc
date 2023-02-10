@@ -15,11 +15,10 @@ class CanShowFieldBlocBuilder extends StatefulWidget {
   final Widget Function(BuildContext context, bool canShow) builder;
 
   @override
-  _CanShowFieldBlocBuilderState createState() =>
-      _CanShowFieldBlocBuilderState();
+  CanShowFieldBlocBuilderState createState() => CanShowFieldBlocBuilderState();
 }
 
-class _CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
+class CanShowFieldBlocBuilderState extends State<CanShowFieldBlocBuilder>
     with TickerProviderStateMixin {
   // Identifies whether it is waiting for the FormBloc's event handling
   bool _showOnFirstFrame = false;

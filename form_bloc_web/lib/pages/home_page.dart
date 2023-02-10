@@ -75,7 +75,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      primary: Colors.black38,
+                      foregroundColor: Colors.black38,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                         side: const BorderSide(
@@ -106,8 +106,9 @@ class HomePage extends StatelessWidget {
         ),
       ),
       onTap: () async {
-        if (await canLaunch(url!)) {
-          await launch(url);
+        Uri uri = Uri.parse(url!);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri);
         }
       },
     );

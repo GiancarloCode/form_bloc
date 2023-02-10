@@ -155,7 +155,7 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
       alignment: Alignment.centerLeft,
       child: Text(
         'Examples',
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.titleLarge,
       ),
     );
   }
@@ -249,9 +249,9 @@ class _AppDrawerState extends State<AppDrawer> with RouteAware {
   }
 
   _launchGitHubURL() async {
-    const url = 'https://github.com/GiancarloCode/form_bloc';
-    if (await canLaunch(url)) {
-      await launch(url);
+    Uri uri = Uri.parse('https://github.com/GiancarloCode/form_bloc');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     }
   }
 

@@ -131,7 +131,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
     this.keepSuggestionsOnLoading = false,
     this.showSuggestionsWhenIsEmpty = true,
     this.readOnly = false,
-    this.toolbarOptions,
+    this.contextMenuBuilder,
     this.enableSuggestions = true,
     this.animateWhenCanShow = true,
     this.focusOnValidationFailed = true,
@@ -560,8 +560,6 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// The appearance of the keyboard.
   ///
   /// This setting is only honored on iOS devices.
-  ///
-  /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
   final Brightness? keyboardAppearance;
 
   /// {@macro flutter.widgets.editableText.scrollPadding}
@@ -578,7 +576,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// If not set, select all and paste will default to be enabled. Copy and cut
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
-  final ToolbarOptions? toolbarOptions;
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
 
   /// {@macro flutter.services.textInput.enableSuggestions}
   final bool enableSuggestions;
@@ -740,10 +738,10 @@ class TextFieldBlocBuilder extends StatefulWidget {
   }
 
   @override
-  _TextFieldBlocBuilderState createState() => _TextFieldBlocBuilderState();
+  TextFieldBlocBuilderState createState() => TextFieldBlocBuilderState();
 }
 
-class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
+class TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
   late TextEditingController _controller;
 
   late bool _obscureText;
@@ -975,7 +973,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         showCursor: widget.showCursor,
         strutStyle: widget.strutStyle,
         textAlignVertical: widget.textAlignVertical,
-        toolbarOptions: widget.toolbarOptions,
+        contextMenuBuilder: widget.contextMenuBuilder,
       ),
       onTap: widget.onTap,
       hideOnLoading: widget.hideOnLoadingSuggestions,

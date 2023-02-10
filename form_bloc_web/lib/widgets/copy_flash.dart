@@ -16,7 +16,6 @@ void showCopyFlash({
           borderRadius: BorderRadius.circular(8.0),
           margin: margin,
           position: null,
-          style: null,
           alignment: Alignment.bottomRight,
           backgroundGradient: mainGradient,
           onTap: () => controller.dismiss(),

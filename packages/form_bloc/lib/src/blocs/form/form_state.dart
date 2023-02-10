@@ -556,7 +556,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
   String toString() => _toStringWith();
 
   String _toStringWith([String? extra]) {
-    String _allStepsToJson() {
+    String allStepsToJson() {
       var string = '';
       if (numberOfSteps > 1) {
         _fieldBlocs.forEach((key, value) {
@@ -567,7 +567,7 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       return string;
     }
 
-    String _allStepsIsValid() {
+    String allStepsIsValid() {
       var string = '';
       if (numberOfSteps > 1) {
         _isValidByStep.forEach((key, value) {
@@ -578,24 +578,24 @@ abstract class FormBlocState<SuccessResponse, FailureResponse>
       return string;
     }
 
-    var _toString = '$runtimeType {';
+    var toString = '$runtimeType {';
 
-    _toString += '\n  isEditing: $isEditing';
+    toString += '\n  isEditing: $isEditing';
     if (extra != null) {
-      _toString += extra;
+      toString += extra;
     }
-    _toString += ',\n  canSubmit: $canSubmit';
+    toString += ',\n  canSubmit: $canSubmit';
 
-    _toString += ',\n  currentStep: $currentStep';
-    _toString += ',\n  numberOfSteps: $numberOfSteps';
+    toString += ',\n  currentStep: $currentStep';
+    toString += ',\n  numberOfSteps: $numberOfSteps';
 
-    _toString += _allStepsIsValid();
-    _toString += ',\n  isValid(): ${isValid()}';
-    _toString += _allStepsToJson();
-    _toString += ',\n  toJson(): ${toJson()}';
-    _toString += ',\n  fieldBlocs: $_fieldBlocs';
-    _toString += '\n}';
-    return _toString;
+    toString += allStepsIsValid();
+    toString += ',\n  isValid(): ${isValid()}';
+    toString += allStepsToJson();
+    toString += ',\n  toJson(): ${toJson()}';
+    toString += ',\n  fieldBlocs: $_fieldBlocs';
+    toString += '\n}';
+    return toString;
   }
 }
 

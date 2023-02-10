@@ -5,13 +5,8 @@ import 'package:form_bloc_web/routes.dart';
 import 'package:form_bloc_web/super_bloc_delegate.dart';
 
 void main() {
-  BlocOverrides.runZoned(
-    () => BlocOverrides.runZoned(
-      () => runApp(const App()),
-      blocObserver: SuperBlocDelegate(),
-    ),
-    blocObserver: FormBlocObserver(child: SuperBlocDelegate()),
-  );
+  runApp(const App());
+  Bloc.observer = FormBlocObserver(child: SuperBlocDelegate());
 }
 
 class App extends StatelessWidget {

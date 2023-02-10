@@ -161,22 +161,22 @@ abstract class SingleFieldBloc<
     required Stream<R> Function(State previous, State current) onData,
     void Function(State previous, State current, R result)? onFinish,
   }) {
-    final _onStart = onStart ?? (_, __) {};
+    final onStart0 = onStart ?? (_, __) {};
 
-    final _onFinish = onFinish ?? (State p, State c, R r) {};
+    final onFinish0 = onFinish ?? (State p, State c, R r) {};
 
     return stream
         .startWith(state)
         .distinct((p, c) => p.value == c.value)
         .pairwise()
-        .doOnData((states) => _onStart(states.first, states.last))
+        .doOnData((states) => onStart0(states.first, states.last))
         .debounceTime(debounceTime)
         .switchMap<List<dynamic>>(
           (states) => onData(states.first, states.last)
               .map((r) => <dynamic>[states.first, states.last, r]),
         )
         .listen((list) =>
-            _onFinish(list[0] as State, list[1] as State, list[2] as R));
+            onFinish0(list[0] as State, list[1] as State, list[2] as R));
   }
 
   // ===========================================================================
