@@ -20,7 +20,7 @@ dependencies:
   rxdart: ^0.27.3
   flutter_keyboard_visibility: ^5.0.2
   collection: ^1.15.0
-  intl: ^0.17.0
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
