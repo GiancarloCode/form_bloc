@@ -702,7 +702,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           this._suggestionsBox?.open();
         }
 
-        ScrollableState? scrollableState = Scrollable.of(context);
+        ScrollableState? scrollableState = Scrollable.maybeOf(context);
         if (scrollableState != null) {
           // The TypeAheadField is inside a scrollable widget
           scrollableState.position.isScrollingNotifier.addListener(() {
