@@ -593,6 +593,12 @@ class TypeAheadField<T> extends StatefulWidget {
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
 }
 
+/// In flutter3.0 WidgetsBinding and SchedulerBinding are now non-nullable.
+/// To be backward compatible with flutter2.x and get rid of warning we need to
+/// implement this solution:
+/// https://docs.flutter.dev/development/tools/sdk/release-notes/release-notes-3.0.0#if-you-see-warnings-about-bindings
+T? _ambiguate<T>(T? value) => value;
+
 class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     with WidgetsBindingObserver {
   FocusNode? _focusNode;
@@ -629,7 +635,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
     //   this._suggestionsBox._overlayEntry?.remove();
     // }
     this._suggestionsBox!.widgetMounted = false;
-    WidgetsBinding.instance!.removeObserver(this);
+    _ambiguate(WidgetsBinding.instance)!.removeObserver(this);
 
     if (isWebMobile) {
       _keyboardSubscription.cancel();
@@ -653,7 +659,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    _ambiguate(WidgetsBinding.instance)!.addObserver(this);
     _hideSuggestionsController = PublishSubject<void>();
 
     if (widget.textFieldConfiguration.controller == null) {
@@ -689,7 +695,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       }
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((duration) {
+    _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((duration) {
       if (mounted) {
         this._initOverlayEntry();
         // calculate initial suggestions list size
@@ -728,7 +734,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   /// TODO: Create Pull Request
   /// Called for resize the suggestions box when have error
   void _onChange() {
-    WidgetsBinding.instance!.addPostFrameCallback((duration) {
+    _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((duration) {
       _suggestionsBox!.resize();
     });
   }
@@ -982,7 +988,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
     widget.controller!.addListener(this._controllerListener);
 
     _hideSuggestionsSubscription = widget.hideSuggestions.listen((_) {
-      WidgetsBinding.instance!.addPostFrameCallback((duration) {
+      _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((duration) {
         if (this.mounted) {
           setState(() {
             this
