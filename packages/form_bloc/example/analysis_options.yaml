@@ -5,9 +5,9 @@ analyzer:
     avoid_print: warning
     annotate_overrides: warning
     always_use_package_imports: warning
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
+  language:
+    strict-casts: true
+    strict-raw-types: true
 
 linter:
   rules:

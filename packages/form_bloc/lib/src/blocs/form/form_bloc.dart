@@ -63,8 +63,10 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
       fieldBloc.close();
     }
 
+    // ignore: sdk_version_since
     unawaited(_setupAreAllFieldsValidSubscriptionSubscription.cancel());
 
+    // ignore: sdk_version_since
     unawaited(super.close());
   }
 

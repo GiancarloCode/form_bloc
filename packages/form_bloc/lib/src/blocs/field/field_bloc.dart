@@ -589,12 +589,11 @@ abstract class SingleFieldBloc<
         .switchMap((value) async* {
       Object? error;
 
-      if (error == null) {
-        for (var asyncValidator in _asyncValidators) {
-          error = await asyncValidator(value);
-          if (error != null) break;
-        }
+      for (var asyncValidator in _asyncValidators) {
+        error = await asyncValidator(value);
+        if (error != null) break;
       }
+
       yield ValueAndError(value, error);
     }).listen((vls) {
       updateStateError(value: vls.value, error: vls.error);
@@ -610,11 +609,15 @@ abstract class SingleFieldBloc<
 
   @override
   Future<void> close() async {
+    // ignore: sdk_version_since
     unawaited(_selectedSuggestionSubject.close());
+    // ignore: sdk_version_since
     unawaited(_asyncValidatorsSubject.close());
+    // ignore: sdk_version_since
     unawaited(_asyncValidatorsSubscription.cancel());
     _revalidateFieldBlocsSubscription?.cancel();
 
+    // ignore: sdk_version_since
     unawaited(super.close());
   }
 

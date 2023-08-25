@@ -40,48 +40,41 @@ class FormBlocListener<
           listenWhen: (previousState, state) =>
               previousState.runtimeType != state.runtimeType,
           listener: (context, state) {
-            if (state is form_bloc
-                    .FormBlocLoading<SuccessResponse, ErrorResponse> &&
+            if (state is form_bloc.FormBlocLoading<SuccessResponse, ErrorResponse> &&
                 onLoading != null) {
               onLoading(context, state);
-            } else if (state is form_bloc
-                    .FormBlocLoaded<SuccessResponse, ErrorResponse> &&
+            } else if (state is form_bloc.FormBlocLoaded<SuccessResponse, ErrorResponse> &&
                 onLoaded != null) {
               onLoaded(context, state);
-            } else if (state is form_bloc
-                    .FormBlocLoadFailed<SuccessResponse, ErrorResponse> &&
+            } else if (state is form_bloc.FormBlocLoadFailed<SuccessResponse, ErrorResponse> &&
                 onLoadFailed != null) {
               onLoadFailed(context, state);
             } else if (state is form_bloc
                     .FormBlocSubmitting<SuccessResponse, ErrorResponse> &&
                 onSubmitting != null) {
               onSubmitting(context, state);
-            } else if (state is form_bloc
-                    .FormBlocSuccess<SuccessResponse, ErrorResponse> &&
+            } else if (state is form_bloc.FormBlocSuccess<SuccessResponse, ErrorResponse> &&
                 onSuccess != null) {
               onSuccess(context, state);
-            } else if (state is form_bloc
-                    .FormBlocFailure<SuccessResponse, ErrorResponse> &&
+            } else if (state is form_bloc.FormBlocFailure<SuccessResponse, ErrorResponse> &&
                 onFailure != null) {
               onFailure(context, state);
-            } else if (state is form_bloc.FormBlocSubmissionCancelled<
-                    SuccessResponse, ErrorResponse> &&
+            } else if (state is form_bloc.FormBlocSubmissionCancelled<SuccessResponse, ErrorResponse> &&
                 onSubmissionCancelled != null) {
               onSubmissionCancelled(context, state);
             } else if (state is form_bloc
                     .FormBlocSubmissionFailed<SuccessResponse, ErrorResponse> &&
                 onSubmissionFailed != null) {
               onSubmissionFailed(context, state);
-            } else if (state is form_bloc
-                    .FormBlocDeleting<SuccessResponse, ErrorResponse> &&
+            } else if (state is form_bloc.FormBlocDeleting<SuccessResponse, ErrorResponse> &&
                 onDeleting != null) {
               onDeleting(context, state);
             } else if (state is form_bloc
                     .FormBlocDeleteFailed<SuccessResponse, ErrorResponse> &&
                 onDeleteFailed != null) {
               onDeleteFailed(context, state);
-            } else if (state is form_bloc
-                    .FormBlocDeleteSuccessful<SuccessResponse, ErrorResponse> &&
+            } else if (state
+                    is form_bloc.FormBlocDeleteSuccessful<SuccessResponse, ErrorResponse> &&
                 onDeleteSuccessful != null) {
               onDeleteSuccessful(context, state);
             }

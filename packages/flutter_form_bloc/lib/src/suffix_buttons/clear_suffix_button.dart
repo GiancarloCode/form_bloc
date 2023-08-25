@@ -26,9 +26,10 @@ class ClearSuffixButton extends StatelessWidget {
     return ClearSuffixButtonTheme(
       visibleWithoutValue:
           visibleWithoutValue ?? buttonTheme.visibleWithoutValue ?? false,
-      appearDuration:
-          appearDuration ?? buttonTheme.appearDuration ?? const Duration(milliseconds: 300),
-      icon: icon ?? buttonTheme.icon ?? const  Icon(Icons.clear),
+      appearDuration: appearDuration ??
+          buttonTheme.appearDuration ??
+          const Duration(milliseconds: 300),
+      icon: icon ?? buttonTheme.icon ?? const Icon(Icons.clear),
     );
   }
 

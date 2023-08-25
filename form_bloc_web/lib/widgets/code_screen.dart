@@ -25,16 +25,18 @@ class CodeScreenState extends State<CodeScreen> {
 
   @override
   void didChangeDependencies() {
-    DefaultAssetBundle.of(context).loadString(widget.codePath!).catchError((_) {
-      setState(() {
-        _code = 'Example code not found';
-      });
-    }).then<void>((String? code) {
+    DefaultAssetBundle.of(context)
+        .loadString(widget.codePath!)
+        .then<void>((String? code) {
       if (mounted) {
         setState(() {
           _code = code ?? 'Example code not found';
         });
       }
+    }).catchError((_) {
+      setState(() {
+        _code = 'Example code not found';
+      });
     });
     super.didChangeDependencies();
   }

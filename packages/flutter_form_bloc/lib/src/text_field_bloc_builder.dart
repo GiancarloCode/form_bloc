@@ -1,17 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:flutter_form_bloc/src/features/appear/can_show_field_bloc_builder.dart';
 import 'package:flutter_form_bloc/src/flutter_typeahead.dart';
-import 'package:flutter_form_bloc/src/suffix_buttons/clear_suffix_button.dart';
-import 'package:flutter_form_bloc/src/suffix_buttons/obscure_suffix_button.dart';
 import 'package:flutter_form_bloc/src/theme/field_theme_resolver.dart';
-import 'package:flutter_form_bloc/src/theme/form_bloc_theme.dart';
-import 'package:flutter_form_bloc/src/theme/suffix_button_themes.dart';
 import 'package:flutter_form_bloc/src/utils/utils.dart';
-import 'package:form_bloc/form_bloc.dart';
 
 export 'package:flutter/services.dart'
     show TextInputType, TextInputAction, TextCapitalization;
@@ -565,7 +558,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
   ///
   /// This setting is only honored on iOS devices.
   ///
-  /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
+  /// Defaults to [Brightness.light].
   final Brightness? keyboardAppearance;
 
   /// {@macro flutter.widgets.editableText.scrollPadding}
@@ -582,6 +575,10 @@ class TextFieldBlocBuilder extends StatefulWidget {
   /// If not set, select all and paste will default to be enabled. Copy and cut
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
+  @Deprecated(
+    'Use `contextMenuBuilder` instead. '
+    'This feature was deprecated after v3.3.0-0.5.pre.',
+  )
   final ToolbarOptions? toolbarOptions;
 
   /// {@macro flutter.services.textInput.enableSuggestions}
@@ -725,7 +722,7 @@ class TextFieldBlocBuilder extends StatefulWidget {
             fieldTheme.obscureFalseIcon,
       ),
       suggestionsTextStyle: fieldTheme.suggestionsTextStyle ??
-          theme.textTheme.subtitle1!.copyWith(
+          theme.textTheme.titleMedium!.copyWith(
             color: ThemeData.estimateBrightnessForColor(theme.canvasColor) ==
                     Brightness.dark
                 ? Colors.white
@@ -965,6 +962,7 @@ class _TextFieldBlocBuilderState extends State<TextFieldBlocBuilder> {
         showCursor: widget.showCursor,
         strutStyle: widget.strutStyle,
         textAlignVertical: widget.textAlignVertical,
+        // ignore: deprecated_member_use_from_same_package
         toolbarOptions: widget.toolbarOptions,
       ),
       onTap: widget.onTap,
