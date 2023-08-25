@@ -1,6 +1,6 @@
 {
-    "name": "Form Bloc",
-    "short_name": "Fb",
+    "name": "form_bloc_web",
+    "short_name": "form_bloc_web",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
