@@ -6,7 +6,8 @@ import 'package:form_bloc_web/widgets/copy_flash.dart';
 import 'package:form_bloc_web/widgets/gradient_button.dart';
 
 class CodeScreen extends StatefulWidget {
-  const CodeScreen({Key? key,
+  const CodeScreen({
+    Key? key,
     this.codePath,
     this.extraDependencies,
   }) : super(key: key);
@@ -100,7 +101,8 @@ class CodeScreenState extends State<CodeScreen> {
   }
 
   void _copy() {
-    Clipboard.setData(ClipboardData(text: _code));
+    if (_code == null) return;
+    Clipboard.setData(ClipboardData(text: _code!));
 
     showCopyFlash(
       context: context,

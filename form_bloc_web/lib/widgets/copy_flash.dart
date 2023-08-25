@@ -12,14 +12,16 @@ void showCopyFlash({
       builder: (_, controller) {
         return Flash(
           controller: controller,
-          backgroundColor: Colors.black87,
-          borderRadius: BorderRadius.circular(8.0),
-          margin: margin,
-          position: null,
-          style: null,
-          alignment: Alignment.bottomRight,
-          backgroundGradient: mainGradient,
-          onTap: () => controller.dismiss(),
+
+          // backgroundColor: Colors.black87,
+          // borderRadius: BorderRadius.circular(8.0),
+          // margin: margin,
+          // position: null,
+          // style: null,
+          // alignment: Alignment.bottomRight,
+          // backgroundGradient: mainGradient,
+          // onTap: () => controller.dismiss(),
+
           child: const Padding(
             padding: EdgeInsets.all(12.0),
             child: DefaultTextStyle(

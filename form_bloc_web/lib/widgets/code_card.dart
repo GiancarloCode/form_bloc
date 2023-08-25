@@ -44,7 +44,8 @@ class CodeCard extends StatelessWidget {
                   ),
                   margin: const EdgeInsets.all(0),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Text(
                       fileName!,
                       // style: TextStyle(fontSize: 18),
@@ -86,7 +87,8 @@ class CodeCard extends StatelessWidget {
                     width: 80,
                     child: GradientElevatedButton(
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(text: code));
+                        if (code == null) return;
+                        Clipboard.setData(ClipboardData(text: code!));
 
                         showCopyFlash(
                           context: context,

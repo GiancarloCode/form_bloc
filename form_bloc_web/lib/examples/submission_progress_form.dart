@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
+import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:rxdart/rxdart.dart';
 
 void main() => runApp(const App());
@@ -298,7 +298,8 @@ class SuccessScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const SubmissionProgressForm())),
+                  MaterialPageRoute(
+                      builder: (_) => const SubmissionProgressForm())),
               icon: const Icon(Icons.replay),
               label: const Text('AGAIN'),
             ),

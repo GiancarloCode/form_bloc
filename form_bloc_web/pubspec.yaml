@@ -1,32 +1,30 @@
 name: form_bloc_web
 description: Easy Form State Management using BLoC pattern. Separate the Form State and Business Logic from the User Interface.
 version: 1.0.0
+publish_to: none
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.19.0 <4.0.0"
+  flutter: ">=3.7.0"
 
 dependencies:
   flutter:
     sdk: flutter
-#  form_bloc:
-#    path: ../packages/form_bloc
-#  flutter_form_bloc:
-#    path: ../packages/flutter_form_bloc
   flutter_form_bloc: ^0.30.1
-  animations: ^2.0.2
+  animations: ^2.0.7
   flutter_syntax_view: ^4.0.0
-  flash: ^1.5.2
-  url_launcher: ^6.0.2
-  flutter_markdown: ^0.6.10
+  flash: ^3.0.5+1
+  url_launcher: ^6.1.12
+  flutter_markdown: ^0.6.17+1
   auto_size_text: ^3.0.0-nullsafety.0
-  liquid_progress_indicator: ^0.4.0
-  rxdart: ^0.27.0
-  google_fonts: ^2.3.2
+  liquid_progress_indicator_v2: ^0.5.0
+  rxdart: ^0.27.7
+  google_fonts: ^5.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
