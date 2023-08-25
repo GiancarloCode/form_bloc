@@ -1,0 +1,9 @@
+name: form_bloc_melos
+
+packages:
+  - form_bloc_web
+  - packages/**
+
+scripts:
+  analyze:
+    exec: dart analyze .
