@@ -21,7 +21,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.7.7'
+        flutter-version: '3.13.1'
         channel: 'stable'
 
     - name: Enable Flutter web
