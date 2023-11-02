@@ -550,6 +550,7 @@ abstract class SingleFieldBloc<
   /// See [FieldBloc.updateFormBloc]
   @override
   void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
+    if (formBloc.isClosed) return;
     _autoValidate = autoValidate;
     if (!_autoValidate) {
       emit(state.copyWith(
@@ -707,6 +708,7 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
   /// See [FieldBloc.updateFormBloc]
   @override
   void updateFormBloc(FormBloc formBloc, {bool autoValidate = false}) {
+    if (formBloc.isClosed) return;
     _autoValidate = autoValidate;
 
     emit(state.copyWith(
