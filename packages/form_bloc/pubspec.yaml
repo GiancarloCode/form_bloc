@@ -14,11 +14,11 @@ dependencies:
   rxdart: ^0.27.3
   equatable: ^2.0.3
   collection: ^1.15.0
-  uuid: ^3.0.4
+  uuid: ^4.2.1
 
 dev_dependencies:
   test: ^1.20.1
-  mocktail: ^0.2.0
+  mocktail: ^1.0.1
   bloc_test: ^9.0.2
   fire_line_diff: ^1.5.3
-  lints: ^2.0.0
+  lints: ^3.0.0
