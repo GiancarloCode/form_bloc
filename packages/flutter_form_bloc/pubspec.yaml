@@ -4,6 +4,7 @@ version: 0.31.0
 homepage: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc
 repository: https://github.com/GiancarloCode/form_bloc/tree/master/packages/flutter_form_bloc
 issue_tracker: https://github.com/GiancarloCode/form_bloc/issues
+publish_to: none
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
@@ -13,7 +14,11 @@ dependencies:
     sdk: flutter
 
   flutter_bloc: ^8.0.1
-  form_bloc: ^0.31.0
+  # form_bloc: ^0.31.0
+  form_bloc:
+    git:
+      url: https://github.com/Cavin6080/form_bloc.git
+      path: packages/form_bloc
   equatable: ^2.0.3
   rxdart: ^0.27.3
   flutter_keyboard_visibility: ^5.4.1
