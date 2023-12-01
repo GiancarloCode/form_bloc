@@ -19,6 +19,7 @@ dependencies:
     git:
       url: https://github.com/Cavin6080/form_bloc.git
       path: packages/form_bloc
+
   equatable: ^2.0.3
   rxdart: ^0.27.3
   flutter_keyboard_visibility: ^5.4.1
