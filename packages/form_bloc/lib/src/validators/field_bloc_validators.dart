@@ -7,8 +7,7 @@ class FieldBlocValidatorsErrors {
 
   static const String email = 'Email - Validator Error';
 
-  static const String passwordMin6Chars =
-      'Password Min 6 Chars - Validator Error';
+  static const String passwordMin6Chars = 'Password Min 6 Chars - Validator Error';
 
   static const String confirmPassword = 'Confirm Password - Validator Error';
 }
@@ -25,8 +24,7 @@ class FieldBlocValidators {
   static String? required(dynamic value) {
     if (value == null ||
         value == false ||
-        ((value is Iterable || value is String || value is Map) &&
-            value.length == 0)) {
+        ((value is Iterable || value is String || value is Map) && value.length == 0)) {
       return FieldBlocValidatorsErrors.required;
     }
     return null;
@@ -40,8 +38,7 @@ class FieldBlocValidators {
   /// Returns [FieldBlocValidatorsErrors.email]
   /// if is not valid.
   static String? email(String? string) {
-    final emailRegExp =
-        RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
+    final emailRegExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
     if (string == null || string.isEmpty || emailRegExp.hasMatch(string)) {
       return null;
     }
@@ -80,6 +77,7 @@ class FieldBlocValidators {
   /// Returns [FieldBlocValidatorsErrors.passwordMin6Chars]
   /// if is not valid.
   static Validator<String?> confirmPassword(
+    // ignore: strict_raw_type
     TextFieldBloc passwordTextFieldBloc,
   ) {
     return (String? confirmPassword) {

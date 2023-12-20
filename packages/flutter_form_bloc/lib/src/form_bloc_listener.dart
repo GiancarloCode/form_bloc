@@ -3,18 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_bloc/form_bloc.dart' as form_bloc;
 
 typedef FormBlocListenerCallback<
-        FormBlocState extends form_bloc
-            .FormBlocState<SuccessResponse, ErrorResponse>,
+        FormBlocState2 extends form_bloc
+        .FormBlocState<SuccessResponse, ErrorResponse>,
         SuccessResponse,
         ErrorResponse>
-    = void Function(BuildContext context, FormBlocState state);
+    = void Function(BuildContext context, FormBlocState2 state);
 
 /// [BlocListener] that reacts to the state changes of the FormBloc.
 class FormBlocListener<
-        FormBloc extends form_bloc.FormBloc<SuccessResponse, ErrorResponse>,
+        FormBloc2 extends form_bloc.FormBloc<SuccessResponse, ErrorResponse>,
         SuccessResponse,
         ErrorResponse>
-    extends BlocListener<FormBloc,
+    extends BlocListener<FormBloc2,
         form_bloc.FormBlocState<SuccessResponse, ErrorResponse>> {
   /// [BlocListener] that reacts to the state changes of the FormBloc.
   /// {@macro bloclistener}
@@ -73,8 +73,8 @@ class FormBlocListener<
                     .FormBlocDeleteFailed<SuccessResponse, ErrorResponse> &&
                 onDeleteFailed != null) {
               onDeleteFailed(context, state);
-            } else if (state
-                    is form_bloc.FormBlocDeleteSuccessful<SuccessResponse, ErrorResponse> &&
+            } else if (state is form_bloc
+                    .FormBlocDeleteSuccessful<SuccessResponse, ErrorResponse> &&
                 onDeleteSuccessful != null) {
               onDeleteSuccessful(context, state);
             }
@@ -150,7 +150,7 @@ class FormBlocListener<
   /// If the [formBloc] parameter is omitted, [FormBlocListener]
   /// will automatically perform a lookup using
   /// [BlocProvider].of<[FormBloc]> and the current [BuildContext].
-  final FormBloc? formBloc;
+  final FormBloc2? formBloc;
 
   /// The [Widget] which will be rendered as a descendant of the [BlocListener].
   @override

@@ -89,8 +89,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
     }
 
     allFieldBlocs.forEach((step, fieldBlocs) {
-      _stepValidationSubs[step] =
-          MultiFieldBloc.onValidationStatus(fieldBlocs).listen((status) {
+      _stepValidationSubs[step] = MultiFieldBloc.onValidationStatus(fieldBlocs).listen((status) {
         if (_autoValidate) {
           _canSubmit = !status.isValidating;
         }
@@ -226,8 +225,8 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
 
   /// Update the state of the form bloc
   /// to [FormBlocLoaded].
-  void emitLoaded() {
-    emit(state.toLoaded());
+  void emitLoaded({SuccessResponse? successResponse}) {
+    emit(state.toLoaded(successResponse));
   }
 
   /// Update the state of the form bloc
@@ -329,9 +328,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
     // TODO: Check when is the last step, but not can submit again, and then go to previous step and try to submit again.
     final notValidStep = state.notValidStep;
 
-    if (state.isLastStep &&
-        notValidStep != null &&
-        notValidStep != state.lastStep) {
+    if (state.isLastStep && notValidStep != null && notValidStep != state.lastStep) {
       // go to the first step invalid
       emit(FormBlocSubmissionFailed(
         isValidByStep: state._isValidByStep,
@@ -339,7 +336,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
         fieldBlocs: state._fieldBlocs,
         currentStep: state.currentStep,
       ));
-      emit(state.toLoaded()._copyWith(currentStep: notValidStep));
+      emit(state.toLoaded(null)._copyWith(currentStep: notValidStep));
     } else if (_autoValidate && state.isValid(state.currentStep)) {
       // Auto validate is enabled, required validate all field blocs
       // if step isn't valid to show a error (if value is initial)
@@ -358,8 +355,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
     // get field blocs of the current step and validate
     final currentFieldBlocs = state.fieldBlocs(state.currentStep)?.values ?? [];
 
-    final isValidDone =
-        _isValidDone = MultiFieldBloc.validateAll(currentFieldBlocs);
+    final isValidDone = _isValidDone = MultiFieldBloc.validateAll(currentFieldBlocs);
     final isValid = await isValidDone;
 
     if (_isValidDone != isValidDone) return;
@@ -374,7 +370,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
         fieldBlocs: state._fieldBlocs,
         currentStep: state.currentStep,
       ));
-      emit(state.toLoaded());
+      emit(state.toLoaded(null));
       return;
     }
 
@@ -402,8 +398,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
   }
 
   void _onClearFormBloc() {
-    final allSingleFieldBlocs =
-        FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs()!.values);
+    final allSingleFieldBlocs = FormBlocUtils.getAllSingleFieldBlocs(state.fieldBlocs()!.values);
 
     for (var fieldBloc in allSingleFieldBlocs) {
       fieldBloc.clear();
@@ -503,8 +498,7 @@ abstract class FormBloc<SuccessResponse, FailureResponse>
         for (final step in state._fieldBlocs.keys)
           step: {
             for (final fieldBloc in state.flatFieldBlocs(step)!)
-              if (!fieldBlocs
-                  .any((fb) => fieldBloc.state.name == fb.state.name))
+              if (!fieldBlocs.any((fb) => fieldBloc.state.name == fb.state.name))
                 fieldBloc.state.name: fieldBloc,
           },
       };

@@ -123,8 +123,7 @@ abstract class SingleFieldBloc<
   ///
   /// For add a [Suggestion] to this stream call
   /// [selectSuggestion].
-  Stream<Suggestion> get selectedSuggestion =>
-      _selectedSuggestionSubject.stream;
+  Stream<Suggestion> get selectedSuggestion => _selectedSuggestionSubject.stream;
 
   // ===========================================================================
   // Utility
@@ -172,11 +171,10 @@ abstract class SingleFieldBloc<
         .doOnData((states) => _onStart(states.first, states.last))
         .debounceTime(debounceTime)
         .switchMap<List<dynamic>>(
-          (states) => onData(states.first, states.last)
-              .map((r) => <dynamic>[states.first, states.last, r]),
+          (states) =>
+              onData(states.first, states.last).map((r) => <dynamic>[states.first, states.last, r]),
         )
-        .listen((list) =>
-            _onFinish(list[0] as State, list[1] as State, list[2] as R));
+        .listen((list) => _onFinish(list[0] as State, list[1] as State, list[2] as R));
   }
 
   // ===========================================================================
@@ -272,8 +270,7 @@ abstract class SingleFieldBloc<
   }
 
   /// Updates the current `validators` with [validators].
-  void updateValidators(List<Validator<Value>> validators,
-      {bool forceValidation = false}) {
+  void updateValidators(List<Validator<Value>> validators, {bool forceValidation = false}) {
     _validators = validators;
 
     _maybeValidate(forceValidation);
@@ -291,8 +288,7 @@ abstract class SingleFieldBloc<
 
   /// Add [validators] to the current `validators` for check
   /// if `value` of the current state has an error.
-  void removeValidators(List<Validator<Value>> validators,
-      {bool forceValidation = false}) {
+  void removeValidators(List<Validator<Value>> validators, {bool forceValidation = false}) {
     _validators.removeAll(validators);
 
     _maybeValidate(forceValidation);
@@ -385,7 +381,7 @@ abstract class SingleFieldBloc<
 
   /// {@template form_bloc.FieldBloc.updateExtraData}
   /// Updates the `extraData` of the current state.
-  /// {@endtemplate form_bloc.FieldBloc.updateExtraData}
+  /// {@endtemplate}
   void updateExtraData(ExtraData extraData) {
     emit(state.copyWith(
       extraData: Param(extraData),
@@ -496,9 +492,7 @@ abstract class SingleFieldBloc<
 
     bool isValidating;
 
-    isValidating = (_autoValidate || forceValidation) &&
-        !hasError &&
-        _asyncValidators.isNotEmpty;
+    isValidating = (_autoValidate || forceValidation) && !hasError && _asyncValidators.isNotEmpty;
 
     if (isValidating) {
       _asyncValidatorsSubject.add(value);
@@ -508,15 +502,13 @@ abstract class SingleFieldBloc<
   }
 
   /// Returns the error of the [_initialValue].
-  Object? get _getInitialStateError =>
-      _getError(value: state.initialValue, isInitialState: true);
+  Object? get _getInitialStateError => _getError(value: state.initialValue, isInitialState: true);
 
   /// Returns the `isValidating` of the `initialState`.
   bool get _getInitialStateIsValidating {
     final hasInitialStateError = _getInitialStateError != null;
 
-    var isValidating =
-        _autoValidate && !hasInitialStateError && _asyncValidators.isNotEmpty;
+    var isValidating = _autoValidate && !hasInitialStateError && _asyncValidators.isNotEmpty;
 
     return isValidating;
   }
@@ -584,9 +576,8 @@ abstract class SingleFieldBloc<
       items.isEmpty ? items : LinkedHashSet<Value>.from(items).toList();
 
   void _setUpAsyncValidatorsSubscription() {
-    _asyncValidatorsSubscription = _asyncValidatorsSubject
-        .debounceTime(_asyncValidatorDebounceTime)
-        .switchMap((value) async* {
+    _asyncValidatorsSubscription =
+        _asyncValidatorsSubject.debounceTime(_asyncValidatorDebounceTime).switchMap((value) async* {
       Object? error;
 
       for (var asyncValidator in _asyncValidators) {
@@ -645,8 +636,8 @@ class ValidationStatus extends Equatable {
   }
 }
 
-class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
-    extends Cubit<TState> with FieldBloc<TState> {
+class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>> extends Cubit<TState>
+    with FieldBloc<TState> {
   late final StreamSubscription _onValidationStatus;
 
   bool _autoValidate = false;
@@ -775,8 +766,7 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
 
     for (final fieldBloc in fieldBlocs) {
       if (fieldBloc is MultiFieldBloc) {
-        final contains =
-            MultiFieldBloc.deepContains(fieldBloc.state.flatFieldBlocs, target);
+        final contains = MultiFieldBloc.deepContains(fieldBloc.state.flatFieldBlocs, target);
         if (contains) {
           return true;
         }
@@ -795,6 +785,5 @@ class MultiFieldBloc<ExtraData, TState extends MultiFieldBlocState<ExtraData>>
 
   static bool _isFieldBlocValid(FieldBloc field) => field.state.isValid;
 
-  static bool _isFieldBlocValidating(FieldBloc field) =>
-      field.state.isValidating;
+  static bool _isFieldBlocValidating(FieldBloc field) => field.state.isValidating;
 }
