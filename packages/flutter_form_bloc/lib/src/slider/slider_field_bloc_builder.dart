@@ -59,6 +59,12 @@ class SliderFieldBlocBuilder extends StatelessWidget {
   /// [Slider.label]
   final String Function(BuildContext context, double value)? labelBuilder;
 
+  /// [Slider.onChangeStart]
+  final void Function(double)? onChangeStart;
+
+  /// [Slider.onChangeEnd]
+  final void Function(double)? onChangeEnd;
+
   const SliderFieldBlocBuilder({
     Key? key,
     required this.inputFieldBloc,
@@ -78,6 +84,8 @@ class SliderFieldBlocBuilder extends StatelessWidget {
     this.decoration = const InputDecoration(),
     this.errorBuilder,
     this.labelBuilder,
+    this.onChangeStart,
+    this.onChangeEnd
   }) : super(key: key);
 
   SliderFieldTheme themeOf(BuildContext context) {
@@ -118,6 +126,8 @@ class SliderFieldBlocBuilder extends StatelessWidget {
                   decoration: _buildDecoration(context, state, isEnabled),
                   isEmpty: false,
                   child: Slider(
+                    onChangeEnd: onChangeEnd,
+                    onChangeStart: onChangeStart,
                     value: value,
                     min: min,
                     max: max,
